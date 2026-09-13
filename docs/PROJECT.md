@@ -37,8 +37,10 @@ APEX_THEME_FACTORY/
 ├── AGENTS.md                 # agent entry point (CLAUDE.md -> AGENTS.md)
 ├── docs/                     # AGENT_SPEC, DESIGN_SYSTEM, COMPONENTS, PROJECT, tool docs
 ├── applications/ut/          # APEXLang export of app 102 (declarative source of truth)
-├── static-files/css|js/      # repository CSS / JS / Alpine (spec §15, §27); js/vendor = Alpine.js 3.17.2
-├── scripts/                  # apex-export / validate / import wrappers (SQLcl docker-demo), fetch-vendor
+├── sample-themes/<name>/     # theme packages: css tree + README + previews (active: linen)
+├── static-files/css -> ../sample-themes/<active>/css   # symlink set by scripts/apply-theme.sh
+├── static-files/js/          # app.js, components/, vendor/ (Alpine.js 3.17.2)
+├── scripts/                  # apex-export / validate / import, apply-theme, sync-static, fetch-vendor
 └── .agents/                  # skills, knowledge, findings, evaluations (spec §50)
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
     ├── knowledge/            # + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
@@ -58,5 +60,6 @@ APEX_THEME_FACTORY/
 
 ## Not yet decided / open
 
-- Git: the directory is not a git repository yet. Initialise before the first real design change so APEXLang diffs are reviewable.
-- Static files: `static-files/` is a scaffold; nothing is uploaded to app 102 yet. Upload path and `#APP_FILES#` references get decided with the first component.
+- ~~Static files upload path~~ decided 2026-09-13: `scripts/sync-static.sh` copies `static-files/css|js/**` into
+  `applications/ut/shared-components/static-files/` and registers `file` entries; the app references
+  `#APP_FILES#css/app.css` (`application.apx → css.fileUrls`). Theme *linen* is live in app 102.

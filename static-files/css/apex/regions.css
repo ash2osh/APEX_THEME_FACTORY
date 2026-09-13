@@ -45,6 +45,13 @@
 .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
 .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
 
+/* Headings: avoid single-word last lines */
+.apex-theme-iris .t-ContentBlock-title,
+.apex-theme-iris .t-HeroRegion-title,
+.apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+}
+
 /* ---- Breadcrumb-as-title in the title bar --------------------------------------------------- */
 .apex-theme-iris .t-Body-title {
     --ut-breadcrumb-title-font-size: var(--app-text-2xl);

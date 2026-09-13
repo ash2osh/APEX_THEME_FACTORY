@@ -18,10 +18,10 @@
 }
 
 /* Focus ring (soft teal halo) on the native item types */
-.apex-theme-iris .apex-item-text:focus,
-.apex-theme-iris .apex-item-textarea:focus,
-.apex-theme-iris .apex-item-select:focus,
-.apex-theme-iris .apex-item-group--rc input:focus + label {
+.apex-theme-iris .apex-item-text:focus-visible,
+.apex-theme-iris .apex-item-textarea:focus-visible,
+.apex-theme-iris .apex-item-select:focus-visible,
+.apex-theme-iris .apex-item-group--rc input:focus-visible + label {
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }

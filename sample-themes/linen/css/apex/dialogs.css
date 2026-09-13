@@ -3,7 +3,7 @@
    Verified on p1910 (Page Dialog → Auto Sizing Modal Dialog), 26.1.4 / Iris —
    .agents/knowledge/ut-dom-dialogs.md. */
 
-.apex-theme-iris {
+.app-theme-linen .apex-theme-iris {
     --jui-dialog-border-radius: var(--app-radius-lg);
     --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--ut-component-border-color);
     --jui-dialog-border-color: var(--ut-component-border-color);

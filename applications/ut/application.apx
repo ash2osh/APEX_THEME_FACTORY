@@ -37,6 +37,7 @@ app UT (
         fileUrls: [
             #APP_FILES#demo/demo.js
             #PRISMJS_DIRECTORY#prism#MIN#.js
+            #APP_FILES#js/app.js
         ]
     }
     css {

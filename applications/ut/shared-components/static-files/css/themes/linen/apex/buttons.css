@@ -1,10 +1,10 @@
 /* Buttons.
    Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header,
-   --hot, --danger …) on the element. Overriding the base atoms on body.apex-theme-iris (the theme-
+   --hot, --danger …) on the element. Overriding the base atoms on body.app-theme-linen .apex-theme-iris (the theme-
    style scope, not :root) restyles all buttons while every modifier keeps precedence.
    Verified on p1500 Buttons, 26.1.4 / Iris — .agents/knowledge/ut-dom-buttons-forms.md. */
 
-.apex-theme-iris {
+.app-theme-linen .apex-theme-iris {
     /* geometry: 36px control, 13px/500, 6px radius */
     --a-button-font-size: var(--app-text-sm);
     --a-button-line-height: 1.125rem;
@@ -29,7 +29,7 @@
 }
 
 /* Hot = the one teal action. Palette/simple/link variants keep Iris' own colours. */
-.apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
+.app-theme-linen .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--ut-palette-primary-contrast);
     --a-button-border-color: transparent;
@@ -44,8 +44,8 @@
 }
 
 /* Button group (radio/checkbox as segmented control): the checked segment is teal like hot */
-.apex-theme-iris .apex-button-group input:checked + label,
-.apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+.app-theme-linen .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-linen .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--ut-palette-primary-contrast);
     --a-button-border-color: transparent;
@@ -57,7 +57,7 @@
 }
 
 /* Visible keyboard focus on every button, consistent with fields */
-.apex-theme-iris .t-Button:focus-visible {
+.app-theme-linen .apex-theme-iris .t-Button:focus-visible {
     box-shadow: var(--app-focus-ring);
     outline: none;
 }

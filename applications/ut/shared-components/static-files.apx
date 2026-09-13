@@ -224,40 +224,12 @@ file "theme_styles/vita.png" (
 )
 
 
-file "css/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
-file "css/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
 
 file "css/app.css" (
     mimeType: text/css
@@ -291,5 +263,50 @@ file "js/app.js" (
 
 file "js/vendor/alpine.min.js" (
     mimeType: application/javascript
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/tokens.css" (
+    mimeType: text/css
     charSet: utf-8
 )

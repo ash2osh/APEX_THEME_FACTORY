@@ -15,13 +15,37 @@
 
     --app-border-color:    var(--ut-component-border-color);
 
-    --app-radius-sm:       var(--ut-border-radius-sm);   /* .125rem */
-    --app-radius-md:       var(--ut-border-radius-md);   /* .25rem  */
-    --app-radius-lg:       var(--ut-border-radius-lg);   /* .5rem   */
+    /* Surfaces for the "quiet product" look (spec docs/superpowers/specs/2026-09-13-modern-look-design.md) */
+    --app-surface-chrome:  var(--ut-component-background-color); /* header + side nav */
+    --app-surface-subtle:  var(--ut-palette-generic-shade);      /* table headers, toolbars */
+    --app-accent-shade:    var(--ut-palette-primary-shade);      /* active nav pill, hover tints */
+    --app-border-hairline: var(--ut-component-border-width) solid var(--ut-component-border-color);
+
+    /* Radius scale — literal: Iris' 2/4/8px scale is too tight for the direction */
+    --app-radius-sm:       6px;
+    --app-radius-md:       8px;
+    --app-radius-lg:       12px;
 
     --app-shadow-sm:       var(--ut-shadow-sm);
     --app-shadow-md:       var(--ut-shadow-md);
     --app-shadow-lg:       var(--ut-shadow-lg);
+    --app-shadow-dialog:   0 16px 48px -12px rgba(22, 21, 19, .25); /* the only decorative shadow: dialogs, menus */
+
+    /* Shell geometry — aliases */
+    --app-shell-header-h:  var(--ut-header-height);   /* 3.5rem */
+    --app-shell-nav-w:     var(--ut-nav-width);       /* 15rem  */
+    --app-control-h:       2.25rem;                   /* inputs, buttons, toolbar controls (36px) */
+
+    /* Focus ring: white gap + Iris focus colour */
+    --app-focus-ring:      0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color);
+
+    /* Type scale — 1.2 ratio on a 14px base */
+    --app-text-xs:  .75rem;    /* 12 */
+    --app-text-sm:  .8125rem;  /* 13 */
+    --app-text-md:  .875rem;   /* 14 */
+    --app-text-lg:  1.0625rem; /* 17 */
+    --app-text-xl:  1.25rem;   /* 20 */
+    --app-text-2xl: 1.5rem;    /* 24 */
 
     /* Iris has no spacing scale — literal scale, 4px base */
     --app-space-1: .25rem;

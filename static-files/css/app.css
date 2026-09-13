@@ -5,6 +5,7 @@
 @import "foundation/reset.css";
 @import "foundation/typography.css";
 @import "foundation/utilities.css";
-/* apex/        scoped restyling of native components — add imports as files are created */
+/* apex/        scoped restyling of native components (spec: docs/superpowers/specs/2026-09-13-modern-look-design.md) */
+@import "apex/shell.css";
 /* components/  reusable .app-* components — one file per component, paired with js/components */
 /* pages/       page-local rules scoped by html.page-<N> */

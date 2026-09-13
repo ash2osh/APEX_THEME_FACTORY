@@ -37,11 +37,11 @@ APEX_THEME_FACTORY/
 ├── AGENTS.md                 # agent entry point (CLAUDE.md -> AGENTS.md)
 ├── docs/                     # AGENT_SPEC, DESIGN_SYSTEM, COMPONENTS, PROJECT, tool docs
 ├── applications/ut/          # APEXLang export of app 102 (declarative source of truth)
-├── static-files/css|js/      # repository CSS / JS / Alpine (spec §15, §27)
-├── scripts/                  # apex-export / validate / import wrappers (SQLcl docker-demo)
+├── static-files/css|js/      # repository CSS / JS / Alpine (spec §15, §27); js/vendor = Alpine.js 3.17.2
+├── scripts/                  # apex-export / validate / import wrappers (SQLcl docker-demo), fetch-vendor
 └── .agents/                  # skills, knowledge, findings, evaluations (spec §50)
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
-    ├── knowledge/
+    ├── knowledge/            # + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
     ├── findings/{pending,accepted,rejected}/
     └── evaluations/
 ```
@@ -52,6 +52,7 @@ APEX_THEME_FACTORY/
 |---|---|---|
 | Chrome DevTools MCP (`--autoConnect` to the user's running Chrome) | runtime truth: DOM, computed CSS, console, network, screenshots | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
+| `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 
 ## Not yet decided / open

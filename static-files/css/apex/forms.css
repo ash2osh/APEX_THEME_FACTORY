@@ -4,7 +4,7 @@
 
 .apex-theme-iris {
     --a-field-input-border-radius: var(--app-radius-sm);
-    --a-field-input-border-color: rgba(22, 21, 19, .45);   /* ≥3:1 on white (WCAG 1.4.11) */
+    /* border colour stays Iris' rgba(22,21,19,.5): 3.3:1 on white; .45 measured 2.96:1 (WCAG 1.4.11) */
     --a-field-input-padding-y: .4375rem;                   /* stacked/inline items → ~36px */
     --a-field-input-padding-x: .625rem;
     --a-field-input-focus-border-color: var(--app-color-primary);

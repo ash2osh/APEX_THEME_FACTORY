@@ -115,7 +115,7 @@ to Iris:
 | `--app-shadow-sm` / `-md` / `-lg` | `var(--ut-shadow-sm)` / `-md` / `-lg` |
 | `--app-space-1 … 8` | `.25rem .5rem .75rem 1rem 1.5rem 2rem` (Iris has no spacing scale; literal) |
 | `--app-surface-chrome` / `--app-surface-subtle` / `--app-accent-shade` | `var(--ut-component-background-color)` / `var(--ut-palette-generic-shade)` / `var(--ut-palette-primary-shade)` |
-| `--app-border-hairline` | `var(--ut-component-border-width) solid var(--ut-component-border-color)` |
+| `--app-border-hairline` / `--app-border-strong` | `var(--ut-component-border-width) solid var(--ut-component-border-color)` / `rgba(0,0,0,.2)` |
 | `--app-radius-sm` / `-md` / `-lg` | **`6px` / `8px` / `12px`** — literal since 2026-09-13 (Iris' 2/4/8 scale too tight for the quiet-product direction) |
 | `--app-shadow-dialog` | `0 16px 48px -12px rgba(22,21,19,.25)` — the only decorative shadow (dialogs, menus) |
 | `--app-shell-header-h` / `--app-shell-nav-w` | `var(--ut-header-height)` / `var(--ut-nav-width)` |

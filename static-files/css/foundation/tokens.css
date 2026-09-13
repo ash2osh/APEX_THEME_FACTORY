@@ -20,6 +20,7 @@
     --app-surface-subtle:  var(--ut-palette-generic-shade);      /* table headers, toolbars */
     --app-accent-shade:    var(--ut-palette-primary-shade);      /* active nav pill, hover tints */
     --app-border-hairline: var(--ut-component-border-width) solid var(--ut-component-border-color);
+    --app-border-strong:   rgba(0, 0, 0, .2);                    /* hover borders, scrollbar thumbs (1.6:1, decorative) */
 
     /* Radius scale — literal: Iris' 2/4/8px scale is too tight for the direction */
     --app-radius-sm:       6px;

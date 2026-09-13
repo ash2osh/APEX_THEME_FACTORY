@@ -124,7 +124,7 @@ to Iris:
 | `--app-font-weight-medium` / `-semibold` | `500` / `600` (Iris' `--a-base-font-weight-semibold` resolves to 500; Oracle Sans has a true 600) |
 | `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` (1.2 ratio on a 14px base) |
 
-### Quiet-product look (app-wide, `static-files/css/apex/*.css`)
+### Quiet-product look — theme **Linen** (`sample-themes/linen/css`, active via `static-files/css`)
 
 | File | Owns |
 |---|---|

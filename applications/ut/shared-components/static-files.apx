@@ -223,3 +223,73 @@ file "theme_styles/vita.png" (
     charSet: utf-8
 )
 
+
+file "css/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/app.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/foundation/reset.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/foundation/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/foundation/typography.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/foundation/utilities.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "js/app.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)
+
+file "js/vendor/alpine.min.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)

@@ -7,7 +7,7 @@ Non-negotiables
 - APEX 26.1.4, Universal Theme, theme style **Iris only** (light). Never switch styles or use Theme Roller.
 - Runtime truth = Chrome DevTools MCP against the user's running Chrome (`--autoConnect`); see docs/CHROME_DEVTOOLS_MCP.md.
 - Declarative source = `applications/ut/` (APEXLang, app 102, workspace DEMO) via SQLcl `docker-demo`; see docs/APEXLANG_ROUNDTRIP.md. Import only when the user asks.
-- Appearance = `static-files/css` with `--app-*` tokens aliasing Iris; interaction = Alpine in `static-files/js/components`.
+- Appearance = `static-files/css` (symlink to the active package in `sample-themes/<name>/css`, set by `scripts/apply-theme.sh`) with `--app-*` tokens aliasing Iris; interaction = Alpine in `static-files/js/components`. Push CSS with `scripts/sync-static.sh` before `apex-import`.
 
 Skills live in `.agents/skills/` (router: `design-to-apex`). Knowledge, findings and evaluations are in `.agents/`.
 Component registry: docs/COMPONENTS.md. Tokens and conventions: docs/DESIGN_SYSTEM.md.

@@ -19,7 +19,7 @@
     --a-button-text-color: var(--app-text-primary);
     --a-button-border-color: var(--ut-component-border-color);
     --a-button-hover-background-color: var(--ut-palette-generic-shade);
-    --a-button-hover-border-color: rgba(0, 0, 0, .2);
+    --a-button-hover-border-color: var(--app-border-strong);
     --a-button-active-background-color: var(--ut-palette-generic);
     --a-button-focus-background-color: var(--ut-component-background-color);
     --a-button-focus-border-color: var(--app-color-primary);

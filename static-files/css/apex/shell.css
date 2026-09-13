@@ -32,7 +32,7 @@
     --ut-body-nav-background-color: var(--app-surface-chrome);
     --ut-body-nav-text-color: var(--ut-component-text-subtitle-color);
     --ut-body-nav-border-color: var(--ut-component-border-color);
-    --ut-body-nav-scrollbar-thumb-background-color: rgba(0, 0, 0, .2);
+    --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-strong);
     --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
 }
 .apex-theme-iris .t-Body-nav .t-TreeNav {

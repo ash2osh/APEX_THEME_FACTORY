@@ -10,5 +10,6 @@
 @import "apex/regions.css";
 @import "apex/buttons.css";
 @import "apex/forms.css";
+@import "apex/reports.css";
 /* components/  reusable .app-* components — one file per component, paired with js/components */
 /* pages/       page-local rules scoped by html.page-<N> */

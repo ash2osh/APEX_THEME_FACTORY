@@ -9,6 +9,7 @@ spec §68: add one only for a documented, real requirement.
 
 Load order (User Interface → JavaScript → File URLs): verified on page 500 that APEX emits file URLs
 as plain `<script>` tags at the end of `<body>`, after `desktop_all.min.js` and `theme42.min.js`,
-in list order. Because the CDN build auto-starts on `DOMContentLoaded`, register components
+in list order. Because the CDN build auto-starts via `queueMicrotask(() => Alpine.start())` — i.e. right after its own
+`<script>` finishes, before the next one runs — register components
 **before** it starts: list `js/components/*.js` (which hook `alpine:init`) *before* `alpine.min.js`,
 or list `alpine.min.js` last. Never call `Alpine.start()` yourself (spec §33).

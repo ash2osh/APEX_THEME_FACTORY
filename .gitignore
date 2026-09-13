@@ -1,0 +1,31 @@
+# Scratch / temporary work
+scratch/
+tmp/
+*.tmp
+*.log
+*.bak
+*.orig
+*~
+
+# Screenshots and visual-comparison captures (spec: screenshots go to the scratchpad, never committed)
+screenshots/
+*.screenshot.png
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/*.gif
+docs/**/*.png
+static-files/**/*.png
+.agents/**/*.png
+.agents/**/*.jpg
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local tool state
+.claude/settings.local.json
+.sqlcl/

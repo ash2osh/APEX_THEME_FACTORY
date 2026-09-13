@@ -20,7 +20,7 @@ app UT (
             #DEFAULT#
             js-defaultCollapsed
             js-navCollapsed--hidden
-            t-TreeNav--styleA
+            t-TreeNav--styleB
         ]
         list: @ut-application-navigation
     }
@@ -38,6 +38,9 @@ app UT (
             #APP_FILES#demo/demo.js
             #PRISMJS_DIRECTORY#prism#MIN#.js
         ]
+    }
+    css {
+        fileUrls: #APP_FILES#css/app.css
     }
     authentication {
         scheme: @application-express

@@ -1,0 +1,2 @@
+/* Minimal app-level resets. Universal Theme already normalises; keep this tiny. */
+[x-cloak] { display: none !important; } /* Alpine: hide until initialised (spec §69) */

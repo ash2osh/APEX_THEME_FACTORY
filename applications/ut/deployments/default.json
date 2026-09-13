@@ -1,0 +1,8 @@
+{
+  "app" : {
+    "id" : 102,
+    "runtime" : {
+      "logging" : false
+    }
+  }
+}

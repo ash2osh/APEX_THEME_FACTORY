@@ -1,0 +1,33 @@
+/* Application design tokens. Alias Iris (--ut-*) first; literals only where Iris has no token.
+   Register every token in docs/DESIGN_SYSTEM.md §3. Never redefine --ut-* / --a-* here. */
+:root {
+    --app-color-primary:   var(--ut-palette-primary);
+    --app-color-success:   var(--ut-palette-success);
+    --app-color-warning:   var(--ut-palette-warning);
+    --app-color-danger:    var(--ut-palette-danger);
+    --app-color-info:      var(--ut-palette-info);
+
+    --app-surface-page:    var(--ut-body-background-color);
+    --app-surface-card:    var(--ut-component-background-color);
+
+    --app-text-primary:    var(--ut-body-text-color);
+    --app-text-secondary:  var(--ut-component-text-muted-color);
+
+    --app-border-color:    var(--ut-component-border-color);
+
+    --app-radius-sm:       var(--ut-border-radius-sm);   /* .125rem */
+    --app-radius-md:       var(--ut-border-radius-md);   /* .25rem  */
+    --app-radius-lg:       var(--ut-border-radius-lg);   /* .5rem   */
+
+    --app-shadow-sm:       var(--ut-shadow-sm);
+    --app-shadow-md:       var(--ut-shadow-md);
+    --app-shadow-lg:       var(--ut-shadow-lg);
+
+    /* Iris has no spacing scale — literal scale, 4px base */
+    --app-space-1: .25rem;
+    --app-space-2: .5rem;
+    --app-space-3: .75rem;
+    --app-space-4: 1rem;
+    --app-space-6: 1.5rem;
+    --app-space-8: 2rem;
+}

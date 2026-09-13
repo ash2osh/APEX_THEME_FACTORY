@@ -60,3 +60,10 @@
 .apex-theme-iris .a-IRR-headerLink {
     color: var(--app-text-primary);
 }
+
+/* Numbers line up in columns */
+.apex-theme-iris .a-IRR-table td,
+.apex-theme-iris .a-GV-cell,
+.apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}

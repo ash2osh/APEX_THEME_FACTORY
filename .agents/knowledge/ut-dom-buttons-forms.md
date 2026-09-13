@@ -28,3 +28,9 @@ div.t-Form-fieldContainer.t-Form-fieldContainer--floatingLabel|--stacked[.apex-i
 Floating-label inputs are 47.6px (padding 25/7/5 set on the element by Core) — untouched by base-atom overrides.
 Stacked inputs: ~30px when inside a small form variant (font 12px) — size modifiers win as expected.
 Item type classes: `.apex-item-text`, `.apex-item-textarea`, `.apex-item-select`, radio/checkbox `.apex-item-group--rc input + label`.
+
+## Segmented radio/checkbox ("button group") — verified p4000 Icons, live 2026-09-13
+`div.apex-item-grid.radio_group > … input[type=radio]#P4000_SIZE_0 + label.u-radio` inside
+`.t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc`. Iris paints the checked label with the same
+selector list as `.t-Button--hot` (`.apex-button-group input:checked+label`, `…radioButtonGroup .apex-item-group--rc input:checked+label`),
+so a hot-colour override must target those selectors too (buttons.css does).

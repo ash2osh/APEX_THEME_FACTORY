@@ -39,6 +39,10 @@
     /* Focus ring: white gap + Iris focus colour */
     --app-focus-ring:      0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color);
 
+    /* Weights — Iris' --a-base-font-weight-semibold resolves to 500 at runtime; Oracle Sans has a true 600 */
+    --app-font-weight-medium:   500;
+    --app-font-weight-semibold: 600;
+
     /* Type scale — 1.2 ratio on a 14px base */
     --app-text-xs:  .75rem;    /* 12 */
     --app-text-sm:  .8125rem;  /* 13 */

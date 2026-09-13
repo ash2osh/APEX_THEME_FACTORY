@@ -20,22 +20,26 @@
 ## What's inside
 
 ```text
-css/
-├── app.css                 entry point (@import order matters)
-├── foundation/
-│   ├── tokens.css          --app-* tokens: radius 6/8/12, one dialog shadow, type scale, weights 500/600, focus ring
-│   ├── reset.css · typography.css · utilities.css
-└── apex/
-    ├── shell.css           header (white, no accent strip) · side nav (white, Style B pill, teal-on-shade current) · title bar · hero
-    ├── regions.css         regions/cards 8px + hairline + no shadow · 14px/600 titles · content-block scale 24/20/17 · breadcrumb title
-    ├── buttons.css         36px / 13px-500 / 6px · default white+hairline · hot + button-group teal · :focus-visible ring
-    ├── forms.css           6px inputs · teal focus halo · 13px/500 muted stacked labels
-    ├── reports.css         IRR / IG / classic: subtle 40px header 13px/600 · 40px rows · horizontal hairlines · tabular numerals
-    ├── dialogs.css         12px radius · single soft shadow · hairline title bar · menus
-    └── misc.css            alert/badge/component shadows off · badge radius
+theme.json               manifest: name, class, declarative template options (nav Style B)
+css/theme.css            entry, loaded by static-files/css/app.css (@themes block, generated)
+css/tokens.css           token deltas over the shared foundation, scoped to html.app-theme-linen
+css/apex/
+  shell.css              header (white, no accent strip) · side nav (white, Style B pill, teal-on-shade current) · title bar · hero
+  regions.css            regions/cards 8px + hairline + no shadow · 14px/600 titles · content-block scale 24/20/17 · breadcrumb title
+  buttons.css            36px / 13px-500 / 6px · default white+hairline · hot + button-group teal · :focus-visible ring
+  forms.css              6px inputs · teal focus halo · 13px/500 muted stacked labels
+  reports.css            IRR / IG / classic: subtle 40px header 13px/600 · 40px rows · horizontal hairlines · tabular numerals
+  dialogs.css            12px radius · single soft shadow · hairline title bar · menus
+  misc.css               alert/badge/component shadows off · badge radius
+preview/                 captures
 ```
+Shared foundation (reset, typography, utilities, the full `--app-*` vocabulary with Iris defaults) lives in
+`static-files/css/foundation/` and is not part of the package.
 
 ## Technique
+
+Every rule is scoped to `html.app-theme-linen`, so all theme packages can be loaded together and the
+class chosen per visitor (page 0 "Theme" regions apply it before paint; see `sample-themes/README.md`).
 
 Core/Iris declare each component's *base* atoms (`--a-button-*`, `--a-field-*`, `--a-gv-*`, `--jui-dialog-*`,
 most `--ut-*`) on `:root` and every modifier/state on the element. Linen overrides the base atoms on
@@ -56,10 +60,12 @@ navigationMenu { templateOptions: [ … t-TreeNav--styleB ] }   # Side Navigatio
 ## Apply / switch
 
 ```bash
-scripts/apply-theme.sh linen      # points static-files/css at this theme
-scripts/sync-static.sh            # copies css/** into the APEXLang export + registers file entries
-scripts/apex-import.sh            # validate + import (asks for confirmation)
+scripts/apply-theme.sh linen      # make it the app default (page-0 DEFAULT + template options from theme.json)
+scripts/sync-static.sh            # assemble static-files + sample-themes/*/css into the APEXLang export
+scripts/apex-import.sh            # validate + import
 ```
+Live, per browser: open any page with `#theme=linen` (or `App.theme.use('linen')` in the console);
+`#theme=none` shows bare Iris, `#theme=default` returns to the app default.
 
 ## Verified
 

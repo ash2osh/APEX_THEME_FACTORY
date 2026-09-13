@@ -37,9 +37,9 @@ APEX_THEME_FACTORY/
 ├── AGENTS.md                 # agent entry point (CLAUDE.md -> AGENTS.md)
 ├── docs/                     # AGENT_SPEC, DESIGN_SYSTEM, COMPONENTS, PROJECT, tool docs
 ├── applications/ut/          # APEXLang export of app 102 (declarative source of truth)
-├── sample-themes/<name>/     # theme packages: css tree + README + previews (active: linen)
-├── static-files/css -> ../sample-themes/<active>/css   # symlink set by scripts/apply-theme.sh
-├── static-files/js/          # app.js, components/, vendor/ (Alpine.js 3.17.2)
+├── sample-themes/<name>/     # theme packages (theme.json, css/, preview/); all loaded, class-switched (default: linen)
+├── static-files/css/         # app.css entry (+ generated @themes block), foundation/ (shared tokens, reset, …)
+├── static-files/js/          # app.js (App.theme helper), components/, vendor/ (Alpine.js 3.17.2)
 ├── scripts/                  # apex-export / validate / import, apply-theme, sync-static, fetch-vendor
 └── .agents/                  # skills, knowledge, findings, evaluations (spec §50)
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
@@ -60,6 +60,9 @@ APEX_THEME_FACTORY/
 
 ## Not yet decided / open
 
-- ~~Static files upload path~~ decided 2026-09-13: `scripts/sync-static.sh` copies `static-files/css|js/**` into
-  `applications/ut/shared-components/static-files/` and registers `file` entries; the app references
-  `#APP_FILES#css/app.css` (`application.apx → css.fileUrls`). Theme *linen* is live in app 102.
+- ~~Static files upload path~~ decided 2026-09-13: `scripts/sync-static.sh` assembles `static-files/css|js/**` and
+  `sample-themes/*/css/**` into `applications/ut/shared-components/static-files/` (registering `file` entries,
+  pruning stale ones); the app references `#APP_FILES#css/app.css` and `#APP_FILES#js/app.js`. Theme *linen*
+  is the default in app 102; switching is described in `sample-themes/README.md`.
+- Known: APEX session-state protection rejects unknown query parameters on friendly URLs, so runtime switches
+  use the URL hash. Page 0 can only address Standard-template slots; they map to other templates by position.

@@ -1,0 +1,65 @@
+/* Application design tokens — shared foundation (spec §16).
+   Every --app-* token is declared here with its Iris-default value, so any theme can rely on the full
+   vocabulary. A theme changes values only under `html.app-theme-<name>` (sample-themes/<name>/css/tokens.css).
+   Alias Iris (--ut-*) first; literals only where Iris has no token. Never redefine --ut-* / --a-* here. */
+:root {
+    /* colour */
+    --app-color-primary:   var(--ut-palette-primary);
+    --app-color-success:   var(--ut-palette-success);
+    --app-color-warning:   var(--ut-palette-warning);
+    --app-color-danger:    var(--ut-palette-danger);
+    --app-color-info:      var(--ut-palette-info);
+    --app-accent-shade:    var(--ut-palette-primary-shade);
+
+    /* surfaces */
+    --app-surface-page:    var(--ut-body-background-color);
+    --app-surface-card:    var(--ut-component-background-color);
+    --app-surface-chrome:  var(--ut-header-background-color);      /* header + side nav (Iris: dark) */
+    --app-surface-subtle:  var(--ut-palette-generic-shade);
+
+    /* text */
+    --app-text-primary:    var(--ut-body-text-color);
+    --app-text-secondary:  var(--ut-component-text-muted-color);
+
+    /* borders */
+    --app-border-color:    var(--ut-component-border-color);
+    --app-border-hairline: var(--ut-component-border-width) solid var(--ut-component-border-color);
+    --app-border-strong:   rgba(0, 0, 0, .2);
+
+    /* radius (Iris scale) */
+    --app-radius-sm:       var(--ut-border-radius-sm);   /* .125rem */
+    --app-radius-md:       var(--ut-border-radius-md);   /* .25rem  */
+    --app-radius-lg:       var(--ut-border-radius-lg);   /* .5rem   */
+
+    /* shadows */
+    --app-shadow-sm:       var(--ut-shadow-sm);
+    --app-shadow-md:       var(--ut-shadow-md);
+    --app-shadow-lg:       var(--ut-shadow-lg);
+    --app-shadow-dialog:   var(--ut-shadow-lg);
+
+    /* geometry */
+    --app-shell-header-h:  var(--ut-header-height);   /* 3.5rem */
+    --app-shell-nav-w:     var(--ut-nav-width);       /* 15rem  */
+    --app-control-h:       2rem;                      /* Iris buttons/inputs ≈ 32px */
+
+    /* focus */
+    --app-focus-ring:      0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color);
+
+    /* type */
+    --app-font-weight-medium:   500;
+    --app-font-weight-semibold: var(--a-base-font-weight-semibold, 500);
+    --app-text-xs:  .75rem;
+    --app-text-sm:  .8125rem;
+    --app-text-md:  .875rem;
+    --app-text-lg:  1.0625rem;
+    --app-text-xl:  1.25rem;
+    --app-text-2xl: 1.5rem;
+
+    /* spacing — Iris has no scale; literal, 4px base */
+    --app-space-1: .25rem;
+    --app-space-2: .5rem;
+    --app-space-3: .75rem;
+    --app-space-4: 1rem;
+    --app-space-6: 1.5rem;
+    --app-space-8: 2rem;
+}

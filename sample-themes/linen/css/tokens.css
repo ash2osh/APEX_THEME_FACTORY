@@ -1,0 +1,16 @@
+/* Linen — token deltas over the shared foundation (static-files/css/foundation/tokens.css).
+   Scoped to html.app-theme-linen so several themes can be loaded at once and switched live. */
+html.app-theme-linen {
+    --app-surface-chrome:  var(--ut-component-background-color);  /* white header + side nav */
+
+    /* radius scale — literal: Iris' 2/4/8px is too tight for the direction */
+    --app-radius-sm:       6px;
+    --app-radius-md:       8px;
+    --app-radius-lg:       12px;
+
+    --app-shadow-dialog:   0 16px 48px -12px rgba(22, 21, 19, .25); /* the only decorative shadow */
+    --app-control-h:       2.25rem;                                 /* 36px controls */
+
+    /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; Oracle Sans has a true 600 */
+    --app-font-weight-semibold: 600;
+}

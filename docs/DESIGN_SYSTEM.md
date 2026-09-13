@@ -101,8 +101,8 @@ tokens), `--u-*` (100, utilities), `--jui-*`, `--oj-*`. All are **reserved** (sp
 
 ## 3. Application tokens (`--app-*`)
 
-Defined in `static-files/css/foundation/tokens.css`. Current set is the seed from spec §16, aliased
-to Iris:
+Defined in `static-files/css/foundation/tokens.css` with Iris-default values (the shared vocabulary every theme
+can use); a theme overrides values under `html.app-theme-<name>` in its own `tokens.css`:
 
 | App token | Aliases |
 |---|---|
@@ -124,7 +124,7 @@ to Iris:
 | `--app-font-weight-medium` / `-semibold` | `500` / `600` (Iris' `--a-base-font-weight-semibold` resolves to 500; Oracle Sans has a true 600) |
 | `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` (1.2 ratio on a 14px base) |
 
-### Quiet-product look — theme **Linen** (`sample-themes/linen/css`, active via `static-files/css`)
+### Quiet-product look — theme **Linen** (`sample-themes/linen/css`, scoped `html.app-theme-linen`, app default)
 
 | File | Owns |
 |---|---|

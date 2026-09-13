@@ -10,6 +10,85 @@ page 0 (
         }
     )
 
+    region theme (
+        name: Theme
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <script>
+                /* APEX Theme Factory: pick the active theme package before the page paints.
+                   All packages are loaded by #APP_FILES#css/app.css; each is scoped to html.app-theme-<name>.
+                   Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
+                   pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
+                   Query parameters are not usable here (session-state protection rejects unknown ones).
+                   DEFAULT is maintained by scripts/apply-theme.sh. */
+                (function () {
+                    var DEFAULT = 'linen';
+                    var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
+                    try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
+                    try {
+                        if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
+                        else if (m) { localStorage.setItem('app.theme', m[1]); }
+                        t = localStorage.getItem('app.theme');
+                    } catch (e) {}
+                    if (!t || !ok.test(t)) { t = DEFAULT; }
+                    document.documentElement.classList.add('app-theme-' + t);
+                })();
+                </script>
+                ```
+        }
+        layout {
+            sequence: 15
+            slot: banner
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region theme_dialog (
+        name: Theme (dialog, drawer, wizard pages)
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <!-- Page 0 may only use Standard-template slots; APEX maps them by position number, and
+                     breadcrumbBar = #REGION_POSITION_01# = the first position of the Modal Dialog, Drawer and
+                     Wizard Modal Dialog templates (those have no banner slot). Idempotent with region "theme". -->
+                <script>
+                /* APEX Theme Factory: pick the active theme package before the page paints.
+                   All packages are loaded by #APP_FILES#css/app.css; each is scoped to html.app-theme-<name>.
+                   Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
+                   pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
+                   Query parameters are not usable here (session-state protection rejects unknown ones).
+                   DEFAULT is maintained by scripts/apply-theme.sh. */
+                (function () {
+                    var DEFAULT = 'linen';
+                    var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
+                    try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
+                    try {
+                        if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
+                        else if (m) { localStorage.setItem('app.theme', m[1]); }
+                        t = localStorage.getItem('app.theme');
+                    } catch (e) {}
+                    if (!t || !ok.test(t)) { t = DEFAULT; }
+                    document.documentElement.classList.add('app-theme-' + t);
+                })();
+                </script>
+                ```
+        }
+        layout {
+            sequence: 1
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+    )
+
     region script (
         name: Script
         type: staticContent

@@ -3,7 +3,7 @@
    --ut-report-* with --a-gv-* fallbacks. Verified on p1402 / p1410 / p1401, 26.1.4 / Iris —
    .agents/knowledge/ut-dom-reports.md. */
 
-.apex-theme-iris {
+.app-theme-linen .apex-theme-iris {
     /* header row: subtle surface, 13px/600, 40px */
     --a-gv-header-background-color: var(--app-surface-subtle);
     --a-gv-header-text-color: var(--app-text-primary);
@@ -36,34 +36,34 @@
 }
 
 /* Region-level radius: .a-IRR sets --a-gv-border-radius on the element, so scope there */
-.apex-theme-iris .a-IRR,
-.apex-theme-iris .a-IG {
+.app-theme-linen .apex-theme-iris .a-IRR,
+.app-theme-linen .apex-theme-iris .a-IG {
     --a-gv-border-radius: var(--app-radius-md);
 }
 
 /* Horizontal rules only (Core's border-width is one value for all four sides) */
-.apex-theme-iris .a-IRR-table td,
-.apex-theme-iris .a-IRR-header,
-.apex-theme-iris .a-GV-cell,
-.apex-theme-iris .a-GV-header,
-.apex-theme-iris .t-Report-cell,
-.apex-theme-iris .t-Report-colHead {
+.app-theme-linen .apex-theme-iris .a-IRR-table td,
+.app-theme-linen .apex-theme-iris .a-IRR-header,
+.app-theme-linen .apex-theme-iris .a-GV-cell,
+.app-theme-linen .apex-theme-iris .a-GV-header,
+.app-theme-linen .apex-theme-iris .t-Report-cell,
+.app-theme-linen .apex-theme-iris .t-Report-colHead {
     border-inline-width: 0;
 }
 /* Iris hard-codes the IRR header surface (#fafafa / #f2f2f2); route it through the atom */
-.apex-theme-iris .a-IRR-header {
+.app-theme-linen .apex-theme-iris .a-IRR-header {
     background-color: var(--a-gv-header-background-color);
 }
-.apex-theme-iris .a-IRR-header:hover {
+.app-theme-linen .apex-theme-iris .a-IRR-header:hover {
     background-color: var(--ut-palette-generic);
 }
-.apex-theme-iris .a-IRR-headerLink {
+.app-theme-linen .apex-theme-iris .a-IRR-headerLink {
     color: var(--app-text-primary);
 }
 
 /* Numbers line up in columns */
-.apex-theme-iris .a-IRR-table td,
-.apex-theme-iris .a-GV-cell,
-.apex-theme-iris .t-Report-cell {
+.app-theme-linen .apex-theme-iris .a-IRR-table td,
+.app-theme-linen .apex-theme-iris .a-GV-cell,
+.app-theme-linen .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }

@@ -15,6 +15,12 @@ Iris (--ut-*, --a-*)  ←  aliased by  ←  --app-*  ←  used by  ←  .app-* c
 
 Rules
 - Never restyle by redefining `--ut-*` / `--a-*` globally on `:root` (that is Theme Roller's job and would fight Iris). Redefine them **scoped** under an `.app-*` class when a component needs a local variant.
+- **App-wide restyle (user-approved, e.g. the 2026-09-13 "quiet product" look):** override the *base* atoms on
+  `body.apex-theme-iris` — the theme-style scope, not `:root`. Core/Iris declare base atoms on `:root` and every
+  modifier/state on the element, so body-level overrides restyle everything while `--small`, `--hot`, `--header`,
+  floating labels etc. keep precedence. Where an atom is set on the element (`.a-IRR{--a-gv-border-radius}`),
+  override on that element. Prefer an atom override to a property override whenever the atom exists
+  (see `.agents/findings/pending/2026-09-13-theme-style-scope-token-overrides.md`).
 - Before adding an `--app-*` literal, check the Iris table below and `static-files/css/foundation/tokens.css`.
 - New tokens only when reusable and design-system meaningful (spec §18).
 
@@ -108,6 +114,29 @@ to Iris:
 | `--app-radius-sm` / `-md` / `-lg` | `var(--ut-border-radius-sm)` / `-md` / `-lg` |
 | `--app-shadow-sm` / `-md` / `-lg` | `var(--ut-shadow-sm)` / `-md` / `-lg` |
 | `--app-space-1 … 8` | `.25rem .5rem .75rem 1rem 1.5rem 2rem` (Iris has no spacing scale; literal) |
+| `--app-surface-chrome` / `--app-surface-subtle` / `--app-accent-shade` | `var(--ut-component-background-color)` / `var(--ut-palette-generic-shade)` / `var(--ut-palette-primary-shade)` |
+| `--app-border-hairline` | `var(--ut-component-border-width) solid var(--ut-component-border-color)` |
+| `--app-radius-sm` / `-md` / `-lg` | **`6px` / `8px` / `12px`** — literal since 2026-09-13 (Iris' 2/4/8 scale too tight for the quiet-product direction) |
+| `--app-shadow-dialog` | `0 16px 48px -12px rgba(22,21,19,.25)` — the only decorative shadow (dialogs, menus) |
+| `--app-shell-header-h` / `--app-shell-nav-w` | `var(--ut-header-height)` / `var(--ut-nav-width)` |
+| `--app-control-h` | `2.25rem` (36px inputs, buttons, toolbar controls) |
+| `--app-focus-ring` | `0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color)` |
+| `--app-font-weight-medium` / `-semibold` | `500` / `600` (Iris' `--a-base-font-weight-semibold` resolves to 500; Oracle Sans has a true 600) |
+| `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` (1.2 ratio on a 14px base) |
+
+### Quiet-product look (app-wide, `static-files/css/apex/*.css`)
+
+| File | Owns |
+|---|---|
+| `shell.css` | header (white, no strip), side nav (white, Style B pill, teal-on-shade current), title bar, hero title |
+| `regions.css` | regions/cards 8px + hairline + no shadow, 14px/600 titles, content-block scale 24/20/17, breadcrumb title 24/600 |
+| `buttons.css` | 36px / 13px-500 / 6px; default white+hairline, hot teal; `:focus-visible` ring |
+| `forms.css` | 6px inputs, teal focus, 13px/500 muted stacked labels |
+| `reports.css` | IRR/IG/classic: subtle 40px header 13px/600, 40px rows, horizontal hairlines, tabular numerals |
+| `dialogs.css` | 12px radius, `--app-shadow-dialog`, hairline title bar, menus |
+| `misc.css` | alert/badge/component shadows off, badge radius |
+
+Declarative: `application.apx` → `css.fileUrls: #APP_FILES#css/app.css`; navigation menu template option Style B.
 
 ## 4. Naming
 

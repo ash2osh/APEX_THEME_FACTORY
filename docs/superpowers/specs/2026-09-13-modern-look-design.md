@@ -1,6 +1,6 @@
 # Modern look for app 102 ("Quiet product") — design spec
 
-Date: 2026-09-13 · Status: approved in conversation, implementation in progress
+Date: 2026-09-13 · Status: implemented in source (commits aa07754…), verified via DevTools proto on 500/1201/1402/1410/1500/1600/1910 at 1440/1024/768/375; **not imported** to app 102
 Governing rules: `docs/AGENT_SPEC.md`, `docs/DESIGN_SYSTEM.md`. Theme style **Iris only**.
 
 ## 1. Goal
@@ -49,6 +49,7 @@ recorded in `.agents/knowledge/ut-dom-<component>.md`.
 | `--app-surface-subtle` | `var(--ut-palette-generic-shade)` | table headers, toolbars |
 | `--app-accent-shade` | `var(--ut-palette-primary-shade)` | active nav pill, hover tints |
 | `--app-border-hairline` | `1px solid var(--ut-component-border-color)` | every border |
+| `--app-font-weight-medium/-semibold` | `500` / `600` | Iris semibold resolves to 500 at runtime (added during implementation) |
 | `--app-control-h` | `2.25rem` (36px) | inputs, buttons, IG toolbar controls |
 | `--app-focus-ring` | `0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color)` | focus everywhere |
 | Type scale | `--app-text-xs/sm/md/lg/xl/2xl` = 12/13/14/17/20/24 px | 1.2 ratio on a 14px base |

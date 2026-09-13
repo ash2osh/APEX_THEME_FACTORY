@@ -86,7 +86,7 @@ Full list of 167 `--ut-*` values: [`.agents/knowledge/iris-ut-tokens.md`](../.ag
 |---|---|
 | `--a-base-font-family` | `"Oracle Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, …, sans-serif` |
 | `--a-base-font-family-mono` | `SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace` |
-| `--a-base-font-weight-semibold` | `600` |
+| `--a-base-font-weight-semibold` | `500` (runtime-verified 2026-09-13; Core declares 600, Iris overrides to 500) |
 | `--a-button-font-size` / `--a-button-border-radius` | `.75rem` / `.125rem` |
 | Icons | Font APEX 2.5.1 (`apex-icons-fontapex`) |
 

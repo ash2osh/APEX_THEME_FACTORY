@@ -54,6 +54,7 @@ APEX_THEME_FACTORY/
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
+| External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
 
 ## Not yet decided / open
 

@@ -32,3 +32,27 @@ Load only the skills the step needs.
 - About to write `.t-Region {` or `!important` or a literal that Iris already has as a token.
 - About to call it done while the change exists only in DevTools.
 - About to switch theme style or touch Theme Roller.
+
+## External skills (installed via `npx skills`, pinned in `skills-lock.json`)
+These are generic web-design skills. They never outrank the spec, and they never touch structure:
+run them **through** this router, on the CSS/Alpine layers, in refinement mode only.
+
+**`impeccable`** — evaluate/refine passes. Use it as a design lead reviewing our work, not as a page builder.
+- Mode is always **Operate** (app UI). The brief is `AGENTS.md` + `docs/DESIGN_SYSTEM.md`: Iris palette,
+  Oracle Sans, Iris radius/shadows, UT components. Impeccable's own "the brief wins" rule applies.
+- Allowed sub-commands: `critique`, `audit`, `polish`, `layout`, `typeset`, `adapt`, `harden`, `onboard`,
+  `clarify`, `quieter`, `distill`. Target = a running page URL (inspect via `chrome-devtools-mcp`) or
+  files under `static-files/`.
+- Not allowed here: `bolder`, `overdrive`, `delight`, `colorize`, `animate`, `craft`/new-work, `init`,
+  `document`, `extract`, `live`, `hooks`, `doctor` — they invent identity, replace markup, or write
+  config/hook files (`PRODUCT.md`, `DESIGN.md`, `.impeccable/`, `settings.local.json`).
+- Its findings are proposals: each one still goes through steps 5–8 above (native component? template
+  option? token? selector scope?) before any CSS is written.
+- `impeccable context` (its launcher) downloads and runs a native engine binary from GitHub releases.
+  Do not run it unless the user has approved that in this session; use the documented degraded path
+  (read project context directly) otherwise.
+
+**`web-design-guidelines`** — checklist review (focus, forms, contrast, motion, a11y) in `file:line`
+format. Point it at `static-files/css/**` and `static-files/js/components/**` before `apex-design-review`.
+It fetches its rule list from GitHub at run time. Findings about UT-generated markup are reported as
+findings (`.agents/findings/pending/`), not fixed by overriding `.t-*` globally.

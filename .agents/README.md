@@ -5,6 +5,7 @@ Structure required by [docs/AGENT_SPEC.md](../docs/AGENT_SPEC.md) §50–§62.
 ```text
 .agents/
 ├── skills/        # reusable rules & techniques (SKILL.md each). Router: design-to-apex
+│                  #   external: impeccable, web-design-guidelines (npx skills; skills-lock.json)
 ├── knowledge/     # verified reference facts (Iris tokens, UT DOM, runtime facts)
 ├── findings/      # discoveries awaiting review → pending / accepted / rejected
 └── evaluations/   # regression scenarios the skills must pass

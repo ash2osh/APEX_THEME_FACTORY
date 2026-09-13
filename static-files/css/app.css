@@ -8,5 +8,7 @@
 /* apex/        scoped restyling of native components (spec: docs/superpowers/specs/2026-09-13-modern-look-design.md) */
 @import "apex/shell.css";
 @import "apex/regions.css";
+@import "apex/buttons.css";
+@import "apex/forms.css";
 /* components/  reusable .app-* components — one file per component, paired with js/components */
 /* pages/       page-local rules scoped by html.page-<N> */

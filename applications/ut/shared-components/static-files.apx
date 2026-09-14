@@ -198,39 +198,6 @@ file "theme_styles/iris.png" (
     charSet: utf-8
 )
 
-file "theme_styles/redwood-light.png" (
-    mimeType: image/png
-    charSet: utf-8
-)
-
-file "theme_styles/vita---dark.png" (
-    mimeType: image/png
-    charSet: utf-8
-)
-
-file "theme_styles/vita---red.png" (
-    mimeType: image/png
-    charSet: utf-8
-)
-
-file "theme_styles/vita---slate.png" (
-    mimeType: image/png
-    charSet: utf-8
-)
-
-file "theme_styles/vita.png" (
-    mimeType: image/png
-    charSet: utf-8
-)
-
-
-
-
-
-
-
-
-
 file "css/app.css" (
     mimeType: text/css
     charSet: utf-8
@@ -308,5 +275,75 @@ file "css/themes/linen/theme.css" (
 
 file "css/themes/linen/tokens.css" (
     mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/pages/themes.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/linen/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/linen/cover.jpg" (
+    mimeType: image/jpeg
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/cover.jpg" (
+    mimeType: image/jpeg
     charSet: utf-8
 )

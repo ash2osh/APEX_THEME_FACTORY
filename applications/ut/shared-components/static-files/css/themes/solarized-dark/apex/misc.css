@@ -1,0 +1,159 @@
+/* Alerts, badges, tabs — Solarized semantic mapping on dark surfaces.
+   Media list, content rows, timeline, comments and links list need nothing here: Core paints them from the
+   --ut-component-* / --ut-*-item-background-color tokens set in tokens.css. Scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: none;            /* generic component shadow (menus, popups, cards) */
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+
+    /* badges: solid accent fills with dark text (≥ 4.7:1); red keeps white (4.6:1). Subtle variants sit on
+       the translucent palette shades, so their text is the light body colour rather than the accent. */
+    --ut-badge-background-color: var(--sol-cyan);
+    --ut-badge-text-color: var(--app-text-on-accent);
+    --ut-badge-success-background-color: var(--sol-green);
+    --ut-badge-success-text-color: var(--app-text-on-accent);
+    --ut-badge-warning-background-color: var(--sol-yellow);
+    --ut-badge-warning-text-color: var(--app-text-on-accent);
+    --ut-badge-danger-background-color: var(--sol-red);
+    --ut-badge-danger-text-color: #ffffff;
+    --ut-badge-info-background-color: var(--sol-cyan);
+    --ut-badge-info-text-color: var(--app-text-on-accent);
+    --ut-badge-subtle-background-color: var(--app-surface-hover);
+    --ut-badge-subtle-text-color: var(--app-text-primary);
+    --ut-badge-subtle-success-text-color: var(--app-text-primary);
+    --ut-badge-subtle-warning-text-color: var(--app-text-primary);
+    --ut-badge-subtle-danger-text-color: var(--app-text-primary);
+    --ut-badge-subtle-info-text-color: var(--app-text-primary);
+
+    /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
+    --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-item-text-color: var(--app-text-secondary);
+    --ut-tabs-item-active-text-color: var(--app-text-emphasized);
+    --ut-tabs-item-active-highlight-color: var(--sol-cyan);
+    --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+}
+
+/* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */
+.app-theme-solarized-dark .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
+    border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--sol-cyan));
+}
+
+/* Code samples (Prism.js, loaded app-wide by application.apx): Prism's light token colours are 2.4–2.5:1 on
+   the card. Solarized is a code palette — put code on the canvas surface, where the raw accents pass 4.5:1,
+   and tint the three that do not (magenta, orange, violet). Scoped to .app-theme-solarized-dark. */
+.app-theme-solarized-dark pre[class*="language-"],
+.app-theme-solarized-dark code[class*="language-"] {
+    color: var(--sol-base1);
+    text-shadow: none;
+}
+.app-theme-solarized-dark pre[class*="language-"] {
+    background-color: var(--app-surface-page);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--app-radius-sm);
+}
+.app-theme-solarized-dark :not(pre) > code[class*="language-"] {
+    background-color: var(--app-surface-page);
+}
+.app-theme-solarized-dark .token.comment,
+.app-theme-solarized-dark .token.prolog,
+.app-theme-solarized-dark .token.doctype,
+.app-theme-solarized-dark .token.cdata { color: var(--sol-base0); font-style: italic; }   /* 4.75:1 */
+.app-theme-solarized-dark .token.punctuation,
+.app-theme-solarized-dark .token.operator { color: var(--sol-base1); }
+.app-theme-solarized-dark .token.keyword,
+.app-theme-solarized-dark .token.atrule,
+.app-theme-solarized-dark .token.important { color: var(--sol-green); }                    /* 4.69:1 */
+.app-theme-solarized-dark .token.string,
+.app-theme-solarized-dark .token.char,
+.app-theme-solarized-dark .token.attr-value,
+.app-theme-solarized-dark .token.inserted { color: var(--sol-cyan); }                      /* 4.75:1 */
+.app-theme-solarized-dark .token.function,
+.app-theme-solarized-dark .token.class-name,
+.app-theme-solarized-dark .token.builtin { color: var(--sol-blue-text); }                  /* 5.2:1 */
+.app-theme-solarized-dark .token.property,
+.app-theme-solarized-dark .token.tag,
+.app-theme-solarized-dark .token.selector,
+.app-theme-solarized-dark .token.attr-name,
+.app-theme-solarized-dark .token.variable { color: var(--sol-yellow); }                    /* 4.68:1 */
+.app-theme-solarized-dark .token.number,
+.app-theme-solarized-dark .token.boolean,
+.app-theme-solarized-dark .token.constant,
+.app-theme-solarized-dark .token.symbol,
+.app-theme-solarized-dark .token.regex { color: var(--sol-magenta-text); }                 /* 4.5:1 */
+.app-theme-solarized-dark .token.entity,
+.app-theme-solarized-dark .token.url,
+.app-theme-solarized-dark .token.deleted { color: var(--sol-orange-text); }                /* 4.5:1 */
+
+/* Reference-app demo surfaces. Some pages of app 102 style their own demo markup with literal light values in
+   page inline CSS (p4000 Icons: input#P4000_SEARCH, .dm-Search-*, .dm-IconDialog-*; p6303/p6304 modifiers:
+   .dm-Report--doc, .class*; p6100/p6200/p6201: .event-name, .icon-preview, .instructions). Under a dark
+   package they turn white-on-white, so the package restates them here — Oracle's Vita Dark did the same
+   inside the pages. Scoped to .app-theme-solarized-dark; higher specificity than the page rules. */
+.app-theme-solarized-dark input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-result:hover,
+.app-theme-solarized-dark .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .dm-IconDialog-preview {
+    background-image: none;                       /* light checkerboard */
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-IconDialog-code,
+.app-theme-solarized-dark .instructions {
+    color: var(--app-text-secondary);
+}
+.app-theme-solarized-dark .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+.app-theme-solarized-dark .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-Report--doc th,
+.app-theme-solarized-dark .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+/* p6303/p6304 class-name tokens (.class, .class-value, .class-var, .class.tag) also appear outside the doc table */
+.app-theme-solarized-dark .apex-theme-iris .class {
+    color: var(--sol-magenta-text);               /* #9C27B0 is 2.1:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .class-value,
+.app-theme-solarized-dark .apex-theme-iris .class-var {
+    color: var(--sol-cyan-text);                  /* #008676 is 2.9:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is 1.4:1 on the card */
+}
+.app-theme-solarized-dark .event-name,
+.app-theme-solarized-dark code.event-name {
+    text-shadow: none;
+}
+.app-theme-solarized-dark .event-name:hover,
+.app-theme-solarized-dark code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}

@@ -1,0 +1,180 @@
+page 405 (
+    name: Themes
+    alias: THEMES
+    title: Themes
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @universal-theme-breadcrumb
+        }
+        layout {
+            sequence: 1
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region overview (
+        name: Overview
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <p>This application is styled by <strong>theme packages</strong>: source-controlled CSS layers on top of Universal Theme's <strong>Iris</strong> style. Every package keeps Iris as the theme style and only changes design tokens and component presentation, so the markup, behaviour and accessibility of Universal Theme stay intact.</p>
+                <p>Pick a package below or from the <strong>Theme</strong> menu in the navigation bar. The choice is stored in this browser only (<code>localStorage</code>) and applies to every page, including dialogs; <em>Iris</em> shows Universal Theme without any package.</p>
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+    )
+
+    region theme-packages (
+        name: Theme Packages
+        type: staticContent
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+    )
+
+    region theme-packages-cards (
+        name: Theme Packages Cards
+        type: cards
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                -- APEX Theme Factory: one card per theme package shipped as static files (scripts/sync-static.sh
+                -- copies sample-themes/<name>/theme.json and preview/cover.jpg to css/themes/<name>/). The
+                -- active package is marked client-side (js/app.js adds is-current to app-theme-card--<name>).
+                with packages as (
+                    select regexp_substr( f.file_name, '^css/themes/([a-z0-9-]+)/theme\.json$', 1, 1, null, 1 ) name,
+                           f.file_content
+                      from apex_application_static_files f
+                     where f.application_id = :APP_ID
+                       and regexp_like( f.file_name, '^css/themes/[a-z0-9-]+/theme\.json$' )
+                )
+                select p.name,
+                       coalesce( json_value( p.file_content format json, '$.title' ), initcap( replace( p.name, '-', ' ' ) ) ) title,
+                       json_value( p.file_content format json, '$.tagline' ) tagline,
+                       json_value( p.file_content format json, '$.direction' ) direction,
+                       'Current' badge,
+                       'app-theme-card--' || p.name card_class,
+                       '#APP_FILES#css/themes/' || p.name || '/cover.jpg' image,
+                       'javascript:App.theme.use(''' || p.name || ''');' javascript,
+                       1 grp
+                  from packages p
+                union all
+                select 'none' name,
+                       'Iris' title,
+                       'Universal Theme''s own style, no package applied.' tagline,
+                       'The 26.1 baseline every package is layered on: Oracle Sans, dark header and side navigation, 2 / 4 / 8 px radii.' direction,
+                       'Current' badge,
+                       'app-theme-card--none' card_class,
+                       '#APP_FILES#theme_styles/iris.png' image,
+                       'javascript:App.theme.use(''none'');' javascript,
+                       2 grp
+                  from dual
+                order by grp, title
+                ```
+        }
+        layout {
+            sequence: 10
+            parentRegion: @theme-packages
+            slot: subRegions
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: #DEFAULT#
+        }
+        componentAppearance {
+            gridColumns: 3
+        }
+        advanced {
+            htmlDomId: theme_packages_cards
+        }
+        card {
+            cssClasses: [
+                app-theme-card
+                &CARD_CLASS.
+            ]
+            primaryKeyColumn1: NAME
+        }
+        title {
+            column: TITLE
+        }
+        subtitle {
+            column: TAGLINE
+        }
+        body {
+            column: DIRECTION
+        }
+        iconAndBadge {
+            badgeColumn: BADGE
+        }
+        media {
+            source: urlColumn
+            urlColumn: IMAGE
+            appearance: widescreen
+            sizing: cover
+            imageDescription: &TITLE.
+        }
+
+        action preview (
+            label: Preview
+            layout {
+                sequence: 10
+            }
+            behavior {
+                type: redirectUrl
+                targetUrl: &JAVASCRIPT.
+            }
+            appearance {
+                hot: true
+            }
+        )
+
+    )
+
+)

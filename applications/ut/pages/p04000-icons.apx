@@ -55,8 +55,6 @@ page 4000 (
               .dm-Icon--page + .t-Button {
                 display: block;
                 margin: 0 auto; }
-              .apex-theme-vita-dark .dm-Icon--page {
-                filter: invert(0.75); }
               .u-RTL .dm-Icon--page {
                 transform: scaleX(-1); }
             
@@ -115,9 +113,6 @@ page 4000 (
               background-size: 1rem;
               background-position: 50%;
               border: 1px solid #F8F8F8; }
-              .apex-theme-vita-dark .dm-IconDialog-preview {
-                background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAwIj48L3JlY3Q+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMTExIj48L3JlY3Q+PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMxMTEiPjwvcmVjdD48L3N2Zz4=");
-                border-color: rgba(255, 255, 255, 0.1); }
               .dm-IconDialog-preview span {
                 margin: auto;
                 transition: 0.2s cubic-bezier(0.77, 0, 0.175, 1); }
@@ -173,9 +168,6 @@ page 4000 (
               color: var(--ut-component-text-muted-color);
               display: block; }
             
-            .apex-theme-vita-dark .dm-IconDialog-infoBody code {
-              background-color: rgba(0, 0, 0, 0.95); }
-            
             .dm-Search:empty:before {
               content: 'No Results';
               font-size: .875rem;
@@ -188,9 +180,6 @@ page 4000 (
               background: #FFF;
               box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
               border: 1px solid rgba(0, 0, 0, 0.075); }
-              .apex-theme-vita-dark input#P4000_SEARCH {
-                background-color: #000;
-                border-color: rgba(255, 255, 255, 0.075); }
             
             #P4000_SIZE.apex-item-group--rc {
               margin: 0; }
@@ -204,9 +193,6 @@ page 4000 (
               padding: 1rem;
               -webkit-margin-after: 1rem;
                       margin-block-end: 1rem; }
-              .apex-theme-vita-dark .dm-Search-category {
-                background-color: rgba(0, 0, 0, 0.5);
-                border-color: rgba(255, 255, 255, 0.075); }
             
             .dm-Search-title {
               text-transform: capitalize;
@@ -246,13 +232,9 @@ page 4000 (
                 outline: none;
                 box-shadow: 0 0 0 1px var(--ut-palette-primary, #0572CE) inset;
                 background-color: #FFF; }
-                .apex-theme-vita-dark .dm-Search-result:focus {
-                  background-color: rgba(0, 0, 0, 0.5); }
               .dm-Search-result:hover {
                 background-color: #FFF;
                 box-shadow: 0 0 0 1px var(--ut-palette-primary, #0572CE) inset, var(--ut-shadow-sm); }
-                .apex-theme-vita-dark .dm-Search-result:hover {
-                  background-color: rgba(0, 0, 0, 0.5); }
             
             .dm-Search-icon {
               float: left;

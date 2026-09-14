@@ -14,12 +14,12 @@ Smallest correct declarative change, then validate (spec §40).
 ## Where design properties live (find with grep before editing)
 | Need | APEXLang property (search key) |
 |---|---|
-| Hook for scoped CSS | `cssClasses:` on region/item/button; `staticId:` |
+| Hook for scoped CSS | `cssClasses:` on region/item/button; Static ID = `advanced { htmlDomId: … }` (`staticId` is the internal component id, not the DOM id) |
 | Structural variant | `templateOptions: [ … ]` (values from `shared-components/themes/universal-theme/template-option-groups.apx`) |
 | Template swap | `template: @/standard` etc. |
 | Layout | `layout { … }` — `columnSpan`, `newRow`, `startNewGrid` |
 | Page-level CSS/JS | `css { fileUrls / inline }`, `javaScript { fileUrls / executeWhenPageLoads / functionAndGlobalVariableDeclaration }` |
-| App-level CSS/JS | `application.apx` → `userInterface { css/javaScript }` |
+| App-level CSS/JS | `application.apx` → top-level `css { fileUrls }` / `javaScript { fileUrls }` blocks |
 | Behaviour | `dynamicAction … { when { event … } actions [ … ] }` |
 
 ## Procedure

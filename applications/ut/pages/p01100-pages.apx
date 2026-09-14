@@ -29,8 +29,6 @@ page 1100 (
               .dm-Icon--page + .t-Button {
                 display: block;
                 margin: 0 auto; }
-              .apex-theme-vita-dark .dm-Icon--page {
-                filter: invert(0.75); }
               .u-RTL .dm-Icon--page {
                 transform: scaleX(-1); }
             

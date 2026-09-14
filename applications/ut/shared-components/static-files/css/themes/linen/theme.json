@@ -1,0 +1,11 @@
+{
+  "name": "linen",
+  "title": "Linen",
+  "tagline": "Light linen canvas, hairline seams, one teal thread.",
+  "direction": "quiet product — white chrome, hairline borders, flat 8px surfaces, teal for actions and selection only",
+  "base": "APEX 26.1.4 / Universal Theme 42 / Iris",
+  "class": "app-theme-linen",
+  "templateOptions": {
+    "navigationMenu": { "style": "t-TreeNav--styleB" }
+  }
+}

@@ -1,15 +1,6 @@
 page 0 (
     name: Page Zero
 
-    region items (
-        name: Items
-        type: staticContent
-        layout {
-            sequence: 10
-            slot: topNavigation
-        }
-    )
-
     region theme (
         name: Theme
         type: staticContent
@@ -22,7 +13,8 @@ page 0 (
                    Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
                    pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
                    Query parameters are not usable here (session-state protection rejects unknown ones).
-                   DEFAULT is maintained by scripts/apply-theme.sh. */
+                   The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
+                   scripts/apply-theme.sh. */
                 (function () {
                     var DEFAULT = 'linen';
                     var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
@@ -34,6 +26,7 @@ page 0 (
                     } catch (e) {}
                     if (!t || !ok.test(t)) { t = DEFAULT; }
                     document.documentElement.classList.add('app-theme-' + t);
+                    document.documentElement.setAttribute('data-app-theme-default', DEFAULT); /* read by App.theme */
                 })();
                 </script>
                 ```
@@ -63,7 +56,8 @@ page 0 (
                    Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
                    pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
                    Query parameters are not usable here (session-state protection rejects unknown ones).
-                   DEFAULT is maintained by scripts/apply-theme.sh. */
+                   The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
+                   scripts/apply-theme.sh. */
                 (function () {
                     var DEFAULT = 'linen';
                     var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
@@ -75,6 +69,7 @@ page 0 (
                     } catch (e) {}
                     if (!t || !ok.test(t)) { t = DEFAULT; }
                     document.documentElement.classList.add('app-theme-' + t);
+                    document.documentElement.setAttribute('data-app-theme-default', DEFAULT); /* read by App.theme */
                 })();
                 </script>
                 ```
@@ -160,18 +155,6 @@ page 0 (
                 700
                 701
             ]
-        }
-    )
-
-    pageItem P0_THEME_STYLE_ID (
-        type: hidden
-        settings {
-            valueProtected: false
-        }
-        layout {
-            sequence: 10
-            region: @items
-            slot: regionBody
         }
     )
 

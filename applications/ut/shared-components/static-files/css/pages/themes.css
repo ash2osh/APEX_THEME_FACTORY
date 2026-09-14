@@ -1,0 +1,10 @@
+/* Page 405 "Themes" — theme-package gallery (applications/ut/pages/p00405-themes.apx).
+   Each card carries app-theme-card--<name> (Card > CSS Classes); js/app.js adds is-current to the card of the
+   theme this browser has chosen. The "Current" badge is emitted for every card and only shown there, so the
+   page needs no server round-trip to know the (browser-local) choice. */
+html.page-405 .app-theme-card:not(.is-current) .a-CardView-badge {
+    display: none;
+}
+html.page-405 .app-theme-card.is-current {
+    --a-cv-border-color: var(--app-color-primary);   /* Cards atom (Core: declared on :root, consumed by .a-CardView) */
+}

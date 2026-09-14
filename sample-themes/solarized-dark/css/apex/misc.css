@@ -67,6 +67,12 @@
                                                                       light text on white was 1.08:1 */
     --jui-tooltip-border-color: var(--app-border-color);
     --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);         /* .oj-dvt-datatip's base `color:` (outside
+                                                                       the --oj-core-text-color-* classified
+                                                                       spans the --ojet-tooltip-* atoms cover)
+                                                                       was still Theme-Standard's literal
+                                                                       #000 — black-on-#00212b now that the
+                                                                       background above is dark */
 }
 
 /* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */

@@ -45,14 +45,22 @@ the worktree path changed.
  sample-themes/solarized-dark/css/tokens.css       | +~14 atoms (Tree, Switch, Menu Bar, File Drop)
 ```
 
-## Verdict: PASS
+## Verdict: AMBIGUOUS — corrected 2026-09-14 from an earlier, wrong PASS
 
-Evidence: with a neutral prompt and the correct isolation commit, the baseline evaluee independently found and
-fixed six distinct literal-token gaps beyond the two checked pages, using the same grep-the-reference-CSS
+**Correction** (Codex PR review, PR #4, P2): this scenario's `Expected` line explicitly requires "the contrast
+audit (docs/CHROME_DEVTOOLS_MCP.md) reports 0 package failures on the standard page list **before** the
+README's Verified section is written" — a live Chrome pass, not a source-level substitute. The evaluee's own
+summary calls its result "a static review pending a live runtime/contrast pass"; grading that PASS claimed
+more than was actually demonstrated.
+
+~~Evidence: with a neutral prompt and the correct isolation commit, the baseline evaluee independently found
+and fixed six distinct literal-token gaps beyond the two checked pages, using the same grep-the-reference-CSS
 technique the (nearly identical at this commit) skill text already described — matching Expected without being
-told what to look for. No Failure condition (unmeasured ratio claims, left-over white surfaces) triggered.
+told what to look for. No Failure condition (unmeasured ratio claims, left-over white surfaces) triggered.~~
 
-**Consequence for the finding**: pending the current-worktree re-run with the same neutral prompt
-(`11-dark-package-coverage-current-neutral.md`), this weakens the promotion case for
-`2026-09-14-ut-literal-root-tokens` on scenario 11 the same way scenarios 12/14 already did — see the finding's
-Status line for the final call once both corrected runs are in.
+The source-level literal-token audit is real, thorough, well-evidenced work — that part of the evaluee's
+behavior is exactly what Expected asks for and clearly avoids the Failure conditions (no unmeasured ratio
+claims, no white surfaces left standing on the pages it could check). But the scenario's Expected line has a
+second requirement — the live contrast audit — that this run could not attempt at all. Corrected to ambiguous.
+This is not the same as a FAIL: nothing in the run contradicts Expected, the scenario simply couldn't be
+completed under this session's no-Chrome constraint.

@@ -45,20 +45,26 @@ only the worktree path changed (`/tmp/eval/current2`, commit `b0aa923`).
  sample-themes/solarized-dark/css/tokens.css                             | +~35 atoms across 8 new component families
 ```
 
-## Verdict: PASS — and matches (exceeds) the baseline run's thoroughness
+## Verdict: AMBIGUOUS — corrected 2026-09-14 from an earlier, wrong PASS
 
-Evidence: with a neutral prompt, the evaluee independently reconstructed the full literal/derived-token gap
+**Correction** (Codex PR review, PR #4, P2 — same point as the baseline run's correction): the scenario's
+`Expected` line requires a live Chrome contrast audit reporting 0 failures before the README's Verified
+section is written. This run, like its baseline counterpart, is a source-level substitute only — real,
+thorough, well-evidenced work, but it does not exercise (and cannot satisfy) that half of Expected.
+
+~~Evidence: with a neutral prompt, the evaluee independently reconstructed the full literal/derived-token gap
 list via source analysis, found and fixed a materially larger set of gaps than even the corrected baseline run
 (`11-dark-package-coverage-baseline-eda510d.md`) — including one bug (`--a-field-input-hover-background-color`)
 both runs found independently. It also caught and corrected an overclaimed "verified" status rather than
-leaving it. No Failure condition triggered.
+leaving it. No Failure condition triggered.~~
 
-**Consequence for the finding**: `2026-09-14-ut-literal-root-tokens` cannot be promoted on scenario 11 — both
-a properly isolated baseline (`eda510d`, old skill text) and current independently produced excellent, thorough
-audits using nearly-identical skill text (`apex-css-design-system`'s literal-token guidance is byte-identical
-between the two commits; only `apex-ut-dom-knowledge` gained a short pointer). The skill change was not shown
-load-bearing. Demoted back to `findings/pending/`; see the finding's Status line. The gaps both evaluees found
-are real (verified by direct reference-CSS grep against `app_ui-Core.min.css`/`Theme-Standard.min.css`), but
-they exist in the shipped package regardless of skill-text era — recorded as a separate pending finding rather
-than silently bulk-applied to `main` from an unverified throwaway-worktree run (no Chrome available to confirm
-computed styles/contrast).
+**Consequence for the finding**: `2026-09-14-ut-literal-root-tokens` still cannot be promoted on scenario 11 —
+not because "both sides passed and it wasn't load-bearing" (the original, now-corrected reasoning), but because
+**neither side could be validly graded to completion** under this session's no-Chrome constraint. Promotion
+requires a confirmed baseline FAIL, which this scenario has never produced (in either the original invalid-
+isolation runs or these corrected-isolation ones). The finding stays pending, genuinely unresolved rather than
+demonstrated-not-load-bearing; see its Status line. Separately, both evaluees independently found real,
+verifiable literal-token gaps in the shipped package (confirmed by direct reference-CSS grep, independent of
+any Chrome-dependent question) — recorded as a distinct pending finding
+(`2026-09-14-solarized-dark-2page-coverage-gap.md`, branch `fix-solarized-dark-contrast-followups`) and largely
+fixed there, since that part of the work stands on its own regardless of how this evaluation scenario resolves.

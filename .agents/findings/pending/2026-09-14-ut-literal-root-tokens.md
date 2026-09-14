@@ -1,20 +1,22 @@
 # Finding
 
 Status:
-Pending — demoted 2026-09-14 from a premature Accepted. Two problems with the original evaluation run, both
-raised by PR #4's Codex review (P2) and independently verified: (1) the baseline (`9276369`) predated the
-Solarized Dark package (`eda510d`), so there was nothing to review — not a real FAIL/AMBIGUOUS test of the
-skill text; (2) the current-worktree prompt named the exact things to check ("literal `:root` color tokens",
-"pages in the 4000/6300 range"), supplying the answer instead of testing whether the evaluee finds it. Re-run
-with the correct isolation point (`eda510d`) and a neutral prompt on both sides: **PASS at baseline**
-(evaluations/runs/2026-09-14/11-dark-package-coverage-baseline-eda510d.md) **and PASS at current**
-(evaluations/runs/2026-09-14/11-dark-package-coverage-current-neutral.md) — verified beforehand that
-`apex-css-design-system`'s literal-token guidance is byte-identical between the two commits, so this scenario
-was never going to isolate a meaningful skill-text delta. The knowledge itself (pitfalls.md §1.1–1.4) is still
-accurate and worth keeping; it just hasn't been shown load-bearing by this scenario. Both corrected runs
-surfaced real, additional coverage gaps in the shipped Solarized Dark package (beyond what this finding
-already covers) — not present in this branch/PR; recorded separately on branch
-`fix-solarized-dark-contrast-followups` (PR #5) as
+Pending — demoted 2026-09-14 from a premature Accepted, then the demotion reasoning itself corrected the same
+day after a second PR #4 review round. Three problems with the original evaluation run, all raised by PR #4's
+Codex review (P2) and independently verified: (1) the baseline (`9276369`) predated the Solarized Dark package
+(`eda510d`), so there was nothing to review — not a real FAIL/AMBIGUOUS test of the skill text; (2) the
+current-worktree prompt named the exact things to check ("literal `:root` color tokens", "pages in the
+4000/6300 range"), supplying the answer instead of testing whether the evaluee finds it; (3) — caught in a
+*later* review round, after (1) and (2) were already fixed — the scenario's `Expected` line requires a live
+Chrome contrast audit reporting 0 failures before "Verified" is written, and no evaluee in this matrix has
+Chrome access, so the corrected re-runs (isolation + neutral prompt fixed) still could not satisfy the whole
+scenario. Both corrected runs are **AMBIGUOUS**, not PASS — see
+evaluations/runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md. This is **not**
+"baseline also passed, so not load-bearing" (the previous, now-corrected framing on this line) — it's that
+*neither* side could be validly completed, so no promotion-grade evidence exists either way. The knowledge
+itself (pitfalls.md §1.1–1.4) is still accurate and worth keeping. Both corrected runs surfaced real,
+additional coverage gaps in the shipped Solarized Dark package (beyond what this finding already covers) — not
+present in this branch/PR; recorded separately on branch `fix-solarized-dark-contrast-followups` (PR #5) as
 `.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` on that branch, rather than
 bulk-applied here or mixed into this evaluation-methodology branch.
 Original (invalid) runs kept for the record: evaluations/runs/2026-09-14/11-dark-package-coverage-baseline.md,

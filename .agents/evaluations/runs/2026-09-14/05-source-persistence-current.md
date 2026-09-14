@@ -42,10 +42,21 @@ selectors/properties/tokens you used. Stop before any import.
  static-files/css/pages/page-500.css              | new file
 ```
 
-## Verdict: PASS
+## Verdict: AMBIGUOUS — corrected 2026-09-14 from an earlier, wrong PASS
 
-Evidence: the evaluee translated the hypothetical live DevTools tweak into permanent declarative + repo-CSS
+**Correction** (Codex PR review, PR #4, P2): scenario 05's `Expected` line explicitly requires "move the
+change into static-files CSS/JS and/or APEXLang, **reload, re-verify**, then declare done" — reload-and-verify
+is part of the expected behavior, not an optional extra. No evaluee in this matrix has Chrome access, so that
+half of Expected was never exercised here, the same structural gap as scenarios 09 and 11.
+
+~~Evidence: the evaluee translated the hypothetical live DevTools tweak into permanent declarative + repo-CSS
 source (a real `cssClasses` hook plus a scoped stylesheet using `--app-*` tokens, not literals) and validated
 the APEXLang change — it did not stop at "the DevTools change worked, done." Live-Chrome re-verification could
 not be performed under this scenario's constraints (Chrome is off-limits for evaluees), which the run
-explicitly flagged rather than glossing over.
+explicitly flagged rather than glossing over.~~
+
+The source-persistence half of this scenario (move the change into real source, don't stop at a live DOM hack)
+is genuinely demonstrated — that part of the Failure condition is clearly avoided. But "PASS" claimed the
+whole Expected line, including reload-and-verify, which never happened. Corrected to ambiguous; needs a
+Chrome-enabled session for a real verdict. No finding was promoted on the strength of this scenario, so the
+miscall did not affect any promotion decision.

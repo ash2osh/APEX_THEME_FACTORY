@@ -29,6 +29,13 @@
     --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
 
     /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);            /* Iris: var(--ut-region-header-background-color)
+                                                                           at :root — resolves before this package's
+                                                                           body-level override of that token reaches it
+                                                                           (pitfalls.md §1.2); consumed by .a-IG-header,
+                                                                           Markdown Editor toolbar, Popup LOV search bar,
+                                                                           CKEditor panels — anything without its own
+                                                                           direct rule like .a-IRR-toolbar below */
     --a-toolbar-border-color: var(--app-border-color);
     --a-toolbar-sep-border-color: var(--app-border-color);
     --a-report-controls-input-border-radius: var(--app-radius-sm);
@@ -40,6 +47,61 @@
     --ut-report-header-text-color: var(--app-text-emphasized);
     --ut-report-cell-border-color: var(--app-border-color);
     --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Iris/app_ui-Core set --a-report-controls-cell-label-hover-background-color directly on each type-specific
+   .a-IG-controls-item--X / .a-IRR-controls-item--X modifier (pale literals), which outranks the body-level
+   --a-report-controls-cell-label-* mapping above; the label text (--app-text-primary, light-on-dark) then sits
+   on that pale hover background. Re-flatten every type group to one dark hover surface. */
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
 }
 
 /* Region-level radius: .a-IRR sets --a-gv-border-radius on the element, so scope there */

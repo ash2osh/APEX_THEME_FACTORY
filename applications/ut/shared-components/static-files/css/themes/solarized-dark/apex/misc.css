@@ -108,6 +108,9 @@
 .app-theme-solarized-dark .dm-Search-result:focus {
     background-color: var(--app-surface-hover);
 }
+.app-theme-solarized-dark .dm-Search:empty:before {
+    color: var(--app-text-secondary);              /* page inline CSS hard-codes rgba(0,0,0,.5) */
+}
 .app-theme-solarized-dark .dm-IconDialog-preview {
     background-image: none;                       /* light checkerboard */
     background-color: var(--app-surface-page);

@@ -7,6 +7,7 @@
     --a-field-input-padding-y: .4375rem;                /* stacked/inline items → ~36px */
     --a-field-input-padding-x: .625rem;
     --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-hover-background-color: var(--app-surface-input);   /* Iris literal #fff otherwise */
     --a-field-input-text-color: var(--app-text-emphasized);
     --a-field-input-border-color: var(--app-border-strong);        /* 3.3:1 on cards (WCAG 1.4.11) */
     --a-field-input-hover-border-color: var(--app-border-strong);

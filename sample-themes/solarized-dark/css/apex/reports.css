@@ -50,7 +50,7 @@
 }
 
 /* Iris/app_ui-Core set --a-report-controls-cell-label-hover-background-color directly on each type-specific
-   .a-IG-controls-item--*/.a-IRR-controls-item--* modifier (pale literals), which outranks the body-level
+   .a-IG-controls-item--X / .a-IRR-controls-item--X modifier (pale literals), which outranks the body-level
    --a-report-controls-cell-label-* mapping above; the label text (--app-text-primary, light-on-dark) then sits
    on that pale hover background. Re-flatten every type group to one dark hover surface. */
 .app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--savedReport,

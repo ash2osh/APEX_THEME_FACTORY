@@ -77,6 +77,54 @@ All page-scoped tools require `pageId` (from `list_pages`) because `--pageIdRout
         document.head.append(s); return 'ok'; }
 ```
 
+### Contrast audit (run before calling any theme or restyle "verified")
+
+Every visible text node vs its effective background — translucent ancestors are composited with source-over
+maths (alpha preserved until an opaque layer, then the page background) — against the AA thresholds (4.5:1, or
+3:1 for ≥ 24 px / bold ≥ 18.66 px). Sanity check: 50 % red over 50 % blue over white must give `rgb(191,64,128)`. Returns the failures with selector, colours, ratio.
+Pass it as the `function` of `evaluate_script` after the page has settled (Cards/IG render asynchronously —
+wait ~1.5 s or hook their events first). Expect Universal Theme's own `u-color-*` demo fills (p1304) to fail
+under every style; anything else is yours.
+
+```js
+async () => {
+  await new Promise(r => setTimeout(r, 1500));
+  const parse = c => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r,g,b,a] = m.map(Number); return { r, g, b, a: a === undefined ? 1 : a }; };
+  const lum = ({r,g,b}) => { const f = v => { v /= 255; return v <= 0.03928 ? v/12.92 : ((v+0.055)/1.055)**2.4; }; return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b); };
+  // source-over: `top` composited over `under`, alpha preserved until an opaque layer is reached
+  const over = (t, u) => { const a = t.a + u.a*(1-t.a); return a ? { r: (t.r*t.a + u.r*u.a*(1-t.a))/a, g: (t.g*t.a + u.g*u.a*(1-t.a))/a, b: (t.b*t.a + u.b*u.a*(1-t.a))/a, a } : { r: 0, g: 0, b: 0, a: 0 }; };
+  const WHITE = { r: 255, g: 255, b: 255, a: 1 };
+  const bgOf = el => { let e = el, acc = { r: 0, g: 0, b: 0, a: 0 }; while (e && e !== document.documentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0) { acc = over(acc, c); if (acc.a >= 0.999) return acc; } e = e.parentElement; } const body = parse(getComputedStyle(document.body).backgroundColor) || WHITE; return over(acc, over(body, WHITE)); };
+  const cr = (a, b) => { const la = lum(a), lb = lum(b); return (Math.max(la,lb)+0.05)/(Math.min(la,lb)+0.05); };
+  const bad = [], seen = new Set(), w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
+  while ((n = w.nextNode())) {
+    const t = n.textContent.trim(); if (t.length < 2) continue;
+    const el = n.parentElement; if (!el || el.closest('#apexDevToolbar, script, style, [aria-hidden="true"], .u-VisuallyHidden')) continue;
+    const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
+    const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
+    const fg = parse(cs.color); if (!fg) continue; const bg = bgOf(el); const ratio = cr(fg.a < 1 ? over(fg, bg) : fg, bg);
+    const size = parseFloat(cs.fontSize), weight = parseInt(cs.fontWeight) || 400, need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
+    if (ratio < need) { const k = el.className + '|' + cs.color + '|' + t.slice(0, 20); if (seen.has(k)) continue; seen.add(k);
+      bad.push({ text: t.slice(0, 40), sel: el.tagName.toLowerCase() + '.' + String(el.className).trim().split(/\s+/).slice(0, 3).join('.'), fg: cs.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`, ratio: +ratio.toFixed(2), size }); }
+  }
+  return { page: apex.env.APP_PAGE_ID, html: document.documentElement.className, failures: bad.length, sample: bad.slice(0, 25) };
+}
+```
+
+Offline, the same maths for a palette (pick tints that pass): `.agents/knowledge/pitfalls.md` §1.7.
+
+### Working in the user's browser (etiquette)
+
+- Open **your own tab** (`new_page {url, background:true}`) and close it when done; the user's tabs — and other
+  agents' — keep their state.
+- `emulate {pageId, viewport:"1440x900x1"}` (or `375x812x2,mobile,touch`) is per tab. `resize_page` resizes the
+  shared Chrome window — avoid it.
+- `localStorage` is shared by every tab of the origin: never navigate to `…#theme=<name>` for a capture (it
+  rewrites the user's stored theme); swap `html.app-theme-*` in the DOM instead.
+- Navigating to the current URL plus a hash is a same-document navigation — nothing reloads.
+- For captures: hide `#apexDevToolbar` with a temporary `<style>`, blur the focused element, open the side nav
+  with `t_Button_navControl`.
+
 ## Rules for this project (spec §13–14, §47, §49)
 
 - DevTools is for **inspect, prototype, verify** — never the place where a change lives.
@@ -91,3 +139,6 @@ All page-scoped tools require `pageId` (from `list_pages`) because `--pageIdRout
 | Connects to an empty browser | `--autoConnect` missing → it launched its own profile. Fix the client config. |
 | `Required at pageId` | Pass `pageId` from `list_pages` on every page-scoped call. |
 | Wrong Chrome channel | Add `--channel=beta|dev|canary` to match the running Chrome. |
+| `element.click()` on a menu item does nothing | The APEX menu widget listens to mouse events; use `click {pageId, uid}` from a `take_snapshot`. |
+| A colour has no matching rule with `style.color` | The rule sets a **custom property** (`--a-…`) or lives in an `@import`ed sheet — check `style.getPropertyValue('--…')` and walk `rule.styleSheet.cssRules`. |
+| Cards render empty / hooks miss them | Cards regions load after DOM-ready; wait, or hook `tablemodelviewpagechange` on `document`. |

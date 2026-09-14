@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — skill `apexlang-design-editor` corrected)
+Pending — knowledge/skill change applied (2026-09-14 — skill `apexlang-design-editor` corrected); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
 
 Category:
 APEXLANG-KNOWLEDGE

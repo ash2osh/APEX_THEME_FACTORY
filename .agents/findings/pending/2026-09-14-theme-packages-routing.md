@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — skills `apex-css-design-system`, `design-to-apex` updated; evaluation 10 added)
+Pending — knowledge/skill change applied (2026-09-14 — skills `apex-css-design-system`, `design-to-apex` updated; evaluation 10 added); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
 
 Category:
 APPLICATION-CONVENTION

@@ -33,10 +33,13 @@ Prototype CSS by appending a `<style id="proto">` element; read the result; then
 ## Rules
 - DevTools changes are never the deliverable (spec §14). Note prototypes in the response so the source step is not skipped.
 - Treat any console error appearing after your change as a defect (spec §49).
-- Compare target vs implementation at the same viewport (`resize_page`), at 1440 / 1024 / 768 / 375 (spec §45, §73).
+- Compare target vs implementation at the same viewport (`emulate viewport`, per tab — not `resize_page`, which resizes the user's window), at 1440 / 1024 / 768 / 375 (spec §45, §73).
+- Own tab (`new_page … background:true`), never `#theme=` in the URL (shared localStorage), close the tab at the end — `docs/CHROME_DEVTOOLS_MCP.md`, *etiquette*.
+- Before declaring a restyle done: run the **contrast audit** snippet from `docs/CHROME_DEVTOOLS_MCP.md` on the standard page list (`.agents/knowledge/pitfalls.md` §4.3).
 - Screenshots go to the scratchpad; do not commit them.
 
 ## Common mistakes
 - Passing a selector without `pageId` → `Required at pageId`.
 - Reading `--a-*` on `:root` — most are component-scoped; read on the element.
 - Inspecting the Builder tab (`/ords/r/apex/…`) instead of the app tab.
+- Synthetic `element.click()` on APEX menu items (use `click uid`); rule finders that ignore custom-property-only rules and `@import`ed sheets (`pitfalls.md` §1.9).

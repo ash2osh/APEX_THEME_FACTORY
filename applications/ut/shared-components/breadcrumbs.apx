@@ -1462,8 +1462,8 @@ breadcrumb universal-theme-breadcrumb (
         }
     )
 
-    entry theme-styles (
-        name: Theme Styles
+    entry themes (
+        name: Themes
         pageNumber: 405
         execution {
             sequence: 10

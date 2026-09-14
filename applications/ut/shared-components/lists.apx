@@ -154,12 +154,12 @@ list navigation-bar (
             
             select 2 node_id,
                    null parent_node_id,
-                   'Theme Style' label, 
+                   'Theme' label, 
                    '#' target, 
                    'NO' is_current_list_entry,
                    'fa-paint-brush' image,
                    2 seq,
-                   null li_class
+                   'app-theme-switcher' li_class
               from dual
             
             union all
@@ -183,39 +183,34 @@ list navigation-bar (
             
             union all
             
+            -- APEX Theme Factory: one entry per theme package shipped as static files (scripts/sync-static.sh
+            -- copies sample-themes/<name>/theme.json to css/themes/<name>/theme.json). js/app.js turns these
+            -- entries into a radio group that marks the active theme; App.theme.use() stores the choice
+            -- per browser. The theme style itself stays Iris for every package.
             select null node_id,
                    2 parent_node_id,
-                   case 
-                     when ts.theme_roller_read_only = 'N' then ' (Sample) '
-                   end ||
-                   ts.name ||
-                   case 
-                     when :P0_THEME_STYLE_ID is not null and ts.theme_style_id = apex_session_state.get_number('P0_THEME_STYLE_ID') then ' (Current)' 
-                     when :P0_THEME_STYLE_ID is null and ts.is_current = 'Yes' then ' (Current)' 
-                     when name = 'Iris' then ' (Default)' 
-                   end 
-                   as label,
-                   'javascript:apex.jQuery(''.ut-TemplateOptions--preview input'').remove(); apex.page.submit( { request: ''APPLY_THEME_STYLE'', set: { ''P0_THEME_STYLE_ID'': ''' || ts.theme_style_id || ''' }, showWait: true } );' target, 
-                   case when ts.theme_style_id = apex_session_state.get_number('P0_THEME_STYLE_ID') then 'YES' else 'NO' end is_current_list_entry,
+                   coalesce( json_value( f.file_content format json, '$.title' ),
+                             initcap( replace( regexp_substr( f.file_name, '^css/themes/([a-z0-9-]+)/theme\.json$', 1, 1, null, 1 ), '-', ' ' ) ) ) label,
+                   'javascript:App.theme.use(''' || regexp_substr( f.file_name, '^css/themes/([a-z0-9-]+)/theme\.json$', 1, 1, null, 1 ) || ''');' target,
+                   'NO' is_current_list_entry,
                    null image,
-                   row_number() over (order by decode(ts.theme_roller_read_only, 'Y', 1, 2), ts.name) seq,
+                   row_number() over ( order by json_value( f.file_content format json, '$.title' ), f.file_name ) seq,
                    null li_class
-             from apex_application_theme_styles ts
-            where application_id = apex_session_state.get_number('APP_ID')
+             from apex_application_static_files f
+            where f.application_id = apex_session_state.get_number('APP_ID')
+              and regexp_like( f.file_name, '^css/themes/[a-z0-9-]+/theme\.json$' )
             
             union all
             
             select null node_id,
                    2 parent_node_id,
-                   '---' label, 
-                   'separator' target, 
+                   'Iris (no theme package)' label, 
+                   'javascript:App.theme.use(''none'');' target, 
                    'NO' is_current_list_entry,
                    null image,
-                   count(1) + 0.5 seq,
+                   999 seq,
                    null li_class
-             from apex_application_theme_styles
-            where application_id         = apex_session_state.get_number('APP_ID')
-              and theme_roller_read_only = 'Y'
+              from dual
             
               )
             
@@ -2516,8 +2511,8 @@ list ut-application-navigation (
         }
     )
 
-    entry theme-styles (
-        label: Theme Styles
+    entry themes (
+        label: Themes
         icon {
             imageIconCssClasses: fa-paint-brush
         }

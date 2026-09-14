@@ -9,6 +9,8 @@
 @import "foundation/utilities.css";
 /* components/  reusable .app-* components — one file per component, paired with js/components */
 /* pages/       page-local rules scoped by html.page-<N> */
+@import "pages/themes.css";
 /* @themes:start */
 @import "themes/linen/theme.css";
+@import "themes/solarized-dark/theme.css";
 /* @themes:end */

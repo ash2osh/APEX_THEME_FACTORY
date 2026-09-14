@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending
+Accepted (2026-09-14 — adopted in docs/DESIGN_SYSTEM.md §1 and both theme packages; evaluation 07/10 cover it)
 
 Category:
 APPLICATION-CONVENTION

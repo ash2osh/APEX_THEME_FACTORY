@@ -1,0 +1,43 @@
+/* Form items. Base --a-field-* atoms live on :root (Core/Iris) → override on body; floating-label containers
+   set their own padding on the element, so body-level overrides only touch what they should.
+   Input surface #003847 (VS Code input.background), 3.3:1 border, cyan focus. Scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-radius-sm);
+    --a-field-input-padding-y: .4375rem;                /* stacked/inline items → ~36px */
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-text-color: var(--app-text-emphasized);
+    --a-field-input-border-color: var(--app-border-strong);        /* 3.3:1 on cards (WCAG 1.4.11) */
+    --a-field-input-hover-border-color: var(--app-border-strong);
+    --a-field-input-focus-border-color: var(--sol-cyan);
+    --a-field-input-focus-background-color: var(--app-surface-input);
+    --a-field-placeholder-text-color: var(--app-text-secondary);   /* base1 on the input: 4.7:1 */
+    --a-field-placeholder-opacity: 1;
+}
+
+/* Stacked / inline labels: 13px, medium, secondary (4.9:1) */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Floating labels are 11px on the highlight surface (#004052): body colour at rest (9.2:1), light while active
+   (the cyan focus border already marks focus; cyan text would be 3.9:1 there) */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel .t-Form-label {
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel.is-active .t-Form-label {
+    color: var(--app-text-emphasized);
+}
+
+/* Focus halo (soft cyan) on the native item types */
+.app-theme-solarized-dark .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px rgba(42, 161, 152, .35);
+    border-color: var(--sol-cyan);
+    outline: none;
+}

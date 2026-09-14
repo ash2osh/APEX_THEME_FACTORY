@@ -1,7 +1,7 @@
 # Design System — APEX Theme Factory (Universal Theme / Iris)
 
 Governing rules: [AGENT_SPEC.md](AGENT_SPEC.md) §15–§25, §39, §43.
-Theme style is **Iris, light only** (see [PROJECT.md](PROJECT.md)). This document is the single
+Theme style is **Iris, light only** (see [PROJECT.md](PROJECT.md)); dark looks are theme packages layered on Iris. This document is the single
 place that records tokens, naming, and conventions. Update it when a token or convention is added.
 
 ## 1. Token strategy
@@ -20,7 +20,7 @@ Rules
   modifier/state on the element, so body-level overrides restyle everything while `--small`, `--hot`, `--header`,
   floating labels etc. keep precedence. Where an atom is set on the element (`.a-IRR{--a-gv-border-radius}`),
   override on that element. Prefer an atom override to a property override whenever the atom exists
-  (see `.agents/findings/pending/2026-09-13-theme-style-scope-token-overrides.md`).
+  (see `.agents/findings/accepted/2026-09-13-theme-style-scope-token-overrides.md`).
 - Before adding an `--app-*` literal, check the Iris table below and `static-files/css/foundation/tokens.css`.
 - New tokens only when reusable and design-system meaningful (spec §18).
 
@@ -101,42 +101,70 @@ tokens), `--u-*` (100, utilities), `--jui-*`, `--oj-*`. All are **reserved** (sp
 
 ## 3. Application tokens (`--app-*`)
 
-Defined in `static-files/css/foundation/tokens.css` with Iris-default values (the shared vocabulary every theme
-can use); a theme overrides values under `html.app-theme-<name>` in its own `tokens.css`:
+`static-files/css/foundation/tokens.css` declares **every** `--app-*` token with its Iris-default value — the
+shared vocabulary each theme package can rely on. A package changes values only under `html.app-theme-<name>`
+in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a short theme prefix
+(`--sol-*` in Solarized Dark); anything used as a *role* is `--app-*`.
 
-| App token | Aliases |
-|---|---|
-| `--app-color-primary` | `var(--ut-palette-primary)` |
-| `--app-color-success` / `-warning` / `-danger` / `-info` | `var(--ut-palette-success)` … |
-| `--app-surface-page` / `--app-surface-card` | `var(--ut-body-background-color)` / `var(--ut-component-background-color)` |
-| `--app-text-primary` / `--app-text-secondary` | `var(--ut-body-text-color)` / `var(--ut-component-text-muted-color)` |
-| `--app-border-color` | `var(--ut-component-border-color)` |
-| `--app-radius-sm` / `-md` / `-lg` | `var(--ut-border-radius-sm)` / `-md` / `-lg` |
-| `--app-shadow-sm` / `-md` / `-lg` | `var(--ut-shadow-sm)` / `-md` / `-lg` |
-| `--app-space-1 … 8` | `.25rem .5rem .75rem 1rem 1.5rem 2rem` (Iris has no spacing scale; literal) |
-| `--app-surface-chrome` / `--app-surface-subtle` / `--app-accent-shade` | `var(--ut-component-background-color)` / `var(--ut-palette-generic-shade)` / `var(--ut-palette-primary-shade)` |
-| `--app-border-hairline` / `--app-border-strong` | `var(--ut-component-border-width) solid var(--ut-component-border-color)` / `rgba(0,0,0,.2)` |
-| `--app-radius-sm` / `-md` / `-lg` | **`6px` / `8px` / `12px`** — literal since 2026-09-13 (Iris' 2/4/8 scale too tight for the quiet-product direction) |
-| `--app-shadow-dialog` | `0 16px 48px -12px rgba(22,21,19,.25)` — the only decorative shadow (dialogs, menus) |
-| `--app-shell-header-h` / `--app-shell-nav-w` | `var(--ut-header-height)` / `var(--ut-nav-width)` |
-| `--app-control-h` | `2.25rem` (36px inputs, buttons, toolbar controls) |
-| `--app-focus-ring` | `0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color)` |
-| `--app-font-weight-medium` / `-semibold` | `500` / `600` (Iris' `--a-base-font-weight-semibold` resolves to 500; Oracle Sans has a true 600) |
-| `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` (1.2 ratio on a 14px base) |
+### 3.1 Foundation (Iris defaults)
 
-### Quiet-product look — theme **Linen** (`sample-themes/linen/css`, scoped `html.app-theme-linen`, app default)
+| App token | Iris default | Role |
+|---|---|---|
+| `--app-color-primary` / `-success` / `-warning` / `-danger` / `-info` | `var(--ut-palette-primary)` … | semantic colours |
+| `--app-accent-shade` | `var(--ut-palette-primary-shade)` | tint for current / selected states |
+| `--app-surface-page` / `--app-surface-card` | `var(--ut-body-background-color)` / `var(--ut-component-background-color)` | canvas / regions, cards |
+| `--app-surface-chrome` | `var(--ut-header-background-color)` | header, side navigation |
+| `--app-surface-subtle` | `var(--ut-palette-generic-shade)` | title bar, dialog button pane |
+| `--app-surface-input` | `var(--ut-component-background-color)` | text fields, search boxes |
+| `--app-surface-hover` | `var(--ut-component-highlight-background-color)` | hovered rows, menu items |
+| `--app-surface-selected` | `var(--ut-palette-primary-shade)` | selected rows, nav pill, pager |
+| `--app-text-emphasized` / `-primary` / `-secondary` | `var(--ut-component-text-title-color)` / `var(--ut-body-text-color)` / `var(--ut-component-text-muted-color)` | titles / body / labels, subtitles |
+| `--app-text-on-accent` | `var(--ut-palette-primary-contrast)` | text on primary / hot fills |
+| `--app-border-color` / `--app-border-hairline` | `var(--ut-component-border-color)` / `var(--ut-component-border-width) solid …` | decorative hairlines |
+| `--app-border-strong` | `rgba(0,0,0,.2)` | boundaries that identify a control (≥ 3:1) |
+| `--app-radius-sm` / `-md` / `-lg` | `var(--ut-border-radius-sm)` / `-md` / `-lg` (2 / 4 / 8 px) | |
+| `--app-shadow-sm` / `-md` / `-lg` / `--app-shadow-dialog` | `var(--ut-shadow-sm)` / `-md` / `-lg` / `-lg` | |
+| `--app-shell-header-h` / `--app-shell-nav-w` | `var(--ut-header-height)` / `var(--ut-nav-width)` | 3.5rem / 15rem |
+| `--app-control-h` | `2rem` | Iris buttons and inputs ≈ 32px |
+| `--app-focus-ring` | `0 0 0 2px var(--ut-component-background-color), 0 0 0 4px var(--ut-focus-outline-color)` | |
+| `--app-font-weight-medium` / `-semibold` | `500` / `var(--a-base-font-weight-semibold, 500)` | Iris resolves semibold to 500 |
+| `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` | 1.2 ratio on a 14px base |
+| `--app-space-1 … 8` | `.25 .5 .75 1 1.5 2 rem` | Iris has no spacing scale; literal |
+
+### 3.2 Theme deltas
+
+| Token | **linen** (app default) | **solarized-dark** |
+|---|---|---|
+| `--app-surface-*` | chrome → white (`--ut-component-background-color`) | page `#002b36`, card `#073642`, chrome `#00212b`, subtle `#002c39`, input `#003847`, hover `#004052`, selected `#005a6f` |
+| `--app-text-*` | Iris | emphasized base3 `#fdf6e3`, primary base2 `#eee8d5`, secondary base1 `#93a1a1`, on-accent base03 |
+| `--app-color-*` | Iris | primary `#4b9fda` (blue tinted for 4.5:1), danger `#e87674` (red tinted), success/warning/info Solarized green/yellow/cyan |
+| `--app-border-color` / `-strong` | Iris / `rgba(0,0,0,.2)` | `rgba(147,161,161,.2)` / `rgba(131,148,150,.8)` |
+| `--app-radius-sm/md/lg` | 6 / 8 / 12 px | 4 / 6 / 8 px |
+| `--app-shadow-dialog` | `0 16px 48px -12px rgba(22,21,19,.25)` | `0 16px 48px -12px rgba(0,0,0,.75)` |
+| `--app-control-h` | 2.25rem (36px) | 2.25rem |
+| `--app-font-weight-semibold` | 600 (Oracle Sans has a true 600) | 600 |
+| `--app-focus-ring` | Iris | `0 0 0 2px #002b36, 0 0 0 4px rgba(42,161,152,.6)` |
+
+Both packages then remap the Universal Theme tokens on `body.apex-theme-iris` (§1). Solarized Dark additionally
+remaps every Iris token that is declared with a *literal* colour on `:root` (`--ut-region-*`, `--ut-body-nav-*`,
+`--ut-field-label-text-color`, `--a-checkbox-*`, `--a-gv-*`, …) because those do not follow the component
+tokens — the list is in `sample-themes/solarized-dark/css/tokens.css`.
+
+### 3.3 Package file map (both themes)
 
 | File | Owns |
 |---|---|
-| `shell.css` | header (white, no strip), side nav (white, Style B pill, teal-on-shade current), title bar, hero title |
-| `regions.css` | regions/cards 8px + hairline + no shadow, 14px/600 titles, content-block scale 24/20/17, breadcrumb title 24/600 |
-| `buttons.css` | 36px / 13px-500 / 6px; default white+hairline, hot teal; `:focus-visible` ring |
-| `forms.css` | 6px inputs, teal focus, 13px/500 muted stacked labels |
-| `reports.css` | IRR/IG/classic: subtle 40px header 13px/600, 40px rows, horizontal hairlines, tabular numerals |
-| `dialogs.css` | 12px radius, `--app-shadow-dialog`, hairline title bar, menus |
-| `misc.css` | alert/badge/component shadows off, badge radius |
+| `tokens.css` | `--app-*` deltas (html scope) and `--ut-*` / `--a-*` remaps (body scope) |
+| `apex/shell.css` | header, side nav (Style B pill), title bar, hero, footer |
+| `apex/regions.css` | regions, Cards region atoms, card list, wizard, metric card, content blocks, breadcrumb title |
+| `apex/buttons.css` | button geometry, default / hot / primary, button group, `:focus-visible` ring |
+| `apex/forms.css` | field atoms, labels, floating labels, focus halo |
+| `apex/reports.css` | IRR / IG / classic report atoms, pager, horizontal hairlines, tabular numerals |
+| `apex/dialogs.css` | jQuery UI dialog atoms, wizard dialog pages, popup menus |
+| `apex/misc.css` | shadows off, badges, tabs, alerts (+ Prism code samples in Solarized Dark) |
 
-Declarative: `application.apx` → `css.fileUrls: #APP_FILES#css/app.css`; navigation menu template option Style B.
+Declarative: `application.apx` → `css.fileUrls: #APP_FILES#css/app.css`; navigation menu template option Style B
+(applied per default theme by `scripts/apply-theme.sh` from `theme.json`).
 
 ## 4. Naming
 

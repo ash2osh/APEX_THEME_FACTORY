@@ -13,8 +13,10 @@ with the correct isolation point (`eda510d`) and a neutral prompt on both sides:
 was never going to isolate a meaningful skill-text delta. The knowledge itself (pitfalls.md §1.1–1.4) is still
 accurate and worth keeping; it just hasn't been shown load-bearing by this scenario. Both corrected runs
 surfaced real, additional coverage gaps in the shipped Solarized Dark package (beyond what this finding
-already covers) — recorded separately as
-`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` rather than bulk-applied here.
+already covers) — not present in this branch/PR; recorded separately on branch
+`fix-solarized-dark-contrast-followups` (PR #5) as
+`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` on that branch, rather than
+bulk-applied here or mixed into this evaluation-methodology branch.
 Original (invalid) runs kept for the record: evaluations/runs/2026-09-14/11-dark-package-coverage-baseline.md,
 evaluations/runs/2026-09-14/11-dark-package-coverage-current.md.
 

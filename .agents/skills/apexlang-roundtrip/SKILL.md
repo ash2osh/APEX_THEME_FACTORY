@@ -22,8 +22,8 @@ Underlying: `sql -S -name docker-demo` then
 ## Discipline
 1. Export before editing if the live app may have changed (Builder edits by the user). Diff.
 2. Edit the smallest span in the relevant `pages/pNNNNN-*.apx` / shared component file. Preserve formatting and IDs (spec §40). LF line endings.
-3. `apex validate` — must print `Validation successful.` The known warning `p00000-global-page.apx:95 Slot regionBody is deprecated` is pre-existing; any *new* warning is yours.
-4. Import only on explicit user request; validate and import run in the **same** SQLcl session (the script does this).
+3. `apex validate` — must print `Validation successful.` with **no** warnings (clean since 2026-09-14); any warning is yours.
+4. Import only on explicit user request; validate and import run in the **same** SQLcl session (the script does this). Import ships everything on disk and removes what is missing — check `git status` for another agent's untracked files first (`pitfalls.md` §3.7, §5.1).
 5. After import: reload in Chrome, check console, verify visually (`chrome-devtools-mcp`).
 
 ## Common mistakes

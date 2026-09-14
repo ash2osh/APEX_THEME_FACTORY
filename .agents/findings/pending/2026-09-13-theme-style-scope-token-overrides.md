@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — adopted in docs/DESIGN_SYSTEM.md §1 and both theme packages; evaluation 07/10 cover it)
+Pending — knowledge/skill change applied (2026-09-14 — adopted in docs/DESIGN_SYSTEM.md §1 and both theme packages; evaluation 07/10 cover it); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
 
 Category:
 APPLICATION-CONVENTION

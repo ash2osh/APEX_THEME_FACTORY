@@ -57,6 +57,9 @@ APEX_THEME_FACTORY/
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 | External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
+| Codex PR review bot (`chatgpt-codex-connector`) | comments P-level findings on every pull request (verify each at runtime before acting); `@codex review` re-runs it | GitHub repo settings |
+| Contrast audit (`evaluate_script` snippet) | AA text-contrast sweep of a page — required before a theme package is called verified | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
+| Pitfalls record | every trap met in this project, by layer, with the fix | [`.agents/knowledge/pitfalls.md`](../.agents/knowledge/pitfalls.md) |
 
 ## Not yet decided / open
 

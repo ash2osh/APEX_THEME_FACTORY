@@ -14,7 +14,7 @@ Never trade native accessibility for a visual match (spec §46).
 - Keyboard: custom Alpine widgets — Tab in/out, Enter/Space activate, Escape closes, arrows move in lists; `tabindex` managed; focus returned on close.
 - ARIA: `role`, `aria-expanded`, `aria-controls`, `aria-selected`, `aria-live` for async results.
 - Headings: region titles stay `h2`/`h3` in order; don't fake headings with styled divs.
-- Contrast: text ≥ 4.5:1 on its surface (Iris palette `*-text` on `*-shade` are pre-checked pairs).
+- Contrast: text ≥ 4.5:1 on its surface (Iris palette `*-text` on `*-shade` are pre-checked pairs); control boundaries ≥ 3:1 (WCAG 1.4.11). Measure with the contrast-audit snippet in `docs/CHROME_DEVTOOLS_MCP.md` — never state a ratio you did not compute (`.agents/knowledge/pitfalls.md` §1.7).
 - Touch targets ≥ 44 × 44 px.
 
 ## Verify

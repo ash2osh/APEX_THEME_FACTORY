@@ -22,9 +22,11 @@ apex import   -input /abs/path/applications/ut -workspace DEMO
 Notes
 - `-split -dir <parent>` creates `<parent>/<alias-lowercase>/` (here `applications/ut/`), 202 files, ~6 MB.
 - `-skipexportdate` keeps diffs clean. Add `-force` / `-overwrite-files` to refresh an existing export.
-- Validate currently reports one warning: `pages/p00000-global-page.apx:95 PROPERTY_DEPRECATED Slot regionBody is deprecated` — pre-existing in Oracle's reference app, not ours.
+- Validate is clean (0 warnings) since 2026-09-14 — the former `p00000-global-page.apx … Slot regionBody is deprecated` warning went away with `P0_THEME_STYLE_ID`. Any warning is now yours.
 - **Validate and import must run in the same SQLcl session** (apexlang skill rule). `scripts/apex-import.sh` does this.
-- Import overwrites app 102 in place. Export first, diff, then import. Never import an app directory that has not just passed `apex validate`.
+- Import overwrites app 102 in place **and ships whatever is on disk**: untracked files (another agent's package, `sync-static.sh` output) go in, files missing from the export are removed from the app. Export first, diff, then import; never import from a worktree that lacks the working tree's untracked packages. Never import an app directory that has not just passed `apex validate`.
+- A component file with no components (e.g. `shared-components/app-processes.apx` after the last process is removed) must be deleted, not left empty.
+- Static files that exist only in the export (`theme_styles/`, `pwa/`, `demo/`) are not pruned by `sync-static.sh` — remove the file and its `file "…" ( )` entry in `static-files.apx` together.
 - `apex import` accepts `-id`, `-alias`, `-name` overrides if you ever need to install a copy instead of replacing 102.
 
 ## Export layout

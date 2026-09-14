@@ -20,7 +20,7 @@ Rules
   modifier/state on the element, so body-level overrides restyle everything while `--small`, `--hot`, `--header`,
   floating labels etc. keep precedence. Where an atom is set on the element (`.a-IRR{--a-gv-border-radius}`),
   override on that element. Prefer an atom override to a property override whenever the atom exists
-  (see `.agents/findings/accepted/2026-09-13-theme-style-scope-token-overrides.md`).
+  (see `.agents/findings/pending/2026-09-13-theme-style-scope-token-overrides.md`).
 - Before adding an `--app-*` literal, check the Iris table below and `static-files/css/foundation/tokens.css`.
 - New tokens only when reusable and design-system meaningful (spec §18).
 

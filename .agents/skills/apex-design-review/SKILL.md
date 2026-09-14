@@ -12,6 +12,7 @@ CSS: scoped selectors; tokens reused; no global `.t-*` overrides; no unexplained
 Alpine: single init; works after refresh; item sync; no console errors; keyboard OK.
 APEX: DAs, refresh, dialogs, forms, validations, IG/IR behaviour verified.
 Visual: compared against target at matching viewport; loading/empty/error states.
+Theme package: contrast audit run on the standard page list (incl. the doc pages 4000/6303/6304) with 0 package failures; README has a *Verified* section; no literal colours in `css/apex/*.css`; `!important` only mirroring Iris.
 Knowledge: findings filed in `.agents/findings/pending/`; COMPONENTS.md / DESIGN_SYSTEM.md updated.
 
 ## Debt scan (report; fix only if in scope — spec §63–§64)

@@ -29,6 +29,13 @@
     --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
 
     /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);            /* Iris: var(--ut-region-header-background-color)
+                                                                           at :root — resolves before this package's
+                                                                           body-level override of that token reaches it
+                                                                           (pitfalls.md §1.2); consumed by .a-IG-header,
+                                                                           Markdown Editor toolbar, Popup LOV search bar,
+                                                                           CKEditor panels — anything without its own
+                                                                           direct rule like .a-IRR-toolbar below */
     --a-toolbar-border-color: var(--app-border-color);
     --a-toolbar-sep-border-color: var(--app-border-color);
     --a-report-controls-input-border-radius: var(--app-radius-sm);

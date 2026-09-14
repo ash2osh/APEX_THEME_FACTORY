@@ -45,15 +45,24 @@ selectors/properties/tokens you used. Stop before any import.
  static-files/css/apex/buttons.css | (comment-only change)
 ```
 
-## Verdict: PASS (weak differentiator)
+## Verdict: PASS on the task actually run (weak differentiator) — NOT comparable to the current-worktree run
 
 Evidence: the on-disk `buttons.css` at this commit already overrides `--a-button-*` atoms on `.apex-theme-iris`
-(the theme-style scope) rather than `:root` or a `.t-Button` property override — matching Expected exactly. The
-evaluee neither introduced `:root{--a-button-*}` nor a `.apex-theme-iris .t-Button{padding:…}` property override,
-so this run does not hit the Failure condition. However, this scenario is a weak baseline/current differentiator:
-the correct pattern was already committed in the code the evaluee read (commit `e5fd54a`, predating even this
-baseline checkout), so the run mostly verifies the evaluee can read and confirm existing CSS rather than exercising
-skill knowledge to produce the pattern from scratch. Record for the promotion decision: baseline PASSES here, so
-per spec §58 step 9 this specific scenario cannot be the sole motivator for promoting the theme-style-scope
-finding — see the current-worktree run for the actual differentiating evidence (a fresh app-wide restyle
-request with no pre-existing correct file to copy from).
+(the theme-style scope) rather than `:root` or a `.t-Button` property override — matching this run's Expected
+exactly. The evaluee neither introduced `:root{--a-button-*}` nor a `.apex-theme-iris .t-Button{padding:…}`
+property override, so this run does not hit the Failure condition. However, this scenario is a weak
+baseline/current differentiator: the correct pattern was already committed in the code the evaluee read
+(commit `e5fd54a`, predating even this baseline checkout), so the run mostly verifies the evaluee can read and
+confirm existing CSS rather than exercising skill knowledge to produce the pattern from scratch.
+
+**Correction 2026-09-14** (Codex PR review, PR #4, P2): this run tested the *buttons* task
+(`.agents/evaluations/14-theme-style-scope.md`'s original wording), while
+`14-theme-style-scope-current.md` tested a *different* task (form-field borders) — the scenario file has
+since been updated to make the form-field task canonical (see its own 2026-09-14 note), since the buttons
+task is a no-op at every commit this evaluation has run against. **This baseline run and the current-worktree
+run are not a valid matched pair** — comparing "PASS on buttons at baseline" against "PASS on forms at
+current" says nothing about whether old vs. new skill text behaves differently on the *same* task. No baseline
+run of the form-field-border task has been performed. The finding this scenario supports
+(`2026-09-13-theme-style-scope-token-overrides`) stays pending; treat this specific baseline/current pairing as
+uninformative for that decision rather than as evidence either way. A genuine test needs a fresh baseline14
+run using the current-worktree run's exact form-field-border prompt.

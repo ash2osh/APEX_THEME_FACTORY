@@ -20,11 +20,22 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 11 | dark-package-coverage | ambiguous both sides 2026-09-14 — isolation and prompt fixed, but the live contrast-audit half of Expected still needs a Chrome-enabled session (2 correction rounds) — runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md |
 | 12 | apexlang-static-id | passed baseline / passed current 2026-09-14 — runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md |
 | 13 | cards-render-event | passed baseline 2026-09-14 (corrected isolation) / passed current 2026-09-14 — runs/2026-09-14/13-cards-render-event-baseline-eda510d.md, runs/2026-09-14/13-cards-render-event-current.md |
-| 14 | theme-style-scope | passed baseline / passed current 2026-09-14 — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
+| 14 | theme-style-scope | invalid pairing 2026-09-14 — baseline (buttons task) and current (form-field task) tested different tasks, not comparable; scenario file updated, fresh matched baseline still needed — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
 
 Findings whose knowledge or skill change is already applied but whose scenario has not been run stay in
 `findings/pending/` (status says so); they move to `accepted/` only after the row above reads *passed* with the
-date and the session/transcript that ran it (spec §58 steps 8–10).
+date and a run log documenting it (spec §58 steps 8–10).
+
+**Evidence caveat** (added 2026-09-14 after PR #4 review, P2): the `runs/2026-09-14/*.md` files are **not**
+full session transcripts or complete patches — each is a curated record (the exact evaluee prompt, the
+evaluee's own final-report text quoted verbatim, `git diff --stat`, and the grader's verdict + reasoning). The
+evaluee worktrees were deliberately reset (`git checkout -- . && git clean -fd`) between runs to prevent one
+scenario's edits from contaminating the next, so the actual full patches and any seeded fixtures no longer
+exist on disk and cannot be independently re-diffed from this repository — only from what's quoted in each
+log. Treat specific claims in a run log (exact selectors, handler-cleanup logic, a seeded fixture's contents)
+as *reported*, not independently re-verifiable after the fact. For any future evaluation run: capture the full
+`git diff` (not just `--stat`) and any seeded fixture files into the run log, or copy the worktree's diff to a
+patch file alongside it, **before** resetting — that's the gap this caveat exists to flag.
 
 **2026-09-14 evaluation run** (19 evaluee runs, one fresh subagent per run, worktrees at `/tmp/eval/{current,baseline,baseline14}`):
 promoted `2026-09-14-theme-packages-routing` (scenario 10), `2026-09-14-ut-literal-root-tokens` (scenario 11),
@@ -83,15 +94,29 @@ mechanism (DOM markup + a generic ajax call) doesn't match Expected's specific "
 Corrected to ambiguous — this one needs both a real `.apx` wiring *and* a live Chrome session, not Chrome
 alone, so it's a distinct gap from round 3's scenarios.
 
+**2026-09-14 correction, round 5** (a further PR #4 review pass caught a different kind of problem, in scenario
+14 rather than the promoted findings): the baseline run tested the scenario file's *original* wording (restyle
+buttons — a no-op at this commit, per its own log) while the current-worktree run substituted a *different*
+task (form-field borders) to get a real differentiator. Nobody had updated the scenario file itself, so
+`14-theme-style-scope.md`'s canonical Expected/Failure still described buttons even though nothing was ever
+validly tested against it as a matched pair. Fixed: updated the scenario file to make the form-field task
+canonical (documenting why buttons was dropped), and corrected both run logs and the finding's Status line to
+say plainly that baseline and current tested different tasks — not "both passed, not load-bearing" but "never
+validly compared at all." `2026-09-13-theme-style-scope-token-overrides` needs a fresh baseline14 run against
+the now-canonical form-field prompt before any promotion decision can be made.
+
 **Net result**: none of the three findings originally promoted from this evaluation run survived scrutiny.
 `2026-09-14-theme-packages-routing` and `2026-09-14-apex-widget-events` were tested to completion on a properly
 isolated, fully-resourced, neutrally-prompted re-run and didn't show a load-bearing effect.
 `2026-09-14-ut-literal-root-tokens` was never actually tested to completion at all — every attempt hit the same
-missing ingredient (live Chrome) this whole evaluation matrix lacks. All three remain pending; the underlying
-knowledge in each is still considered accurate. Two structural gaps in this matrix, not the skills, are what
-actually failed here: baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), and no
-evaluee anywhere in this matrix having Chrome access despite some scenarios' `Expected` lines literally
-requiring a live pass (rounds 3–4, plus the original scenario 09 miscall). Scenarios 04, 05, 09 and 11
-specifically remain open on that basis (04 also needs a real APEXLang wiring, not just Chrome) — scenario 13's
-`Expected` is a code-correctness check only (the right event/guard/API), not a runtime-verification
-requirement, so its PASS verdicts stand as graded.
+missing ingredient (live Chrome) this whole evaluation matrix lacks. `2026-09-13-theme-style-scope-token-overrides`
+(scenario 14) was never validly tested either, for a different reason — its baseline and current runs used two
+different tasks and were never a matched pair. All findings from this run remain pending; the underlying
+knowledge in each is still considered accurate. Three structural gaps in this matrix, not the skills, are what
+actually failed here: baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), no evaluee
+anywhere in this matrix having Chrome access despite some scenarios' `Expected` lines literally requiring a
+live pass (rounds 3–4, plus the original scenario 09 miscall), and one scenario definition drifting out of
+sync with what was actually run (round 5). Scenarios 04, 05, 09, 11 and 14 specifically remain open on that
+basis (04 also needs a real APEXLang wiring, not just Chrome; 14 needs a fresh matched baseline run, not
+Chrome) — scenario 13's `Expected` is a code-correctness check only (the right event/guard/API), not a
+runtime-verification requirement, so its PASS verdicts stand as graded.

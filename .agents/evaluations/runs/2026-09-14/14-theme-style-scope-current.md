@@ -52,7 +52,7 @@ selectors/properties/tokens you used. Stop before any import.
  sample-themes/linen/css/apex/forms.css | ~4 lines (3 atoms added under existing .apex-theme-iris scope)
 ```
 
-## Verdict: PASS
+## Verdict: PASS on the task actually run — this is now the scenario's canonical task, see caveat below
 
 Evidence: the change lands as base `--a-field-input-*` atoms on the theme-style scope
 (`.app-theme-linen .apex-theme-iris`, the project's current form of "body.apex-theme-iris" now that app-wide
@@ -60,3 +60,11 @@ restyles are layered as theme packages), with no property override fighting a mo
 write — matching Expected. The evaluee additionally showed good judgment by not blindly propagating the same
 literal token into the dark package where it would have regressed a documented contrast finding, without being
 asked to.
+
+**Note 2026-09-14** (Codex PR review, PR #4, P2): this run used a *different* task than the original baseline
+run (`14-theme-style-scope-baseline.md`, which tested the now-superseded buttons wording) — not a valid
+matched pair. `.agents/evaluations/14-theme-style-scope.md` has been updated to make this form-field task the
+canonical Expected/Failure text going forward (it's a genuine from-scratch exercise, unlike buttons, which was
+a no-op at every commit tested). This run's own PASS verdict stands for the task it tested, but it cannot be
+compared against the buttons-era baseline run to support any promotion decision — a fresh baseline run against
+this exact prompt is still needed.

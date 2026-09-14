@@ -79,8 +79,9 @@ All page-scoped tools require `pageId` (from `list_pages`) because `--pageIdRout
 
 ### Contrast audit (run before calling any theme or restyle "verified")
 
-Every visible text node vs its *blended* effective background (walks up through translucent layers), AA
-thresholds (4.5:1, or 3:1 for ≥ 24 px / bold ≥ 18.66 px). Returns the failures with selector, colours, ratio.
+Every visible text node vs its effective background — translucent ancestors are composited with source-over
+maths (alpha preserved until an opaque layer, then the page background) — against the AA thresholds (4.5:1, or
+3:1 for ≥ 24 px / bold ≥ 18.66 px). Sanity check: 50 % red over 50 % blue over white must give `rgb(191,64,128)`. Returns the failures with selector, colours, ratio.
 Pass it as the `function` of `evaluate_script` after the page has settled (Cards/IG render asynchronously —
 wait ~1.5 s or hook their events first). Expect Universal Theme's own `u-color-*` demo fills (p1304) to fail
 under every style; anything else is yours.
@@ -90,8 +91,10 @@ async () => {
   await new Promise(r => setTimeout(r, 1500));
   const parse = c => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r,g,b,a] = m.map(Number); return { r, g, b, a: a === undefined ? 1 : a }; };
   const lum = ({r,g,b}) => { const f = v => { v /= 255; return v <= 0.03928 ? v/12.92 : ((v+0.055)/1.055)**2.4; }; return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b); };
-  const blend = (t, u) => ({ r: t.r*t.a+u.r*(1-t.a), g: t.g*t.a+u.g*(1-t.a), b: t.b*t.a+u.b*(1-t.a), a: 1 });
-  const bgOf = el => { let e = el, acc = null; while (e && e !== document.documentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0) { acc = acc ? blend(acc, c) : c; if (c.a >= 0.999) return acc; } e = e.parentElement; } const body = parse(getComputedStyle(document.body).backgroundColor); return acc ? blend(acc, body) : body; };
+  // source-over: `top` composited over `under`, alpha preserved until an opaque layer is reached
+  const over = (t, u) => { const a = t.a + u.a*(1-t.a); return a ? { r: (t.r*t.a + u.r*u.a*(1-t.a))/a, g: (t.g*t.a + u.g*u.a*(1-t.a))/a, b: (t.b*t.a + u.b*u.a*(1-t.a))/a, a } : { r: 0, g: 0, b: 0, a: 0 }; };
+  const WHITE = { r: 255, g: 255, b: 255, a: 1 };
+  const bgOf = el => { let e = el, acc = { r: 0, g: 0, b: 0, a: 0 }; while (e && e !== document.documentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0) { acc = over(acc, c); if (acc.a >= 0.999) return acc; } e = e.parentElement; } const body = parse(getComputedStyle(document.body).backgroundColor) || WHITE; return over(acc, over(body, WHITE)); };
   const cr = (a, b) => { const la = lum(a), lb = lum(b); return (Math.max(la,lb)+0.05)/(Math.min(la,lb)+0.05); };
   const bad = [], seen = new Set(), w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
   while ((n = w.nextNode())) {
@@ -99,7 +102,7 @@ async () => {
     const el = n.parentElement; if (!el || el.closest('#apexDevToolbar, script, style, [aria-hidden="true"], .u-VisuallyHidden')) continue;
     const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
     const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
-    const fg = parse(cs.color); if (!fg) continue; const bg = bgOf(el); const ratio = cr(fg.a < 1 ? blend(fg, bg) : fg, bg);
+    const fg = parse(cs.color); if (!fg) continue; const bg = bgOf(el); const ratio = cr(fg.a < 1 ? over(fg, bg) : fg, bg);
     const size = parseFloat(cs.fontSize), weight = parseInt(cs.fontWeight) || 400, need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
     if (ratio < need) { const k = el.className + '|' + cs.color + '|' + t.slice(0, 20); if (seen.has(k)) continue; seen.add(k);
       bad.push({ text: t.slice(0, 40), sel: el.tagName.toLowerCase() + '.' + String(el.className).trim().split(/\s+/).slice(0, 3).join('.'), fg: cs.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`, ratio: +ratio.toFixed(2), size }); }

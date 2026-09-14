@@ -7,7 +7,7 @@ Universal Theme 42 / Iris, app 102, 2026-09-13 → 14.
 
 Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime facts),
 [`iris-ut-tokens.md`](iris-ut-tokens.md) (token values), `ut-dom-*.md` (markup hooks),
-[`reference/README.md`](reference/README.md) (offline CSS/JS copies), `../findings/accepted/` (protocol records).
+[`reference/README.md`](reference/README.md) (offline CSS/JS copies), `../findings/` (protocol records — pending until their evaluation has run).
 
 ---
 
@@ -25,7 +25,7 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   chat, checkbox, chip, cr, cv, datepicker, field, gv, kb, menu, popuplov, report-controls, resultsitem,
   starrating, treeview.
 - **Evidence:** `.t-Region{color:var(--ut-region-text-color,var(--ut-component-text-default-color))}` in Core
-  resolved to `#161513` on p1500 until `--ut-region-text-color` was set. Finding: `accepted/2026-09-14-ut-literal-root-tokens.md`.
+  resolved to `#161513` on p1500 until `--ut-region-text-color` was set. Finding: `pending/2026-09-14-ut-literal-root-tokens.md`.
 
 ### 1.2 `var()` chains in Iris `:root` resolve at `:root`, not where consumed
 - **Symptom:** `--a-button-text-color` overridden on body, but IG pager buttons still `#161513`.
@@ -194,7 +194,14 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   literals and iteration PNGs in `preview/`. The package conventions in `sample-themes/README.md` exist so the
   next package starts from the checklist, not from a linen copy.
 
-### 5.3 Skills lag the architecture unless the protocol runs
+### 5.3 Don't promote a finding before its evaluation has run
+- Spec §58 orders: record → classify → evidence → scope → *evaluation scenario* → confirm the old instructions fail
+  it → smallest skill change → **run** the evaluations → verify → promote. Applying the skill change (step 7) is
+  fine early; moving the file to `accepted/` before step 8 is not — the Codex review on PR #3 caught exactly that.
+  Keep `Status: Pending — change applied; evaluation run pending` until the row in `evaluations/README.md` says
+  *passed*.
+
+### 5.4 Skills lag the architecture unless the protocol runs
 - Skills still described `static-files/css/apex/` two commits after packages moved to `sample-themes/`. When
   the architecture moves, file the finding and fix the routing table in the same change (spec §58); the
   evaluation (`10-theme-package-routing.md`) is what keeps it honest.

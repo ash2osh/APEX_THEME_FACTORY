@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — recorded in knowledge/pitfalls.md §2, ut-26.1-iris-runtime.md, docs/CHROME_DEVTOOLS_MCP.md)
+Pending — knowledge/skill change applied (2026-09-14 — recorded in knowledge/pitfalls.md §2, ut-26.1-iris-runtime.md, docs/CHROME_DEVTOOLS_MCP.md); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
 
 Category:
 APEX-JAVASCRIPT-PATTERN

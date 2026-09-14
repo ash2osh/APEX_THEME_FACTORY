@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — recorded in knowledge/pitfalls.md §1.1–1.4, reference README, skills apex-ut-dom-knowledge / apex-css-design-system)
+Pending — knowledge/skill change applied (2026-09-14 — recorded in knowledge/pitfalls.md §1.1–1.4, reference README, skills apex-ut-dom-knowledge / apex-css-design-system); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
 
 Category:
 UNIVERSAL-THEME-KNOWLEDGE

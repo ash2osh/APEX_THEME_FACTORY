@@ -29,7 +29,8 @@ css/apex/
   forms.css              4px inputs on #003847 · 3.3:1 border · cyan focus · 13px/500 labels · floating labels
   reports.css            IRR / IG / classic: #00212b header 13px/600 · 40px rows · solid hover · themed pager and footer
   dialogs.css            jQuery UI dialog and menu atoms · wizard dialog pages
-  misc.css               shadows off · badges · tabs · alert accent edge · Prism.js code samples
+  misc.css               shadows off · badges · tabs · alert accent edge · Prism.js code samples ·
+                          faceted search · percent graph · help dialog · map legend · chart tooltips
 preview/                 cover.jpg (gallery) + the four captures above
 ```
 
@@ -88,11 +89,13 @@ Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=s
 **Not "Verified".** The line below records a real automated contrast pass, but it is resting-state and
 14-page only; several rounds of PR review since (2026-09-14, `chatgpt-codex-connector` on #2 and #5) and a
 follow-up source audit (`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md`) have found
-and fixed real gaps that pass missed, and that finding documents ~50 more still-open second-order-token gaps
-plus six component families (Faceted Search, Markdown Editor, Calendar, Charts, Help Text, Map) never opened
-by either check. Read this section as "the last known-good baseline plus a changelog of fixes since", not as
-a current verification — do not extend "Verified" to the whole package until the full gap list in that finding
-is closed and re-run through the live audit below.
+and fixed real gaps that pass missed. As of the last addendum below, every literal/derived-token gap findable
+by source review (grep against the offline reference CSS + confirmed page presence) is fixed — only Oracle
+JET's and FullCalendar's own custom-property families remain, and those are unverifiable without Chrome (their
+consuming CSS isn't in the offline reference bundle). Read this section as "the last known-good baseline plus
+a changelog of fixes since", not as a current verification — do not extend "Verified" to the whole package
+until a live pass of the audit below runs against the expanded page list (below) and the two JET/Calendar
+pages get a real look.
 
 ### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris)
 
@@ -129,3 +132,20 @@ still-open gap list — this PR fixes only the two highest-confidence items from
   (pitfalls.md §1.2 — frozen before this package's body-level override of that token reaches it), so
   `.a-IG-header` (Interactive Grid, p1410), the Markdown Editor toolbar, Popup LOV search bar, and CKEditor
   panels stayed white — fixed in `css/apex/reports.css`.
+
+### 2026-09-14 addendum: full literal/derived-token gap closure
+
+Completed the systematic audit the two runs above started: every one of Iris' 282 literal-colour `:root`
+tokens and 121 `var()`-chains targeting one, cross-checked against this package's whole `css/` tree. Fixed
+every remaining gap with confirmed consumption and a confirmed-present owning page — ~50 atoms across
+`tokens.css`, `apex/{dialogs,regions,reports,forms,misc}.css` — including full coverage for Card View
+icon/initials avatars, the date picker, popup menus, Comments/chat, File Drop, Markdown Editor, Combo Box, and
+new sections for Faceted Search (p1411), Percent Graph (p423/p1601), Help Text (p1903), and Map legend
+(p1906). Full list, and what was deliberately left out and why, in
+`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` §6–7.
+
+**Newly-identified pages that need a live check before "Verified"** (beyond the original 14-page list):
+1410, 1411, 1601, 423, 1800, 1902, 1903, 1906, 1405, 3003, 1412. Pages 1800 (Calendar) and 1902 (Charts) also
+need Chrome to determine whether Oracle JET's/FullCalendar's own theming reaches this package at all — the
+one remaining open question, unresolved by source review because their consuming CSS isn't in the offline
+reference mirror.

@@ -1,23 +1,25 @@
 # Finding
 
 Status:
-Pending — two highest-confidence gaps fixed 2026-09-14 in this PR (`--a-field-input-hover-background-color` in
-`css/apex/forms.css`, `--a-toolbar-background-color` in `css/apex/reports.css` — both found independently by
-two separate agent runs against different worktree commits, strong cross-confirmation). The remaining ~50
-second-order tokens and six unopened-page component families listed below are **not yet fixed** — this finding
-stays pending until those are addressed and a live contrast audit (docs/CHROME_DEVTOOLS_MCP.md) runs against
-the standard page list plus the newly-identified pages (see Page). No formal evaluation has been run against
-this finding (see Regression Scenario).
+Pending — full source-level literal/derived-token audit completed 2026-09-14 in this PR. Every one of Iris'
+282 literal-colour `:root` tokens and 121 `var()`-chains targeting one, cross-checked against the whole
+`sample-themes/solarized-dark/css/` tree; every gap with confirmed consumption (offline widget-CSS mirror) and
+a confirmed-present owning component (`applications/ut/pages/*.apx`) is now fixed — see Evidence §6 for the
+full before/after count and the file-by-file list. Two categories remain deliberately unfixed, both explained
+in Evidence §7 (not a gap, or not verifiable offline) — not blockers. Stays pending, not promoted to
+`accepted/`, because a **live** contrast audit (docs/CHROME_DEVTOOLS_MCP.md) on the expanded page list has
+still not run — no Chrome session in any pass that touched this finding. That live pass is the only remaining
+step before this package's README can honestly drop "not fully verified."
 
 Category:
 BUG
 
 Confidence:
-CONFIRMED for the two fixed atoms (grep-verified consumption in `.agents/knowledge/reference/ut-26.1/*.css`
-against real component presence in `applications/ut/pages/*.apx`; `--a-field-input-hover-background-color` was
-found independently by two separate agent sessions working from different worktree commits).
-LOW confidence, explicitly not runtime-verified, for the remaining gap list below and for whether the two fixed
-atoms render as intended — no Chrome session was available when this was discovered (see Evidence).
+CONFIRMED for every fixed atom's *existence and consumption* (mechanical extract-diff-grep against all four
+files in `.agents/knowledge/reference/ut-26.1/` — see Evidence §6 — plus a real owning page for each; every
+declaration in the fix is traceable to a specific `:root` line and a specific consuming selector).
+LOW confidence, explicitly not runtime-verified, for whether every fix *renders as intended* — no Chrome
+session has been available in any pass that touched this finding (see Evidence).
 
 APEX Version:
 26.1.4 (Universal Theme / Iris)
@@ -30,12 +32,19 @@ Percent Graph item types, also used on p423), p1800 (Calendar), p1902 (Charts), 
 originally "verified" against.
 
 Component:
-`sample-themes/solarized-dark/` theme package. Fixed here: `--a-field-input-hover-background-color`
-(`css/apex/forms.css`), `--a-toolbar-background-color` (`css/apex/reports.css`). Still open: `--ut-header-
-menubar-item-hover-*`, `--ut-component-icon-*`, `--ut-component-badge-text-color`, `--ut-navtabs-item-active-
-highlight-color`/`-hover-background-color`, datepicker/menu/chip/chat/report-controls/resultsitem second-order
-atoms, and new-family literals for faceted search, markdown editor, percent graph, FullCalendar, JET chart
-tooltips (~50 declarations total, per the source audit below).
+`sample-themes/solarized-dark/` theme package — now fully audited. Fixed across this PR (in order):
+`--a-field-input-hover-background-color`, `--a-toolbar-background-color`, plus (this pass) ~50 more atoms:
+`--ut-header-menubar-item-hover-*`, `--ut-component-icon-color`, `--ut-component-badge-text-color`,
+`--ut-navtabs-item-hover-background-color`, the remaining datepicker/`--jui-datepicker-*`/menu-accel/chip/chat
+second-order atoms, `--a-cv-icon-*`/`-initials-*`/`-active-border-color` (Card View avatars), File Drop,
+Markdown Editor, Combo Box, and the report-controls/resultsitem/searchresults remainder — plus new-family
+coverage for Faceted Search, Percent Graph, Help Text dialog, and Map legend. See Evidence §6 for the full
+file list. Deliberately left unfixed (§7): `--oj-*`/`--fc-*` (Oracle JET / FullCalendar's own CSS custom
+properties — their consuming runtime CSS isn't in the offline reference bundle, so consumption can't be
+verified without Chrome), `--u-color-*` demo swatches, Diagram/Gantt/dev-toolbar (no such region in app 102),
+and a few individually-verified non-issues (Map zoom control text, translucent chip-remove overlays, an unused
+button-count atom, `--ut-palette-primary-alt-shade` with zero consumers, `--ut-hero-region-title-text-color`
+already superseded by a direct property rule on the same selector).
 
 ## Observation
 
@@ -81,6 +90,47 @@ withheld Chrome/import/DB) — source-level audits, not runtime ones:
 5. Where evidence pointed the other way, the token was left alone: `--mg-ctrl-group-button-text-color` (Map
    zoom control text) has no themable background counterpart anywhere in Iris, so its literal black text is
    still correct.
+6. **2026-09-14, full closure pass** (same PR, still no Chrome session): re-ran steps 1–3 as a script (extract
+   all 802 `:root` custom properties, split into 280 literal-colour + 121 var-chains-to-a-literal, diff against
+   the whole `sample-themes/solarized-dark/css/` tree). Before this pass: 117 literal / 98 chain gaps remained.
+   Removed the out-of-scope categories (§7) and fixed every remaining one with confirmed consumption + a
+   confirmed-present page:
+   - `css/tokens.css`: datepicker completion (7 atoms) + `--jui-datepicker-*` (2), chat completion (15 atoms),
+     `--ut-component-badge-text-color`, `--ut-component-icon-color`, `--ut-header-menubar-item-hover-*` (2),
+     `--ut-navtabs-item-hover-background-color`.
+   - `css/apex/dialogs.css`: `--a-menu-accel-text-color`, `--a-menu-focused-accel-text-color`,
+     `--a-menu-callout-border-color`.
+   - `css/apex/regions.css`: `--a-cv-active-border-color`, `--a-cv-icon-*` (2), `--a-cv-initials-*` (2).
+   - `css/apex/reports.css`: `--a-report-controls-cell-label-border-color`, `--a-report-controls-input-*` (2),
+     `--a-gv-nodata-message-text-color`, `--a-resultsitem-*` (2), `--a-searchresults-pagination-color`.
+   - `css/apex/forms.css`: `--a-chip-border-color`, File Drop (4 atoms), Markdown Editor (3), Combo Box (1).
+   - `css/apex/misc.css`: Faceted Search (6 atoms, new section), Percent Graph (4, new), Help Text dialog (1,
+     new), Map legend (1, new), Chart tooltips (3, new).
+   After this pass: 2 literal/chain candidates remained, both individually verified as non-issues (§7).
+7. **Deliberately left unfixed, with reason**:
+   - `--u-color-*` (45 colour + 45 contrast = 90 tokens) — Universal Theme's own demo-palette swatches (p1304
+     badge-list); already documented app-wide as "identical under plain Iris", out of scope for any package.
+   - `--a-diagram-*` / `--a-dev-toolbar-*` (25 tokens) — no Diagram/Gantt region and no dev-toolbar surface in
+     app 102's 122 pages (confirmed: no `type: diagram` / `Gantt` hit in `applications/ut/pages/*.apx`).
+   - `--oj-*` (Oracle JET's own custom-property theming, ~23 tokens) and `--fc-*` (FullCalendar's own, 4
+     tokens) — both libraries' *consuming* CSS (JET's compiled runtime stylesheet, FullCalendar's own CSS) is
+     not part of the offline `.agents/knowledge/reference/ut-26.1/` mirror (that mirror is Oracle APEX/UT's own
+     CSS only), so — unlike every other atom in this finding — consumption cannot be verified without a live
+     page. p1902 (Charts) and p1800 (Calendar) are confirmed-present pages that likely use some of these, but
+     guessing which specific custom properties their compiled output actually reads, and to what visual effect,
+     without being able to inspect it, would be exactly the "write CSS from remembered class names" pattern
+     evaluation scenario 09 tests against. Left as the one remaining item needing a live Chrome pass.
+   - Individually verified non-issues: `--a-button-count-*` (no button in app 102 has a count badge —
+     `grep -rl "countBadge\|t-Button--badge" applications/ut/pages/*.apx` empty), `--a-chip-applied-is-active-
+     remove-*-background-color` (translucent white overlays — `hsla(0,0%,100%,.1/.2)` — lighten whatever's
+     underneath regardless of theme, not a literal opaque colour mismatch), `--mg-ctrl-group-button-text-color`
+     (see §5), `--oj-color-spectrum-border-color` (JET colour-picker, no such item type present),
+     `--ut-palette-primary-alt-shade` (`grep` across all four reference files: zero consuming rules — a
+     declared-but-dead token, no possible visual effect), `--ut-hero-region-title-text-color` (Core:
+     `.t-HeroRegion-title{color:var(--ut-hero-region-title-text-color,var(--ut-component-text-title-color))}`
+     — but `regions.css` already sets `.t-HeroRegion-title{color:var(--app-text-emphasized)}` as a direct
+     property on the same selector, loaded later in the cascade, so it already wins regardless of the atom;
+     confirmed not a real gap, not just an unfixed one).
 
 ## Existing Assumption
 
@@ -93,8 +143,10 @@ before the status was written (now corrected in this PR).
 
 A theme package can look complete after a narrow, plausible-seeming spot check (the two most-visited pages)
 while large parts of a 122-page reference app — anything using Interactive Grid rather than Interactive Report,
-any hover state, any of ~6 item/region types absent from both checked pages — ship unthemed. A false "Verified"
-claim is worse than no claim: it tells the next agent/human not to re-check.
+any hover state, any of ~10 item/region types absent from both checked pages — ship unthemed. A false "Verified"
+claim is worse than no claim: it tells the next agent/human not to re-check. Closed by the full source audit in
+Evidence §6 — every literal/derived-token gap with verifiable consumption and a confirmed-present page is now
+fixed; only the JET/FullCalendar custom-property families remain genuinely unverifiable without Chrome.
 
 ## Proposed Knowledge Change
 

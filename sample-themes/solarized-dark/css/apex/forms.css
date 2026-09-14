@@ -15,6 +15,21 @@
     --a-field-input-focus-background-color: var(--app-surface-input);
     --a-field-placeholder-text-color: var(--app-text-secondary);   /* base1 on the input: 4.7:1 */
     --a-field-placeholder-opacity: 1;
+    --a-chip-border-color: var(--app-border-strong);
+
+    /* File Drop (p1601, p423) */
+    --a-filedrop-border-color: var(--app-border-strong);
+    --a-filedrop-focus-border-color: var(--sol-cyan);
+    --a-filedrop-heading-text-color: var(--app-text-emphasized);
+    --a-filedrop-text-color: var(--app-text-secondary);
+
+    /* Markdown Editor (p1601) */
+    --a-mdeditor-background-color: var(--app-surface-input);
+    --a-mdeditor-border-color: var(--app-border-strong);
+    --a-mdeditor-focus-border-color: var(--sol-cyan);
+
+    /* Combo Box (p1601) */
+    --a-combo-select-item-selected-background-color: var(--app-surface-selected);
 }
 
 /* Stacked / inline labels: 13px, medium, secondary (4.9:1) */

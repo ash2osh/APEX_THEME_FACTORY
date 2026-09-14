@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — recorded in knowledge/pitfalls.md §2, ut-26.1-iris-runtime.md, docs/CHROME_DEVTOOLS_MCP.md); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Accepted (2026-09-14 — evaluation 13 passed, see evaluations/runs/2026-09-14/13-cards-render-event-current.md; baseline failed, see evaluations/runs/2026-09-14/13-cards-render-event-baseline.md)
 
 Category:
 APEX-JAVASCRIPT-PATTERN

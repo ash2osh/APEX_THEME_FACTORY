@@ -25,7 +25,7 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   chat, checkbox, chip, cr, cv, datepicker, field, gv, kb, menu, popuplov, report-controls, resultsitem,
   starrating, treeview.
 - **Evidence:** `.t-Region{color:var(--ut-region-text-color,var(--ut-component-text-default-color))}` in Core
-  resolved to `#161513` on p1500 until `--ut-region-text-color` was set. Finding: `pending/2026-09-14-ut-literal-root-tokens.md`.
+  resolved to `#161513` on p1500 until `--ut-region-text-color` was set. Finding: `accepted/2026-09-14-ut-literal-root-tokens.md`.
 
 ### 1.2 `var()` chains in Iris `:root` resolve at `:root`, not where consumed
 - **Symptom:** `--a-button-text-color` overridden on body, but IG pager buttons still `#161513`.

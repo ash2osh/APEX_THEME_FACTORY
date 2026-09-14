@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — recorded in knowledge/pitfalls.md §1.1–1.4, reference README, skills apex-ut-dom-knowledge / apex-css-design-system); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Accepted (2026-09-14 — evaluation 11 passed, see evaluations/runs/2026-09-14/11-dark-package-coverage-current.md; baseline ambiguous — no dark package existed yet at that commit, see evaluations/runs/2026-09-14/11-dark-package-coverage-baseline.md)
 
 Category:
 UNIVERSAL-THEME-KNOWLEDGE

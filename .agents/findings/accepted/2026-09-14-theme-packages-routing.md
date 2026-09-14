@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — skills `apex-css-design-system`, `design-to-apex` updated; evaluation 10 added); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Accepted (2026-09-14 — evaluation 10 passed, see evaluations/runs/2026-09-14/10-theme-package-routing-current.md; baseline failed, see evaluations/runs/2026-09-14/10-theme-package-routing-baseline.md)
 
 Category:
 APPLICATION-CONVENTION

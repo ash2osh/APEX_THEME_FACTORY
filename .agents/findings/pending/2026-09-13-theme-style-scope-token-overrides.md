@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — adopted in docs/DESIGN_SYSTEM.md §1 and both theme packages; evaluation 07/10 cover it); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Pending — evaluation 14 run 2026-09-14 (see evaluations/runs/2026-09-14/14-theme-style-scope-{baseline,current}.md): PASS at both baseline and current, so not promoted. The baseline run's first task (restyle buttons to 36px) was a no-op — `static-files/css/apex/buttons.css` already used the correct atom-on-theme-style-scope pattern before this knowledge was ever written down (committed at `e5fd54a`, predating the finding), so it wasn't a real test of the skill text; the current run used a fresh task (form-field borders) and also passed cleanly. The convention itself is sound and worth keeping documented, but no run has yet caught the *old* instructions actually failing it — re-run with a task where no sibling file already demonstrates the pattern, or once a genuine pre-finding-era regression surfaces.
 
 Category:
 APPLICATION-CONVENTION

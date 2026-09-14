@@ -36,6 +36,33 @@
     --ut-tabs-item-active-text-color: var(--app-text-emphasized);
     --ut-tabs-item-active-highlight-color: var(--sol-cyan);
     --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search (p1411) */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+
+    /* Percent Graph item type (p423, p1601) */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--sol-cyan);   /* paired with the dark bar text below; was
+                                                                    still Iris' :root-resolved #00688c teal */
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Text dialog (p1903) */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend (p1906) */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Chart tooltips (p1902, JET) */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
 }
 
 /* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */

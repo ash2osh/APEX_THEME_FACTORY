@@ -48,6 +48,8 @@
     /* Percent Graph item type (p423, p1601) */
     --a-percent-chart-background-color: var(--app-surface-subtle);
     --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--sol-cyan);   /* paired with the dark bar text below; was
+                                                                    still Iris' :root-resolved #00688c teal */
     --a-percent-chart-bar-border-color: var(--app-border-color);
     --a-percent-chart-bar-text-color: var(--app-text-on-accent);
 

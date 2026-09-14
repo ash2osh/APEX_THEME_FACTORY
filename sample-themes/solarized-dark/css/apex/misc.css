@@ -63,6 +63,10 @@
     --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
     --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
     --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);   /* Theme-Standard literal #fff otherwise —
+                                                                      light text on white was 1.08:1 */
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
 }
 
 /* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */

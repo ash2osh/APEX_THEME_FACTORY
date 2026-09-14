@@ -30,8 +30,8 @@ html.app-theme-solarized-dark {
     --sol-blue-text:  #4b9fda;                          /* links, primary palette (blue is 3.5:1) */
     --sol-cyan-text:  #39a89f;                          /* primary-alt text (cyan is 4.1:1) */
     --sol-red-text:   #e87674;                          /* validation / danger text (red is 2.8:1) */
-    --sol-magenta-text: #dd629e;                        /* code numbers/constants on the canvas (magenta is 3.3:1) */
-    --sol-orange-text:  #d67147;                        /* code entities/urls on the canvas (orange is 3.3:1) */
+    --sol-magenta-text: #e174a9;                        /* code numbers, class names: 4.5:1 on cards, 5.2:1 on canvas */
+    --sol-orange-text:  #db815c;                        /* code entities/urls: 4.5:1 on cards, 5.2:1 on canvas */
     --sol-cyan-bright: #1ebcc5;                         /* hot-button hover */
     --sol-blue-bright: #63acdf;                         /* primary-button hover */
 

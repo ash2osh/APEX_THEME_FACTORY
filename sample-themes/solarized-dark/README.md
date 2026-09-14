@@ -7,7 +7,7 @@
 | Base | APEX 26.1.4 · Universal Theme 42 · theme style **Iris** (unchanged) |
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
-| Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits |
+| Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
 | Status | 2026-09-14: AA contrast pass, tokens consolidated, verified on the pages below |
 
 ## Preview
@@ -68,7 +68,7 @@ Solarized's dark hierarchy is base1 / base0 / base01. On the `#073642` card surf
 | validation / danger text (`--sol-red-text`) | `#e87674` (red +33 %) | 4.5 | 5.2 |
 | dark text on cyan / green / yellow / blue-text fills (`--app-text-on-accent`) | base03 `#002b36` | 4.75 / 4.7 / 4.7 / 5.2 | |
 | white on the red badge | `#ffffff` | 4.6 | |
-| code (Prism, on the canvas): keyword green, string cyan, comment base0, number `#dd629e`, entity `#d67147` | | | 4.7 / 4.75 / 4.75 / 4.5 / 4.5 |
+| code (Prism, on the canvas): keyword green, string cyan, comment base0, number `#e174a9`, entity `#db815c` | | | 4.7 / 4.75 / 4.75 / 5.2 / 5.2 |
 | input border (`--app-border-strong`) vs card — WCAG 1.4.11 | `rgba(131,148,150,.8)` | 3.3 | 3.6 |
 
 Accents kept raw for icons, markers, highlight bars and large text (≥ 3:1): cyan 4.1, green 4.1, yellow 4.1 on cards.
@@ -86,7 +86,7 @@ Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=s
 ## Verified (2026-09-14, APEX 26.1.4 / Iris)
 
 Automated text-contrast audit (every visible text node vs its effective background, AA thresholds) on pages
-500, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 3110, 405 and dialog page 1912: **0 failures attributable to the
-package**. Remaining: page 1304 badge-list demo uses Universal Theme's `u-color-*` fills (white on `#de7f11`,
+500, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 3110, 4000, 6303, 6304, 405 and dialog page 1912: **0 failures
+attributable to the package**. Remaining: page 1304 badge-list demo uses Universal Theme's `u-color-*` fills (white on `#de7f11`,
 2.9:1) — identical under plain Iris. Widths 1440 / 375; console clean; IG paging, dialog open/close, nav-bar
 menu, keyboard focus ring checked.

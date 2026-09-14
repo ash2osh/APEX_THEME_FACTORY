@@ -88,3 +88,72 @@
 .app-theme-solarized-dark .token.entity,
 .app-theme-solarized-dark .token.url,
 .app-theme-solarized-dark .token.deleted { color: var(--sol-orange-text); }                /* 4.5:1 */
+
+/* Reference-app demo surfaces. Some pages of app 102 style their own demo markup with literal light values in
+   page inline CSS (p4000 Icons: input#P4000_SEARCH, .dm-Search-*, .dm-IconDialog-*; p6303/p6304 modifiers:
+   .dm-Report--doc, .class*; p6100/p6200/p6201: .event-name, .icon-preview, .instructions). Under a dark
+   package they turn white-on-white, so the package restates them here — Oracle's Vita Dark did the same
+   inside the pages. Scoped to .app-theme-solarized-dark; higher specificity than the page rules. */
+.app-theme-solarized-dark input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-result:hover,
+.app-theme-solarized-dark .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .dm-IconDialog-preview {
+    background-image: none;                       /* light checkerboard */
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-IconDialog-code,
+.app-theme-solarized-dark .instructions {
+    color: var(--app-text-secondary);
+}
+.app-theme-solarized-dark .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+.app-theme-solarized-dark .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-Report--doc th,
+.app-theme-solarized-dark .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+/* p6303/p6304 class-name tokens (.class, .class-value, .class-var, .class.tag) also appear outside the doc table */
+.app-theme-solarized-dark .apex-theme-iris .class {
+    color: var(--sol-magenta-text);               /* #9C27B0 is 2.1:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .class-value,
+.app-theme-solarized-dark .apex-theme-iris .class-var {
+    color: var(--sol-cyan-text);                  /* #008676 is 2.9:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is 1.4:1 on the card */
+}
+.app-theme-solarized-dark .event-name,
+.app-theme-solarized-dark code.event-name {
+    text-shadow: none;
+}
+.app-theme-solarized-dark .event-name:hover,
+.app-theme-solarized-dark code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}

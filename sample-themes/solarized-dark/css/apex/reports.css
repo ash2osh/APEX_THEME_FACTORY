@@ -26,6 +26,7 @@
     --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
     --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);   /* Theme-Standard falls back to #e0e0e0 */
     --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
 
     /* toolbar / search controls */
     --a-toolbar-border-color: var(--app-border-color);
@@ -76,6 +77,26 @@
     background-color: var(--app-surface-input);
     color: var(--app-text-emphasized);
     border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables (.u-Report — used by the reference pages' documentation tables): the widget CSS hard-codes
+   #fff / #fafafa cells (`.u-Report td`, `.u-Report--staticBG tr:nth-child(2n) td`) and #404040 text, so the
+   tokens never reach them. */
+.app-theme-solarized-dark .apex-theme-iris .u-Report td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-solarized-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-solarized-dark .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+.app-theme-solarized-dark .apex-theme-iris .u-Report td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
 }
 
 /* Numbers line up in columns */

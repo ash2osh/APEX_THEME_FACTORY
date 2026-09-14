@@ -90,3 +90,16 @@ Automated text-contrast audit (every visible text node vs its effective backgrou
 attributable to the package**. Remaining: page 1304 badge-list demo uses Universal Theme's `u-color-*` fills (white on `#de7f11`,
 2.9:1) — identical under plain Iris. Widths 1440 / 375; console clean; IG paging, dialog open/close, nav-bar
 menu, keyboard focus ring checked.
+
+**2026-09-14 addendum**: the automated pass above only samples text nodes at rest, so it missed two
+non-resting-state failures caught later by PR review (`#2`, `chatgpt-codex-connector`) and fixed by static
+CSS/reference-CSS analysis (no Chrome available in that session; still needs a live re-check):
+- `#P4000_SEARCH`'s empty-results state (`.dm-Search:empty:before`, page 4000 inline CSS hard-codes
+  `rgba(0,0,0,.5)` for the "No Results" text) — fixed in `css/apex/misc.css`.
+- IR/IG toolbar control labels on `:hover` (`.a-IG-controls-item--*`/`.a-IRR-controls-item--*` set
+  `--a-report-controls-cell-label-hover-background-color` directly on the element with pale literals from
+  `app_ui-Core.min.css`, outranking the body-level mapping, so the light label text landed on a pale hover
+  background) — fixed in `css/apex/reports.css`.
+
+A third comment on that PR (page-4000 search/category/results near-white-on-white) was already covered by the
+`input#P4000_SEARCH` / `.dm-Search-*` rules below before this addendum.

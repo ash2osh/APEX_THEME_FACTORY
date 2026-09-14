@@ -173,6 +173,12 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   (500, 1201, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 1910/1912, 3110, 4000, 6303, 6304, 405) before
   calling a package verified. Exclusions: `#apexDevToolbar`, hidden nodes; expect Universal Theme's own
   `u-color-*` demo fills (p1304) to fail under any style.
+- It only samples nodes present (and visible) at rest, on page load. It missed two Solarized Dark failures that
+  only exist on `:hover` (IR/IG toolbar control labels — Iris sets the hover-background atom directly on the
+  type-specific `.a-IG-controls-item--*` element, pale, outranking the body-level mapping) and `:empty:before`
+  (page 4000's "No Results" state, only rendered once a search returns nothing) — caught instead by PR review
+  (2026-09-14, `chatgpt-codex-connector`). Before calling a package verified, also drive the interactive states
+  the static audit can't see: hover every toolbar/report control, and empty a search box.
 
 ### 4.4 SQLcl / DB
 - `apex_application_theme_styles` lists the six Iris/Vita/Redwood rows; `apex_application_static_files`

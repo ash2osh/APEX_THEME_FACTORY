@@ -52,7 +52,7 @@ selectors/properties/tokens you used. Stop before any import.
  sample-themes/linen/css/apex/forms.css | ~4 lines (3 atoms added under existing .apex-theme-iris scope)
 ```
 
-## Verdict: PASS on the task actually run — this is now the scenario's canonical task, see caveat below
+## Verdict: PASS on the task actually run — this is now the scenario's canonical task, see caveats below
 
 Evidence: the change lands as base `--a-field-input-*` atoms on the theme-style scope
 (`.app-theme-linen .apex-theme-iris`, the project's current form of "body.apex-theme-iris" now that app-wide
@@ -61,10 +61,32 @@ write — matching Expected. The evaluee additionally showed good judgment by no
 literal token into the dark package where it would have regressed a documented contrast finding, without being
 asked to.
 
-**Note 2026-09-14** (Codex PR review, PR #4, P2): this run used a *different* task than the original baseline
-run (`14-theme-style-scope-baseline.md`, which tested the now-superseded buttons wording) — not a valid
-matched pair. `.agents/evaluations/14-theme-style-scope.md` has been updated to make this form-field task the
-canonical Expected/Failure text going forward (it's a genuine from-scratch exercise, unlike buttons, which was
-a no-op at every commit tested). This run's own PASS verdict stands for the task it tested, but it cannot be
-compared against the buttons-era baseline run to support any promotion decision — a fresh baseline run against
-this exact prompt is still needed.
+**On "bare Iris" not being covered** (Codex PR review, PR #4, P2): a reviewer correctly noted the fix is
+scoped to `.app-theme-linen`, so it does not reach the app's "Iris (no theme package)" state — a real,
+user-selectable option (page 405's Cards gallery, `App.theme.use('none')`, per
+`applications/ut/pages/p00405-themes.apx`: `'Universal Theme''s own style, no package applied.'`). Verified
+this is intentional, not an oversight: this project's whole architecture routes app-wide restyles through
+theme packages (`2026-09-14-theme-packages-routing`; `sample-themes/README.md`), and "Iris (no package)" is
+the explicit, documented fallback for a visitor who wants *unmodified* Universal Theme — restyling it would
+defeat the purpose of offering that option. Under this project's current conventions, "app-wide" for a
+restyle request means "within the active package," not "reaching every possible display state including the
+literal no-package baseline." This is worth stating explicitly (the scenario's `Expected` line doesn't spell
+it out), but is not treated as a Failure here.
+
+**Note 2026-09-14** (Codex PR review, PR #4, P2, round 1 of 2 on this scenario): this run used a *different*
+task than the original baseline run (`14-theme-style-scope-baseline.md`, which tested the now-superseded
+buttons wording) — not a valid matched pair. `.agents/evaluations/14-theme-style-scope.md` has been updated to
+make this form-field task the canonical Expected/Failure text going forward (it's a genuine from-scratch
+exercise, unlike buttons, which was a no-op at every commit tested).
+
+**Correction 2026-09-14, round 2**: a further review pass on that same scenario file caught something more
+fundamental — the "Task:" line quoted above (lines 23–31) is the scenario's own `Given` text verbatim,
+including the sentence *"Overriding the base atoms on body.apex-theme-iris restyles every instance while all
+modifiers keep precedence, with zero :not() chains and no property fights"* — that is the scoping conclusion
+this scenario is meant to test whether the evaluee reaches **unaided**. Handing it over in the prompt means
+this run's PASS cannot establish that. The scenario's `Given` has been rewritten to describe only the
+environment (where atoms and modifiers are declared) without stating the scoping answer. This run's edits are
+still real and still technically correct, but the **verdict is downgraded to ambiguous** — it doesn't
+demonstrate unaided skill behavior, on top of not being a validly matched pair with baseline. A fresh run
+against the now-neutral `Given` is needed on both sides before this scenario can support any promotion
+decision.

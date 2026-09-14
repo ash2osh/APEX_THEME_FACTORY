@@ -16,11 +16,11 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 07 | token-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/07-token-reuse-current.md |
 | 08 | iris-only | passed 2026-09-14 (current only) — runs/2026-09-14/08-iris-only-current.md |
 | 09 | runtime-evidence | ambiguous 2026-09-14 — needs a Chrome-enabled session; not a valid PASS under this matrix's no-Chrome ground rules, corrected after PR #4 review — runs/2026-09-14/09-runtime-evidence-current.md |
-| 10 | theme-package-routing | passed baseline / passed current 2026-09-14 (corrected: sync-static.sh permitted) — runs/2026-09-14/10-theme-package-routing-{baseline,current}-sync-permitted.md |
+| 10 | theme-package-routing | passed baseline / passed current 2026-09-14 (corrected: sync-static.sh permitted; current run has a noted DB-compliance caveat, routing behavior unaffected) — runs/2026-09-14/10-theme-package-routing-{baseline,current}-sync-permitted.md |
 | 11 | dark-package-coverage | ambiguous both sides 2026-09-14 — isolation and prompt fixed, but the live contrast-audit half of Expected still needs a Chrome-enabled session (2 correction rounds) — runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md |
 | 12 | apexlang-static-id | passed baseline / passed current 2026-09-14 — runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md |
 | 13 | cards-render-event | passed baseline 2026-09-14 (corrected isolation) / passed current 2026-09-14 — runs/2026-09-14/13-cards-render-event-baseline-eda510d.md, runs/2026-09-14/13-cards-render-event-current.md |
-| 14 | theme-style-scope | invalid pairing 2026-09-14 — baseline (buttons task) and current (form-field task) tested different tasks, not comparable; scenario file updated, fresh matched baseline still needed — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
+| 14 | theme-style-scope | ambiguous both sides 2026-09-14 — mismatched tasks *and* the scenario's own Given handed the evaluee the answer; scenario file rewritten, fresh matched neutral-prompt run still needed — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
 
 Findings whose knowledge or skill change is already applied but whose scenario has not been run stay in
 `findings/pending/` (status says so); they move to `accepted/` only after the row above reads *passed* with the
@@ -105,18 +105,38 @@ say plainly that baseline and current tested different tasks — not "both passe
 validly compared at all." `2026-09-13-theme-style-scope-token-overrides` needs a fresh baseline14 run against
 the now-canonical form-field prompt before any promotion decision can be made.
 
+**2026-09-14 correction, round 6** (a further PR #4 review pass, three separate findings):
+- Scenario 10's corrected current-worktree run executed `scripts/apex-validate.sh`, which does connect to a
+  database (`sql -name "$CONN"`) — violating the same "do not connect to the database" instruction its
+  corrected baseline counterpart explicitly read the script's source and refused to run over. Both were graded
+  PASS without flagging the difference. Noted the compliance gap in the run log; the theme-package-routing
+  behavior itself (what scenario 10 actually tests) is unaffected, since it doesn't depend on `apex-validate.sh`
+  having run.
+- Scenario 14's `Given` — even after round 5's task fix — still stated the exact scoping conclusion
+  ("overriding on body.apex-theme-iris restyles every instance while modifiers keep precedence...") before
+  posing the task, in both the baseline and current-worktree prompts. Neither PASS verdict actually
+  demonstrated unaided skill behavior. Rewrote `Given` to describe only the environment (where atoms and
+  modifiers are declared), not the scoping answer, and downgraded both existing runs to ambiguous.
+- Separately (not a bug, but worth recording): scenario 14's form-field fix is scoped to the `linen` package
+  and does not reach the app's "Iris (no theme package)" fallback state. Verified this is intentional — the
+  project's architecture routes app-wide restyles through packages, and the no-package option exists
+  specifically to offer *unmodified* Iris — documented in the run log rather than treated as a gap.
+
 **Net result**: none of the three findings originally promoted from this evaluation run survived scrutiny.
 `2026-09-14-theme-packages-routing` and `2026-09-14-apex-widget-events` were tested to completion on a properly
 isolated, fully-resourced, neutrally-prompted re-run and didn't show a load-bearing effect.
 `2026-09-14-ut-literal-root-tokens` was never actually tested to completion at all — every attempt hit the same
 missing ingredient (live Chrome) this whole evaluation matrix lacks. `2026-09-13-theme-style-scope-token-overrides`
-(scenario 14) was never validly tested either, for a different reason — its baseline and current runs used two
-different tasks and were never a matched pair. All findings from this run remain pending; the underlying
-knowledge in each is still considered accurate. Three structural gaps in this matrix, not the skills, are what
-actually failed here: baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), no evaluee
-anywhere in this matrix having Chrome access despite some scenarios' `Expected` lines literally requiring a
-live pass (rounds 3–4, plus the original scenario 09 miscall), and one scenario definition drifting out of
-sync with what was actually run (round 5). Scenarios 04, 05, 09, 11 and 14 specifically remain open on that
-basis (04 also needs a real APEXLang wiring, not just Chrome; 14 needs a fresh matched baseline run, not
-Chrome) — scenario 13's `Expected` is a code-correctness check only (the right event/guard/API), not a
-runtime-verification requirement, so its PASS verdicts stand as graded.
+(scenario 14) was never validly tested either, for two compounding reasons — mismatched tasks, and a `Given`
+that gave away the answer. All findings from this run remain pending; the underlying knowledge in each is
+still considered accurate. Four structural gaps in this matrix, not the skills, are what actually failed here:
+baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), no evaluee anywhere in this
+matrix having Chrome access despite some scenarios' `Expected` lines literally requiring a live pass (rounds
+3–4, plus the original scenario 09 miscall), a scenario definition drifting out of sync with what was actually
+run and a `Given` that leaked its own answer (rounds 5–6), and one evaluee not complying with a stated
+constraint the other side did comply with (round 6, scenario 10). Scenarios 04, 05, 09, 11 and 14 specifically
+remain open on their respective basis (04 also needs a real APEXLang wiring, not just Chrome; 14 needs fresh
+matched runs against the rewritten `Given`, not Chrome) — scenario 13's `Expected` is a code-correctness check
+only (the right event/guard/API), not a runtime-verification requirement, so its PASS verdicts stand as
+graded, and scenario 10's PASS verdicts stand for the routing behavior under test despite the noted compliance
+gap.

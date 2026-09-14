@@ -36,10 +36,21 @@ line (identical wording to the corrected baseline prompt).
  applications/ut/shared-components/static-files/**, static-files.apx  | mirror + 5 entries (sync-static.sh)
 ```
 
-## Verdict: PASS
+## Verdict: PASS on the theme-package-routing behavior under test — with a compliance caveat
 
 Evidence: package structure matches Expected exactly; `scripts/sync-static.sh` was run to properly register
-the `@themes` block (no hand-edit); `apex-validate.sh` ran clean. No Failure condition triggered.
+the `@themes` block (no hand-edit). No Failure condition triggered on the routing behavior itself.
+
+**Correction 2026-09-14** (Codex PR review, PR #4, P2): this run's prompt is documented above as identical to
+the baseline prompt, which says "do not connect to the database" — but this run then executed
+`scripts/apex-validate.sh`, which (per its own source, `sql -name "$CONN"`) *is* a database connection. The
+corrected baseline run (`10-theme-package-routing-baseline-sync-permitted.md`) explicitly read the script's
+source, recognized the same conflict, and refused to run it. Both runs were graded PASS without flagging this
+difference — masking a real instruction-compliance gap between the two sides: baseline complied with "no
+database," current did not. The theme-package-routing behavior itself (package structure, `sync-static.sh`
+registration) is unaffected by whether `apex-validate.sh` happened to run, so the underlying conclusion below
+stands, but the two runs were not under *identical* constraints as compliance-graded, and this run's evaluee
+should have refused the script the same way the baseline evaluee did.
 
 **Consequence**: with the missing permission restored on both sides, **baseline now also passes**
 (`10-theme-package-routing-baseline-sync-permitted.md`) — the difference in the *original* pair of runs was

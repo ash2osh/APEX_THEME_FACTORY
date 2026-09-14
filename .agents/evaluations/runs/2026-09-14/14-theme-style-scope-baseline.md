@@ -62,7 +62,17 @@ since been updated to make the form-field task canonical (see its own 2026-09-14
 task is a no-op at every commit this evaluation has run against. **This baseline run and the current-worktree
 run are not a valid matched pair** — comparing "PASS on buttons at baseline" against "PASS on forms at
 current" says nothing about whether old vs. new skill text behaves differently on the *same* task. No baseline
-run of the form-field-border task has been performed. The finding this scenario supports
-(`2026-09-13-theme-style-scope-token-overrides`) stays pending; treat this specific baseline/current pairing as
-uninformative for that decision rather than as evidence either way. A genuine test needs a fresh baseline14
-run using the current-worktree run's exact form-field-border prompt.
+run of the form-field-border task has been performed.
+
+**Correction, round 2**: a further review pass caught that the "Task:" line quoted above also contains the
+scenario's `Given` text verbatim, including the scoping conclusion this scenario is meant to test whether the
+evaluee reaches unaided ("Overriding the base atoms on body.apex-theme-iris restyles every instance while all
+modifiers keep precedence..."). `14-theme-style-scope.md`'s `Given` has been rewritten to describe only the
+environment, not the answer. This run's own PASS (on the buttons task, itself a no-op — see above) is
+downgraded to ambiguous for the same reason as the current-worktree run: it never demonstrated unaided skill
+behavior even setting the task-mismatch problem aside.
+
+The finding this scenario supports (`2026-09-13-theme-style-scope-token-overrides`) stays pending; treat this
+specific baseline/current pairing as uninformative for that decision rather than as evidence either way. A
+genuine test needs a fresh baseline14 run and a fresh current-worktree run, both using the now-neutral `Given`
+and the same (form-field-border) task.

@@ -28,6 +28,10 @@ echo "Universal Theme $UT_VERSION reference assets from $APEX_ORIGIN -> $REF"
 fetch "$APEX_ORIGIN/i/themes/theme_42/$UT_VERSION/css/Core.min.css"          "$REF/Core.min.css"
 fetch "$APEX_ORIGIN/i/themes/theme_42/$UT_VERSION/css/Iris.min.css"          "$REF/Iris.min.css"
 fetch "$APEX_ORIGIN/i/themes/theme_42/$UT_VERSION/js/theme42.min.js"         "$REF/theme42.min.js"
+# APEX widget CSS: *consumes* the --a-* atoms (with light fallbacks) that Core/Iris declare — needed to see
+# which atom a component reads and what it falls back to (e.g. --a-gv-pagination-button-selected-background-color)
+fetch "$APEX_ORIGIN/i/app_ui/css/Core.min.css"                               "$REF/app_ui-Core.min.css"
+fetch "$APEX_ORIGIN/i/app_ui/css/Theme-Standard.min.css"                     "$REF/app_ui-Theme-Standard.min.css"
 fetch "$APEX_ORIGIN/i/libraries/font-apex/2.5.1/css/font-apex.min.css"       "$REF/font-apex-2.5.1.min.css"
 fetch "$APEX_ORIGIN/i/libraries/oracle-fonts/oraclesans-apex.min.css"        "$REF/oraclesans-apex.min.css"
 

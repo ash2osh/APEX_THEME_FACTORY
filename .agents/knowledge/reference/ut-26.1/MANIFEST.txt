@@ -8,3 +8,5 @@ d75c93f33d3df970b6f51c699232a32c010cab5cd2e6810b3add10797a7ae46f  .agents/knowle
 fa10258f115be06249dbb556398e6bd46ecbcdbd3689e1844b8c570e80e66f88  .agents/knowledge/reference/ut-26.1/Iris.min.css
 ae21fffcb9a844346a7a57685c521cfb8c13a0fc68f38578c4fa9803e25fbe38  .agents/knowledge/reference/ut-26.1/oraclesans-apex.min.css
 219e96fbdc878b31c28c362d7879ff7a25312ea7bcb767558b855b5acb3b58bd  .agents/knowledge/reference/ut-26.1/theme42.min.js
+f68af6098d9587554626e210ee01186079075dfdf4a0c48cd644bc63ffe9353e  .agents/knowledge/reference/ut-26.1/app_ui-Core.min.css
+601bb7201cdad3ad9099f4ac3ddd4d082d0c78982ce44847ac2bf3610578358c  .agents/knowledge/reference/ut-26.1/app_ui-Theme-Standard.min.css

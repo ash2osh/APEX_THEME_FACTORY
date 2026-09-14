@@ -19,6 +19,8 @@ docs/**/*.png
 static-files/**/*.png
 .agents/**/*.png
 .agents/**/*.jpg
+# theme packages keep only curated previews as .jpg (cover.jpg + a few captures); iteration PNGs stay out
+sample-themes/**/*.png
 
 # Editor / OS
 .vscode/

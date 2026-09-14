@@ -9,7 +9,7 @@ Governing spec: [AGENT_SPEC.md](AGENT_SPEC.md). Read it before any design work.
 |---|---|---|
 | APEX version | **26.1.4** (`apex.env.APEX_VERSION`) | runtime, 2026-09-13 |
 | Theme | Universal Theme (theme 42), `baseTheme: ut-26.1` | `applications/ut/shared-components/themes/universal-theme/theme.apx` |
-| Theme style | **Iris** — *mandatory*. Nothing in this project may depend on Vita, Redwood Light, or any other style | `apex_application_theme_styles` (Iris `IS_CURRENT = Yes`) |
+| Theme style | **Iris** — *mandatory*. Nothing in this project may depend on Vita, Redwood Light, or any other style. The reference app's theme-style switcher (nav bar, page 405, `APPLY_THEME_STYLE`, `P0_THEME_STYLE_ID`, Vita/Redwood previews) was removed 2026-09-14; the other styles remain as inert rows under Shared Components → Themes: the theme is *subscribed* to the standard Universal Theme, so its styles are read-only in the Builder (no Delete) and not expressible in APEXLang; removing them would mean unsubscribing the theme | `apex_application_theme_styles` (Iris `IS_CURRENT = Yes`) |
 | Colour scheme | Iris ships **light only** (`--ut-color-scheme: light`; no `prefers-color-scheme` block in `Iris.min.css`) | `Iris.min.css` |
 | Font | Oracle Sans (`--a-base-font-family`), icons Font APEX 2.5.1 | runtime `<link>` list |
 
@@ -63,6 +63,7 @@ APEX_THEME_FACTORY/
 - ~~Static files upload path~~ decided 2026-09-13: `scripts/sync-static.sh` assembles `static-files/css|js/**` and
   `sample-themes/*/css/**` into `applications/ut/shared-components/static-files/` (registering `file` entries,
   pruning stale ones); the app references `#APP_FILES#css/app.css` and `#APP_FILES#js/app.js`. Theme *linen*
-  is the default in app 102; switching is described in `sample-themes/README.md`.
+  is the default in app 102; visitors switch with the nav-bar **Theme** menu or page 405 *Themes* (both discover
+  packages from `css/themes/<name>/theme.json` in the static files) — see `sample-themes/README.md`.
 - Known: APEX session-state protection rejects unknown query parameters on friendly URLs, so runtime switches
   use the URL hash. Page 0 can only address Standard-template slots; they map to other templates by position.

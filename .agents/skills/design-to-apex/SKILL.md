@@ -15,7 +15,7 @@ never from memory.
 ## Workflow (spec §77) — follow in order, one section at a time
 1. UNDERSTAND the request. Split the design into sections (header, context, KPIs, content, grid, actions, dialogs).
 2. INSPECT TARGET → `apex-design-system` (map values to Iris/`--app-*` tokens).
-3. INSPECT SOURCE → `applications/ut/pages/pNNNNN-*.apx`, `static-files/`, `docs/COMPONENTS.md`.
+3. INSPECT SOURCE → `applications/ut/pages/pNNNNN-*.apx`, `static-files/`, the active theme package `sample-themes/<name>/css/`, `docs/COMPONENTS.md`.
 4. INSPECT RUNTIME → `chrome-devtools-mcp` (DOM, computed CSS, console). Required before any CSS.
 5. MAP COMPONENTS → `apex-component-selection`, `apex-ut-dom-knowledge`, `apex-template-options`.
 6. CHOOSE IMPLEMENTATION in priority order: existing component → native APEX → native+CSS → native+Alpine → reusable custom → custom HTML.
@@ -42,7 +42,7 @@ run them **through** this router, on the CSS/Alpine layers, in refinement mode o
   Oracle Sans, Iris radius/shadows, UT components. Impeccable's own "the brief wins" rule applies.
 - Allowed sub-commands: `critique`, `audit`, `polish`, `layout`, `typeset`, `adapt`, `harden`, `onboard`,
   `clarify`, `quieter`, `distill`. Target = a running page URL (inspect via `chrome-devtools-mcp`) or
-  files under `static-files/`.
+  files under `static-files/` (components, pages) or the theme package `sample-themes/<name>/css/` (app-wide look).
 - Not allowed here: `bolder`, `overdrive`, `delight`, `colorize`, `animate`, `craft`/new-work, `init`,
   `document`, `extract`, `live`, `hooks`, `doctor` — they invent identity, replace markup, or write
   config/hook files (`PRODUCT.md`, `DESIGN.md`, `.impeccable/`, `settings.local.json`).

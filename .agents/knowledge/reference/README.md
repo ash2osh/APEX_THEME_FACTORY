@@ -12,6 +12,8 @@ Universal Theme / Iris *design system* this project styles against.
 | `ut-26.1/Core.min.css` | `/i/themes/theme_42/26.1/css/Core.min.css` | UT structure, component classes, template-option modifiers |
 | `ut-26.1/Iris.min.css` | `/i/themes/theme_42/26.1/css/Iris.min.css` | Iris token values (`--ut-*`, `--a-*`), Iris overrides |
 | `ut-26.1/theme42.min.js` | `/i/themes/theme_42/26.1/js/theme42.min.js` | UT runtime behaviour (nav, sticky, dialogs) |
+| `ut-26.1/app_ui-Core.min.css` | `/i/app_ui/css/Core.min.css` | APEX widget CSS (IG/IR grid, cards, menus, fields…): which `--a-*` atom a component **consumes** and its light fallback |
+| `ut-26.1/app_ui-Theme-Standard.min.css` | `/i/app_ui/css/Theme-Standard.min.css` | widget state atoms set on elements (e.g. `.a-GV-pageSelector-item.is-selected` → `--a-gv-pagination-button-selected-background-color`) |
 | `ut-26.1/font-apex-2.5.1.min.css` | `/i/libraries/font-apex/2.5.1/css/font-apex.min.css` | icon class names (`.fa-*`) |
 | `ut-26.1/oraclesans-apex.min.css` | `/i/libraries/oracle-fonts/oraclesans-apex.min.css` | Oracle Sans `@font-face` weights |
 
@@ -20,3 +22,7 @@ Rules
 - Never edit them. Re-run `scripts/fetch-vendor.sh` after an APEX upgrade and diff the manifest.
 - Runtime truth still wins: a value read here is a *candidate*; confirm it with Chrome DevTools on the
   element (many `--a-*` are redefined per component).
+- An atom missing from `Core.min.css`/`Iris.min.css` is **not** dead: the widget CSS consumes it with a
+  fallback (`var(--a-x, #fff)`), so a body-level declaration still applies. Grep all four CSS files.
+- Iris `:root` values written as `var(--a-button-text-color)` resolve **at :root** — a body-level override of
+  the referenced atom does not reach them; override the derived atom too (see solarized-dark `reports.css`).

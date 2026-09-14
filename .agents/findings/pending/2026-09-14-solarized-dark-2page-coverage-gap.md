@@ -159,14 +159,21 @@ to "verified".
 
 ## Regression Scenario
 
-Matches `.agents/evaluations/11-dark-package-coverage.md` closely, but that scenario's own evaluation runs
-(2026-09-14, see `evaluations/runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md`)
-showed the relevant skill guidance is already adequate at both the old and current commit — so this finding's
-remaining gap list is a real, still-open bug in the *package*, not evidence of a skill-text problem to promote
-against. No new evaluation scenario is proposed; the existing 11 already covers this class of issue.
+Matches `.agents/evaluations/11-dark-package-coverage.md` closely. That scenario's own evaluation runs
+(2026-09-14, see `evaluations/runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md`
+on branch `evaluations-run-2026-09-14`) were corrected 2026-09-14 from PASS to **ambiguous** — both runs are
+source-level substitutes for a live Chrome contrast audit the scenario's `Expected` line requires, so neither
+adequacy nor inadequacy of the skill guidance was actually established either way. This finding's own gap list
+(§6–7 below) is independent of that open question — it's a directly-verified bug in the *package* (grep-
+confirmed consumption + confirmed-present page), not something riding on how scenario 11 eventually resolves.
+No new evaluation scenario is proposed; the existing 11 already covers this class of issue once it can
+actually be run with Chrome.
 
 ## Scope
 
-Page-specific bug in this package's current state (two atoms now fixed here; ~50 more listed above still open)
-plus a reusable process point: a theme package's "Verified" section should name exactly what was
+Page-specific bug in this package, now closed at the source-review level (see Evidence §6): every gap with
+confirmed consumption and a confirmed-present page is fixed as of this PR. Two categories remain genuinely
+open, per §7: Oracle JET's/FullCalendar's own custom-property theming (unverifiable offline — their consuming
+CSS isn't in the reference bundle) and a live Chrome contrast-audit pass to confirm every fix actually renders
+as intended. Also a reusable process point: a theme package's "Verified" section should name exactly what was
 runtime-checked vs. source-reviewed, since the two give very different confidence.

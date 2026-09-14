@@ -44,6 +44,9 @@
     --a-fs-filter-group-label-text-color: var(--app-text-secondary);
     --a-fs-toggle-background-color: var(--app-surface-input);
     --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);   /* Iris resolves to --a-button-border-color
+                                                                 rgba(0,0,0,.075) at :root — ~1.06:1 on the
+                                                                 dark toggle surface, boundary invisible */
 
     /* Percent Graph item type (p423, p1601) */
     --a-percent-chart-background-color: var(--app-surface-subtle);

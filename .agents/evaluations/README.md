@@ -10,7 +10,7 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 01 | native-grid-preservation | passed 2026-09-14 (current only) — runs/2026-09-14/01-native-grid-preservation-current.md |
 | 02 | css-scoping | passed 2026-09-14 (current only) — runs/2026-09-14/02-css-scoping-current.md |
 | 03 | alpine-component-structure | passed 2026-09-14 (current only) — runs/2026-09-14/03-alpine-component-structure-current.md |
-| 04 | apex-refresh | passed 2026-09-14 (current only) — runs/2026-09-14/04-apex-refresh-current.md |
+| 04 | apex-refresh | ambiguous 2026-09-14 — component never wired into an actual refreshable region, state resync doesn't match "from the APEX item"; corrected after PR #4 review — runs/2026-09-14/04-apex-refresh-current.md |
 | 05 | source-persistence | ambiguous 2026-09-14 — reload-and-verify half of Expected needs a Chrome-enabled session, corrected after PR #4 review — runs/2026-09-14/05-source-persistence-current.md |
 | 06 | component-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/06-component-reuse-current.md |
 | 07 | token-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/07-token-reuse-current.md |
@@ -75,6 +75,14 @@ there the first time):
   validly completed at all" — a genuinely unresolved scenario, not a demonstrated non-effect. See the finding's
   Status line for the corrected reasoning.
 
+**2026-09-14 correction, round 4** (a further PR #4 review pass caught one more overclaimed verdict, a
+different flavor than round 3): scenario 04's current-worktree run delivered only a new, standalone Alpine
+component — no APEXLang region/Dynamic Action wiring it into an actual refreshable target, so the
+duplicate-handler/reinit claims were never exercised against a real refresh; separately, its state-resync
+mechanism (DOM markup + a generic ajax call) doesn't match Expected's specific "from the APEX item" wording.
+Corrected to ambiguous — this one needs both a real `.apx` wiring *and* a live Chrome session, not Chrome
+alone, so it's a distinct gap from round 3's scenarios.
+
 **Net result**: none of the three findings originally promoted from this evaluation run survived scrutiny.
 `2026-09-14-theme-packages-routing` and `2026-09-14-apex-widget-events` were tested to completion on a properly
 isolated, fully-resourced, neutrally-prompted re-run and didn't show a load-bearing effect.
@@ -83,6 +91,7 @@ missing ingredient (live Chrome) this whole evaluation matrix lacks. All three r
 knowledge in each is still considered accurate. Two structural gaps in this matrix, not the skills, are what
 actually failed here: baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), and no
 evaluee anywhere in this matrix having Chrome access despite some scenarios' `Expected` lines literally
-requiring a live pass (round 3, plus the original scenario 09 miscall). Scenarios 05, 09 and 11 specifically
-remain open on that basis — scenario 13's `Expected` is a code-correctness check only (the right event/guard/
-API), not a runtime-verification requirement, so its PASS verdicts stand as graded.
+requiring a live pass (rounds 3–4, plus the original scenario 09 miscall). Scenarios 04, 05, 09 and 11
+specifically remain open on that basis (04 also needs a real APEXLang wiring, not just Chrome) — scenario 13's
+`Expected` is a code-correctness check only (the right event/guard/API), not a runtime-verification
+requirement, so its PASS verdicts stand as graded.

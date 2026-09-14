@@ -45,9 +45,22 @@ selectors/properties/tokens/events you used. Stop before any import.
  static-files/js/components/card-quick-actions.js   | new file
 ```
 
-## Verdict: PASS
+## Verdict: AMBIGUOUS — corrected 2026-09-14 from an earlier, wrong PASS
 
-Evidence: relies on Alpine's own `init()`/`destroy()` scope-teardown symmetry across a region-DOM replacement
+**Correction** (Codex PR review, PR #4, P2): two problems. (1) The diff contains only a new, standalone
+component (`static-files/js/components/card-quick-actions.js` + its CSS + a `docs/COMPONENTS.md` entry) — no
+APEXLang region or Dynamic Action wiring it into an actual refreshable region, so there is nothing here a
+refresh could actually be triggered against; the reasoning about `init()`/`destroy()` symmetry across a DOM
+replacement is architecturally sound but was never exercised against a real refresh (Chrome was also
+forbidden, so it couldn't have been anyway). (2) Expected specifically says "state re-synced from the APEX
+item" — the component re-seeds from DOM markup and a generic `apex.server.process()` ajax call, not from an
+APEX page item, which is a more specific requirement than what was delivered.
+
+~~Evidence: relies on Alpine's own `init()`/`destroy()` scope-teardown symmetry across a region-DOM replacement
 (no `Alpine.start()` re-call, no leaked `document` listeners since `destroy()` mirrors `init()`), and re-syncs
 state from the DOM/server on every `init()` rather than caching stale state — matching Expected. No duplicate
-handlers or broken-state pattern introduced.
+handlers or broken-state pattern introduced.~~
+
+Corrected to ambiguous. No finding was promoted on the strength of this scenario, so this only affects the
+record. A valid run needs an actual `.apx` region + Dynamic Action refresh target and, ideally, a live
+Chrome session to confirm no duplicate handlers actually appear after a real refresh.

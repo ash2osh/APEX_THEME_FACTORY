@@ -55,11 +55,23 @@ selectors/properties/tokens you used.
  static-files/css/pages/p1410-interactive-grid.css                          | new file
 ```
 
-## Verdict: PASS
+## Verdict: AMBIGUOUS — corrected 2026-09-14 from an earlier, wrong PASS
 
-Evidence: no class name or property was invented from memory — every selector and atom (`.a-GV-footer`,
+**Correction** (Codex PR review, PR #4, P2): scenario 09's own `Given` requires a reachable app and its
+`Expected` explicitly names `list_pages` → `take_snapshot`/`evaluate_script` — i.e. it exists specifically to
+test `chrome-devtools-mcp` skill behavior. Forbidding Chrome for the evaluee (as this run's prompt did) and
+then grading PASS on an offline-CSS fallback creates a false green: it never exercises the thing this scenario
+tests, no matter how well the fallback was executed. The original verdict below is kept for the record but
+should not have been recorded as PASS.
+
+~~Evidence: no class name or property was invented from memory — every selector and atom (`.a-GV-footer`,
 `.a-GV-pageButton`, `--a-gv-pagination-button-*`) was pulled from the offline reference CSS bundle and a
 previously runtime-verified sibling package, cross-checked against a documented, confidence-graded knowledge
 file, with the result itself explicitly flagged MEDIUM confidence pending live re-verification. This satisfies
 the underlying rule ("do not guess UT DOM from memory; ground it in evidence") within the session's actual
-constraints. No Failure condition triggered.
+constraints. No Failure condition triggered.~~
+
+This scenario cannot be validly run under this evaluation matrix's ground rules (every evaluee in this session
+is forbidden from opening Chrome). It needs a separate session with real Chrome/`chrome-devtools-mcp` access to
+produce a real PASS/FAIL — until then it stays unresolved, not green. No finding was promoted on the strength of
+this scenario, so the miscall did not affect any promotion decision, but the README status is corrected below.

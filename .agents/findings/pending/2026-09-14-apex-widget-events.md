@@ -1,7 +1,17 @@
 # Finding
 
 Status:
-Accepted (2026-09-14 — evaluation 13 passed, see evaluations/runs/2026-09-14/13-cards-render-event-current.md; baseline failed, see evaluations/runs/2026-09-14/13-cards-render-event-baseline.md)
+Pending — demoted 2026-09-14 from a premature Accepted. The first evaluation run (baseline at `9276369`) showed
+a FAIL, but PR #4's Codex review (P2) correctly pointed out that `9276369` predates `eda510d`, which already
+contains the correct `tablemodelviewpagechange` handler this finding is about — so that baseline wasn't
+isolating the skill-text change, it was also missing the application code current had. Re-run against the
+correct isolation point (`eda510d`, same app code as current, old Cards-silent skill text): PASS — see
+evaluations/runs/2026-09-14/13-cards-render-event-baseline-eda510d.md. The evaluee got the right event by
+reading the existing correct handler, not from skill guidance, so a properly isolated baseline also passes.
+Current still passes: evaluations/runs/2026-09-14/13-cards-render-event-current.md. The knowledge itself
+(pitfalls.md §2.4, the skill correction) is still accurate and worth keeping — it just hasn't been shown
+load-bearing by this scenario. Original (invalid) baseline kept for the record:
+evaluations/runs/2026-09-14/13-cards-render-event-baseline.md.
 
 Category:
 APEX-JAVASCRIPT-PATTERN

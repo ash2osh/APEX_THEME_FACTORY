@@ -17,3 +17,4 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 08 | iris-only | not yet run |
 | 09 | runtime-evidence | not yet run |
 | 10 | theme-package-routing | not yet run |
+| 11 | dark-package-coverage | not yet run |

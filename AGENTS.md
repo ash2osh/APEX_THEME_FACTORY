@@ -10,4 +10,5 @@ Non-negotiables
 - Appearance = `static-files/css` (shared foundation + `--app-*` vocabulary aliasing Iris) plus theme packages in `sample-themes/<name>/css` scoped to `html.app-theme-<name>`; interaction = Alpine in `static-files/js/components`. Assemble with `scripts/sync-static.sh` before `apex-import`; default theme via `scripts/apply-theme.sh`.
 
 Skills live in `.agents/skills/` (router: `design-to-apex`). Knowledge, findings and evaluations are in `.agents/`.
+Before theme, runtime or import work, skim **.agents/knowledge/pitfalls.md** (every trap met so far, with the fix).
 Component registry: docs/COMPONENTS.md. Tokens and conventions: docs/DESIGN_SYSTEM.md.

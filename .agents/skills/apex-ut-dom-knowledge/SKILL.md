@@ -5,7 +5,8 @@ description: Use when you need the real Universal Theme 26.1 / Iris markup, clas
 
 # apex-ut-dom-knowledge
 
-Verified facts: `.agents/knowledge/ut-26.1-iris-runtime.md`, tokens `.agents/knowledge/iris-ut-tokens.md`.
+Verified facts: `.agents/knowledge/ut-26.1-iris-runtime.md`, tokens `.agents/knowledge/iris-ut-tokens.md`, traps `.agents/knowledge/pitfalls.md`.
+Offline CSS: `.agents/knowledge/reference/ut-26.1/` — UT `Core`/`Iris` **declare** tokens; the APEX widget CSS `app_ui-Core`/`app_ui-Theme-Standard` **consumes** atoms with light fallbacks. Grep all four.
 
 ## Core principle
 Do not guess UT DOM. Inspect it (spec §4), then record verified structure as knowledge.

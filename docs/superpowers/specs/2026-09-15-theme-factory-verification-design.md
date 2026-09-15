@@ -39,6 +39,7 @@ Every result uses one of `PASS`, `FAIL`, `UNVERIFIED`, or `NOT APPLICABLE`.
 - ZIP layout and checksums;
 - no path traversal, absolute paths, symlinks, or duplicate archive names;
 - self-contained CSS with no unresolved imports or undeclared shared tokens;
+- optional custom fonts contain only declared WOFF2 faces, use package-prefixed family identifiers, and include every referenced license;
 - installer/uninstaller dry-run behavior against fixtures;
 - manual documentation completeness.
 
@@ -56,12 +57,14 @@ Every result uses one of `PASS`, `FAIL`, `UNVERIFIED`, or `NOT APPLICABLE`.
 ### Layer D: browser runtime
 
 - expected app, page, APEX version, theme number/style, package class, CSS URL, and runtime URL;
+- every declared font request, response MIME type, `document.fonts.check()` result, computed role family, and fallback behavior;
 - console and network failures;
 - visual states and contrast;
 - responsive widths;
 - keyboard behavior;
 - report/grid/form/dialog lifecycle;
 - Alpine initialization and refresh behavior.
+- Font APEX icon family and glyph rendering before and after applying a custom-font package.
 
 ### Layer E: agent behavior
 
@@ -83,7 +86,8 @@ tests/
 │   ├── apexlang/with-existing-assets/
 │   ├── apexlang/no-global-page/
 │   ├── apexlang/ambiguous-css-block/
-│   └── packages/invalid/
+│   ├── packages/invalid/
+│   └── packages/custom-font/
 ├── test_manifest.py
 ├── test_css_bundle.py
 ├── test_package_archive.py
@@ -152,6 +156,7 @@ The policy checker parses declarations rather than comments and enforces:
 - `!important` appears only in the global `x-cloak` rule or beside a comment identifying the mirrored Iris rule;
 - every used `--app-*` token is declared by the flattened package;
 - package CSS contains no remote URL or unresolved local import.
+- font-bearing packages contain no external font URL or data URL, every file has the `wOF2` signature, and every declared role has its documented fallback and license.
 
 The five existing literal declarations in theme `css/apex` files move to semantic tokens without changing their computed runtime values.
 
@@ -220,9 +225,10 @@ The matrix runs:
 5. install Solarized Dark from its separate ZIP;
 6. switch among Linen, Solarized Dark, and Iris;
 7. reload and open a dialog to verify namespaced browser persistence;
-8. uninstall the active package and verify fallback;
-9. uninstall the final package and verify clean Iris;
-10. restore the pre-test backup and compare application digests.
+8. install the custom-font fixture, verify body/heading/mono faces and Font APEX isolation, then simulate a failed font request and verify the declared fallback;
+9. uninstall the active package and verify fallback;
+10. uninstall the final package and verify clean Iris;
+11. restore the pre-test backup and compare application digests.
 
 Disposable applications are deleted only through the release test's explicit cleanup command after their IDs are rechecked. Cleanup is never part of a generic offline test.
 
@@ -253,4 +259,5 @@ The report refuses a `VERIFIED` verdict when any required layer is `FAIL` or `UN
 - Pending findings are promoted or rejected only through the documented protocol.
 - Linen and Solarized Dark pass the complete live matrix.
 - Separate single-theme ZIPs install, coexist, switch, persist, uninstall, and restore successfully in both consumer fixtures.
+- The custom-font fixture self-hosts licensed WOFF2 assets, loads all declared roles, falls back cleanly, and does not alter Font APEX icons.
 - Release reports state coverage limits and never infer runtime success from source validation alone.

@@ -58,6 +58,7 @@ The ZIP root contains:
 ├── theme-factory-runtime.js
 ├── install.sh
 ├── uninstall.sh
+├── fonts/                         optional; WOFF2 files referenced by theme.json
 ├── lib/
 │   └── theme_factory/
 │       ├── __init__.py
@@ -71,7 +72,8 @@ The ZIP root contains:
 ├── preview/
 │   └── cover.jpg
 └── licenses/
-    └── THIRD_PARTY.md
+    ├── THIRD_PARTY.md
+    └── <font-license>.txt          required for every declared font family
 ```
 
 The ZIP contains one theme manifest and one theme stylesheet. The common runtime and installer utilities are copied into the ZIP so it remains usable outside this repository. The bundled Python library uses only the Python standard library; `install.sh` and `uninstall.sh` verify Python 3.10 or newer and invoke that local library without reading repository files.
@@ -97,6 +99,33 @@ The ZIP contains one theme manifest and one theme stylesheet. The common runtime
   "templateOptions": {
     "navigationMenuStyle": "t-TreeNav--styleB"
   },
+  "fonts": {
+    "body": {
+      "family": "Example Sans",
+      "fallback": ["Oracle Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+      "license": "licenses/OFL-Example-Sans.txt",
+      "faces": [
+        {"file": "fonts/example-sans-400-normal.woff2", "weight": 400, "style": "normal"},
+        {"file": "fonts/example-sans-700-normal.woff2", "weight": 700, "style": "normal"}
+      ]
+    },
+    "heading": {
+      "family": "Example Display",
+      "fallback": ["Oracle Sans", "sans-serif"],
+      "license": "licenses/OFL-Example-Display.txt",
+      "faces": [
+        {"file": "fonts/example-display-700-normal.woff2", "weight": 700, "style": "normal"}
+      ]
+    },
+    "mono": {
+      "family": "Example Mono",
+      "fallback": ["SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+      "license": "licenses/OFL-Example-Mono.txt",
+      "faces": [
+        {"file": "fonts/example-mono-400-normal.woff2", "weight": 400, "style": "normal"}
+      ]
+    }
+  },
   "assets": {
     "stylesheet": "theme.css",
     "runtime": "theme-factory-runtime.js",
@@ -105,9 +134,31 @@ The ZIP contains one theme manifest and one theme stylesheet. The common runtime
 }
 ```
 
-`name` must match the package directory and `class` must equal `app-theme-<name>`. `version` uses semantic versioning. Version one permits only the manifest keys shown above; unknown keys fail validation so a misspelling cannot silently change installation behavior.
+`name` must match the package directory and `class` must equal `app-theme-<name>`. `version` uses semantic versioning. The entire `fonts` object is optional. When it exists, `body` is required; `heading` and `mono` are optional. Each role requires one or more faces, a non-empty bundled license file, a fallback list, an integer weight from 100 through 900, and style `normal` or `italic`. Version one permits only the manifest keys shown above; unknown keys fail validation so a misspelling cannot silently change installation behavior.
 
-### 4.2 Stylesheet
+### 4.2 Custom fonts
+
+Custom fonts are self-hosted theme assets. Sources live under `sample-themes/<name>/fonts/` and their licenses under `sample-themes/<name>/licenses/`; the package builder copies only files referenced by the manifest. External font URLs, CSS imports, data URLs, OpenType/TrueType files, and unlicensed font files are rejected.
+
+Every font file must:
+
+- use a lower-kebab-case `.woff2` filename;
+- begin with the WOFF2 signature `wOF2`;
+- remain within the theme package's `fonts/` directory;
+- be referenced by at least one declared role and face, with no duplicate `(file, weight, style)` tuple inside one role;
+- have a referenced, non-empty license under `licenses/`.
+
+The CSS builder generates `@font-face` declarations before the flattened theme CSS with `font-display: swap`. Generated family identifiers are package-prefixed, such as `ThemeFactory-linen-body`, so separately installed packages cannot collide even if their manifests use the same display family name. Font usage remains scoped through these tokens on `html.app-theme-<name>`:
+
+```css
+--app-font-family-body: "ThemeFactory-linen-body", "Oracle Sans", sans-serif;
+--app-font-family-heading: "ThemeFactory-linen-heading", "Oracle Sans", sans-serif;
+--app-font-family-mono: "ThemeFactory-linen-mono", SFMono-Regular, Menlo, monospace;
+```
+
+The body role aliases the Iris base text family only while the package class is active. Heading selectors use the heading token only when that role exists; an omitted heading role resolves to Oracle Sans. An omitted mono role resolves to Iris' `--a-base-font-family-mono`. No theme rule sets `font-family` on icon elements or replaces Font APEX.
+
+### 4.3 Stylesheet
 
 `theme.css` is a flattened build artifact in this order:
 
@@ -121,7 +172,9 @@ The build rejects remote imports, imports outside the two approved source roots,
 
 The build banner records the theme name, package version, compatibility boundary, and source commit. It does not embed a wall-clock timestamp, so two builds from the same committed source are byte-for-byte identical.
 
-### 4.3 Checksums
+Relative font URLs in generated `@font-face` declarations use `./fonts/<file>.woff2`; the installed stylesheet and its fonts retain that directory relationship. The build rejects an external URL, data URL, absolute path, undeclared font file, or declared file omitted from the ZIP.
+
+### 4.4 Checksums
 
 `checksums.sha256` covers every regular file in the ZIP except itself. `install.sh` and `uninstall.sh` verify the checksums before reading the manifest or touching a target. A mismatch exits before SQLcl is started.
 
@@ -133,6 +186,8 @@ An installed package owns only this namespace in the target application's static
 theme-factory/packages/<theme-name>/<version>/theme.css
 theme-factory/packages/<theme-name>/<version>/theme.json
 theme-factory/packages/<theme-name>/<version>/cover.jpg
+theme-factory/packages/<theme-name>/<version>/fonts/<font-file>.woff2
+theme-factory/packages/<theme-name>/<version>/licenses/<font-license>.txt
 theme-factory/runtime/theme-factory-runtime.js
 theme-factory/runtime/registry.json
 ```
@@ -219,6 +274,7 @@ After import, the installer reconnects read-only and confirms:
 
 - target application ID and alias are unchanged;
 - package static files exist with expected sizes;
+- every declared font and license exists with its expected checksum;
 - the stylesheet URL is present once;
 - the runtime URL and switcher component are present exactly when requested;
 - theme 42 and Iris remain current.
@@ -268,11 +324,13 @@ Every ZIP's `MANUAL-INSTALL.md` contains two paths:
 ### Fixed theme
 
 1. Verify APEX 26.1.x, Universal Theme 42, and Iris.
-2. Upload `theme.css` and `theme.json` as application static files under the documented namespace.
+2. Upload `theme.css`, `theme.json`, every declared `fonts/*.woff2`, and every referenced font license as application static files while preserving their packaged paths.
 3. Add the stylesheet URL to Shared Components → User Interface Attributes → Cascading Style Sheets.
 4. Add the two provided Global Page bootstrap regions and set the packaged theme as default.
 5. Apply the documented compatible navigation template option if the application uses side navigation.
 6. Run the supplied browser verification checklist.
+
+For a font-bearing package, the checklist confirms every face returns HTTP 200 with `font/woff2`, `document.fonts.check()` succeeds for each declared role and weight, fallback stacks remain present, and Font APEX icons retain their computed icon family.
 
 ### Theme with switcher
 
@@ -300,6 +358,9 @@ No error path deletes backups. Temporary staging may be removed only after its p
 - Linen and Solarized Dark each build into a single-theme ZIP with valid checksums.
 - Extracting a ZIP outside the repository is sufficient to run dry-run, install, uninstall, and follow the manual guide.
 - A package stylesheet has no unresolved local imports or missing shared `--app-*` definitions.
+- A font-bearing fixture packages only declared WOFF2 faces and licenses, uses package-prefixed family identifiers, loads each face from the target application, and leaves Font APEX icons unchanged.
+- A package with no `fonts` object continues to use Iris typography without generating font files or `@font-face` declarations.
+- External URLs, data URLs, invalid WOFF2 signatures, missing licenses, undeclared files, duplicate face references, and paths outside `fonts/` or `licenses/` fail before ZIP creation.
 - Dry-run makes no database changes.
 - Wrong application ID, wrong workspace, non-Iris style, non-26.1 APEX, target drift, and ambiguous APEXLang all refuse before import.
 - A confirmed install preserves unrelated target components and existing CSS/JavaScript URLs.

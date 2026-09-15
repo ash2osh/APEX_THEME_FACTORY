@@ -10,11 +10,23 @@ if [[ "$input" =~ -dir[[:space:]]+\"([^\"]+)\" ]]; then
 elif [[ "$input" =~ -dir[[:space:]]+([^[:space:]]+) ]]; then
   export_dir="${BASH_REMATCH[1]}"
 fi
+
+state_file="/tmp/fake_sql_imported_${USER:-default}.txt"
+
+if [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+\"([^\"]+)\" ]] || [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+([^[:space:]]+) ]]; then
+  imported_dir="${BASH_REMATCH[1]}"
+  echo "$imported_dir" > "$state_file"
+fi
+
 case "${FAKE_SQL_MODE:-success}" in
   success)
     if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
       mkdir -p "$export_dir"
-      cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
+      if [ -f "$state_file" ] && [ -d "$(cat "$state_file")" ]; then
+        cp -R "$(cat "$state_file")" "$export_dir/fixture-app"
+      else
+        cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
+      fi
     fi
     if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
       printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
@@ -22,7 +34,16 @@ case "${FAKE_SQL_MODE:-success}" in
     printf '%s\n' 'Validation completed successfully.'
     ;;
   validation-warning)
-    printf '%s\n' 'WARNING fixture validation warning'
+    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
+      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
+    fi
+    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
+      mkdir -p "$export_dir"
+      cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
+    fi
+    if [[ "$input" == *"apex validate"* ]]; then
+      printf '%s\n' 'WARNING fixture validation warning'
+    fi
     ;;
   export-two-aliases)
     if [ -n "$export_dir" ]; then
@@ -38,6 +59,16 @@ case "${FAKE_SQL_MODE:-success}" in
   import-failure)
     printf '%s\n' 'ERROR import failed' >&2
     exit 1
+    ;;
+  postcheck-fail)
+    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
+      mkdir -p "$export_dir"
+      cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
+    fi
+    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
+      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
+    fi
+    printf '%s\n' 'Validation completed successfully.'
     ;;
   *)
     printf 'unknown FAKE_SQL_MODE=%s\n' "${FAKE_SQL_MODE:-}" >&2

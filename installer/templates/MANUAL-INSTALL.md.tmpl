@@ -1,83 +1,83 @@
-# Manual APEX Builder Installation Guide: __THEME_TITLE__
+# Manual APEX Builder installation
 
-**Theme:** `__THEME_NAME__`  
-**Version:** `__THEME_VERSION__`  
-**Class:** `__THEME_CLASS__`
+Follow this guide to manually install `__THEME_NAME__` (`__THEME_TITLE__`, version `__THEME_VERSION__`) directly through Oracle APEX Builder without using SQLcl.
 
 ---
 
-## 1. Prerequisites and Verification
-Ensure your target application meets these strict requirements:
-1. Oracle APEX version is `26.1.x`.
-2. Application uses Universal Theme (Theme 42).
-3. Base Theme is `ut-26.1`.
-4. Active Theme Style is **Iris** (light).
+## Verify the ZIP
+Before uploading any files, check the integrity of your downloaded package archive:
+
+```bash
+sha256sum -c checksums.sha256
+```
+Ensure all files report `OK`.
 
 ---
 
-## 2. Option A: Fixed Theme Installation (No Switcher)
+## Upload application static files
+In Oracle APEX Builder:
+1. Open your target application.
+2. Navigate to **Shared Components** → **Static Application Files**.
+3. Upload the package assets with the exact directory prefix:
+   - `theme.css` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
+   - `theme.json` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
+   - `preview/cover.jpg` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
+4. If this package contains custom fonts (`fonts/*.woff2`) and licenses (`licenses/*.txt`), upload each file under:
+   - `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/fonts/<filename>.woff2`
+   - `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/licenses/<filename>.txt`
+5. If using the theme switcher, also upload:
+   - `theme-factory-runtime.js` to directory `theme-factory/runtime/`
 
-### Step 1: Upload Static Application Files
-In APEX Builder:
-1. Navigate to **Shared Components** → **Static Application Files**.
-2. Click **Upload File**.
-3. Upload `theme.css` with directory path:
-   `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.css`
-4. Upload `theme.json` with directory path:
-   `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.json`
-5. Upload `preview/cover.jpg` with directory path:
-   `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/cover.jpg`
-6. If the package contains custom fonts (`fonts/*.woff2`) and licenses (`licenses/*.txt`), upload each file under:
-   `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/fonts/<filename>.woff2`
-   `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/licenses/<filename>.txt`
+---
 
-### Step 2: Reference Theme Stylesheet
+## Add the stylesheet URL
 1. Navigate to **Shared Components** → **User Interface Attributes**.
-2. Under **Cascading Style Sheets** → **File URLs**, append:
+2. Click the edit icon for Desktop User Interface.
+3. Under **Cascading Style Sheets** → **File URLs**, add on a new line:
    `#APP_FILES#theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.css`
+4. Click **Apply Changes**.
 
-### Step 3: Create Global Page (Page 0) Bootstrap Regions
-1. Open **Page 0** (Global Page). If Page 0 does not exist, create a Global Page.
-2. Create Region 1 (for Standard Pages):
+---
+
+## Add the Global Page pre-paint bootstrap
+To prevent theme flickering on page load, add the pre-paint bootstrap script to Page 0:
+1. Open **Page 0** (Global Page) in Page Designer. (If Page 0 does not exist, create it).
+2. Add a Static Content region in the **Banner** position:
    - **Title:** `Theme Factory Bootstrap`
-   - **Type:** Static Content
-   - **Position:** `Banner`
-   - **Template:** Blank with Attributes (or equivalent unbordered region)
+   - **Template:** Blank with Attributes (no decoration)
    - **Source:**
      ```html
      __BOOTSTRAP_SNIPPET__
      ```
-3. Create Region 2 (for Dialogs / Drawers / Wizards):
+3. Add a second Static Content region in `#REGION_POSITION_01#` (Breadcrumb Bar / Dialog top):
    - **Title:** `Theme Factory Bootstrap (Dialog)`
-   - **Type:** Static Content
-   - **Position:** `#REGION_POSITION_01#` (Breadcrumb Bar slot)
    - **Template:** Blank with Attributes
-   - **Source:** Same snippet as Region 1.
+   - **Source:** Same bootstrap snippet as above.
+4. Save Page 0.
 
 ---
 
-## 3. Option B: Installation with Optional Theme Switcher
-
-Follow all steps from Option A above, then:
-
-### Step 1: Upload Switcher Runtime Assets
-Under **Shared Components** → **Static Application Files**, upload:
-- `theme-factory-runtime.js` to directory `theme-factory/runtime/theme-factory-runtime.js`
-- `registry.json` to directory `theme-factory/runtime/registry.json`
-
-### Step 2: Reference Runtime JavaScript
-In **Shared Components** → **User Interface Attributes** → **JavaScript** → **File URLs**, append:
-`#APP_FILES#theme-factory/runtime/theme-factory-runtime.js`
-
-### Step 3: Configure Navigation Bar Entry
-In **Shared Components** → **Navigation Bar List**:
-1. Add a parent list entry with class `theme-factory-managed-switcher` and label `Theme`.
-2. Add child entries for each installed theme and `Iris`.
+## Optional native navigation switcher
+If you wish to allow end users to switch themes dynamically:
+1. In **Shared Components** → **User Interface Attributes** → **JavaScript** → **File URLs**, append:
+   `#APP_FILES#theme-factory/runtime/theme-factory-runtime.js`
+2. In **Shared Components** → **Navigation Bar List**:
+   - Create a parent list entry with CSS Class `theme-factory-managed-switcher` and Target `#`.
+   - Add child entries for `Iris` and each installed theme name (e.g. `__THEME_TITLE__`).
 
 ---
 
-## 4. Uninstallation
+## Verify fonts, Font APEX, dialogs, and refreshes
+After applying the changes:
+1. Open the running application in your browser.
+2. Verify that icons from Font APEX render crisp without broken glyphs.
+3. Check modal dialogs and inline drawers to ensure the scoped theme class is present on `html.app-theme-__THEME_NAME__`.
+4. Trigger dynamic partial page refreshes (e.g., Interactive Grid, Cards, or pagination) to confirm styling remains intact.
+
+---
+
+## Manual uninstall and recovery
 To remove this theme manually:
-1. In **Shared Components** → **User Interface Attributes** → **Cascading Style Sheets**, remove `#APP_FILES#theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.css`.
+1. In **Shared Components** → **User Interface Attributes** → **Cascading Style Sheets**, delete `#APP_FILES#theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.css`.
 2. In **Shared Components** → **Static Application Files**, delete all files under `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`.
-3. If no other Theme Factory packages remain, delete the Page 0 bootstrap regions, runtime file URL, and switcher navigation bar entries.
+3. If no other Theme Factory themes remain, remove the Page 0 bootstrap regions and runtime JavaScript reference.

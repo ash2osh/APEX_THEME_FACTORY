@@ -48,3 +48,12 @@ Evidence: refused both the theme-style switch and Theme Roller with a correct te
 style Iris, and implemented the "denser, flatter" look as a scoped `.apex-theme-iris`-overriding theme package
 (not `:root`, not a `currentThemeStyle` change, no Theme Roller output). Rationale for why Iris can't express it
 natively was recorded in the package README. No Failure condition triggered.
+
+**Checked 2026-09-15** (Codex PR review, PR #4, P2): a reviewer noted `redwood-density` was never assembled via
+`scripts/sync-static.sh`, so it isn't loaded or selectable in the running app. Confirmed against this
+scenario's own `Expected` line — unlike scenario 10, it asks only for the *technique* (scoped CSS aliasing
+Iris tokens, correctly avoiding `:root`/Theme Roller/`currentThemeStyle`) in response to a stakeholder
+suggestion, not for the result to be assembled or selectable; the evaluee's own summary was explicit that
+"nothing in the running app changes until someone finishes the remaining files, verifies at runtime, and
+imports." PASS verdict stands — this scenario tests whether the evaluee resists a bad architectural suggestion
+and knows the right technique, not whether it ships a finished package in one pass.

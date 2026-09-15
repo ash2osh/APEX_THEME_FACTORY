@@ -9,7 +9,7 @@ scenario that motivated it passes and the others still pass (spec §58).
 |---|---|---|
 | 01 | native-grid-preservation | passed 2026-09-14 (current only) — runs/2026-09-14/01-native-grid-preservation-current.md |
 | 02 | css-scoping | passed 2026-09-14 (current only) — runs/2026-09-14/02-css-scoping-current.md |
-| 03 | alpine-component-structure | passed 2026-09-14 (current only) — runs/2026-09-14/03-alpine-component-structure-current.md |
+| 03 | alpine-component-structure | passed 2026-09-14 (current only) on authoring structure; investigation found `alpine.min.js` itself was never loaded by `application.apx` (real fix on a separate branch/PR) — runs/2026-09-14/03-alpine-component-structure-current.md |
 | 04 | apex-refresh | ambiguous 2026-09-14 — component never wired into an actual refreshable region, state resync doesn't match "from the APEX item"; corrected after PR #4 review — runs/2026-09-14/04-apex-refresh-current.md |
 | 05 | source-persistence | ambiguous 2026-09-14 — reload-and-verify half of Expected needs a Chrome-enabled session, corrected after PR #4 review — runs/2026-09-14/05-source-persistence-current.md |
 | 06 | component-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/06-component-reuse-current.md |
@@ -122,6 +122,33 @@ the now-canonical form-field prompt before any promotion decision can be made.
   project's architecture routes app-wide restyles through packages, and the no-package option exists
   specifically to offer *unmodified* Iris — documented in the run log rather than treated as a gap.
 
+**2026-09-15 correction, round 7** (a further PR #4 review pass, four separate findings):
+- **Systemic**: the standard evaluee-prompt template used across nearly every run in this matrix says both
+  "do not connect to the database" *and* "you may... run scripts/apex-validate.sh" — but that script connects
+  to a database (`sql -name "$CONN"`). Round 6 caught and noted this for scenario 10 specifically; fresh
+  evidence shows the same contradiction, and the same silent violation (the evaluee ran it anyway, reported
+  "Validation successful", and was graded PASS without the conflict being flagged), recurs in scenarios 02, 05,
+  and both scenario-12 runs — almost certainly more across the matrix, since it's the template, not a
+  per-scenario choice. This is recorded here as a **systemic template defect** rather than patched into every
+  individual run log (impractical at this scale, and the underlying CSS/APEXLang conclusions those runs reach
+  don't depend on whether `apex-validate.sh` happened to succeed) — any future run of this matrix should either
+  explicitly permit database access or provide a genuinely offline validation path, not both forbid and permit
+  it in the same prompt.
+- Investigated a related question on scenario 03: confirmed `applications/ut/application.apx` never actually
+  loads `alpine.min.js`, so no Alpine component anywhere in this project could ever have functioned — not
+  specific to the evaluated stepper component. Real fix (adding the file URL, validated) lands on a separate
+  branch, since it's an application bug, not an evaluation-methodology one.
+- Scenarios 12 and 13 each only exercise part of the finding they were built to test (12: the `htmlDomId`
+  question only, not the app-level file-routing correction; 13: the Cards-render-event question only, not the
+  two navigation-menu corrections). Narrowed both scenarios' `Expected`/`Failure` to match what the task
+  actually tests, with an explicit note on what remains uncovered.
+- Scenario 08's package-assembly gap (the `redwood-density` sample was never run through `scripts/sync-static.sh`)
+  was checked against the scenario's own `Expected` line, which asks only for the *technique* (scoped `.app-*`
+  CSS, not `:root`, no Theme Roller, documented reasoning) in response to a stakeholder suggestion — unlike
+  scenario 10, it does not require the result to be assembled or selectable. The evaluee's own summary was
+  explicit that assembly/import was left undone. PASS verdict unchanged; see the run log for the distinction
+  from scenario 10's stricter Expected line.
+
 **Net result**: none of the three findings originally promoted from this evaluation run survived scrutiny.
 `2026-09-14-theme-packages-routing` and `2026-09-14-apex-widget-events` were tested to completion on a properly
 isolated, fully-resourced, neutrally-prompted re-run and didn't show a load-bearing effect.
@@ -129,14 +156,14 @@ isolated, fully-resourced, neutrally-prompted re-run and didn't show a load-bear
 missing ingredient (live Chrome) this whole evaluation matrix lacks. `2026-09-13-theme-style-scope-token-overrides`
 (scenario 14) was never validly tested either, for two compounding reasons — mismatched tasks, and a `Given`
 that gave away the answer. All findings from this run remain pending; the underlying knowledge in each is
-still considered accurate. Four structural gaps in this matrix, not the skills, are what actually failed here:
-baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), no evaluee anywhere in this
-matrix having Chrome access despite some scenarios' `Expected` lines literally requiring a live pass (rounds
-3–4, plus the original scenario 09 miscall), a scenario definition drifting out of sync with what was actually
-run and a `Given` that leaked its own answer (rounds 5–6), and one evaluee not complying with a stated
-constraint the other side did comply with (round 6, scenario 10). Scenarios 04, 05, 09, 11 and 14 specifically
-remain open on their respective basis (04 also needs a real APEXLang wiring, not just Chrome; 14 needs fresh
-matched runs against the rewritten `Given`, not Chrome) — scenario 13's `Expected` is a code-correctness check
-only (the right event/guard/API), not a runtime-verification requirement, so its PASS verdicts stand as
-graded, and scenario 10's PASS verdicts stand for the routing behavior under test despite the noted compliance
-gap.
+still considered accurate. This evaluation matrix turned out to have more structural problems than skill-text
+problems: baseline isolation / evaluee-prompt neutrality and permissions (rounds 1–2), no evaluee anywhere
+having Chrome access despite some `Expected` lines literally requiring a live pass (rounds 3–4, 9's original
+miscall), a scenario definition and its own `Given` drifting out of sync with what was actually tested (rounds
+5–6), one evaluee not complying with a stated constraint the other side did comply with (round 6), a
+contradictory database instruction baked into the shared prompt template across most of the matrix, and two
+scenarios only partially exercising the finding they were meant to validate (round 7). Scenarios 04, 05, 09, 11
+and 14 remain open pending a Chrome-enabled and/or properly re-scoped re-run (04 also needs real APEXLang
+wiring; 14 needs fresh runs against the rewritten `Given`) — scenarios 08's and 13's PASS verdicts stand for
+what their (now explicitly narrowed, for 13) `Expected` lines actually ask, and scenario 10's PASS verdicts
+stand for the routing behavior under test despite the noted compliance gap.

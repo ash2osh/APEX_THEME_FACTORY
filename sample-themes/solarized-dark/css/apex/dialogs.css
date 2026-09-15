@@ -30,6 +30,11 @@
     --a-menu-focused-background-color: var(--app-surface-hover);
     --a-menu-focused-text-color: var(--app-text-emphasized);
     --a-menu-sep-border-color: var(--app-border-color);
+    --a-menu-accel-text-color: var(--app-text-secondary);           /* keyboard-accelerator hint text: 6.27:1
+                                                                         on the menu bg #00212b */
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* base1 was only 4.23:1 on the focused
+                                                                         hover bg #004052; base3 is 10.49:1 */
+    --a-menu-callout-border-color: var(--app-border-color);
 }
 
 /* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */

@@ -36,6 +36,46 @@
     --ut-tabs-item-active-text-color: var(--app-text-emphasized);
     --ut-tabs-item-active-highlight-color: var(--sol-cyan);
     --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search (p1411) */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);   /* Iris resolves to --a-button-border-color
+                                                                 rgba(0,0,0,.075) at :root — ~1.06:1 on the
+                                                                 dark toggle surface, boundary invisible */
+
+    /* Percent Graph item type (p423, p1601) */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--sol-cyan);   /* paired with the dark bar text below; was
+                                                                    still Iris' :root-resolved #00688c teal */
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Text dialog (p1903) */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend (p1906) */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Chart tooltips (p1902, JET) */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);   /* Theme-Standard literal #fff otherwise —
+                                                                      light text on white was 1.08:1 */
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);         /* .oj-dvt-datatip's base `color:` (outside
+                                                                       the --oj-core-text-color-* classified
+                                                                       spans the --ojet-tooltip-* atoms cover)
+                                                                       was still Theme-Standard's literal
+                                                                       #000 — black-on-#00212b now that the
+                                                                       background above is dark */
 }
 
 /* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */
@@ -107,6 +147,9 @@
 .app-theme-solarized-dark .dm-Search-result:hover,
 .app-theme-solarized-dark .dm-Search-result:focus {
     background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .dm-Search:empty:before {
+    color: var(--app-text-secondary);              /* page inline CSS hard-codes rgba(0,0,0,.5) */
 }
 .app-theme-solarized-dark .dm-IconDialog-preview {
     background-image: none;                       /* light checkerboard */

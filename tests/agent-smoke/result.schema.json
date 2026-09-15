@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runtime", "instructionEntry", "routerSkill", "apexBoundary", "runtimeTruthTool", "importRequiresUserRequest", "wouldEdit"],
+  "properties": {
+    "runtime": {"enum": ["codex", "claude", "antigravity"]},
+    "instructionEntry": {"type": "string", "minLength": 1},
+    "routerSkill": {"const": ".agents/skills/design-to-apex/SKILL.md"},
+    "apexBoundary": {"const": "APEX 26.1.x / Universal Theme 42 / Iris"},
+    "runtimeTruthTool": {"type": "string", "minLength": 1},
+    "importRequiresUserRequest": {"const": true},
+    "wouldEdit": {"const": false}
+  }
+}

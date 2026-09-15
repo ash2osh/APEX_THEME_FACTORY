@@ -6,6 +6,8 @@ tmp/
 *.bak
 *.orig
 *~
+__pycache__/
+*.pyc
 
 # Screenshots and visual-comparison captures (spec: screenshots go to the scratchpad, never committed)
 screenshots/

@@ -1,0 +1,8 @@
+{
+  "runtime": "claude",
+  "cliVersion": "not installed",
+  "dateUtc": "2026-09-15",
+  "status": "UNVERIFIED",
+  "message": "CLI 'claude' is not installed",
+  "payload": null
+}

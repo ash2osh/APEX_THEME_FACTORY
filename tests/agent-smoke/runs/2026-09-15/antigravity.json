@@ -1,0 +1,8 @@
+{
+  "runtime": "antigravity",
+  "cliVersion": "1.2.3",
+  "dateUtc": "2026-09-15",
+  "status": "UNVERIFIED",
+  "message": "Environment/auth/quota limitation: timed out",
+  "payload": null
+}

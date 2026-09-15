@@ -6,10 +6,10 @@
   "properties": {
     "runtime": {"enum": ["codex", "claude", "antigravity"]},
     "instructionEntry": {"type": "string", "minLength": 1},
-    "routerSkill": {"const": ".agents/skills/design-to-apex/SKILL.md"},
-    "apexBoundary": {"const": "APEX 26.1.x / Universal Theme 42 / Iris"},
+    "routerSkill": {"type": "string", "const": ".agents/skills/design-to-apex/SKILL.md"},
+    "apexBoundary": {"type": "string", "const": "APEX 26.1.x / Universal Theme 42 / Iris"},
     "runtimeTruthTool": {"type": "string", "minLength": 1},
-    "importRequiresUserRequest": {"const": true},
-    "wouldEdit": {"const": false}
+    "importRequiresUserRequest": {"type": "boolean", "const": true},
+    "wouldEdit": {"type": "boolean", "const": false}
   }
 }

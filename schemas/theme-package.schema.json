@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "name", "title", "version", "tagline", "class", "compatibility", "assets"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "tagline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "class": {
+      "type": "string",
+      "pattern": "^app-theme-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apex", "themeNumber", "baseTheme", "themeStyle"],
+      "properties": {
+        "apex": {
+          "type": "string"
+        },
+        "themeNumber": {
+          "type": "integer",
+          "const": 42
+        },
+        "baseTheme": {
+          "type": "string",
+          "const": "ut-26.1"
+        },
+        "themeStyle": {
+          "type": "string",
+          "const": "Iris"
+        }
+      }
+    },
+    "templateOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "navigationMenuStyle": {
+          "type": "string"
+        }
+      }
+    },
+    "fonts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body"],
+      "properties": {
+        "body": {
+          "$ref": "#/$defs/fontRole"
+        },
+        "heading": {
+          "$ref": "#/$defs/fontRole"
+        },
+        "mono": {
+          "$ref": "#/$defs/fontRole"
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stylesheet", "runtime", "cover"],
+      "properties": {
+        "stylesheet": {
+          "type": "string",
+          "const": "theme.css"
+        },
+        "runtime": {
+          "type": "string",
+          "const": "theme-factory-runtime.js"
+        },
+        "cover": {
+          "type": "string",
+          "const": "preview/cover.jpg"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fontName": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9 _-]{0,63}$"
+    },
+    "fontFace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "weight", "style"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^fonts/[a-z0-9]+(?:-[a-z0-9]+)*\\.woff2$"
+        },
+        "weight": {
+          "type": "integer",
+          "enum": [100, 200, 300, 400, 500, 600, 700, 800, 900]
+        },
+        "style": {
+          "type": "string",
+          "enum": ["normal", "italic"]
+        }
+      }
+    },
+    "fontRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "fallback", "license", "faces"],
+      "properties": {
+        "family": {
+          "$ref": "#/$defs/fontName"
+        },
+        "fallback": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/fontName"
+          }
+        },
+        "license": {
+          "type": "string",
+          "pattern": "^licenses/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "faces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fontFace"
+          }
+        }
+      }
+    }
+  }
+}

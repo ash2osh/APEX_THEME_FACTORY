@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "name": "valid-basic",
+  "title": "Valid Basic Theme",
+  "version": "1.0.0",
+  "tagline": "A clean basic theme for tests.",
+  "class": "app-theme-valid-basic",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

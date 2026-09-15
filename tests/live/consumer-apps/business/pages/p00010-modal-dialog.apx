@@ -1,0 +1,40 @@
+page 10 (
+    name: Modal Dialog
+    alias: MODAL-DIALOG
+    title: Modal Dialog - &APP_TITLE.
+    appearance {
+        pageMode: modalDialog
+        dialogTemplate: @/modal-dialog
+        templateOptions: #DEFAULT#
+    }
+    dialog {
+        resizable: false
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region business-modal-dialog (
+        name: Business Modal Dialog
+        type: staticContent
+        source {
+            htmlCode: <p>Business Modal Dialog Content</p>
+        }
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        appearance {
+            template: @/standard
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: business_modal_dialog
+        }
+    )
+)

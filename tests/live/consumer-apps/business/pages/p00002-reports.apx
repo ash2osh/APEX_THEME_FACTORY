@@ -1,0 +1,174 @@
+page 2 (
+    name: Reports
+    alias: REPORTS
+    title: Reports - &APP_TITLE.
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region business-ir (
+        name: Business Interactive Report
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select level as id, 'Row ' || level as label
+                from dual
+                connect by level <= 12
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: business_ir
+            savedReportMappingIdentifier: 9001001
+        }
+
+        column ID (
+            type: plainText
+            heading {
+                heading: ID
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column LABEL (
+            type: plainText
+            heading {
+                heading: Label
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        savedReport 9001002 (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 10
+            }
+
+            displayColumn ID (
+                sequence: 1
+            )
+
+            displayColumn LABEL (
+                sequence: 2
+            )
+        )
+    )
+
+    region business-ig (
+        name: Business Interactive Grid
+        type: interactiveGrid
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select level as id, 'Row ' || level as label
+                from dual
+                connect by level <= 12
+                ```
+        }
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: business_ig
+            savedReportMappingIdentifier: 9002001
+        }
+        toolbar {
+            controls: [
+                searchField
+                actionsMenu
+                saveButton
+            ]
+        }
+
+        column ID (
+            type: numberField
+            heading {
+                heading: ID
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                databaseColumn: ID
+                dataType: number
+            }
+        )
+
+        column LABEL (
+            type: textField
+            heading {
+                heading: Label
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                databaseColumn: LABEL
+                dataType: varchar2
+            }
+        )
+
+        savedReport 9002002 (
+            visibility: primary
+            view {
+                default: grid
+            }
+
+            displayColumn (
+                column: @ID
+                layout {
+                    sequence: 1
+                }
+            )
+
+            displayColumn (
+                column: @LABEL
+                layout {
+                    sequence: 2
+                }
+            )
+        )
+    )
+)

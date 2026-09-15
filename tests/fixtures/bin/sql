@@ -28,7 +28,27 @@ case "${FAKE_SQL_MODE:-success}" in
         cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
       fi
     fi
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
+    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]]; then
+      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
+    fi
+    if [[ "$input" == *"between 9000 and 9099"* ]] || [[ "$input" == *"CONSUMER_OCCUPIED_QUERY"* ]]; then
+      if [ -n "${FAKE_SQL_OCCUPIED_IDS:-}" ]; then
+        IFS=',' read -ra ADDR <<< "$FAKE_SQL_OCCUPIED_IDS"
+        for id in "${ADDR[@]}"; do
+          printf '%s|%s\n' "$id" "OCCUPIED_APP_$id"
+        done
+      fi
+    elif [[ "$input" == *"CONSUMER_EXISTING_QUERY"* ]] || [[ "$input" == *"from apex_applications where application_id in"* ]]; then
+      if [ -n "${FAKE_SQL_EXISTING_APPS:-}" ]; then
+        IFS=',' read -ra APPS <<< "$FAKE_SQL_EXISTING_APPS"
+        for app in "${APPS[@]}"; do
+          IFS=':' read -r aid aalias <<< "$app"
+          printf '%s|%s\n' "$aid" "$aalias"
+        done
+      fi
+    elif [[ "$input" == *"count(*)"* ]] && [[ "$input" == *"apex_applications"* ]]; then
+      printf '0\n'
+    elif [[ "$input" == *"apex_applications"* ]] && [[ "$input" != *"THEME_FACTORY_TARGET="* ]]; then
       printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
     fi
     printf '%s\n' 'Validation completed successfully.'

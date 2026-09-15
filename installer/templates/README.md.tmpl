@@ -1,29 +1,111 @@
-# Theme Package: __THEME_TITLE__ (__THEME_NAME__)
+# Install __THEME_TITLE__
 
-Version: __THEME_VERSION__
-Tagline: __THEME_TAGLINE__
+Package: `__THEME_NAME__`  
+Version: `__THEME_VERSION__`  
+Tagline: __THEME_TAGLINE__  
+Class: `__THEME_CLASS__`
 
-## Supported Environment
-- Oracle APEX: 26.1.x
-- Theme: Universal Theme (theme 42)
-- Base Theme: ut-26.1
-- Theme Style: Iris
+---
 
-## Automated Installation (SQLcl)
-To install this theme into your application using SQLcl:
+## Compatibility
+- Target APEX: Oracle APEX 26.1.x
+- Target Theme: Universal Theme (theme 42)
+- Target Base Theme: `ut-26.1`
+- Theme Style: **Iris** (light) only
+- Standard font fallback: Oracle Sans (or declared package WOFF2 custom fonts)
 
-```bash
-./install.sh --connection <saved-connection> --workspace <workspace> --app-id <app-id> [--with-switcher | --without-switcher] [--apply]
-```
+---
 
-Without `--apply`, the script runs in dry-run mode, validates target compatibility, and previews changes.
-
-## Automated Uninstallation (SQLcl)
-To remove this theme from your application:
+## Package contents and checksums
+Verify the integrity of package contents before installation:
 
 ```bash
-./uninstall.sh --connection <saved-connection> --workspace <workspace> --app-id <app-id> [--apply]
+sha256sum -c checksums.sha256
 ```
 
-## Manual Installation
-See `MANUAL-INSTALL.md` for complete step-by-step instructions to install or remove this theme using Oracle APEX Builder.
+This package includes:
+- `theme.json`: Manifest describing metadata, compatibility, and optional fonts
+- `theme.css`: Standalone scoped CSS bundle for `__THEME_NAME__`
+- `theme-factory-runtime.js`: Switcher and client runtime helper
+- `install.sh` / `uninstall.sh`: Automated installer wrappers
+- `preview/cover.jpg`: Theme visual preview
+- `licenses/`: Applicable software and font licenses
+
+---
+
+## Automated SQLcl dry-run
+The automated installer defaults to a non-destructive dry-run:
+
+```bash
+./install.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID>
+```
+
+In dry-run mode:
+1. SQLcl connects and preflights target metadata.
+2. The application is exported into staging and checked for theme compatibility.
+3. An immutable backup is stored under `./theme-factory-backups/`.
+4. Staged APEXLang patches are created and validated via `apex validate`.
+5. Database drift is checked against a second fresh export.
+6. A unified diff is printed with status `STAGED_ONLY`. No changes are applied to the live database.
+
+---
+
+## Automated SQLcl apply
+To apply changes to the live application database:
+
+```bash
+./install.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --apply
+```
+
+The installer verifies target compatibility, prints a confirmation summary, and prompts for confirmation:
+```text
+Type application ID <APP_ID> to import:
+```
+Only after exact numeric confirmation is the staged APEXLang imported.
+
+---
+
+## Optional switcher
+The installer supports three switcher modes:
+- Default: Preserves existing switcher state (`--backup-dir` optional).
+- `--with-switcher`: Enables the native navigation bar theme switcher and pre-paint bootstrap.
+- `--without-switcher`: Disables the theme switcher and removes runtime JavaScript references.
+
+Example:
+```bash
+./install.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --with-switcher --apply
+```
+
+---
+
+## Per-browser persistence
+When the theme switcher is enabled, user theme selections are persisted in `window.localStorage` under the application-specific key:
+`apex.themeFactory.<APP_ID>.theme`
+
+Reloading the page applies the persisted theme class immediately via the Page 0 pre-paint bootstrap before rendering begins.
+
+---
+
+## Uninstall and restore
+To safely remove `__THEME_NAME__` from your application:
+
+```bash
+./uninstall.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --apply
+```
+
+If you need to restore from an immutable backup created during install:
+```bash
+python3 -m theme_factory.cli restore --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
+```
+
+---
+
+## Exit codes and recovery artifacts
+- `0`: Success (or clean dry-run preview)
+- `2`: Package integrity failure or argument error
+- `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 / Iris)
+- `4`: Database drift detected during staging
+- `5`: APEXLang validation or SQLcl import failure
+- `6`: Post-import verification check failed
+
+Recovery artifacts and backups are preserved in `./theme-factory-backups/<WORKSPACE>-<APP_ID>/<TIMESTAMP>-before-__THEME_NAME__/`.

@@ -1,0 +1,21 @@
+app EXISTING (
+    name: App With Existing Assets
+    version: 1.0.0
+    navigationBar {
+        list: @navigation-bar
+    }
+    userInterface {
+        currentTheme: @universal-theme
+        globalPage: 0
+    }
+    javaScript {
+        fileUrls: [
+            #APP_FILES#existing.js
+        ]
+    }
+    css {
+        fileUrls: [
+            #APP_FILES#existing.css
+        ]
+    }
+)

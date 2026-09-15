@@ -1,0 +1,8 @@
+theme universal-theme (
+    name: Universal Theme
+    themeNumber: 42
+    baseTheme: ut-26.1
+    style {
+        currentThemeStyle: @/iris
+    }
+)

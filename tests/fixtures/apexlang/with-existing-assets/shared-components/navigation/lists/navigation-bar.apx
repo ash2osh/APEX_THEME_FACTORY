@@ -1,0 +1,7 @@
+list navigation-bar (
+    name: Navigation Bar
+    entry logout (
+        label: Logout
+        sequence: 10
+    )
+)

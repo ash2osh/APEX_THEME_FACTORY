@@ -1,0 +1,4 @@
+file "sample.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)

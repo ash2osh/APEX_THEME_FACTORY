@@ -1,0 +1,13 @@
+app NO_GP (
+    name: No Global Page App
+    version: 1.0.0
+    userInterface {
+        currentTheme: @universal-theme
+    }
+    javaScript {
+        fileUrls: []
+    }
+    css {
+        fileUrls: []
+    }
+)

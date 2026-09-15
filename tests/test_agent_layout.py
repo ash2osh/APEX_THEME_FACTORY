@@ -176,10 +176,18 @@ class AgentLayoutTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("forbidden pattern found: 'git init'", result.stdout)
 
+    def test_init_prompt_requests_evidence_and_stops(self):
+        repo_root = Path(__file__).resolve().parent.parent
+        text = (repo_root / "sample-prompts/init.md").read_text(encoding="utf-8")
+        for phrase in ("git status", "apex-validate.sh", "APEX_VERSION", "apex-theme-iris", "stop"):
+            self.assertIn(phrase, text)
+
     def test_contract_assertions(self):
         # Real repository contract tests
         repo_root = Path(__file__).resolve().parent.parent
         agents_text = (repo_root / "AGENTS.md").read_text(encoding="utf-8")
+        for phrase in REQUIRED_PROJECT_PHRASES:
+            self.assertIn(phrase, agents_text)
         rule_path = repo_root / ".agents/rules/apex-theme-factory.md"
         if rule_path.exists():
             rule_text = rule_path.read_text(encoding="utf-8")

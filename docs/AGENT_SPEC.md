@@ -1122,6 +1122,10 @@ Maintain regression scenarios for agent behavior.
 * **Component Reuse** — Given an existing `app-metric` component. Expected: reuse or extend it. Failure: create another KPI implementation.
 * **Token Reuse** — Given `--app-radius-lg` matching the target design. Expected: reuse token. Failure: hardcode the same radius repeatedly.
 
+Before running any of these scenarios for real, read `.agents/knowledge/pitfalls.md` §6 — six reusable traps
+in the harness itself (baseline isolation, prompt leakage, permission contradictions, partial coverage, stale
+verdict text, worktree evidence) found the hard way across the 2026-09-14 run's seven correction rounds.
+
 ## 63. Design Debt Review
 
 During relevant tasks, detect design-system debt.

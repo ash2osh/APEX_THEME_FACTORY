@@ -25,3 +25,4 @@ Scoped redefinition is allowed: `.app-hero { --ut-component-background-color: â€
 - Importing 100 Figma variables verbatim as `--app-*`.
 - Hardcoding `#00688c` instead of `var(--app-color-primary)`.
 - Reading `--a-button-*` on `:root` (component-scoped; read on the button).
+- Proposing Google Fonts, external font URLs, or unlicensed fonts (fonts must be package-local licensed WOFF2 files; Font APEX icons untouched).

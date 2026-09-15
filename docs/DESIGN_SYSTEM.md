@@ -96,6 +96,16 @@ Full list of 167 `--ut-*` values: [`.agents/knowledge/iris-ut-tokens.md`](../.ag
 | `--a-button-font-size` / `--a-button-border-radius` | `.75rem` / `.125rem` |
 | Icons | Font APEX 2.5.1 (`apex-icons-fontapex`) |
 
+### Custom theme fonts (portable packages)
+Theme packages may supply optional self-hosted custom fonts:
+- Roles: `body` (required if fonts declared), optional `heading`, optional `mono`. Missing roles fall back to Iris Oracle Sans / monospace.
+- Storage: WOFF2 assets in `sample-themes/<name>/fonts/<name>-<weight>-<style>.woff2` and non-empty licenses in `sample-themes/<name>/licenses/`.
+- Format: Must be valid WOFF2 binary starting with signature `wOF2`. Lower-kebab-case naming.
+- Prohibition: External font URLs (e.g. Google Fonts), `@import url(...)`, data URLs, TTF, and OTF files are strictly forbidden.
+- Generated identifiers: Family names are package-prefixed (`ThemeFactory-<name>-<role>`) to eliminate cross-theme collisions.
+- Font APEX isolation: Never apply `font-family` to universal `*`, icon elements (`.fa`, `.fa-*`, `.t-Icon`, `[class*=icon]`).
+- Scoped tokens: Set `--app-font-family-body`, `--app-font-family-heading`, `--app-font-family-mono` on `html.app-theme-<name>`.
+
 Iris namespaces seen in `Iris.min.css`: `--a-*` (1018 refs, component atoms), `--ut-*` (418, theme
 tokens), `--u-*` (100, utilities), `--jui-*`, `--oj-*`. All are **reserved** (spec §20).
 

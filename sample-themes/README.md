@@ -49,5 +49,6 @@ Conventions
 - No literal colours in `css/apex/*.css` — every value is a token from `tokens.css`. `!important` only to mirror an
   Iris `!important`, with the Iris rule quoted in a comment.
 - Dark packages must remap Iris' literal `:root` tokens (see `solarized-dark/README.md`, *Technique*).
+- Custom fonts: optional self-hosted WOFF2 assets (`wOF2` signature) under `fonts/` with licenses under `licenses/`. External font URLs and data URLs are forbidden. Manifest declares `body` (required if fonts used), optional `heading` and `mono`. Family identifiers are package-prefixed (`ThemeFactory-<name>-<role>`) and Font APEX icons remain untouched.
 - `preview/` holds `cover.jpg` plus a few curated `.jpg` captures; iteration PNGs never get committed
   (`.gitignore`). Every package README ends with a *Verified* section (pages, widths, contrast, console).

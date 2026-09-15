@@ -116,6 +116,19 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 ### 2.5 Card > CSS Classes supports `&COLUMN.` substitution and lands on `.a-CardView`
 - `card { cssClasses: [ app-theme-card &CARD_CLASS. ] }` → `<div class="a-CardView … app-theme-card app-theme-card--linen">`.
 
+### 2.6 Alpine.js being registered as a static file doesn't mean it's loaded
+- **Symptom (found 2026-09-15):** `static-files/js/app.js`'s own header comment claims "Alpine.js is loaded
+  once (application-level file URL)", and `static-files/js/vendor/README.md` documents the load order — but
+  `applications/ut/application.apx`'s `javaScript.fileUrls` never actually referenced `js/vendor/alpine.min.js`,
+  only `demo.js`, Prism, and `js/app.js`. `static-files.apx` had it registered as an uploadable static file,
+  which is a different thing from a page emitting a `<script>` tag for it. No `x-data`/`Alpine.data()` anywhere
+  in the app could ever have run.
+- **Fix:** add `#APP_FILES#js/vendor/alpine.min.js` to `application.apx`'s `javaScript.fileUrls`, after
+  `js/app.js` and after any `js/components/*.js` entries (components hook `alpine:init`, which must be
+  registered *before* Alpine's own CDN-build auto-start — see the vendor README's load-order note).
+- **Check this again** whenever adding the first component file to a fresh checkout, or after any bulk
+  `applications/ut/application.apx` regeneration — nothing currently guards against this silently regressing.
+
 ## 3. APEXLang / Builder
 
 ### 3.1 Static ID is `advanced { htmlDomId: … }`

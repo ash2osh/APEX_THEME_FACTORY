@@ -14,7 +14,7 @@
     --jui-dialog-title-close-border-color: transparent;
     --jui-dialog-buttonpane-background-color: var(--app-surface-subtle);
     --jui-dialog-buttonpane-border-color: var(--ut-component-border-color);
-    --jui-overlay-background-color: rgba(22, 21, 19, .3);
+    --jui-overlay-background-color: var(--app-overlay-background);
 
     --a-menu-shadow: var(--app-shadow-dialog);
     --a-menu-border-radius: var(--app-radius-md);

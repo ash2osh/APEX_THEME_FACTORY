@@ -9,6 +9,7 @@ html.app-theme-linen {
     --app-radius-lg:       12px;
 
     --app-shadow-dialog:   0 16px 48px -12px rgba(22, 21, 19, .25); /* the only decorative shadow */
+    --app-overlay-background: rgba(22, 21, 19, .3);
     --app-control-h:       2.25rem;                                 /* 36px controls */
 
     /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; Oracle Sans has a true 600 */

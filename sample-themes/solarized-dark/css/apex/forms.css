@@ -59,7 +59,7 @@
 .app-theme-solarized-dark .apex-theme-iris .apex-item-textarea:focus-visible,
 .app-theme-solarized-dark .apex-theme-iris .apex-item-select:focus-visible,
 .app-theme-solarized-dark .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
-    box-shadow: 0 0 0 3px rgba(42, 161, 152, .35);
+    box-shadow: 0 0 0 3px var(--app-focus-halo-color);
     border-color: var(--sol-cyan);
     outline: none;
 }

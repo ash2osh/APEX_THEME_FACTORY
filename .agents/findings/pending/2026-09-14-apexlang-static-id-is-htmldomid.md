@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — skill `apexlang-design-editor` corrected); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Pending — evaluation 12 run 2026-09-14 (see evaluations/runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md): PASS at both baseline and current, so not promoted. Baseline passed because the evaluee independently grepped `applications/ut/` for the real convention and overrode the stale `staticId:` table entry rather than following it; current passed as a no-op (the target region already had the correct property from a prior commit). The skill change may still be worth keeping (it removes the need for that extra verification step and would matter on a region with no existing sibling to grep), but it was not load-bearing in this run — re-run if a scenario surfaces where no sibling region already demonstrates the correct property.
 
 Category:
 APEXLANG-KNOWLEDGE

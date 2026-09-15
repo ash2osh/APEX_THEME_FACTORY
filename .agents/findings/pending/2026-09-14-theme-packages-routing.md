@@ -1,7 +1,22 @@
 # Finding
 
 Status:
-Pending — knowledge/skill change applied (2026-09-14 — skills `apex-css-design-system`, `design-to-apex` updated; evaluation 10 added); promotion to accepted waits for the evaluation run (spec §58 steps 8–10)
+Pending — demoted 2026-09-14 from a premature Accepted, after a second round of PR #4 review (P2) caught two
+problems: (1) the original current-worktree run explicitly skipped `scripts/sync-static.sh` — not permitted by
+the evaluee prompt — even though the scenario's own Expected line requires it, so no evaluee could actually
+complete the expected behavior; (2) `AGENTS.md` itself (read by every evaluee) already stated the
+`sample-themes/<name>/css` + `sync-static.sh` routing at baseline commit `9276369`, identical to current —
+the original baseline FAIL was the evaluee choosing to hand-edit the generated `@themes` block despite already
+having that instruction, not evidence the *skill* text mishandled the scenario. Re-run with
+`scripts/sync-static.sh` explicitly permitted (verified safe beforehand: read its source — local file copy +
+regex text substitution, no DB/Chrome/network) on both sides: **PASS at baseline**
+(evaluations/runs/2026-09-14/10-theme-package-routing-baseline-sync-permitted.md, package correctly assembled
+via the script, no hand-edit) **and PASS at current**
+(evaluations/runs/2026-09-14/10-theme-package-routing-current-sync-permitted.md). The routing knowledge itself
+(the `apex-css-design-system` / `design-to-apex` skill updates) is still accurate and worth keeping; this
+scenario just never isolated a real skill-text effect — the discriminator in the original runs was an
+evaluee-prompt permission gap, not the skill files. Original (invalid) runs kept for the record:
+evaluations/runs/2026-09-14/10-theme-package-routing-{baseline,current}.md.
 
 Category:
 APPLICATION-CONVENTION

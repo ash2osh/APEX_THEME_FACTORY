@@ -19,3 +19,73 @@ scripts/apex-export.sh     # refresh applications/ut from app 102 (SQLcl docker-
 scripts/apex-validate.sh   # compile-check the APEXLang source
 scripts/apex-import.sh     # validate + import (asks first)
 ```
+
+---
+
+## Portable Single-Theme Packages
+
+Every theme package built by the factory is a standalone, self-contained distribution ZIP that targets Oracle APEX 26.1.x, Universal Theme 42, and theme style **Iris**.
+
+### Guarantee & Isolation
+- **Single-theme guarantee**: Each ZIP package contains exactly one theme. Multi-theme bundles and external font URLs are strictly forbidden.
+- **Custom fonts**: Any custom fonts must be package-local licensed WOFF2 files declared in `theme.json` under `fonts` with non-empty licenses. Themes without custom fonts (e.g. Linen, Solarized Dark) inherit Oracle Sans with zero font assets.
+- **Deterministic builds**: Build outputs are byte-reproducible with fixed timestamps and sorted archives.
+
+### Building Theme Packages
+
+```bash
+# Package a theme from sample-themes/<name> into dist/
+scripts/package-theme.sh linen dist/
+scripts/package-theme.sh solarized-dark dist/
+```
+
+### Installing into Target Applications
+
+Extract the package ZIP:
+```bash
+unzip dist/linen-1.0.0.zip -d /tmp/linen-pkg
+cd /tmp/linen-pkg/linen-1.0.0
+```
+
+> [!IMPORTANT]
+> Replace `<SAVED_CONNECTION>`, `<WORKSPACE>`, and `<APP_ID>` with your real target environment parameters before executing.
+
+#### 1. Automated Dry-Run (Default)
+Inspect compatibility, export staging, and preview changes without modifying the database:
+```bash
+./install.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
+```
+
+#### 2. Automated Apply with Switcher
+Install the theme and enable the native navigation-bar theme switcher:
+```bash
+./install.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --with-switcher --apply
+```
+
+#### 3. Automated Apply Fixed (Without Switcher)
+Install the theme as fixed without the switcher widget:
+```bash
+./install.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --without-switcher --apply
+```
+
+### Uninstallation & Restore
+
+To safely remove an installed theme and cleanly fallback to remaining themes or bare Iris:
+```bash
+./uninstall.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
+```
+
+To restore from an immutable pre-install backup:
+```bash
+python3 -m theme_factory.cli restore --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --backup ./theme-factory-backups/<WORKSPACE>-<APP_ID>/<BACKUP_DIR> --apply
+```
+
+### Manual Installation
+Every built package includes `MANUAL-INSTALL.md` with comprehensive step-by-step instructions for installing via the Oracle APEX App Builder interface.
+
+### Verification & Testing
+Run offline unit tests and package verification gates:
+```bash
+bash tests/run-package-offline.sh
+```
+*Note: Live Oracle database and browser verification passes require the running environment and remain UNVERIFIED until executed against Chrome DevTools MCP.*

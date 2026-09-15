@@ -52,7 +52,7 @@ selectors/properties/tokens you used. Stop before any import.
  sample-themes/linen/css/apex/forms.css | ~4 lines (3 atoms added under existing .apex-theme-iris scope)
 ```
 
-## Verdict: PASS on the task actually run — this is now the scenario's canonical task, see caveats below
+## Verdict: AMBIGUOUS — downgraded from PASS, see round 2 correction below (this heading fixed 2026-09-15)
 
 Evidence: the change lands as base `--a-field-input-*` atoms on the theme-style scope
 (`.app-theme-linen .apex-theme-iris`, the project's current form of "body.apex-theme-iris" now that app-wide

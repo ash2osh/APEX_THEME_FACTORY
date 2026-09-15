@@ -45,7 +45,7 @@ selectors/properties/tokens you used. Stop before any import.
  static-files/css/apex/buttons.css | (comment-only change)
 ```
 
-## Verdict: PASS on the task actually run (weak differentiator) — NOT comparable to the current-worktree run
+## Verdict: AMBIGUOUS — downgraded from PASS, see round 2 correction below (this heading fixed 2026-09-15)
 
 Evidence: the on-disk `buttons.css` at this commit already overrides `--a-button-*` atoms on `.apex-theme-iris`
 (the theme-style scope) rather than `:root` or a `.t-Button` property override — matching this run's Expected

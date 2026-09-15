@@ -11,13 +11,13 @@ Structure required by [docs/AGENT_SPEC.md](../docs/AGENT_SPEC.md) §50–§62.
 └── evaluations/   # regression scenarios the skills must pass
 ```
 
-Exposure to agent runtimes (all point at `.agents/skills`):
+Exposure to agent runtimes:
 
-| Runtime | Path |
-|---|---|
-| Codex | reads `.agents/skills/` natively |
-| Claude Code | `.claude/skills/<name>` → symlink |
-| Antigravity | `.agent/skills` → symlink |
+| Runtime | Instructions / Rules | Skills Discovery |
+|---|---|---|
+| Codex | `AGENTS.md` | `.agents/skills/` (native) |
+| Claude Code | `CLAUDE.md` (symlink to `AGENTS.md`) | `.claude/skills/<name>` (symlinks to `.agents/skills/`) |
+| Antigravity | `.agents/rules/apex-theme-factory.md` (workspace rule) | `.agents/skills/` (native; `.agent/skills` legacy compatibility symlink only) |
 
 ## Lifecycle of a discovery (spec §58)
 

@@ -1,0 +1,4 @@
+html.app-theme-custom-font {
+    --app-color-primary: #1a2b3c;
+    --app-font-family: var(--app-font-family-body);
+}

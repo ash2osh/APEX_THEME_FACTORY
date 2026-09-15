@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "name": "custom-font",
+  "title": "Custom Font",
+  "version": "1.0.0",
+  "tagline": "Atkinson Hyperlegible test package.",
+  "class": "app-theme-custom-font",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "templateOptions": {
+    "navigationMenuStyle": "t-TreeNav--styleA"
+  },
+  "fonts": {
+    "body": {
+      "family": "Atkinson Hyperlegible",
+      "fallback": [
+        "sans-serif"
+      ],
+      "license": "licenses/OFL-Atkinson-Hyperlegible.txt",
+      "faces": [
+        {
+          "file": "fonts/atkinson-hyperlegible-400-normal.woff2",
+          "weight": 400,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/atkinson-hyperlegible-700-normal.woff2",
+          "weight": 700,
+          "style": "normal"
+        }
+      ]
+    },
+    "heading": {
+      "family": "Atkinson Hyperlegible",
+      "fallback": [
+        "sans-serif"
+      ],
+      "license": "licenses/OFL-Atkinson-Hyperlegible.txt",
+      "faces": [
+        {
+          "file": "fonts/atkinson-hyperlegible-400-normal.woff2",
+          "weight": 400,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/atkinson-hyperlegible-700-normal.woff2",
+          "weight": 700,
+          "style": "normal"
+        }
+      ]
+    },
+    "mono": {
+      "family": "Atkinson Hyperlegible",
+      "fallback": [
+        "monospace"
+      ],
+      "license": "licenses/OFL-Atkinson-Hyperlegible.txt",
+      "faces": [
+        {
+          "file": "fonts/atkinson-hyperlegible-400-normal.woff2",
+          "weight": 400,
+          "style": "normal"
+        }
+      ]
+    }
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

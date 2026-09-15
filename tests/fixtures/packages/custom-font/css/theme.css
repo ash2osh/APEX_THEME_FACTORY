@@ -1,0 +1,6 @@
+@import "tokens.css";
+
+html.app-theme-custom-font body {
+    color: var(--app-color-primary);
+    font-family: var(--app-font-family);
+}

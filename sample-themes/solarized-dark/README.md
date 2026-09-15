@@ -97,7 +97,14 @@ a changelog of fixes since", not as a current verification — do not extend "Ve
 until a live pass of the audit below runs against the expanded page list (below) and the two JET/Calendar
 pages get a real look.
 
-### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris)
+### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris) — as claimed by the session that ran it, unverified since
+
+**Not independently re-confirmed.** The paragraph below reports what a prior session's automated audit script
+claimed; no later review (including the multiple PR-review rounds that found real gaps this pass missed — see
+the addenda below) has re-run it or otherwise confirmed its own reliability. Given this package's demonstrated
+pattern of overclaimed verification, treat these specific numbers the same way as everything else in this
+README not labeled "confirmed 2026-09-15 or later": plausible, sourced from a real script run, but not
+something this session can vouch for.
 
 Automated text-contrast audit (every visible text node vs its effective background, AA thresholds) on pages
 500, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 3110, 4000, 6303, 6304, 405 and dialog page 1912: **0 failures

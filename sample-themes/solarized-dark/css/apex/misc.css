@@ -39,6 +39,8 @@
 
     /* Faceted Search (p1411) */
     --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-chart-border-color: var(--app-border-color);   /* Iris: var(--ut-region-border-color) at :root —
+                                                               ~1.07:1 on the same card surface otherwise */
     --a-fs-control-seperator-border-color: var(--app-border-color);
     --a-fs-filter-group-border-color: var(--app-border-color);
     --a-fs-filter-group-label-text-color: var(--app-text-secondary);

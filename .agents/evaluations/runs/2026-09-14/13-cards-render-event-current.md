@@ -43,11 +43,19 @@ selectors/properties/tokens/events you used. Stop before any import.
  static-files/js/app.js            | ~ (class rename + stale-clear hardening; event unchanged: tablemodelviewpagechange)
 ```
 
-## Verdict: PASS — direct contrast with the baseline FAIL
+## Verdict: PASS on the task actually run — NOT a clean contrast with baseline, see correction below
 
 Evidence: the evaluee explicitly named and used **`tablemodelviewpagechange`** (delegated on `document`,
 scoped to `#theme_packages_cards`) as the Cards render signal, citing the corrected pitfalls.md §2.4 entry by
 number — exactly matching Expected and avoiding the Failure condition (`apexafterrefresh` used as the Cards
-render signal) that the baseline run fell into. This is the clean differentiating evidence for the
-apex-widget-events finding: current skill knowledge names the correct event; baseline skill knowledge (silent
-on Cards' async render timing) left the evaluee to default to the wrong, more generic region-refresh event.
+render signal). This run's own PASS stands.
+
+**Correction 2026-09-15** (Codex PR review, PR #4, P2): the line above originally called this "direct contrast
+with the baseline FAIL" and "clean differentiating evidence" — that referred to the *original*, since-
+invalidated baseline at `9276369`, which predated `eda510d` (the commit that actually introduced the correct
+`tablemodelviewpagechange` handler this scenario is about). The properly isolated baseline
+(`13-cards-render-event-baseline-eda510d.md`, at `eda510d`) also **passes** — the evaluee there found and
+preserved the same pre-existing correct handler, not from skill guidance. So this run is *not* differentiating
+evidence against a valid baseline; see `2026-09-14-apex-widget-events.md`'s Status line (demoted back to
+pending) and `evaluations/README.md` round 1 for the full correction. This file's own evidence was never
+updated to reflect that when the isolation fix landed — fixed now.

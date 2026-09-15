@@ -22,6 +22,12 @@
     --a-filedrop-focus-border-color: var(--sol-cyan);
     --a-filedrop-heading-text-color: var(--app-text-emphasized);
     --a-filedrop-text-color: var(--app-text-secondary);
+    --a-filedrop-icon-action-background-color: var(--app-surface-hover);   /* not in Iris — widget CSS
+                                                                               fallback is #fff; the 16px
+                                                                               action glyph inherits
+                                                                               --a-filedrop-text-color, was
+                                                                               2.67:1 on that fallback */
+    --a-filedrop-icon-action-border-color: var(--app-border-strong);
 
     /* Markdown Editor (p1601) */
     --a-mdeditor-background-color: var(--app-surface-input);

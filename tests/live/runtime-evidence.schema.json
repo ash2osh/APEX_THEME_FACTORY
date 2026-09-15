@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capturedAt",
+    "url",
+    "appId",
+    "appAlias",
+    "pageId",
+    "apexVersion",
+    "bodyClasses",
+    "htmlClasses",
+    "cssUrls",
+    "javascriptUrls",
+    "loadedUrls",
+    "windowApp",
+    "windowAlpine",
+    "activeTheme",
+    "registry",
+    "switcherAvailable",
+    "consoleErrors",
+    "failedRequests",
+    "fonts",
+    "fontApexFamilyBefore",
+    "fontApexFamilyAfter"
+  ],
+  "properties": {
+    "capturedAt": { "type": "string" },
+    "url": { "type": "string" },
+    "appId": { "type": "string" },
+    "appAlias": { "type": "string" },
+    "pageId": { "type": "string" },
+    "apexVersion": { "type": "string" },
+    "bodyClasses": { "type": "array", "items": { "type": "string" } },
+    "htmlClasses": { "type": "array", "items": { "type": "string" } },
+    "cssUrls": { "type": "array", "items": { "type": "string" } },
+    "javascriptUrls": { "type": "array", "items": { "type": "string" } },
+    "loadedUrls": { "type": "array", "items": { "type": "string" } },
+    "windowApp": { "type": ["object", "null"] },
+    "windowAlpine": { "type": ["string", "null"] },
+    "activeTheme": { "type": "string" },
+    "registry": { "type": "object" },
+    "switcherAvailable": { "type": "boolean" },
+    "consoleErrors": { "type": "array", "items": { "type": "string" } },
+    "failedRequests": { "type": "array", "items": { "type": "string" } },
+    "fonts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "family", "weight", "style", "check", "requestUrl", "mimeType"],
+        "properties": {
+          "role": { "enum": ["body", "heading", "mono"] },
+          "family": { "type": "string" },
+          "weight": { "type": "integer" },
+          "style": { "enum": ["normal", "italic"] },
+          "check": { "type": "boolean" },
+          "requestUrl": { "type": "string" },
+          "mimeType": { "const": "font/woff2" }
+        }
+      }
+    },
+    "fontApexFamilyBefore": { "type": "string" },
+    "fontApexFamilyAfter": { "type": "string" }
+  }
+}

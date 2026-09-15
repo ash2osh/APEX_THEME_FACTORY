@@ -45,7 +45,7 @@
     --a-cv-badge-background-color: var(--sol-cyan);
     --a-cv-badge-text-color: var(--app-text-on-accent);    /* 4.75:1 (the cyan-on-tint badge was 2.5:1) */
     --a-cv-media-background-color: var(--app-surface-page);
-    --a-cv-media-overlay-color: rgba(0, 43, 54, .82);
+    --a-cv-media-overlay-color: var(--app-card-media-overlay);
     --a-cv-active-border-color: var(--sol-cyan);
     --a-cv-icon-background-color: var(--sol-cyan);           /* Iris hard-codes its own teal #00688c here */
     --a-cv-icon-text-color: var(--app-text-on-accent);

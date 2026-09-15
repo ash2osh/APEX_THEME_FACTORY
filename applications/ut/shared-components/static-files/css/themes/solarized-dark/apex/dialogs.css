@@ -17,7 +17,7 @@
     --jui-dialog-title-close-border-color: transparent;
     --jui-dialog-buttonpane-background-color: var(--app-surface-chrome);
     --jui-dialog-buttonpane-border-color: var(--app-border-color);
-    --jui-overlay-background-color: rgba(0, 43, 54, .75);
+    --jui-overlay-background-color: var(--app-overlay-background);
 
     /* popup menus: side-bar surface, hover surface for the focused item */
     --a-menu-shadow: var(--app-shadow-dialog);

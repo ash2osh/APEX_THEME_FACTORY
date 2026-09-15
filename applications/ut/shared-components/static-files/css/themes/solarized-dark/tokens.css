@@ -72,6 +72,10 @@ html.app-theme-solarized-dark {
 
     /* focus ring: cyan halo (VS Code focusBorder) over the canvas */
     --app-focus-ring:       0 0 0 2px var(--sol-base03), 0 0 0 4px rgba(42, 161, 152, .6);
+    --app-focus-halo-color: rgba(42, 161, 152, .35);
+    --app-overlay-background: rgba(0, 43, 54, .75);
+    --app-card-media-overlay: rgba(0, 43, 54, .82);
+    --app-badge-danger-text: #ffffff;
 
     --app-font-weight-semibold: 600;
 }

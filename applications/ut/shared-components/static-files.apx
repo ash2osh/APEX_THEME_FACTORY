@@ -347,3 +347,8 @@ file "css/themes/solarized-dark/cover.jpg" (
     mimeType: image/jpeg
     charSet: utf-8
 )
+
+file "js/components/themeFactoryDisclosure.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)

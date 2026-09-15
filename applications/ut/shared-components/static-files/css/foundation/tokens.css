@@ -53,6 +53,9 @@
     /* type */
     --app-font-weight-medium:   500;
     --app-font-weight-semibold: var(--a-base-font-weight-semibold, 500);
+    --app-font-family-body:    var(--a-base-font-family);
+    --app-font-family-heading: var(--a-base-font-family);
+    --app-font-family-mono:    var(--a-base-font-family-mono);
     --app-text-xs:  .75rem;
     --app-text-sm:  .8125rem;
     --app-text-md:  .875rem;

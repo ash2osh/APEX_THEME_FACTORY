@@ -174,6 +174,19 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   calling a package verified. Exclusions: `#apexDevToolbar`, hidden nodes; expect Universal Theme's own
   `u-color-*` demo fills (p1304) to fail under any style.
 
+### 4.3b The contrast audit's `bgOf()` used to double-composite `<body>`'s own background
+- **Symptom (fixed 2026-09-14, PR review on #3):** a lone 50%-alpha `<body>` background composited to
+  `rgb(64,64,64)` instead of the correct `rgb(128,128,128)` — roughly 10.4:1 instead of the real ~4:1, a false
+  clean result that could hide a real near-failure.
+- **Cause:** the ancestor walk already includes `document.body` (loop condition only excludes
+  `document.documentElement`), but the old code then re-read and re-composited `document.body`'s background a
+  second time as the "page background" backdrop — while never reading `document.documentElement`'s own
+  background at all.
+- **Fix:** after the loop, composite `acc` once over `document.documentElement`'s background (if any, else
+  white) — not over `document.body`'s again. Sanity-check both cases before trusting a re-derived copy of this
+  script: 50% red / 50% blue / white → `rgb(191,64,128)`; lone 50% black on `<body>` over an unstyled canvas →
+  `rgb(128,128,128)`.
+
 ### 4.4 SQLcl / DB
 - `apex_application_theme_styles` lists the six Iris/Vita/Redwood rows; `apex_application_static_files`
   shows what is really deployed (sizes tell you whether the working tree was imported).

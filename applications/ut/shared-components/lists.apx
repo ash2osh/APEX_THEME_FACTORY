@@ -2531,6 +2531,26 @@ list ut-application-navigation (
         }
     )
 
+    entry theme-factory-lifecycle (
+        label: Theme Factory Lifecycle
+        icon {
+            imageIconCssClasses: fa-refresh
+        }
+        layout {
+            sequence: 790
+            parentEntry: @design
+        }
+        isCurrent {
+            type: pages
+            pages: 409
+        }
+        link {
+            target: {
+                page: 409
+            }
+        }
+    )
+
     entry timeline (
         label: Timeline
         icon {

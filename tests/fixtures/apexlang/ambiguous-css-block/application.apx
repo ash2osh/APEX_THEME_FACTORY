@@ -1,0 +1,14 @@
+app AMBIGUOUS (
+    name: Ambiguous CSS App
+    version: 1.0.0
+    userInterface {
+        currentTheme: @universal-theme
+        globalPage: 0
+    }
+    css {
+        fileUrls: []
+    }
+    css {
+        fileUrls: []
+    }
+)

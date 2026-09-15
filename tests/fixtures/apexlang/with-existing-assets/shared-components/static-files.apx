@@ -1,0 +1,9 @@
+file "existing.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "existing.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)

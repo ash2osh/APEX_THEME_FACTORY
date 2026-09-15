@@ -1,0 +1,14 @@
+app MIN (
+    name: Minimal Target App
+    version: 1.0.0
+    userInterface {
+        currentTheme: @universal-theme
+        globalPage: 0
+    }
+    javaScript {
+        fileUrls: []
+    }
+    css {
+        fileUrls: []
+    }
+)

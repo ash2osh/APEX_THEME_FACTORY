@@ -1,0 +1,31 @@
+name: verify
+on:
+  push:
+  pull_request:
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run offline verification
+        run: tests/run-offline.sh
+      - name: Build release candidates
+        run: |
+          scripts/package-theme.sh linen "$RUNNER_TEMP/linen"
+          scripts/package-theme.sh solarized-dark "$RUNNER_TEMP/solarized-dark"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: single-theme-zips
+          path: |
+            ${{ runner.temp }}/linen/*.zip
+            ${{ runner.temp }}/solarized-dark/*.zip
+      - name: State live-evidence boundary
+        if: always()
+        run: echo 'Layers C-E are UNVERIFIED — run scripts/release-check.sh locally.' >> "$GITHUB_STEP_SUMMARY"

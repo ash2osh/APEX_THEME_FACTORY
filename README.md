@@ -84,8 +84,15 @@ python3 -m theme_factory.cli restore --connection <SAVED_CONNECTION> --workspace
 Every built package includes `MANUAL-INSTALL.md` with comprehensive step-by-step instructions for installing via the Oracle APEX App Builder interface.
 
 ### Verification & Testing
-Run offline unit tests and package verification gates:
+
+#### Credential-Free Offline Gate (Layers A & B)
+Run offline syntax checks, unit tests, agent compatibility assertions, and package verification gates:
 ```bash
-bash tests/run-package-offline.sh
+bash tests/run-offline.sh
 ```
-*Note: Live Oracle database and browser verification passes require the running environment and remain UNVERIFIED until executed against Chrome DevTools MCP.*
+
+#### Continuous Integration Boundary
+The GitHub Actions workflow (`.github/workflows/verify.yml`) executes `tests/run-offline.sh` and packages release ZIPs.
+> [!NOTE]
+> CI validates **Layer A (Repository Source)** and **Layer B (Package Portability)** only. A passing CI run does **NOT** prove live database installation (Layer C), browser runtime correctness (Layer D), or consumer application portability (Layer E). Layers C-E require local execution with SQLcl and Chrome DevTools MCP as defined in [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
+

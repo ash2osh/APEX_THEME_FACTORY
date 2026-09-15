@@ -26,5 +26,6 @@ zip_path="dist/$theme_name/$theme_name-$theme_version.zip"
 python3 -m lib.theme_factory.cli verify-package --package "$zip_path"
 python3 -m lib.theme_factory.release \
   --theme "$theme_name" \
+  --package "$zip_path" \
   --evidence-dir "$evidence_dir" \
   --output "dist/$theme_name/RELEASE-REPORT.md"

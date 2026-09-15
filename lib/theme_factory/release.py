@@ -116,15 +116,36 @@ def run_release_cli(args: argparse.Namespace) -> None:
         data = json.loads(theme_json_path.read_text(encoding="utf-8"))
         version = data.get("version", "1.0.0")
 
+    git_commit = "HEAD"
+    is_dirty = False
+    try:
+        import subprocess
+        res = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
+        if res.returncode == 0:
+            git_commit = res.stdout.strip()
+        status_res = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if status_res.returncode == 0 and status_res.stdout.strip():
+            is_dirty = True
+    except Exception:
+        pass
+
+    checksum = "computed-package-checksum"
+    zip_candidate = Path(f"dist/{theme_name}/{theme_name}-{version}.zip")
+    if getattr(args, "package", None):
+        zip_candidate = Path(args.package)
+    if zip_candidate.exists():
+        import hashlib
+        checksum = hashlib.sha256(zip_candidate.read_bytes()).hexdigest()
+
     metadata = {
         "theme": theme_name,
         "version": version,
-        "git_commit": "HEAD",
-        "is_dirty": False,
+        "git_commit": git_commit,
+        "is_dirty": is_dirty,
         "apex_version": "26.1.4",
         "sqlcl_version": "26.1.0",
         "chrome_version": "128.0",
-        "checksum": "computed-package-checksum",
+        "checksum": checksum,
     }
 
     evidence: list[dict[str, Any]] = [
@@ -138,7 +159,18 @@ def run_release_cli(args: argparse.Namespace) -> None:
                 if isinstance(content, list):
                     evidence.extend(content)
                 elif isinstance(content, dict):
-                    evidence.append(content)
+                    if "checks" in content and "verdict" in content:
+                        for check_name, c in content["checks"].items():
+                            layer = "B" if check_name in ("app_id", "alias", "theme_number", "base_theme", "theme_style", "css_urls", "javascript_urls") else "C"
+                            evidence.append({
+                                "layer": layer,
+                                "check": check_name,
+                                "path": f"{content.get('workspace', 'APP')}-{content.get('appId', '')}",
+                                "status": c.get("status", "UNVERIFIED"),
+                                "details": c.get("evidence", ""),
+                            })
+                    elif "layer" in content:
+                        evidence.append(content)
             except Exception as e:
                 evidence.append({
                     "layer": "C",
@@ -167,6 +199,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Theme Factory Release Checker")
     parser.add_argument("--theme", required=True, help="Theme name")
     parser.add_argument("--evidence-dir", required=True, help="Path to evidence JSON directory")
+    parser.add_argument("--package", help="Path to theme ZIP package")
     parser.add_argument("--output", help="Path to write release report markdown")
     args = parser.parse_args()
     run_release_cli(args)

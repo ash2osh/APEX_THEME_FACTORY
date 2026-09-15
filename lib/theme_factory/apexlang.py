@@ -101,6 +101,173 @@ def _find_matching_brace(text: str, open_pos: int) -> int:
     return -1
 
 
+def strip_bootstrap_regions(p0_text: str) -> str:
+    """Strip Theme Factory bootstrap regions from page 0 APEXLang text."""
+    p0_text = re.sub(
+        rf"\s*(?:--|//) {MARKER}:BEGIN:REGIONS[\s\S]*?(?:--|//) {MARKER}:END:REGIONS\s*",
+        "\n",
+        p0_text,
+    )
+    while True:
+        m = re.search(
+            r"\n([ \t]*)region\s+(?:theme_factory_bootstrap\b|theme_factory_bootstrap_dialog\b|\"Theme Factory Bootstrap[^\"]*\")\s*\(",
+            p0_text,
+        )
+        if not m:
+            break
+        open_pos = m.end() - 1
+        close_pos = _find_matching_brace(p0_text, open_pos)
+        if close_pos == -1:
+            break
+        p0_text = p0_text[:m.start()] + "\n" + p0_text[close_pos + 1:]
+    return p0_text
+
+
+def strip_switcher_entries(nav_text: str) -> str:
+    """Strip Theme Factory switcher list entries from navigation-bar APEXLang text."""
+    nav_text = re.sub(
+        rf"\s*(?:--|//) {MARKER}:BEGIN:SWITCHER[\s\S]*?(?:--|//) {MARKER}:END:SWITCHER\s*",
+        "\n",
+        nav_text,
+    )
+    while True:
+        m = re.search(
+            r"\n([ \t]*)entry\s+\"theme-factory-[^\"]*\"\s*\(",
+            nav_text,
+        )
+        if not m:
+            break
+        open_pos = m.end() - 1
+        close_pos = _find_matching_brace(nav_text, open_pos)
+        if close_pos == -1:
+            break
+        nav_text = nav_text[:m.start()] + "\n" + nav_text[close_pos + 1:]
+    return nav_text
+
+
+def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: list) -> str:
+    """Generate APEXLang code for Theme Factory bootstrap regions."""
+    themes_data = [
+        {
+            "name": t["name"] if isinstance(t, dict) else t.name,
+            "title": t["title"] if isinstance(t, dict) else t.title,
+            "className": t["className"] if isinstance(t, dict) else t.class_name,
+        }
+        for t in themes
+    ]
+    themes_json_str = json.dumps(themes_data)
+    bootstrap_html = f"""<script>
+window.APEX_THEME_FACTORY_CONFIG = {{
+  appId: &APP_ID.,
+  defaultTheme: "{default_theme}",
+  switcherEnabled: {"true" if switcher_enabled else "false"},
+  themes: {themes_json_str}
+}};
+(function (doc, config) {{
+  "use strict";
+  var root = doc.documentElement;
+  var key = "apex.themeFactory." + config.appId;
+  var allowed = ["iris"].concat(config.themes.map(function (theme) {{ return theme.name; }}));
+  var selected = config.defaultTheme;
+  if (config.switcherEnabled) {{
+    try {{
+      selected = window.localStorage.getItem(key) || selected;
+      if (allowed.indexOf(selected) === -1) {{
+        window.localStorage.removeItem(key);
+        selected = config.defaultTheme;
+      }}
+    }} catch (e) {{
+      selected = config.defaultTheme;
+    }}
+  }}
+  Array.prototype.slice.call(root.classList).forEach(function (name) {{
+    if (name.indexOf("app-theme-") === 0) {{ root.classList.remove(name); }}
+  }});
+  if (selected !== "iris") {{ root.classList.add("app-theme-" + selected); }}
+  root.dataset.appThemeDefault = config.defaultTheme;
+  root.dataset.appThemeCurrent = selected;
+}}(document, window.APEX_THEME_FACTORY_CONFIG));
+</script>"""
+
+    return f"""
+    // {MARKER}:BEGIN:REGIONS
+    region theme_factory_bootstrap (
+        name: Theme Factory Bootstrap
+        type: staticContent
+        source {{
+            htmlCode:
+                ```html
+                {bootstrap_html}
+                ```
+        }}
+        layout {{
+            sequence: 10
+            slot: banner
+        }}
+        appearance {{
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }}
+    )
+
+    region theme_factory_bootstrap_dialog (
+        name: Theme Factory Bootstrap (Dialog)
+        type: staticContent
+        source {{
+            htmlCode:
+                ```html
+                {bootstrap_html}
+                ```
+        }}
+        layout {{
+            sequence: 11
+            slot: breadcrumbBar
+        }}
+        appearance {{
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }}
+    )
+    // {MARKER}:END:REGIONS
+"""
+
+
+def build_switcher_entries(themes: list) -> str:
+    """Generate APEXLang code for Theme Factory switcher list entries."""
+    entries_code = [
+        f"    // {MARKER}:BEGIN:SWITCHER",
+        '    entry "theme-factory-switcher-parent" (',
+        '        label: "Theme"',
+        '        sequence: 9000',
+        '        cssClasses: "theme-factory-managed-switcher"',
+        '        link { target: { type: url url: "javascript:void(0);" } }',
+        '    )',
+    ]
+    seq = 9010
+    for p in themes:
+        name = p["name"] if isinstance(p, dict) else p.name
+        title = p["title"] if isinstance(p, dict) else p.title
+        entries_code.append(
+            f'    entry "theme-factory-choice-{name}" (\n'
+            f'        label: "{title}"\n'
+            f'        sequence: {seq}\n'
+            f'        parentEntry: "theme-factory-switcher-parent"\n'
+            f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
+            f'    )'
+        )
+        seq += 10
+    entries_code.append(
+        f'    entry "theme-factory-choice-iris" (\n'
+        f'        label: "Iris"\n'
+        f'        sequence: {seq}\n'
+        f'        parentEntry: "theme-factory-switcher-parent"\n'
+        f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
+        f'    )'
+    )
+    entries_code.append(f"    // {MARKER}:END:SWITCHER\n")
+    return "\n".join(entries_code)
+
+
 def inspect_export(export_dir: Path) -> TargetExport:
     """Inspect and validate an APEXLang application export directory."""
     export_dir = export_dir.resolve()
@@ -205,10 +372,7 @@ def inspect_export(export_dir: Path) -> TargetExport:
     # Locate static-files.apx
     sf_files = list(export_dir.glob("**/static-files.apx"))
     if not sf_files:
-        # Create minimal static-files.apx if missing
         sf_file = export_dir / "shared-components/static-files.apx"
-        sf_file.parent.mkdir(parents=True, exist_ok=True)
-        sf_file.write_text("", encoding="utf-8")
     else:
         sf_file = sf_files[0]
 
@@ -378,6 +542,8 @@ def plan_install(
             for p in all_pkgs
         ],
     }
+    reg_rel = Path("shared-components/static-files/theme-factory/runtime/registry.json")
+    after_files[reg_rel] = json.dumps(registry_payload, indent=2) + "\n"
 
     # 2. Update shared-components/static-files.apx
     sf_rel = target.static_files_file.relative_to(export_dir)
@@ -485,94 +651,14 @@ def plan_install(
     if before_p0:
         before_files[p0_rel] = before_p0
 
-    # Build bootstrap HTML
-    themes_json_str = json.dumps([
-        {"name": p.name, "title": p.title, "className": p.class_name} for p in all_pkgs
-    ])
-    bootstrap_html = f"""<script>
-window.APEX_THEME_FACTORY_CONFIG = {{
-  appId: &APP_ID.,
-  defaultTheme: "{default_theme}",
-  switcherEnabled: {"true" if switcher_enabled else "false"},
-  themes: {themes_json_str}
-}};
-(function (doc, config) {{
-  "use strict";
-  var root = doc.documentElement;
-  var key = "apex.themeFactory." + config.appId;
-  var allowed = ["iris"].concat(config.themes.map(function (theme) {{ return theme.name; }}));
-  var selected = config.defaultTheme;
-  if (config.switcherEnabled) {{
-    try {{
-      selected = window.localStorage.getItem(key) || selected;
-      if (allowed.indexOf(selected) === -1) {{
-        window.localStorage.removeItem(key);
-        selected = config.defaultTheme;
-      }}
-    }} catch (e) {{
-      selected = config.defaultTheme;
-    }}
-  }}
-  Array.prototype.slice.call(root.classList).forEach(function (name) {{
-    if (name.indexOf("app-theme-") === 0) {{ root.classList.remove(name); }}
-  }});
-  if (selected !== "iris") {{ root.classList.add("app-theme-" + selected); }}
-  root.dataset.appThemeDefault = config.defaultTheme;
-  root.dataset.appThemeCurrent = selected;
-}}(document, window.APEX_THEME_FACTORY_CONFIG));
-</script>"""
-
-    bootstrap_regions = f"""
-    -- {MARKER}:BEGIN:REGIONS
-    region theme_factory_bootstrap (
-        name: Theme Factory Bootstrap
-        type: staticContent
-        source {{
-            htmlCode:
-                ```html
-                {bootstrap_html}
-                ```
-        }}
-        layout {{
-            sequence: 10
-            slot: banner
-        }}
-        appearance {{
-            template: @/blank-with-attributes
-            templateOptions: #DEFAULT#
-        }}
-    )
-
-    region theme_factory_bootstrap_dialog (
-        name: Theme Factory Bootstrap (Dialog)
-        type: staticContent
-        source {{
-            htmlCode:
-                ```html
-                {bootstrap_html}
-                ```
-        }}
-        layout {{
-            sequence: 11
-            slot: breadcrumbBar
-        }}
-        appearance {{
-            template: @/blank-with-attributes
-            templateOptions: #DEFAULT#
-        }}
-    )
-    -- {MARKER}:END:REGIONS
-"""
+    # Build bootstrap regions
+    bootstrap_regions = build_bootstrap_regions(default_theme, switcher_enabled, all_pkgs)
 
     if not before_p0:
         after_p0 = f"page 0 (\n    name: Page Zero\n{bootstrap_regions}\n)\n"
     else:
-        # Strip existing marked regions
-        clean_p0 = re.sub(
-            rf"\s*-- {MARKER}:BEGIN:REGIONS[\s\S]*?-- {MARKER}:END:REGIONS\s*",
-            "\n",
-            before_p0,
-        )
+        # Strip existing marked or managed regions
+        clean_p0 = strip_bootstrap_regions(before_p0)
         last_paren = clean_p0.rfind(")")
         after_p0 = clean_p0[:last_paren].rstrip() + "\n" + bootstrap_regions + "\n)\n"
 
@@ -584,39 +670,12 @@ window.APEX_THEME_FACTORY_CONFIG = {{
         before_nav = target.navigation_file.read_text(encoding="utf-8")
         before_files[nav_rel] = before_nav
 
-        clean_nav = re.sub(
-            rf"\s*-- {MARKER}:BEGIN:SWITCHER[\s\S]*?-- {MARKER}:END:SWITCHER\s*",
-            "\n",
-            before_nav,
-        )
+        clean_nav = strip_switcher_entries(before_nav)
 
         if switcher_enabled:
-            # Add switcher parent entry and child entries
-            entries_code = [f"    -- {MARKER}:BEGIN:SWITCHER", '    entry "theme-factory-switcher-parent" (', '        label: "Theme"', '        sequence: 9000', '        cssClasses: "theme-factory-managed-switcher"', '        link { target: { type: url url: "javascript:void(0);" } }', '    )']
-            seq = 9010
-            for p in all_pkgs:
-                entries_code.append(
-                    f'    entry "theme-factory-choice-{p.name}" (\n'
-                    f'        label: "{p.title}"\n'
-                    f'        sequence: {seq}\n'
-                    f'        parentEntry: "theme-factory-switcher-parent"\n'
-                    f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
-                    f'    )'
-                )
-                seq += 10
-            # Add Iris
-            entries_code.append(
-                f'    entry "theme-factory-choice-iris" (\n'
-                f'        label: "Iris"\n'
-                f'        sequence: {seq}\n'
-                f'        parentEntry: "theme-factory-switcher-parent"\n'
-                f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
-                f'    )'
-            )
-            entries_code.append(f"    -- {MARKER}:END:SWITCHER\n")
-
+            switcher_code = build_switcher_entries(all_pkgs)
             last_paren = clean_nav.rfind(")")
-            after_nav = clean_nav[:last_paren].rstrip() + "\n" + "\n".join(entries_code) + "\n)\n"
+            after_nav = clean_nav[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n"
         else:
             after_nav = clean_nav
 

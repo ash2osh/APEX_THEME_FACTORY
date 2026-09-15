@@ -1,15 +1,7 @@
 # Finding
 
 Status:
-Pending — full source-level literal/derived-token audit completed 2026-09-14 in this PR. Every one of Iris'
-282 literal-colour `:root` tokens and 121 `var()`-chains targeting one, cross-checked against the whole
-`sample-themes/solarized-dark/css/` tree; every gap with confirmed consumption (offline widget-CSS mirror) and
-a confirmed-present owning component (`applications/ut/pages/*.apx`) is now fixed — see Evidence §6 for the
-full before/after count and the file-by-file list. Two categories remain deliberately unfixed, both explained
-in Evidence §7 (not a gap, or not verifiable offline) — not blockers. Stays pending, not promoted to
-`accepted/`, because a **live** contrast audit (docs/CHROME_DEVTOOLS_MCP.md) on the expanded page list has
-still not run — no Chrome session in any pass that touched this finding. That live pass is the only remaining
-step before this package's README can honestly drop "not fully verified."
+Pending (2026-09-15) — Missing evidence: live Chrome DevTools WCAG AA contrast audit across all pages, components, and viewports in `tests/live/RELEASE-MATRIX.md` with zero package-caused contrast failures. Full source-level literal/derived-token audit completed 2026-09-14 in this repo; live browser pass remains strictly gated on user authorization and active Chrome DevTools MCP session.
 
 Category:
 BUG

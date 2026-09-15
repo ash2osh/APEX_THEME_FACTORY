@@ -10,17 +10,23 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 01 | native-grid-preservation | passed 2026-09-14 (current only) — runs/2026-09-14/01-native-grid-preservation-current.md |
 | 02 | css-scoping | passed 2026-09-14 (current only) — runs/2026-09-14/02-css-scoping-current.md |
 | 03 | alpine-component-structure | passed 2026-09-14 (current only) on authoring structure; investigation found `alpine.min.js` itself was never loaded by `application.apx` (real fix on a separate branch/PR) — runs/2026-09-14/03-alpine-component-structure-current.md |
-| 04 | apex-refresh | ambiguous 2026-09-14 — component never wired into an actual refreshable region, state resync doesn't match "from the APEX item"; corrected after PR #4 review — runs/2026-09-14/04-apex-refresh-current.md |
-| 05 | source-persistence | ambiguous 2026-09-14 — reload-and-verify half of Expected needs a Chrome-enabled session, corrected after PR #4 review — runs/2026-09-14/05-source-persistence-current.md |
+| 04 | apex-refresh | unverified (ambiguous 2026-09-14) — pending live Chrome session on Page 409; missing live refresh execution & listener-count verification — runs/2026-09-14/04-apex-refresh-current.md |
+| 05 | source-persistence | unverified (ambiguous 2026-09-14) — pending live Chrome session; missing reload & post-reload computed style audit — runs/2026-09-14/05-source-persistence-current.md |
 | 06 | component-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/06-component-reuse-current.md |
 | 07 | token-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/07-token-reuse-current.md |
 | 08 | iris-only | passed 2026-09-14 (current only) — runs/2026-09-14/08-iris-only-current.md |
-| 09 | runtime-evidence | ambiguous 2026-09-14 — needs a Chrome-enabled session; not a valid PASS under this matrix's no-Chrome ground rules, corrected after PR #4 review — runs/2026-09-14/09-runtime-evidence-current.md |
+| 09 | runtime-evidence | unverified (ambiguous 2026-09-14) — pending live Chrome session; missing live DOM inspection before proposing CSS — runs/2026-09-14/09-runtime-evidence-current.md |
 | 10 | theme-package-routing | passed baseline / passed current 2026-09-14 (corrected: sync-static.sh permitted; current run has a noted DB-compliance caveat, routing behavior unaffected) — runs/2026-09-14/10-theme-package-routing-{baseline,current}-sync-permitted.md |
-| 11 | dark-package-coverage | ambiguous both sides 2026-09-14 — isolation and prompt fixed, but the live contrast-audit half of Expected still needs a Chrome-enabled session (2 correction rounds) — runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md |
+| 11 | dark-package-coverage | unverified (ambiguous both sides 2026-09-14) — pending live Chrome session; missing live WCAG AA contrast audit across full release matrix — runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md |
 | 12 | apexlang-static-id | passed baseline / passed current 2026-09-14 — runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md |
 | 13 | cards-render-event | passed baseline 2026-09-14 (corrected isolation) / passed current 2026-09-14 — runs/2026-09-14/13-cards-render-event-baseline-eda510d.md, runs/2026-09-14/13-cards-render-event-current.md |
-| 14 | theme-style-scope | ambiguous both sides 2026-09-14 — mismatched tasks *and* the scenario's own Given handed the evaluee the answer; scenario file rewritten, fresh matched neutral-prompt run still needed — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
+| 14 | theme-style-scope | unverified (ambiguous both sides 2026-09-14) — pending fresh matched baseline/current run against neutral Given (no solution giveaway) — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
+
+### Standardized Execution Modes (2026-09-15)
+
+To eliminate prompt contradictions (such as forbidding DB access while requesting compilation validation), all evaluation scenarios declare one of two explicit modes before dispatch:
+- **`OFFLINE`**: Do not connect to Oracle and do not run `scripts/apex-validate.sh`; source checks remain UNVERIFIED for compilation.
+- **`CONNECTED`**: You may run `scripts/apex-validate.sh` using `docker-demo` to validate APEXLang source; do not import or make database changes. Live browser tests connect Chrome DevTools MCP to `localhost:8181`.
 
 Findings whose knowledge or skill change is already applied but whose scenario has not been run stay in
 `findings/pending/` (status says so); they move to `accepted/` only after the row above reads *passed* with the
@@ -167,3 +173,10 @@ and 14 remain open pending a Chrome-enabled and/or properly re-scoped re-run (04
 wiring; 14 needs fresh runs against the rewritten `Given`) — scenarios 08's and 13's PASS verdicts stand for
 what their (now explicitly narrowed, for 13) `Expected` lines actually ask, and scenario 10's PASS verdicts
 stand for the routing behavior under test despite the noted compliance gap.
+
+**2026-09-15 update, round 8** (Task 5: Evidence-completeness checklists and protocol hardening):
+- Added explicit evidence-completeness checklists (permitted tools, prohibited writes, exact fixture target, required artifacts, verdict rules) to scenarios 04, 05, 09, 11, and 14.
+- Replaced the contradictory "no DB + run apex-validate.sh" instruction with standardized `OFFLINE` and `CONNECTED` execution modes.
+- Page 409 (`applications/ut/pages/p00409-theme-factory-lifecycle.apx`) and `themeFactoryDisclosure.js` committed as the real declarative refresh fixture for scenario 04.
+- Pending live browser execution via Chrome DevTools MCP and live database import authorization, scenarios 04, 05, 09, 11, and 14 remain explicitly marked UNVERIFIED, naming the exact missing runtime evidence.
+

@@ -29,7 +29,8 @@ css/apex/
   forms.css              4px inputs on #003847 · 3.3:1 border · cyan focus · 13px/500 labels · floating labels
   reports.css            IRR / IG / classic: #00212b header 13px/600 · 40px rows · solid hover · themed pager and footer
   dialogs.css            jQuery UI dialog and menu atoms · wizard dialog pages
-  misc.css               shadows off · badges · tabs · alert accent edge · Prism.js code samples
+  misc.css               shadows off · badges · tabs · alert accent edge · Prism.js code samples ·
+                          faceted search · percent graph · help dialog · map legend · chart tooltips
 preview/                 cover.jpg (gallery) + the four captures above
 ```
 
@@ -83,10 +84,68 @@ scripts/apex-import.sh                  # validate + import
 Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=solarized-dark` in a URL;
 `App.theme.use('solarized-dark')` in the console.
 
-## Verified (2026-09-14, APEX 26.1.4 / Iris)
+## Status: source-reviewed, NOT fully verified — a live Chrome pass is still required
+
+**Not "Verified".** The line below records a real automated contrast pass, but it is resting-state and
+14-page only; several rounds of PR review since (2026-09-14, `chatgpt-codex-connector` on #2 and #5) and a
+follow-up source audit (`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md`) have found
+and fixed real gaps that pass missed. As of the last addendum below, every literal/derived-token gap findable
+by source review (grep against the offline reference CSS + confirmed page presence) is fixed — only Oracle
+JET's and FullCalendar's own custom-property families remain, and those are unverifiable without Chrome (their
+consuming CSS isn't in the offline reference bundle). Read this section as "the last known-good baseline plus
+a changelog of fixes since", not as a current verification — do not extend "Verified" to the whole package
+until a live pass of the audit below runs against the expanded page list (below) and the two JET/Calendar
+pages get a real look.
+
+### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris)
 
 Automated text-contrast audit (every visible text node vs its effective background, AA thresholds) on pages
 500, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 3110, 4000, 6303, 6304, 405 and dialog page 1912: **0 failures
 attributable to the package**. Remaining: page 1304 badge-list demo uses Universal Theme's `u-color-*` fills (white on `#de7f11`,
 2.9:1) — identical under plain Iris. Widths 1440 / 375; console clean; IG paging, dialog open/close, nav-bar
-menu, keyboard focus ring checked.
+menu, keyboard focus ring checked. This pass only samples nodes present at rest on page load — it cannot and
+did not catch hover-only or empty-state-only failures (see below).
+
+### 2026-09-14 addendum: two non-resting-state fixes (PR #2 review)
+
+The automated pass above only samples text nodes at rest, so it missed two non-resting-state failures caught
+by PR review (`#2`, `chatgpt-codex-connector`) and fixed by static CSS/reference-CSS analysis (no Chrome
+available in that session; still needs a live re-check):
+- `#P4000_SEARCH`'s empty-results state (`.dm-Search:empty:before`, page 4000 inline CSS hard-codes
+  `rgba(0,0,0,.5)` for the "No Results" text) — fixed in `css/apex/misc.css`.
+- IR/IG toolbar control labels on `:hover` (`.a-IG-controls-item--X`/`.a-IRR-controls-item--X` set
+  `--a-report-controls-cell-label-hover-background-color` directly on the element with pale literals from
+  `app_ui-Core.min.css`, outranking the body-level mapping, so the light label text landed on a pale hover
+  background) — fixed in `css/apex/reports.css`.
+
+A third comment on that PR (page-4000 search/category/results near-white-on-white) was already covered by the
+`input#P4000_SEARCH` / `.dm-Search-*` rules below before this addendum.
+
+### 2026-09-14 addendum: two more coverage gaps (agent-evaluation source review)
+
+Two more atoms, found independently by two separate agent-evaluation runs doing an unrelated source review of
+this package (see `.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` for the full,
+still-open gap list — this PR fixes only the two highest-confidence items from it):
+- `--a-field-input-hover-background-color` was never set, so every text input flashed Iris' literal `#fff` on
+  hover, app-wide — fixed in `css/apex/forms.css`.
+- `--a-toolbar-background-color` resolves as `var(--ut-region-header-background-color)` at Iris' `:root`
+  (pitfalls.md §1.2 — frozen before this package's body-level override of that token reaches it), so
+  `.a-IG-header` (Interactive Grid, p1410), the Markdown Editor toolbar, Popup LOV search bar, and CKEditor
+  panels stayed white — fixed in `css/apex/reports.css`.
+
+### 2026-09-14 addendum: full literal/derived-token gap closure
+
+Completed the systematic audit the two runs above started: every one of Iris' 282 literal-colour `:root`
+tokens and 121 `var()`-chains targeting one, cross-checked against this package's whole `css/` tree. Fixed
+every remaining gap with confirmed consumption and a confirmed-present owning page — ~50 atoms across
+`tokens.css`, `apex/{dialogs,regions,reports,forms,misc}.css` — including full coverage for Card View
+icon/initials avatars, the date picker, popup menus, Comments/chat, File Drop, Markdown Editor, Combo Box, and
+new sections for Faceted Search (p1411), Percent Graph (p423/p1601), Help Text (p1903), and Map legend
+(p1906). Full list, and what was deliberately left out and why, in
+`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` §6–7.
+
+**Newly-identified pages that need a live check before "Verified"** (beyond the original 14-page list):
+1410, 1411, 1601, 423, 1800, 1902, 1903, 1906, 1405, 3003, 1412. Pages 1800 (Calendar) and 1902 (Charts) also
+need Chrome to determine whether Oracle JET's/FullCalendar's own theming reaches this package at all — the
+one remaining open question, unresolved by source review because their consuming CSS isn't in the offline
+reference mirror.

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "name": "external-font",
+  "title": "Invalid External Font Theme",
+  "version": "1.0.0",
+  "tagline": "Theme trying to use external font path.",
+  "class": "app-theme-external-font",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "fonts": {
+    "body": {
+      "family": "Test Sans",
+      "fallback": ["sans-serif"],
+      "license": "licenses/test.txt",
+      "faces": [
+        {
+          "file": "fonts/../outside.woff2",
+          "weight": 400,
+          "style": "normal"
+        }
+      ]
+    }
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

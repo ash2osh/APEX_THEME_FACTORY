@@ -38,6 +38,7 @@ app UT (
             #APP_FILES#demo/demo.js
             #PRISMJS_DIRECTORY#prism#MIN#.js
             #APP_FILES#js/app.js
+            #APP_FILES#js/vendor/alpine.min.js
         ]
     }
     css {

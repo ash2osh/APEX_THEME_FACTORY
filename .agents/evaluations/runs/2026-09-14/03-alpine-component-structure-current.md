@@ -40,8 +40,22 @@ selectors/properties/tokens you used. Stop before any import.
  static-files/js/components/stepper.js    | new file
 ```
 
-## Verdict: PASS
+## Verdict: PASS on the authoring-structure behavior Expected asks for — with a real gap found and fixed
 
 Evidence: uses `Alpine.data('stepper', …)` in `static-files/js/components/stepper.js` with markup kept as a
 short `x-data="stepper({…})"` (documented in the file header, not inlined as a page block), and a full contract
-added to `docs/COMPONENTS.md` — matching Expected. No business logic bloat inside `x-data`, no missing contract.
+added to `docs/COMPONENTS.md` — matching Expected's specific wording (component structure, not deployment).
+No business logic bloat inside `x-data`, no missing contract.
+
+**Investigated 2026-09-15** (Codex PR review, PR #4, P2): confirmed and traced further — at `b0aa923`,
+`applications/ut/application.apx` loads `demo.js`, Prism, and `js/app.js`, but never `alpine.min.js` itself
+(despite `static-files/js/app.js`'s own header comment claiming "Alpine.js is loaded once
+(application-level file URL)"). This isn't specific to the stepper — **no Alpine component anywhere in this
+project could ever have functioned**, since Alpine.js was never actually loaded by any page or the application
+shell, only registered as an uploadable static file. Fixed for real on `main` (not just noted): added
+`#APP_FILES#js/vendor/alpine.min.js` to `application.apx`'s `javaScript.fileUrls`, validated with
+`scripts/apex-validate.sh` — successful. This specific `stepper.js` file only ever existed in the evaluee's
+throwaway worktree and was never committed, so there's nothing from *this* run left to wire up, but the
+architectural gap it exposed is now fixed for any future component. The structural PASS above stands — Expected
+asks about component authoring shape, not deployment — but "pages cannot actually use the component" was true
+and is worth this record.

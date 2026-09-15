@@ -7,8 +7,14 @@ empty jQuery set — no error — so `items.forEach` throws inside every dialog 
 chain. Cards regions render after DOM-ready; `apex.region(id).refresh()` fires no `apexafterrefresh`; the widget's
 `tablemodelviewpagechange` bubbles to `document` after each render.
 Expected: "mark the active card in a Cards region after load" → hook `tablemodelviewpagechange` (or the
-region's own events), guard any `menu('option','items')` access for an empty jQuery set, and drive radio-style
-menu items via the widget's `set`/`choices` API rather than a synthetic `.click()`.
-Failure: a DOM-ready hook (`apex.jQuery(fn)`), `apexafterrefresh` used as the Cards render signal, or an
-unguarded `menu('option','items').forEach`.
+region's own events).
+Failure: a DOM-ready hook (`apex.jQuery(fn)`), or `apexafterrefresh` used as the Cards render signal.
 Skills under test: apex-alpine-lifecycle, apex-alpine-components, chrome-devtools-mcp.
+
+Note (2026-09-15, after PR #4 review, P2): this scenario's task only exercises the Cards-render-event half of
+the underlying finding (`2026-09-14-apex-widget-events.md`). The finding also documents two navigation-bar
+menu regressions — the empty-jQuery-set guard on `menu('option','items')` for pages without a nav bar, and
+driving radio-style menu items via `set`/`choices` instead of a synthetic `.click()` — but no run of this
+scenario has ever touched menu code, since the task only asks about the Cards region. Do not treat a PASS here
+as evidence for those two menu-related corrections; a separate task exercising a page with and one without a
+navigation bar is needed to test them.

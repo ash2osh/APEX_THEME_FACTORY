@@ -1,17 +1,7 @@
 # Finding
 
 Status:
-Pending — demoted 2026-09-14 from a premature Accepted. The first evaluation run (baseline at `9276369`) showed
-a FAIL, but PR #4's Codex review (P2) correctly pointed out that `9276369` predates `eda510d`, which already
-contains the correct `tablemodelviewpagechange` handler this finding is about — so that baseline wasn't
-isolating the skill-text change, it was also missing the application code current had. Re-run against the
-correct isolation point (`eda510d`, same app code as current, old Cards-silent skill text): PASS — see
-evaluations/runs/2026-09-14/13-cards-render-event-baseline-eda510d.md. The evaluee got the right event by
-reading the existing correct handler, not from skill guidance, so a properly isolated baseline also passes.
-Current still passes: evaluations/runs/2026-09-14/13-cards-render-event-current.md. The knowledge itself
-(pitfalls.md §2.4, the skill correction) is still accurate and worth keeping — it just hasn't been shown
-load-bearing by this scenario. Original (invalid) baseline kept for the record:
-evaluations/runs/2026-09-14/13-cards-render-event-baseline.md.
+Pending (2026-09-15) — Missing evidence: evaluation scenario isolating the load-bearing effect of Cards render timing (`tablemodelviewpagechange`) and navigation menu radio groups where the correct code is not already present in sibling files. Evaluated 2026-09-14 (demoted because baseline passed by reading existing code; see evaluations/runs/2026-09-14/13-cards-render-event-baseline-eda510d.md). Current still passes; knowledge in pitfalls.md §2.4 is accurate and retained.
 
 Category:
 APEX-JAVASCRIPT-PATTERN

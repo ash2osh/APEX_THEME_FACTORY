@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending — evaluation 12 run 2026-09-14 (see evaluations/runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md): PASS at both baseline and current, so not promoted. Baseline passed because the evaluee independently grepped `applications/ut/` for the real convention and overrode the stale `staticId:` table entry rather than following it; current passed as a no-op (the target region already had the correct property from a prior commit). The skill change may still be worth keeping (it removes the need for that extra verification step and would matter on a region with no existing sibling to grep), but it was not load-bearing in this run — re-run if a scenario surfaces where no sibling region already demonstrates the correct property.
+Pending (2026-09-15) — Missing evidence: evaluation scenario where no sibling component demonstrates `htmlDomId` (isolating skill guidance from codebase grepping), plus scenario testing app-level CSS/JS `userInterface` vs top-level routing blocks. Evaluated 2026-09-14 (see evaluations/runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md): PASS at baseline (evaluee grepped codebase) and current (no-op on already patched file). Retained in pending until isolated scenario confirms load-bearing behavior.
 
 Category:
 APEXLANG-KNOWLEDGE

@@ -1,7 +1,7 @@
 # Finding
 
 Status:
-Pending
+Pending (2026-09-15) — Missing evidence: live Chrome DevTools measurement on 2+ IG pages (e.g. app 102 page 1410 and consumer business page) verifying whether `.is-stuck` class is set at rest and whether box-shadow causes double-line artifact. Requires live CONNECTED session.
 
 Category:
 UNIVERSAL-THEME-KNOWLEDGE

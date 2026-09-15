@@ -82,7 +82,6 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     root_keys = {"schemaVersion", "name", "title", "version", "tagline", "class", "compatibility", "templateOptions", "fonts", "assets"}
     _check_allowed_keys(raw, root_keys, "")
 
-    # Required top-level fields
     for req in ("schemaVersion", "name", "title", "version", "tagline", "class", "compatibility", "assets"):
         if req not in raw:
             raise PackageError(f"Missing required property '{req}'")
@@ -94,16 +93,16 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     if not isinstance(name, str) or not NAME_REGEX.match(name):
         raise PackageError(f"name '{name}' must match {NAME_REGEX.pattern}")
 
-    if name != package_root.name:
+    version = raw["version"]
+    if not isinstance(version, str) or not SEMVER_REGEX.match(version):
+        raise PackageError(f"version '{version}' is not a valid semantic version")
+
+    if package_root.name != name and package_root.name != f"{name}-{version}":
         raise PackageError(f"name '{name}' does not match package directory '{package_root.name}'")
 
     title = raw["title"]
     if not isinstance(title, str) or not title.strip():
         raise PackageError("title must be a non-empty string")
-
-    version = raw["version"]
-    if not isinstance(version, str) or not SEMVER_REGEX.match(version):
-        raise PackageError(f"version '{version}' is not a valid semantic version")
 
     tagline = raw["tagline"]
     if not isinstance(tagline, str) or not tagline.strip():

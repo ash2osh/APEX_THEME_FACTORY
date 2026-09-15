@@ -1,0 +1,34 @@
+<!-- APEX_THEME_FACTORY_MANAGED:BEGIN:BOOTSTRAP -->
+<script>
+window.APEX_THEME_FACTORY_CONFIG = {
+  appId: __APP_ID__,
+  defaultTheme: "__DEFAULT_THEME__",
+  switcherEnabled: __SWITCHER_ENABLED__,
+  themes: __THEMES_JSON__
+};
+(function (doc, config) {
+  "use strict";
+  var root = doc.documentElement;
+  var key = "apex.themeFactory." + config.appId;
+  var allowed = ["iris"].concat(config.themes.map(function (theme) { return theme.name; }));
+  var selected = config.defaultTheme;
+  if (config.switcherEnabled) {
+    try {
+      selected = window.localStorage.getItem(key) || selected;
+      if (allowed.indexOf(selected) === -1) {
+        window.localStorage.removeItem(key);
+        selected = config.defaultTheme;
+      }
+    } catch (e) {
+      selected = config.defaultTheme;
+    }
+  }
+  Array.prototype.slice.call(root.classList).forEach(function (name) {
+    if (name.indexOf("app-theme-") === 0) { root.classList.remove(name); }
+  });
+  if (selected !== "iris") { root.classList.add("app-theme-" + selected); }
+  root.dataset.appThemeDefault = config.defaultTheme;
+  root.dataset.appThemeCurrent = selected;
+}(document, window.APEX_THEME_FACTORY_CONFIG));
+</script>
+<!-- APEX_THEME_FACTORY_MANAGED:END:BOOTSTRAP -->

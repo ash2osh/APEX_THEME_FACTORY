@@ -1,11 +1,22 @@
 {
+  "schemaVersion": 1,
   "name": "linen",
   "title": "Linen",
+  "version": "1.0.0",
   "tagline": "Light linen canvas, hairline seams, one teal thread.",
-  "direction": "quiet product — white chrome, hairline borders, flat 8px surfaces, teal for actions and selection only",
-  "base": "APEX 26.1.4 / Universal Theme 42 / Iris",
   "class": "app-theme-linen",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
   "templateOptions": {
-    "navigationMenu": { "style": "t-TreeNav--styleB" }
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
   }
 }

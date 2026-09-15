@@ -1,0 +1,16 @@
+{
+  "runtime": "codex",
+  "cliVersion": "codex-cli 0.149.1",
+  "dateUtc": "2026-09-15",
+  "status": "PASS",
+  "message": "All assertions passed",
+  "payload": {
+    "runtime": "codex",
+    "instructionEntry": "AGENTS.md",
+    "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+    "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+    "runtimeTruthTool": "chrome-devtools",
+    "importRequiresUserRequest": true,
+    "wouldEdit": false
+  }
+}

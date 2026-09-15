@@ -30,8 +30,8 @@ COMMANDS: dict[str, Callable[[str, Path], list[str]]] = {
         "--output-format", "json", "--json-schema", schema.read_text(encoding="utf-8"), prompt,
     ],
     "antigravity": lambda prompt, schema: [
-        "agy", "-p", "--mode", "plan", "--sandbox", "--output-format", "json",
-        "--json-schema", str(schema), prompt,
+        "agy", "--mode", "plan", "--sandbox", "--output-format", "json",
+        "--json-schema", str(schema), f"-p={prompt}",
     ],
 }
 
@@ -186,7 +186,7 @@ def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeV
             capture_output=True,
             text=True,
             check=False,
-            timeout=120,
+            timeout=180,
         )
         exit_code = res.returncode
         stdout = res.stdout

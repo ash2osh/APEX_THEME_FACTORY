@@ -51,6 +51,6 @@ When a CLI does not expose its internal loader telemetry, the recorded result se
 
 | Runtime | CLI version | Checked at (UTC) | Structural | Behavioral | Evidence |
 |---|---|---|---|---|---|
-| Codex | UNVERIFIED — run the release smoke | UNVERIFIED — run the release smoke | PASS | UNVERIFIED — run the release smoke | `tests/agent-smoke/runs/2026-09-15/codex.md` |
-| Claude Code | UNVERIFIED — run the release smoke | UNVERIFIED — run the release smoke | PASS | UNVERIFIED — run the release smoke | `tests/agent-smoke/runs/2026-09-15/claude.md` |
-| Antigravity | UNVERIFIED — run the release smoke | UNVERIFIED — run the release smoke | PASS | UNVERIFIED — run the release smoke | `tests/agent-smoke/runs/2026-09-15/antigravity.md` |
+| Codex | codex-cli 0.149.1 | 2026-09-15 | PASS | PASS | `tests/agent-smoke/runs/2026-09-15/codex.md` |
+| Claude Code | not installed | 2026-09-15 | PASS | UNVERIFIED | `tests/agent-smoke/runs/2026-09-15/claude.md` |
+| Antigravity | 1.2.3 | 2026-09-15 | PASS | UNVERIFIED | `tests/agent-smoke/runs/2026-09-15/antigravity.md` |

@@ -23,7 +23,9 @@ def main() -> None:
 
     # verify-package
     ver_p = subparsers.add_parser("verify-package", help="Verify extracted package checksums and manifest")
-    ver_p.add_argument("--package-root", type=Path, required=True, help="Path to extracted package directory")
+    ver_src = ver_p.add_mutually_exclusive_group(required=True)
+    ver_src.add_argument("--package-root", type=Path, help="Path to extracted package directory")
+    ver_src.add_argument("--package", type=Path, help="Path to package ZIP file")
 
     # install
     inst_p = subparsers.add_parser("install", help="Install theme into APEX application")
@@ -64,7 +66,8 @@ def main() -> None:
                 zip_path = build_package(args.repo_root, args.theme, args.output_dir)
             print(f"Built package: {zip_path}")
         elif args.subcommand == "verify-package":
-            manifest = verify_package(args.package_root)
+            target = args.package or args.package_root
+            manifest = verify_package(target)
             print(f"Package '{manifest.name}' v{manifest.version} verified successfully.")
         elif args.subcommand == "install":
             from lib.theme_factory.install import run_install_cli

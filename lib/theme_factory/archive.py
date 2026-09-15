@@ -189,9 +189,8 @@ def build_package(repo_root: Path, theme_name: str, output_dir: Path) -> Path:
     return build_package_from_root(repo_root, repo_root / f"sample-themes/{theme_name}", output_dir)
 
 
-def verify_package(package_root: Path) -> ThemeManifest:
+def _verify_package_dir(package_root: Path) -> ThemeManifest:
     """Verify package directory against checksums.sha256 and validate manifest."""
-    package_root = package_root.resolve()
     checksums_file = package_root / "checksums.sha256"
     if not checksums_file.exists():
         raise PackageError(f"Missing checksums.sha256 in {package_root}")
@@ -214,3 +213,18 @@ def verify_package(package_root: Path) -> ThemeManifest:
 
     manifest_path = package_root / "theme.json"
     return load_manifest(manifest_path, package_root)
+
+
+def verify_package(package_target: Path) -> ThemeManifest:
+    """Verify package directory or ZIP archive against checksums.sha256 and validate manifest."""
+    package_target = package_target.resolve()
+    if package_target.is_file() and package_target.suffix == ".zip":
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            with zipfile.ZipFile(package_target, "r") as archive:
+                archive.extractall(tmp_path)
+            subdirs = [p for p in tmp_path.iterdir() if p.is_dir()]
+            if len(subdirs) == 1:
+                return _verify_package_dir(subdirs[0])
+            return _verify_package_dir(tmp_path)
+    return _verify_package_dir(package_target)

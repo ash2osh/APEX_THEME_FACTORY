@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "name": "css-comment-only",
+  "title": "Comment Only",
+  "version": "1.0.0",
+  "tagline": "Test theme with comments only",
+  "class": "app-theme-css-comment-only",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

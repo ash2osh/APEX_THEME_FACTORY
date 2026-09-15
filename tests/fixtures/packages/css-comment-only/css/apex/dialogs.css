@@ -1,0 +1,4 @@
+/* This comment mentions literal colors like #ffffff, rgba(0, 0, 0, 0.5), red, green, blue */
+html.app-theme-css-comment-only .t-Dialog {
+    color: var(--app-test-color);
+}

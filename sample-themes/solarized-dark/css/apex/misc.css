@@ -20,7 +20,7 @@
     --ut-badge-warning-background-color: var(--sol-yellow);
     --ut-badge-warning-text-color: var(--app-text-on-accent);
     --ut-badge-danger-background-color: var(--sol-red);
-    --ut-badge-danger-text-color: #ffffff;
+    --ut-badge-danger-text-color: var(--app-badge-danger-text);
     --ut-badge-info-background-color: var(--sol-cyan);
     --ut-badge-info-text-color: var(--app-text-on-accent);
     --ut-badge-subtle-background-color: var(--app-surface-hover);

@@ -40,3 +40,4 @@ Verify each class on the live DOM first — names differ across UT versions.
 - Repeating a literal that exists as a token (spec §17); any literal colour in `css/apex/*.css` (put it in `tokens.css`).
 - Putting theme CSS in `static-files/css/` — it is neither scoped to the theme class nor synced as a package.
 - Putting page CSS in Page Designer "Inline CSS" instead of the repo file.
+- Proposing Google Fonts, external font URLs, or unlicensed fonts (fonts must be package-local licensed WOFF2 files; Font APEX icons untouched).

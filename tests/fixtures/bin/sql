@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+input="$(cat /dev/stdin)"
+if [ -n "${FAKE_SQL_LOG:-}" ]; then
+  printf 'argv=%q\nstdin=%s\n' "$*" "$input" >>"$FAKE_SQL_LOG"
+fi
+export_dir=""
+if [[ "$input" =~ -dir[[:space:]]+\"([^\"]+)\" ]]; then
+  export_dir="${BASH_REMATCH[1]}"
+elif [[ "$input" =~ -dir[[:space:]]+([^[:space:]]+) ]]; then
+  export_dir="${BASH_REMATCH[1]}"
+fi
+case "${FAKE_SQL_MODE:-success}" in
+  success)
+    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
+      mkdir -p "$export_dir"
+      cp -R tests/fixtures/apexlang/minimal "$export_dir/fixture-app"
+    fi
+    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
+      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
+    fi
+    printf '%s\n' 'Validation completed successfully.'
+    ;;
+  validation-warning)
+    printf '%s\n' 'WARNING fixture validation warning'
+    ;;
+  export-two-aliases)
+    if [ -n "$export_dir" ]; then
+      mkdir -p "$export_dir"
+      cp -R tests/fixtures/apexlang/minimal "$export_dir/one"
+      cp -R tests/fixtures/apexlang/minimal "$export_dir/two"
+    fi
+    ;;
+  connection-failure)
+    printf '%s\n' 'ORA-17820: network adapter error' >&2
+    exit 1
+    ;;
+  import-failure)
+    printf '%s\n' 'ERROR import failed' >&2
+    exit 1
+    ;;
+  *)
+    printf 'unknown FAKE_SQL_MODE=%s\n' "${FAKE_SQL_MODE:-}" >&2
+    exit 2
+    ;;
+esac

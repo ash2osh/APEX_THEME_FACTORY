@@ -14,7 +14,7 @@ Define the evidence required before the repository, an individual theme ZIP, or 
 - Add CI that runs without Oracle credentials or a live APEX instance.
 - Detect source/runtime drift, including missing application-level assets such as Alpine.
 - Add one real Alpine component fixture inside a refreshable APEX region.
-- Resolve the five ambiguous agent evaluations and eight pending findings through valid evidence.
+- Resolve the five ambiguous agent evaluations and all pending findings (currently seven documents) through valid evidence.
 - Enforce the documented CSS token and selector rules.
 - Complete Solarized Dark's live verification.
 - Prove installation and uninstallation against two structurally different consumer applications.

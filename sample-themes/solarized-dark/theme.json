@@ -1,11 +1,22 @@
 {
+  "schemaVersion": 1,
   "name": "solarized-dark",
   "title": "Solarized Dark",
+  "version": "1.0.0",
   "tagline": "Precision terminal cyan and deep solarized blues.",
-  "direction": "VS Code Solarized Dark developer look: #002b36 editor base, #073642 surfaces, #00212b chrome, cyan and blue highlights",
-  "base": "APEX 26.1.4 / Universal Theme 42 / Iris",
   "class": "app-theme-solarized-dark",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
   "templateOptions": {
-    "navigationMenu": { "style": "t-TreeNav--styleB" }
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
   }
 }

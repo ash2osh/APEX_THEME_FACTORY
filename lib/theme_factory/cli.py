@@ -1,0 +1,71 @@
+"""Command line interface for Theme Factory tools."""
+
+import argparse
+import os
+from pathlib import Path
+import sys
+
+from lib.theme_factory.archive import build_package, verify_package
+from lib.theme_factory.errors import PackageError
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="APEX Theme Factory CLI")
+    subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
+    # package
+    pkg_p = subparsers.add_parser("package", help="Build single-theme ZIP package")
+    pkg_p.add_argument("--repo-root", type=Path, default=Path.cwd(), help="Repository root")
+    pkg_p.add_argument("--theme", required=True, help="Theme name in sample-themes/")
+    pkg_p.add_argument("--output-dir", type=Path, required=True, help="Directory to place built ZIP")
+
+    # verify-package
+    ver_p = subparsers.add_parser("verify-package", help="Verify extracted package checksums and manifest")
+    ver_p.add_argument("--package-root", type=Path, required=True, help="Path to extracted package directory")
+
+    # install
+    inst_p = subparsers.add_parser("install", help="Install theme into APEX application")
+    inst_p.add_argument("--package-root", type=Path, required=True, help="Path to package directory")
+    inst_p.add_argument("--connection", required=True, help="SQLcl saved connection name")
+    inst_p.add_argument("--workspace", required=True, help="APEX workspace name")
+    inst_p.add_argument("--app-id", type=int, required=True, help="APEX application ID")
+    switcher_grp = inst_p.add_mutually_exclusive_group()
+    switcher_grp.add_argument("--with-switcher", action="store_true", help="Enable theme switcher in app")
+    switcher_grp.add_argument("--without-switcher", action="store_true", help="Disable theme switcher in app")
+    inst_p.add_argument("--backup-dir", type=Path, default=Path("./theme-factory-backups"), help="Backup directory")
+    inst_p.add_argument("--apply", action="store_true", help="Apply changes (default is dry-run)")
+
+    # uninstall
+    uninst_p = subparsers.add_parser("uninstall", help="Uninstall theme from APEX application")
+    uninst_p.add_argument("--package-root", type=Path, required=True, help="Path to package directory")
+    uninst_p.add_argument("--connection", required=True, help="SQLcl saved connection name")
+    uninst_p.add_argument("--workspace", required=True, help="APEX workspace name")
+    uninst_p.add_argument("--app-id", type=int, required=True, help="APEX application ID")
+    uninst_p.add_argument("--backup-dir", type=Path, default=Path("./theme-factory-backups"), help="Backup directory")
+    uninst_p.add_argument("--apply", action="store_true", help="Apply changes (default is dry-run)")
+
+    args = parser.parse_args()
+
+    try:
+        if args.subcommand == "package":
+            zip_path = build_package(args.repo_root, args.theme, args.output_dir)
+            print(f"Built package: {zip_path}")
+        elif args.subcommand == "verify-package":
+            manifest = verify_package(args.package_root)
+            print(f"Package '{manifest.name}' v{manifest.version} verified successfully.")
+        elif args.subcommand == "install":
+            from lib.theme_factory.install import run_install_cli
+            run_install_cli(args)
+        elif args.subcommand == "uninstall":
+            from lib.theme_factory.uninstall import run_uninstall_cli
+            run_uninstall_cli(args)
+    except PackageError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(e.exit_code)
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

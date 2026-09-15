@@ -1,0 +1,29 @@
+# Theme Package: __THEME_TITLE__ (__THEME_NAME__)
+
+Version: __THEME_VERSION__
+Tagline: __THEME_TAGLINE__
+
+## Supported Environment
+- Oracle APEX: 26.1.x
+- Theme: Universal Theme (theme 42)
+- Base Theme: ut-26.1
+- Theme Style: Iris
+
+## Automated Installation (SQLcl)
+To install this theme into your application using SQLcl:
+
+```bash
+./install.sh --connection <saved-connection> --workspace <workspace> --app-id <app-id> [--with-switcher | --without-switcher] [--apply]
+```
+
+Without `--apply`, the script runs in dry-run mode, validates target compatibility, and previews changes.
+
+## Automated Uninstallation (SQLcl)
+To remove this theme from your application:
+
+```bash
+./uninstall.sh --connection <saved-connection> --workspace <workspace> --app-id <app-id> [--apply]
+```
+
+## Manual Installation
+See `MANUAL-INSTALL.md` for complete step-by-step instructions to install or remove this theme using Oracle APEX Builder.

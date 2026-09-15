@@ -10,7 +10,8 @@ python3 -m unittest \
   tests.test_runtime_contract tests.test_apexlang_patch tests.test_sqlcl \
   tests.test_installer_cli tests.test_uninstaller_cli \
   tests.test_agent_layout tests.test_agent_smoke tests.test_css_policy \
-  tests.test_runtime_parity tests.test_alpine_fixture -v
+  tests.test_runtime_parity tests.test_alpine_fixture \
+  tests.test_consumer_fixture_scripts -v
 
 scripts/check-agent-layout.sh
 

@@ -12,8 +12,12 @@ import tempfile
 from typing import List, Optional, Tuple
 
 from lib.theme_factory.apexlang import (
+    build_bootstrap_regions,
+    build_switcher_entries,
     canonical_digest,
     inspect_export,
+    strip_bootstrap_regions,
+    strip_switcher_entries,
     TargetExport,
 )
 from lib.theme_factory.errors import PackageError
@@ -89,11 +93,7 @@ def _remove_managed_page_zero_regions(p0_path: Path) -> None:
     if not p0_path.exists():
         return
     content = p0_path.read_text(encoding="utf-8")
-    pattern = re.compile(
-        r'\n[ \t]*region[ \t]+"Theme Factory Bootstrap[^"]*"[ \t]*\([^\)]*\)',
-        re.MULTILINE | re.DOTALL,
-    )
-    new_content = pattern.sub("", content)
+    new_content = strip_bootstrap_regions(content)
     p0_path.write_text(new_content, encoding="utf-8")
 
 
@@ -101,11 +101,7 @@ def _remove_managed_nav_entries(nav_path: Path) -> None:
     if not nav_path or not nav_path.exists():
         return
     content = nav_path.read_text(encoding="utf-8")
-    pattern = re.compile(
-        r'\n[ \t]*entry[ \t]+"[^"]*"[ \t]*\([^)]*APEX_THEME_FACTORY_MANAGED[^)]*\)',
-        re.MULTILINE | re.DOTALL,
-    )
-    new_content = pattern.sub("", content)
+    new_content = strip_switcher_entries(content)
     nav_path.write_text(new_content, encoding="utf-8")
 
 
@@ -142,8 +138,30 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
                 _remove_managed_nav_entries(nav)
             else:
                 reg["themes"] = themes
-                reg["defaultTheme"] = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
+                new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
+                reg["defaultTheme"] = new_default
                 registry_file.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+
+                p0 = staged_dir / "pages/p00000-global-page.apx"
+                if p0.exists():
+                    p0_text = strip_bootstrap_regions(p0.read_text(encoding="utf-8"))
+                    new_regions = build_bootstrap_regions(
+                        default_theme=new_default,
+                        switcher_enabled=reg.get("switcherEnabled", False),
+                        themes=[{"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")} for t in themes],
+                    )
+                    last_paren = p0_text.rfind(")")
+                    p0.write_text(p0_text[:last_paren].rstrip() + "\n" + new_regions + "\n)\n", encoding="utf-8")
+
+                nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
+                if nav.exists():
+                    nav_text = strip_switcher_entries(nav.read_text(encoding="utf-8"))
+                    if reg.get("switcherEnabled", False):
+                        switcher_code = build_switcher_entries(themes)
+                        last_paren = nav_text.rfind(")")
+                        nav.write_text(nav_text[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n", encoding="utf-8")
+                    else:
+                        nav.write_text(nav_text, encoding="utf-8")
         except Exception:
             pass
 

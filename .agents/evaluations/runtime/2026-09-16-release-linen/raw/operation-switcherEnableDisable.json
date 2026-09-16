@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "4c1abe1bb3d0f58a8d5b3c16627af4440640fbce",
+  "packageSha256": "60c03d1393e2b00b4d8467fb568b18146ecf42c5a8295c7256ec205b6809bda6",
+  "capturedAt": "2026-09-16T13:48:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: fb8095b2a5f78dcaca40fc16908f98d9d585a64411d48486a878edc487fa9bf9\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260916T133553Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: c9f3e2d6d79ead3970dbd672daabf6187a3c5ff338f58ab864fe764b8f3c212b\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260916T133743Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 3ad59cff2b7a2fc0fae23d28c64e189204b8e81acfae0c8245f9942b6191b7c3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260916T134336Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: bef0a273d527e91338477f3759e395beadb43d4c656c9ad3fcf54bf8257e5270\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260916T134529Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

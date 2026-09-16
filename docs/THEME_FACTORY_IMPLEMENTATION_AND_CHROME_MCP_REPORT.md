@@ -25,11 +25,16 @@ the observed SQLcl transforms, and `tests/test_lifecycle_real_shape.py` drives i
 coexistence → switcher off → uninstall → uninstall → restore against a fixture cut from a real consumer export.
 Layer C (live import) remains UNVERIFIED until an authorised `--apply` cycle is run against disposable consumers.
 
-## Verdict
+## Verdict (updated 2026-09-16, after the live matrix)
 
-The repository implements the source, packaging, installer, documentation, runtime-client, and agent-layout foundations of the Theme Factory. Offline verification can prove those contracts. The project is **not yet release-verified** across all five evidence layers because the required disposable-consumer, full browser matrix, and three-agent behavioral artifacts are not retained.
+Layers A–D are **PASS** for both single-theme packages with retained, digest-bound evidence; Layer E is
+**UNVERIFIED**, so the release verdict for `linen` and `solarized-dark` is `UNVERIFIED` — not because of a known
+defect but because the agent-behaviour layer is incomplete: the Claude Code readiness smoke cannot authenticate
+headlessly on this machine, and evaluation scenarios 04/05/09/11/14 require fresh agent sessions that were
+not dispatched in this pass. Codex and Antigravity smokes pass. No known code defect remains open.
 
-The earlier report's `VERIFIED` claims for Apps 9010/9011, all matrix rows, both release packages, and all agent evaluations were unsupported by files in the repository. Those claims are withdrawn. Missing proof is recorded as `UNVERIFIED`, not converted into a pass.
+The earlier report's `VERIFIED` claims for Apps 9010/9011 (2026-09-15) were withdrawn; they are now replaced by
+actual evidence captured on the same application IDs, re-provisioned from the committed fixtures.
 
 ## Confirmed implementation
 
@@ -50,20 +55,20 @@ The earlier report's `VERIFIED` claims for Apps 9010/9011, all matrix rows, both
 
 ## Evidence layers
 
-| Layer | Meaning | Current status | Limit |
+| Layer | Meaning | Status (2026-09-16) | Evidence |
 |---|---|---|---|
-| A | Repository source | Pending final clean-tree gate | A dirty implementation worktree cannot be release-verified. |
-| B | Package artifact | Pending final rebuilt ZIP verification | Must be run after the final commit from a clean tree. |
-| C | Database installation | UNVERIFIED | No retained digest-bound two-consumer install/coexistence/uninstall/restore run. |
-| D | Browser runtime | UNVERIFIED | Page 409 is narrow evidence; the required per-theme consumer matrix is absent. |
-| E | Agent behavior | UNVERIFIED | Claude Code and Antigravity smokes and scenarios 04, 05, 09, 11, and 14 remain incomplete. |
+| A | Repository source | PASS | clean tree, `tests/run-offline.sh` (208 + 11 + 113 test runs), `AGENT_LAYOUT status=PASS` |
+| B | Package artifact | PASS | deterministic ZIPs, `verify-package`, `RELEASE-REPORT.md` |
+| C | Database installation | PASS (both themes) | `tools/live_matrix.py` on TF-CONSUMER-MINIMAL-9010 and TF-CONSUMER-BUSINESS-9011, APEX 26.1.4: install, stale-restore guard, reinstall, switcher on/off, coexistence, uninstall ×2, unrelated-file preservation, restore — `.agents/evaluations/runtime/2026-09-16-release-<theme>/` |
+| D | Browser runtime | PASS (both themes, 12 rows each) | `tools/browser_matrix.py` through the Chrome MCP daemon: both consumers at 1440/1024/768/375 + business Reports/Widgets; zero console errors, zero failed requests, AA contrast clean, keyboard-operable switcher, persisted selection, Font APEX intact |
+| E | Agent behavior | UNVERIFIED | Codex PASS, Antigravity PASS, Claude Code UNVERIFIED (headless OAuth); scenarios 04/05/09/11/14 open |
 
-The release checker now uses the specification's taxonomy: A source, B package, C database, D browser, E agent. Legacy arbitrary JSON lists and summary-only claims are rejected. A `PASS` or `FAIL` claim must reference an in-directory JSON artifact and match its SHA-256 digest. PASS summaries must also reference the raw SQLcl, browser-matrix, or agent-run JSON behind each required result. Summary and raw artifacts are bound to one theme, the exact 40-character Git commit, and the packaged ZIP SHA-256.
+Live findings fixed during the matrix: empty `fileUrls` after switcher disable / last uninstall, a `file` block
+on line 1 surviving uninstall (both invisible to the fake SQLcl until it gained the compiler checks in
+`tests/fixtures/bin/apexlang_lint.py`), and Solarized Dark's default calendar events at 3.3:1.
 
 ## Required work before a `VERIFIED` release
 
-1. From a clean commit, run the complete offline gate and rebuild/verify each single-theme ZIP.
-2. With explicit database-write authorization, provision two disposable APEX consumers and retain SQLcl artifacts for install, reinstall, coexistence, switcher transitions, uninstall, restore, and unrelated-component preservation.
-3. Capture the full Linen and Solarized Dark browser matrix at all required widths, including fonts, Font APEX, keyboard, console, network, contrast, refresh, persistence, and dialog/report/grid states.
-4. Run complete behavioral compatibility checks for Codex, Claude Code, and Antigravity and close or retain each open evaluation/finding with evidence.
-5. Bind every passing live claim to a retained artifact digest, then generate the release report. Until then, the correct verdict is `UNVERIFIED`.
+1. Authenticate the Claude Code CLI on the release machine (`claude login`) and re-run `python3 tools/agent_smoke.py claude`.
+2. Run evaluation scenarios 04, 05, 09, 11 and 14 with fresh agent sessions per `.agents/evaluations/README.md`, retaining full diffs, and resolve the seven pending findings through the documented protocol.
+3. Regenerate `scripts/release-check.sh <theme>`; the verdict flips to `VERIFIED` only when Layer E carries digest-bound PASS artifacts for all three runtimes and the five scenarios.

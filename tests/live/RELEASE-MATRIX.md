@@ -1,21 +1,65 @@
 # Release Verification Matrix
 
-This is the required live matrix, not a record of completed tests. A row may become `PASS` only when its referenced screenshot/JSON artifact exists and validates against the runtime evidence contract.
+A row may become `PASS` only when its referenced JSON artifact exists, validates against the runtime evidence
+contract, and is bound (SHA-256) to the theme package and the source commit. The tables below are generated
+from the retained evidence under `.agents/evaluations/runtime/2026-09-16-release-<theme>/`.
 
-## Current evidence status
+## Current evidence status (2026-09-16, commit `4c1abe1bb3d0`, APEX 26.1.4)
 
-| Theme | Consumer | Required coverage | Retained evidence | Status |
+| Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
-| linen | minimal | Shell/navigation and Home at 1440, 1024, 768, and 375 CSS px | None | UNVERIFIED |
-| linen | business | Forms/errors, Cards, IR, editable IG, dialog/drawer, Calendar, JET chart, keyboard, fonts, console, network, contrast, and persistence | None | UNVERIFIED |
-| solarized-dark | minimal | Shell/navigation and Home at 1440, 1024, 768, and 375 CSS px | None | UNVERIFIED |
-| solarized-dark | business | Forms/errors, Cards, IR, editable IG, dialog/drawer, Calendar, JET chart, keyboard, fonts, console, network, contrast, and persistence | None | UNVERIFIED |
+| linen | C database | install, stale-restore guard, reinstall, switcher enable/disable, coexistence with solarized-dark, uninstall ×2, unrelated-file preservation, restore — on TF-CONSUMER-MINIMAL-9010 (no Global Page, no static files) and TF-CONSUMER-BUSINESS-9011 | `2026-09-16-release-linen/database_installation.json` + `raw/operation-*.json`, `raw/application-*.json` | **PASS** |
+| solarized-dark | C database | same operations with linen as the coexisting package | `2026-09-16-release-solarized-dark/database_installation.json` + raw | **PASS** |
+| linen | D browser | minimal Home and business Home at 1440/1024/768/375; business Reports (IR + editable IG) and Widgets (Calendar + JET chart) at 1440/375 | `2026-09-16-release-linen/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
+| solarized-dark | D browser | same pages and widths | `2026-09-16-release-solarized-dark/browser_runtime_matrix.json` + raw | **PASS** (12 rows) |
+| both | E agent | Codex PASS, Antigravity PASS, Claude Code UNVERIFIED (headless OAuth expired); scenarios 04/05/09/11/14 not re-run | `tests/agent-smoke/runs/2026-09-16/` | UNVERIFIED |
 
-The live Page 409 artifact proves a narrow App 102 lifecycle observation only. It does not prove either theme package, either disposable consumer topology, the complete responsive matrix, custom-font behavior, uninstall, or restore.
+Each Layer D row records: `apex.env` identity, html/body classes, CSS/JS URLs, loaded resources, `registry.json`,
+console errors, failed requests (status ≥ 400 or network failure), `document.fonts` state for Font APEX, the icon
+`::before` family, the body family compared with bare Iris on the same page, the AA contrast audit from
+`docs/CHROME_DEVTOOLS_MCP.md` (zero failures required), the switcher menu opened by keyboard with exactly one
+checked `menuitemradio`, and the selection surviving a second reload under `apex.themeFactory.<APP_ID>`.
 
-## Row contract for future runs
+Not covered by the automated rows (remains manual): driven hover/empty/validation-error states, Popup LOV and
+date picker, dialog/drawer open states, IG edit/sort/filter interactions, and the reference app 102 itself.
+The Page 409 artifact from 2026-09-15 proves the App 102 Alpine lifecycle fixture only.
 
-| Theme | Consumer | App ID/alias | URL | Page/component | State/action | Width | Expected | Screenshot/JSON | Console | Network | Contrast | Status |
-|---|---|---:|---|---|---|---:|---|---|---|---|---|---|
+## Layer D rows
 
-Every completed row must name the exact disposable application, action, viewport, artifact path, console result, failed-request result, contrast result, and cleanup/retention status. Missing evidence remains `UNVERIFIED`; it is never inferred from source tests or prose.
+| Theme | Consumer | App ID / alias | Page | State/action | Width | Expected | JSON | Console | Network | Contrast | Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| linen | minimal | 9010 /  | page 1 | switch via runtime → reload | 1440 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-1440.json` | 0 errors | 0 failed | clean | PASS |
+| linen | minimal | 9010 /  | page 1 | switch via runtime → reload | 1024 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-1024.json` | 0 errors | 0 failed | clean | PASS |
+| linen | minimal | 9010 /  | page 1 | switch via runtime → reload | 768 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-768.json` | 0 errors | 0 failed | clean | PASS |
+| linen | minimal | 9010 /  | page 1 | switch via runtime → reload | 375 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-375.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 1 | switch via runtime → reload | 1440 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-1440.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 1 | switch via runtime → reload | 1024 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-1024.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 1 | switch via runtime → reload | 768 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-768.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 1 | switch via runtime → reload | 375 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-375.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 2 | switch via runtime → reload | 1440 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page2-1440.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 2 | switch via runtime → reload | 375 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page2-375.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 3 | switch via runtime → reload | 1440 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page3-1440.json` | 0 errors | 0 failed | clean | PASS |
+| linen | business | 9011 /  | page 3 | switch via runtime → reload | 375 | active `linen`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page3-375.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | minimal | 9010 /  | page 1 | switch via runtime → reload | 1440 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-1440.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | minimal | 9010 /  | page 1 | switch via runtime → reload | 1024 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-1024.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | minimal | 9010 /  | page 1 | switch via runtime → reload | 768 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-768.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | minimal | 9010 /  | page 1 | switch via runtime → reload | 375 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-minimal-page1-375.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 1 | switch via runtime → reload | 1440 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-1440.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 1 | switch via runtime → reload | 1024 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-1024.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 1 | switch via runtime → reload | 768 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-768.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 1 | switch via runtime → reload | 375 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page1-375.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 2 | switch via runtime → reload | 1440 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page2-1440.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 2 | switch via runtime → reload | 375 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page2-375.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 3 | switch via runtime → reload | 1440 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page3-1440.json` | 0 errors | 0 failed | clean | PASS |
+| solarized-dark | business | 9011 /  | page 3 | switch via runtime → reload | 375 | active `solarized-dark`, no console errors, no failed requests, AA contrast clean, keyboard menu, persisted | `raw/browser-business-page3-375.json` | 0 errors | 0 failed | clean | PASS |
+
+## How to regenerate
+
+```bash
+python3 tools/live_matrix.py --connection docker-demo --workspace DEMO --minimal-id 9010 --business-id 9011 --primary dist/<theme>/<theme>-1.0.0.zip --secondary dist/<other>/<other>-1.0.0.zip --apply
+python3 tools/browser_matrix.py --theme <theme> --package dist/<theme>/<theme>-1.0.0.zip --minimal-url … --business-url … --business-extra-urls …
+scripts/release-check.sh <theme>
+```
+
+Run them from a clean tree at the commit the packages were built from; evidence and Markdown commits do not
+invalidate the binding (`lib/theme_factory/gitstate.py`), any other change does.

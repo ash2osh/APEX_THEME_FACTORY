@@ -96,3 +96,25 @@ bash tests/run-offline.sh
 The GitHub Actions workflow (`.github/workflows/verify.yml`) executes `tests/run-offline.sh` and packages release ZIPs.
 > [!NOTE]
 > CI validates **Layer A (Repository Source)** and **Layer B (Package Artifact)** only. A passing CI run does **NOT** prove live database installation (Layer C), browser runtime correctness and consumer portability (Layer D), or agent behavior (Layer E). Layers C-E require retained local evidence as defined in [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
+
+#### Live Evidence (Layers C, D, E) and the Release Report
+Evidence is captured against a committed source state and bound to the package SHA-256 and the last *source* commit (evidence and Markdown commits do not count — see `lib/theme_factory/gitstate.py`).
+
+```bash
+# disposable consumers (IDs 9000–9099 only; dry-run first, then confirm)
+scripts/provision-consumer-fixtures.sh --connection docker-demo --workspace DEMO --minimal-id 9010 --business-id 9011 --apply --confirm-ids 9010,9011
+
+# Layer C: install → stale-restore guard → reinstall → switcher on → second package → switcher off → uninstall ×2 → unrelated files → restore
+python3 tools/live_matrix.py --connection docker-demo --workspace DEMO --minimal-id 9010 --business-id 9011   --primary dist/linen/linen-1.0.0.zip --secondary dist/solarized-dark/solarized-dark-1.0.0.zip --apply
+
+# Layer D: both consumers × 1440/1024/768/375 through the Chrome MCP daemon (python3 tools/chrome_mcp_daemon.py must be running)
+python3 tools/browser_matrix.py --theme linen --package dist/linen/linen-1.0.0.zip   --minimal-url http://localhost:8181/ords/r/demo/tf-consumer-minimal-9010/home   --business-url http://localhost:8181/ords/r/demo/tf-consumer-business-9011/home   --business-extra-urls http://localhost:8181/ords/r/demo/tf-consumer-business-9011/reports,http://localhost:8181/ords/r/demo/tf-consumer-business-9011/widgets
+
+# Layer E: read-only agent smokes (each consumes that runtime's quota)
+python3 tools/agent_smoke.py codex && python3 tools/agent_smoke.py claude && python3 tools/agent_smoke.py antigravity
+
+# report: dist/<theme>/RELEASE-REPORT.md, exit 0 only when every layer is PASS
+scripts/release-check.sh linen
+```
+
+Every `PASS` in the report is backed by a digest-bound JSON artifact under `.agents/evaluations/runtime/<date>-release-<theme>/`; missing or failed checks stay `UNVERIFIED`/`FAIL` and the verdict stays `UNVERIFIED`/`FAIL`.

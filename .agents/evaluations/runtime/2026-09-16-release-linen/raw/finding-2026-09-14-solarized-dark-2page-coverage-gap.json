@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "60c03d1393e2b00b4d8467fb568b18146ecf42c5a8295c7256ec205b6809bda6",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-solarized-dark-2page-coverage-gap",
+  "status": "PENDING",
+  "reason": "Still open, and wider than before: the first live pass found four more package-caused defects the completed source audit never reached, one at 1.06:1. Fixes exist only as the patch quoted in the scenario-11 run log; this session was not permitted to edit sample-themes/. Needs the patch applied, rebuilt, installed and re-audited.",
+  "file": ".agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md"
+}

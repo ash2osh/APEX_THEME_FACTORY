@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-solarized-dark-2page-coverage-gap",
+  "status": "PENDING",
+  "reason": "Still open, and wider than before: the first live pass found four more package-caused defects the completed source audit never reached, one at 1.06:1. Fixes exist only as the patch quoted in the scenario-11 run log; this session was not permitted to edit sample-themes/. Needs the patch applied, rebuilt, installed and re-audited.",
+  "file": ".agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md"
+}

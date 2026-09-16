@@ -22,8 +22,8 @@
       "layer": "E",
       "check": "agent_behavior_matrix",
       "status": "UNVERIFIED",
-      "artifact": "",
-      "details": "Codex (codex-cli 0.154.0) and Antigravity (1.2.4) readiness smokes PASS on 2026-09-16 (tests/agent-smoke/runs/2026-09-16); Claude Code smoke UNVERIFIED because headless `claude -p` OAuth is expired on this machine; evaluation scenarios 04, 05, 09, 11 and 14 still need fresh-agent runs per .agents/evaluations/README.md, which this session was asked not to dispatch."
+      "artifact": "agent_behavior_matrix.json",
+      "details": "Layer E is NOT established, and one part of it is a hard blocker. Scenario 11 FAILED on live evidence: solarized-dark 1.0.0 as built has four package-caused WCAG AA failures, worst 1.06:1 on Interactive Grid row selection, re-measured independently by the grader (.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md). Scenarios 09 and 14 PASS; 04 and 05 are UNVERIFIED because both need an APEX import the 2026-09-16 session was forbidden to run (04's page-409 fixture cannot refresh at all: sys.htp.p region, result:null, apexafterrefresh never fires). Agent readiness smokes 2026-09-16: codex PASS, claude PASS, antigravity UNVERIFIED (provider returned no capacity). Two findings stay pending. Full records: raw/scenario-*.json, raw/finding-*.json, raw/agent-runtime-*.json, and the summary agent_behavior_matrix.json, which carries status FAIL with the six specific failures. This check is recorded UNVERIFIED rather than FAIL because it cannot honestly be digest-bound: the dist packages were built at source commit 4c1abe1 and the source is now 91b36bb, so no Layer E artifact can bind to both this source and this package until the packages are rebuilt and Layer C/D re-captured."
     }
   ]
 }

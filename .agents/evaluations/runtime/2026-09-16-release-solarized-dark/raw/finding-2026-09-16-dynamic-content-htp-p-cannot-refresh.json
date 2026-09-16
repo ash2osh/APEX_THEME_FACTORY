@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-16-dynamic-content-htp-p-cannot-refresh",
+  "status": "PENDING",
+  "reason": "New, runtime-verified twice: a dynamicContent region printing with sys.htp.p can never refresh. The fix (return the markup) is compile-checked but needs an edit to applications/ut/ plus an import of app 102, neither permitted this session.",
+  "file": ".agents/findings/pending/2026-09-16-dynamic-content-htp-p-cannot-refresh.md"
+}

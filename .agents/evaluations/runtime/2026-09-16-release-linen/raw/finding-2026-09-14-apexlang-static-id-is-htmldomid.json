@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "60c03d1393e2b00b4d8467fb568b18146ecf42c5a8295c7256ec205b6809bda6",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-apexlang-static-id-is-htmldomid",
+  "status": "ACCEPTED",
+  "reason": "Runtime-verified (staticId produces no DOM id, htmlDomId does; re-confirmed 2026-09-16 when the grader resolved p1410's IG to #Demo1_ig). Scenario 12 passes both sides, so the skill text is not demonstrated load-bearing; recorded as such.",
+  "file": ".agents/findings/accepted/2026-09-14-apexlang-static-id-is-htmldomid.md"
+}

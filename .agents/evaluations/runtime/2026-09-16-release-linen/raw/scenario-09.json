@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "60c03d1393e2b00b4d8467fb568b18146ecf42c5a8295c7256ec205b6809bda6",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "09",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-16/09-runtime-evidence-current.md",
+  "reason": "Live DOM dumped and document.styleSheets walked before any CSS was written; restyle prototyped and measured in the page; every class independently re-verified by the grader on p1410."
+}

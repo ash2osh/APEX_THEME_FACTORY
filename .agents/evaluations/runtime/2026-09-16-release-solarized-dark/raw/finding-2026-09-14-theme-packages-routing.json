@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-theme-packages-routing",
+  "status": "ACCEPTED",
+  "reason": "The routing is live: generated @themes block, html.app-theme-<name>, working switcher on both consumer fixtures, and three 2026-09-16 evaluees routed through sample-themes/ + sync-static.sh unprompted. Both sides of scenario 10 pass, so the skill-table change is not load-bearing.",
+  "file": ".agents/findings/accepted/2026-09-14-theme-packages-routing.md"
+}

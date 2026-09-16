@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-13-ig-sticky-header-double-line",
+  "status": "REJECTED",
+  "reason": "Measured live in both themes at rest and while stuck: .is-stuck is absent at rest (box-shadow none) and the first row's border-top is 0px, so both halves of the proposed mechanism are wrong and the proposed rule would be a no-op. The ~1.8px line while stuck is the header cell's own border-bottom plus the wrapper shadow; recorded in the rejected finding.",
+  "file": ".agents/findings/rejected/2026-09-13-ig-sticky-header-double-line.md"
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-apex-widget-events",
+  "status": "ACCEPTED",
+  "reason": "Runtime-verified widget-event knowledge; scenario 13 passes at the corrected isolation point. Only the Cards-render half is exercised by a scenario, which the Status line states.",
+  "file": ".agents/findings/accepted/2026-09-14-apex-widget-events.md"
+}

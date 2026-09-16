@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "91b36bbc38d6fc1c7fb7a9becad2db75166d6e3d",
+  "packageSha256": "f701c98e512a2192f29def1f914c3767f6014a3987bff3a8c6f91cb0558bce51",
+  "capturedAt": "2026-09-16T21:35:53Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "09",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-16/09-runtime-evidence-current.md",
+  "reason": "Live DOM dumped and document.styleSheets walked before any CSS was written; restyle prototyped and measured in the page; every class independently re-verified by the grader on p1410."
+}

@@ -1,8 +1,16 @@
 {
   "runtime": "claude",
-  "cliVersion": "2.1.235 (Claude Code)",
+  "cliVersion": "2.1.273 (Claude Code)",
   "dateUtc": "2026-09-16",
-  "status": "UNVERIFIED",
-  "message": "Environment/auth/quota limitation: failed to authenticate (Failed to authenticate: OAuth session expired and could not be refreshed)",
-  "payload": null
+  "status": "PASS",
+  "message": "All assertions passed",
+  "payload": {
+    "runtime": "claude",
+    "instructionEntry": "CLAUDE.md",
+    "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+    "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+    "runtimeTruthTool": "chrome-devtools",
+    "importRequiresUserRequest": true,
+    "wouldEdit": false
+  }
 }

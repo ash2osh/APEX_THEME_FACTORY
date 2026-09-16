@@ -163,6 +163,24 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - **Check this again** whenever adding the first component file to a fresh checkout, or after any bulk
   `applications/ut/application.apx` regeneration — nothing currently guards against this silently regressing.
 
+### 2.7 A Dynamic Content region that prints with `sys.htp.p` cannot be refreshed
+- **Symptom (found 2026-09-16, page 409):** `apex.region(id).refresh()` on a `type: dynamicContent` region
+  fires `apexbeforerefresh` and one `POST wwv_flow.ajax` (HTTP 200) — then nothing: `apexafterrefresh` never
+  fires, the DOM is never swapped, the console stays clean. jQuery's `ajaxError` shows the real cause:
+  `SyntaxError: Unexpected token '<', "<div x-dat"... is not valid JSON`.
+- **Why:** in 26.1.4 the region renders as `<a-dynamic-content region-id=… ajax-identifier=…>`, a custom
+  element whose refresh is `apex.server.plugin(…, { success: e => { s.innerHTML = e.regions[0].result } })`.
+  `result` is the **return value** of the region's PL/SQL function body. `htp.p` output instead goes to the
+  response stream *ahead of* the JSON envelope, so the body is `<html…>{json}`: the parse fails, `success`
+  never runs, and `"result":null` is what the envelope actually carries.
+- **Fix:** `return '<div …>' || … ;` from the function body (the APEXLang attribute is literally
+  `plsqlFunctionBody`). Never `sys.htp.p`.
+- **Note:** the stock UT demo page 1908 (*Dynamic Content Region*) has the same defect — it uses `htp.p` and
+  fails identically on `apex.region('Demo1').refresh()`; it simply ships no refresh trigger. Don't copy it.
+- Page items placed in the region's `regionBody` slot render as **siblings** of `<a-dynamic-content>`, so a
+  refresh does not replace them: client-side item state (and an Alpine component that re-reads it in `init()`)
+  survives the swap.
+
 ## 3. APEXLang / Builder
 
 ### 3.1 Static ID is `advanced { htmlDomId: … }`
@@ -275,6 +293,17 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - `apex_application_theme_styles` lists the six Iris/Vita/Redwood rows; `apex_application_static_files`
   shows what is really deployed (sizes tell you whether the working tree was imported).
 - `sql -S -name docker-demo` validate + import ≈ 65 s; validate alone ≈ 25 s.
+
+### 4.5 In an agent-driven tab, `requestAnimationFrame` runs ~1×/s — don't call rAF-deferred UI a defect
+- Alpine's `x-show` hide path goes through `_x_toggleAndCascadeWithTransitions`, which defers with
+  `requestAnimationFrame` (when `document.visibilityState === 'visible'`). A tab driven over CDP is not being
+  painted, so rAF ticks about once per second: measured 2026-09-16, `open=false` left `display:block` at
+  0/50/150/400 ms and only became `display:none` at ~1000 ms (`_x_hidePromise` still set the whole time).
+  A 300–400 ms settle window "proves" a phantom bug. Poll to ≥ 2 s, and count rAF ticks
+  (`let n=0,t=()=>{n++;requestAnimationFrame(t)}`) before trusting any animation-frame-timed measurement.
+- Same class of trap: instrumenting APEX APIs can *create* the failure. Replacing `apex.item` with a wrapper
+  dropped its static members (`apex.item.existsInMemoryState`) and aborted the very refresh under test with
+  `TypeError`. Measure with element/DOM identity and `ajaxSuccess`/`ajaxError` hooks instead of monkey-patches.
 
 ## 5. Workflow
 

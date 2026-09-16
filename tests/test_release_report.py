@@ -286,3 +286,12 @@ class EvidenceCommitBindingTests(unittest.TestCase):
         self.assertTrue(source_equivalent(source_commit, evidence_commit, cwd=root))
         self.assertFalse(source_equivalent(source_commit, changed_commit, cwd=root))
         self.assertTrue(source_equivalent(source_commit, source_commit, cwd=root))
+
+    def test_last_source_commit_ignores_evidence_only_commits(self):
+        from lib.theme_factory.gitstate import last_source_commit
+        root, source_commit, evidence_commit, changed_commit = self.make_repo()
+        import subprocess
+        subprocess.run(["git", "checkout", "-q", evidence_commit], cwd=root, check=True)
+        self.assertEqual(last_source_commit(root), source_commit)
+        subprocess.run(["git", "checkout", "-q", changed_commit], cwd=root, check=True)
+        self.assertEqual(last_source_commit(root), changed_commit)

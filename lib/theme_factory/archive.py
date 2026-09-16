@@ -42,17 +42,13 @@ def get_source_commit(repo_root: Path) -> str:
     if status and not allow_dirty:
         raise PackageError("Repository has uncommitted changes (set THEME_FACTORY_ALLOW_DIRTY=1 to override)")
 
-    try:
-        commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-        return f"{commit}-dirty" if (status and allow_dirty) else (commit or "source")
-    except Exception:
+    # The banner names the last commit that changed the source, so committing release evidence
+    # (which lives under the evidence root) does not change a package's bytes or SHA-256.
+    from lib.theme_factory.gitstate import last_source_commit
+    commit = last_source_commit(repo_root)
+    if commit is None:
         return "dirty" if status else "source"
+    return f"{commit}-dirty" if (status and allow_dirty) else commit
 
 
 def render_template(tmpl_path: Path, replacements: Dict[str, str]) -> str:

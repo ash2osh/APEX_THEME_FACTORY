@@ -30,27 +30,7 @@ REQUIRED_EVIDENCE_CHECKS = {
     "D": "browser_runtime_matrix",
     "E": "agent_behavior_matrix",
 }
-# Evidence artifacts live here; committing them moves HEAD without changing the source under test.
-EVIDENCE_ROOT = ".agents/evaluations/runtime"
-
-
-def source_equivalent(commit_a: str, commit_b: str, cwd: str | Path | None = None) -> bool:
-    """True when the two commits differ only under EVIDENCE_ROOT (or are identical).
-
-    Layer C/D/E artifacts record the commit they were captured against. Committing those
-    artifacts creates a new HEAD whose source is byte-identical, so the binding must accept
-    it — while any change outside the evidence root still invalidates the evidence.
-    """
-    if commit_a == commit_b:
-        return True
-    try:
-        result = subprocess.run(
-            ["git", "diff", "--quiet", commit_a, commit_b, "--", ".", f":(exclude){EVIDENCE_ROOT}"],
-            cwd=cwd, capture_output=True, text=True, check=False,
-        )
-    except (OSError, subprocess.SubprocessError):
-        return False
-    return result.returncode == 0
+from lib.theme_factory.gitstate import EVIDENCE_ROOT, last_source_commit, source_equivalent  # noqa: E402
 
 
 def commit_matches(expected: str | None, actual: str) -> bool:
@@ -524,6 +504,8 @@ def run_release_cli(args: argparse.Namespace) -> None:
     version = data["version"]
 
     git_commit, is_dirty = read_git_state()
+    # bind to the last commit that changed the source under test; evidence-only commits don't count
+    source_commit = last_source_commit() if git_commit else None
 
     checksum = "UNVERIFIED"
     zip_candidate = Path(f"dist/{theme_name}/{theme_name}-{version}.zip")
@@ -542,7 +524,7 @@ def run_release_cli(args: argparse.Namespace) -> None:
     metadata = {
         "theme": theme_name,
         "version": version,
-        "git_commit": git_commit or "UNVERIFIED",
+        "git_commit": source_commit or git_commit or "UNVERIFIED",
         "is_dirty": is_dirty is True,
         "apex_version": data.get("compatibility", {}).get("apex", "UNVERIFIED"),
         "checksum": checksum,
@@ -558,7 +540,7 @@ def run_release_cli(args: argparse.Namespace) -> None:
     else:
         source_details = "Release checker ran from a clean Git tree"
     evidence: list[dict[str, Any]] = [{
-        "layer": "A", "check": "source_tree", "path": git_commit or "UNVERIFIED",
+        "layer": "A", "check": "source_tree", "path": source_commit or git_commit or "UNVERIFIED",
         "status": "PASS" if source_verified else "UNVERIFIED",
         "details": source_details,
     }]
@@ -570,7 +552,7 @@ def run_release_cli(args: argparse.Namespace) -> None:
     evidence.extend(load_evidence(
         evidence_dir,
         theme_name,
-        expected_git_commit=git_commit,
+        expected_git_commit=source_commit or git_commit,
         expected_package_sha256=checksum if re_full_sha256(checksum) else None,
     ))
 

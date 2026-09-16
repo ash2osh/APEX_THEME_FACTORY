@@ -169,6 +169,20 @@ def run_lifecycle(connection: str, workspace: str, target: ApplicationTarget, pr
             op.status = "FAIL"
             op.notes.append(f"registry after install: {[p.name for p in packages]} default={default_theme}")
 
+    # stale-restore guard: the application has moved on since the dry-run backup, so restoring it
+    # must be refused (exit 7) until the operator accepts discarding later changes
+    op = results["restore"]
+    first_backups = sorted(life.backup_dir.rglob("target.json"))
+    if not first_backups:
+        op.status = "FAIL"
+        op.notes.append("no backup was recorded by the dry-run")
+    else:
+        stale = life.cli("restore", "--backup", str(first_backups[0].parent), "--apply", confirm=True)
+        op.steps.append(stale)
+        if stale["exitCode"] != 7:
+            op.status = "FAIL"
+            op.notes.append(f"restore did not refuse a backup whose application has moved on (exit {stale['exitCode']})")
+
     # reinstall: idempotent
     op = results["reinstall"]
     _expect(life.cli("install", "--package-root", str(primary_root), "--apply", confirm=True), "IMPORTED", op)
@@ -253,19 +267,11 @@ def run_lifecycle(connection: str, workspace: str, target: ApplicationTarget, pr
             op.status = "FAIL"
             op.notes.append("unrelated static files changed across the lifecycle")
 
-    # restore: the very first backup, then the live export must equal the pristine one
+    # restore: the very first (pristine) backup. After a byte-clean uninstall the live application
+    # already equals it, so no --discard-later-changes is needed; afterwards the export must match.
     op = results["restore"]
-    first_backup = sorted(life.backup_dir.rglob("target.json"))
-    if not first_backup:
-        op.status = "FAIL"
-        op.notes.append("no backup was recorded")
-    else:
-        backup = first_backup[0].parent
-        stale = life.cli("restore", "--backup", str(backup), "--apply", confirm=True)
-        op.steps.append(stale)
-        if stale["exitCode"] != 7:
-            op.status = "FAIL"
-            op.notes.append("restore did not refuse a backup whose application has moved on")
+    if first_backups:
+        backup = first_backups[0].parent
         _expect(life.cli("restore", "--backup", str(backup), "--discard-later-changes", "--apply", confirm=True), "RESTORED", op)
         if op.status == "PASS" and canonical_digest(life.export()) != pristine_digest:
             op.status = "FAIL"

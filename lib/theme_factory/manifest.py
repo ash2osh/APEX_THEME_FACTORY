@@ -278,9 +278,14 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     fonts_root = package_root / "fonts"
     actual_font_files = {
         path.relative_to(package_root).as_posix()
-        for path in fonts_root.rglob("*.woff2")
+        for path in fonts_root.rglob("*")
         if path.is_file()
     } if fonts_root.exists() else set()
+    # Only declared WOFF2 faces may live under fonts/: TTF/OTF or any stray file is refused
+    # rather than silently left out of the package (spec §4.2).
+    non_woff2 = sorted(path for path in actual_font_files if not path.endswith(".woff2"))
+    if non_woff2:
+        raise PackageError(f"unsupported font file '{non_woff2[0]}': only declared .woff2 faces may live under fonts/")
     unreferenced_fonts = sorted(actual_font_files - declared_font_files)
     if unreferenced_fonts:
         raise PackageError(

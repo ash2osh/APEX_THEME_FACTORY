@@ -10,9 +10,9 @@ import time
 from typing import Any, Dict, Optional
 
 try:
-    from tools.chrome_mcp_daemon import ALLOWED_TOOLS, default_socket_path
+    from tools.chrome_mcp_daemon import ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path
 except ModuleNotFoundError:  # direct execution from tools/
-    from chrome_mcp_daemon import ALLOWED_TOOLS, default_socket_path
+    from chrome_mcp_daemon import ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path
 
 
 def _can_connect(socket_path: Path) -> bool:
@@ -44,22 +44,35 @@ def ensure_daemon_running(socket_path: Optional[Path] = None, auto_spawn: bool =
 
 
 class ChromeDevToolsClient:
-    def __init__(self, socket_path: Optional[Path] = None, auto_spawn: bool = False):
+    def __init__(
+        self,
+        socket_path: Optional[Path] = None,
+        auto_spawn: bool = False,
+        response_timeout: float = DEFAULT_REQUEST_TIMEOUT + 10.0,
+    ):
         self.socket_path = ensure_daemon_running(socket_path, auto_spawn=auto_spawn)
+        # slightly longer than the daemon's own request timeout so its error reaches us first
+        self.response_timeout = response_timeout
 
     def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> Any:
         if name not in ALLOWED_TOOLS:
             raise ValueError(f"Chrome MCP tool is not allowed: {name!r}")
         ensure_daemon_running(self.socket_path)
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+            connection.settimeout(self.response_timeout)
             connection.connect(str(self.socket_path))
             connection.sendall((json.dumps({"name": name, "arguments": arguments or {}}) + "\n").encode("utf-8"))
             data = b""
-            while b"\n" not in data:
-                chunk = connection.recv(65536)
-                if not chunk:
-                    break
-                data += chunk
+            try:
+                while b"\n" not in data:
+                    chunk = connection.recv(65536)
+                    if not chunk:
+                        break
+                    data += chunk
+            except socket.timeout as exc:
+                raise RuntimeError(
+                    f"Chrome MCP daemon did not answer '{name}' within {self.response_timeout:g}s; request timed out"
+                ) from exc
         if not data:
             raise RuntimeError("Chrome MCP daemon returned no response")
         response = json.loads(data.split(b"\n", 1)[0])

@@ -1,0 +1,24 @@
+page 0 (
+    name: Global Page
+
+    region business-global-banner (
+        name: Business Global Banner
+        type: staticContent
+        source {
+            htmlCode: <div class="business-global-banner">Business Global Notification</div>
+        }
+        layout {
+            sequence: 10
+            slot: banner
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: business_global_banner
+        }
+    )
+
+)
+

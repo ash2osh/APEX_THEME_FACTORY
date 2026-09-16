@@ -51,6 +51,14 @@ When a CLI does not expose its internal loader telemetry, the recorded result se
 
 | Runtime | CLI version | Checked at (UTC) | Structural | Behavioral | Evidence |
 |---|---|---|---|---|---|
-| Codex | codex-cli 0.149.1 | 2026-09-15 | PASS | PASS | `tests/agent-smoke/runs/2026-09-15/codex.md` |
-| Claude Code | not installed | 2026-09-15 | PASS | UNVERIFIED | `tests/agent-smoke/runs/2026-09-15/claude.md` |
-| Antigravity | 1.2.3 | 2026-09-15 | PASS | UNVERIFIED | `tests/agent-smoke/runs/2026-09-15/antigravity.md` |
+| Codex | codex-cli 0.154.0 | 2026-09-16 | PASS | PASS | `tests/agent-smoke/runs/2026-09-16/codex.md` |
+| Claude Code | 2.1.235 | 2026-09-16 | PASS | UNVERIFIED — headless `claude -p` could not authenticate (OAuth session expired); the harness schema defect that previously made this run impossible is fixed | `tests/agent-smoke/runs/2026-09-16/claude.md` |
+| Antigravity | 1.2.4 | 2026-09-16 | PASS | PASS | `tests/agent-smoke/runs/2026-09-16/antigravity.md` |
+
+Earlier records (`tests/agent-smoke/runs/2026-09-15/`) are kept for history; the Claude Code "not installed" and Antigravity "timed out" results there were environmental.
+
+### Harness notes
+
+- `tests/agent-smoke/result.schema.json` must stay free of a `$schema` dialect pointer: `claude --json-schema` rejects `https://json-schema.org/draft/2020-12/schema` outright. A CLI rejecting the schema is classified `FAIL` (harness defect), never `UNVERIFIED`.
+- Absolute paths inside the repository are normalised to repo-relative form before comparison; paths outside the repository fail.
+- The worktree guard compares `git status` before and after the run. Do not edit the repository while a smoke runs — the guard cannot tell a model's edit from yours.

@@ -179,6 +179,7 @@ def build_package_from_root(repo_root: Path, theme_root: Path, output_dir: Path)
             "THEME_TAGLINE": manifest.tagline,
             "THEME_CLASS": manifest.class_name,
             "BOOTSTRAP_SNIPPET": bootstrap,
+            "NAV_STYLE_LABEL": manifest.navigation_menu_style or "the application's current value (this theme declares none)",
         }
 
         readme_tmpl = repo_root / "installer/templates/README.md.tmpl"

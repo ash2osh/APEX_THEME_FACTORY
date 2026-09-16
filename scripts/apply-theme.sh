@@ -17,7 +17,7 @@ s2,n=re.subn(r"var DEFAULT = '[a-z0-9-]*';", f"var DEFAULT = '{name}';", s)
 # dialog-template slot. Keep both fallbacks aligned so full pages and dialog iframes
 # cannot resolve different defaults.
 assert n==2, f"expected 2 page-0 theme regions, found {n}"; open(p,'w').write(s2)
-nav=th.get("templateOptions",{}).get("navigationMenu",{}).get("style")
+nav=th.get("templateOptions",{}).get("navigationMenuStyle")  # schema v1 key (see schemas/theme-package.schema.json)
 if nav:
     p=f"{root}/applications/ut/application.apx"; s=open(p).read()
     s2,n=re.subn(r"(\n            )t-TreeNav--(styleA|styleB|classic)\n", rf"\1{nav}\n", s)

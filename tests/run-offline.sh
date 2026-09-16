@@ -11,7 +11,8 @@ python3 -m unittest \
   tests.test_installer_cli tests.test_uninstaller_cli \
   tests.test_agent_layout tests.test_agent_smoke tests.test_css_policy \
   tests.test_runtime_parity tests.test_alpine_fixture \
-  tests.test_consumer_fixture_scripts tests.test_release_report -v
+  tests.test_consumer_fixture_scripts tests.test_release_report \
+  tests.test_apexlang_roundtrip_sim tests.test_lifecycle_real_shape -v
 python3 -m unittest tests.test_chrome_mcp_daemon -v
 
 scripts/check-agent-layout.sh

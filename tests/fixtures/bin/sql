@@ -11,12 +11,25 @@ elif [[ "$input" =~ -dir[[:space:]]+([^[:space:]]+) ]]; then
   export_dir="${BASH_REMATCH[1]}"
 fi
 
-state_file="/tmp/fake_sql_imported_${USER:-default}.txt"
-fixture_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/apexlang/minimal"
+state_file="${FAKE_SQL_STATE_FILE:-/tmp/fake_sql_imported_${USER:-default}.txt}"
+fixture_bin="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fixture_root="$(cd "$fixture_bin/.." && pwd)/apexlang/${FAKE_SQL_FIXTURE:-minimal}"
 
+# Re-exports of an imported application go through the SQLcl formatting simulator so
+# tests see real export shapes (no APEXLang comments, re-indented fences, sorted files).
+reexport() {
+  cp -R "$(cat "$state_file")" "$1"
+  python3 "$fixture_bin/apexlang_roundtrip.py" "$1"
+}
+
+# An import copies the staged tree into a persistent store (the installer deletes its
+# staging directory afterwards, like a real target keeps the application, not the files).
 if [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+\"([^\"]+)\" ]] || [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+([^[:space:]]+) ]]; then
   imported_dir="${BASH_REMATCH[1]}"
-  echo "$imported_dir" > "$state_file"
+  store="${state_file}.d"
+  rm -rf "$store"
+  cp -R "$imported_dir" "$store"
+  echo "$store" > "$state_file"
 fi
 
 case "${FAKE_SQL_MODE:-success}" in
@@ -24,7 +37,7 @@ case "${FAKE_SQL_MODE:-success}" in
     if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
       mkdir -p "$export_dir"
       if [ -f "$state_file" ] && [ -d "$(cat "$state_file")" ]; then
-        cp -R "$(cat "$state_file")" "$export_dir/fixture-app"
+        reexport "$export_dir/fixture-app"
       else
         cp -R "$fixture_root" "$export_dir/fixture-app"
       fi
@@ -95,8 +108,8 @@ case "${FAKE_SQL_MODE:-success}" in
     if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
       mkdir -p "$export_dir"
       if [ -f "$state_file" ] && [ -d "$(cat "$state_file")" ]; then
-        cp -R "$(cat "$state_file")" "$export_dir/fixture-app"
-        printf '\n// post-import divergence\n' >> "$export_dir/fixture-app/application.apx"
+        reexport "$export_dir/fixture-app"
+        printf '\nfile "divergence.css" (\n    mimeType: text/css\n    charSet: utf-8\n)\n' >> "$export_dir/fixture-app/shared-components/static-files.apx"
       else
         cp -R "$fixture_root" "$export_dir/fixture-app"
       fi

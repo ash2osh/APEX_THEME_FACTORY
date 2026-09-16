@@ -18,7 +18,10 @@ from lib.theme_factory.apexlang import (
     apply_patch,
     TargetExport,
     read_install_state,
+    theme_factory_projection,
     verify_package_ownership,
+    verify_runtime_ownership,
+    read_registry_document,
 )
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
@@ -47,6 +50,9 @@ class OperationReport:
 
 
 APEX_26_1_RE = re.compile(r"^26\.1(?:\.\d+)?(?:[-+].*)?$")
+# Exit codes: 2 package/argument, 3 unsupported target, 4 drift, 5 validation/import,
+# 6 post-import verification, 7 explicit cancellation or refused stale restore.
+CANCELLED_EXIT_CODE = 7
 
 
 def require_supported_apex_version(version: str) -> None:
@@ -70,7 +76,55 @@ def matches_install(target: TargetExport, manifest: ThemeManifest, switcher_mode
     return True
 
 
+def make_staging_dir(prefix: str) -> Path:
+    return Path(tempfile.mkdtemp(prefix=prefix))
+
+
+def remove_staging_dir(staging_temp: Optional[Path]) -> None:
+    """Delete a staging directory created by make_staging_dir, and nothing else.
+
+    The path must still be a direct child of the system temp directory and carry the
+    Theme Factory prefix; anything else is left alone (spec §10). Set
+    THEME_FACTORY_KEEP_STAGING=1 to keep staged exports for inspection.
+    """
+    if staging_temp is None or os.environ.get("THEME_FACTORY_KEEP_STAGING") == "1":
+        return
+    staging_temp = Path(staging_temp)
+    temp_root = Path(tempfile.gettempdir()).resolve()
+    if (
+        staging_temp.is_dir()
+        and not staging_temp.is_symlink()
+        and staging_temp.resolve().parent == temp_root
+        and staging_temp.name.startswith("apex-theme-factory-")
+    ):
+        shutil.rmtree(staging_temp, ignore_errors=True)
+
+
+def _record_post_digest(backup_dir: Path, digest: str) -> None:
+    """Remember what the application looked like right after this operation so a later
+    restore can tell whether unrelated changes happened in between."""
+    target_json = backup_dir / "target.json"
+    data = json.loads(target_json.read_text(encoding="utf-8"))
+    data["postOperationDigest"] = digest
+    target_json.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
 def run_install(options: InstallOptions) -> OperationReport:
+    staging: list[Path] = []
+    try:
+        report = _run_install(options, staging)
+    except Exception:
+        for path in staging:
+            remove_staging_dir(path)
+        raise
+    if report.status != "IMPORTED_POSTCHECK_FAILED":
+        for path in staging:
+            remove_staging_dir(path)
+        report = OperationReport(report.status, report.exit_code, report.backup_dir, None, report.message)
+    return report
+
+
+def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     # 1. Verify package and manifest
     package_root = options.package_root.resolve()
     manifest = verify_package(package_root)
@@ -83,7 +137,8 @@ def run_install(options: InstallOptions) -> OperationReport:
     require_supported_apex_version(target_meta.apex_version)
 
     # 4. Fresh export into staging
-    staging_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-stage-"))
+    staging_temp = make_staging_dir("apex-theme-factory-stage-")
+    staging.append(staging_temp)
     try:
         staged_dir = sqlcl.export_apexlang(options.app_id, staging_temp)
     except Exception as exc:
@@ -134,6 +189,9 @@ def run_install(options: InstallOptions) -> OperationReport:
     patch = plan_install(staged_dir, package_root, options.switcher_mode)
     apply_patch(patch)
     staged_digest = canonical_digest(staged_dir)
+    # SQLcl reformats APEXLang on export (indentation, ordering, dropped comments), so the
+    # post-import comparison uses the semantic Theme Factory projection, not raw bytes.
+    staged_projection = theme_factory_projection(staged_dir)
 
     # 7. Validate staged changes via SQLcl
     try:
@@ -142,7 +200,7 @@ def run_install(options: InstallOptions) -> OperationReport:
         raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
 
     # 8. Drift guard: fresh second export to check for DB state modification during staging
-    drift_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-drift-"))
+    drift_temp = make_staging_dir("apex-theme-factory-drift-")
     try:
         drift_dir = sqlcl.export_apexlang(options.app_id, drift_temp)
         drift_digest = canonical_digest(drift_dir)
@@ -193,7 +251,7 @@ def run_install(options: InstallOptions) -> OperationReport:
         print("Status: TARGET_UNTOUCHED")
         return OperationReport(
             status="TARGET_UNTOUCHED",
-            exit_code=0,
+            exit_code=CANCELLED_EXIT_CODE,
             backup_dir=backup_dir,
             staged_dir=staged_dir,
             message="Target untouched due to confirmation mismatch",
@@ -206,14 +264,17 @@ def run_install(options: InstallOptions) -> OperationReport:
         raise PackageError(f"APEX import failed: {exc}", exit_code=5) from exc
 
     # Post-check
-    post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-post-"))
+    post_temp = make_staging_dir("apex-theme-factory-post-")
     try:
         post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
-        if canonical_digest(post_dir) != staged_digest:
+        post_projection = theme_factory_projection(post_dir)
+        if post_projection != staged_projection:
+            differing = sorted(key for key in staged_projection if staged_projection[key] != post_projection.get(key))
+            print(f"Post-import export differs from the staged transaction in: {', '.join(differing)}")
             print("Status: IMPORTED_POSTCHECK_FAILED")
             return OperationReport(
                 status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
-                staged_dir=staged_dir, message="Imported export digest differs from staged transaction",
+                staged_dir=staged_dir, message="Imported export differs from staged transaction",
             )
         post_target = inspect_export(post_dir)
         if not matches_install(post_target, manifest, options.switcher_mode):
@@ -240,8 +301,11 @@ def run_install(options: InstallOptions) -> OperationReport:
                 staged_dir=staged_dir, message="Imported but registry postcheck failed",
             )
         verify_package_ownership(post_dir, installed)
+        verify_runtime_ownership(post_dir, read_registry_document(post_dir))
+        post_digest = canonical_digest(post_dir)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
+    _record_post_digest(backup_dir, post_digest)
 
     print(f"\nResult: IMPORTED theme '{manifest.name}' v{manifest.version} into application {options.app_id}.")
     print("Status: IMPORTED")

@@ -1,0 +1,16 @@
+{
+  "runtime": "antigravity",
+  "cliVersion": "1.2.4",
+  "dateUtc": "2026-09-16",
+  "status": "PASS",
+  "message": "All assertions passed",
+  "payload": {
+    "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+    "importRequiresUserRequest": true,
+    "instructionEntry": ".agents/rules/apex-theme-factory.md",
+    "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+    "runtime": "antigravity",
+    "runtimeTruthTool": "chrome-devtools-mcp",
+    "wouldEdit": false
+  }
+}

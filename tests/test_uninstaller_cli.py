@@ -38,15 +38,12 @@ class UninstallerCliTests(unittest.TestCase):
         self.fake_bin = str((Path(__file__).resolve().parent / "fixtures/bin").resolve())
         self.orig_path = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{self.fake_bin}:{self.orig_path}"
-        state_file = Path(f"/tmp/fake_sql_imported_{os.getenv('USER', 'default')}.txt")
-        if state_file.exists():
-            state_file.unlink()
+        # keep the fake SQLcl state and default backups inside this test's temp dir
+        os.environ["FAKE_SQL_STATE_FILE"] = str(self.tmp / "fake-sql-state.txt")
 
     def tearDown(self):
         os.environ["PATH"] = self.orig_path
-        state_file = Path(f"/tmp/fake_sql_imported_{os.getenv('USER', 'default')}.txt")
-        if state_file.exists():
-            state_file.unlink()
+        os.environ.pop("FAKE_SQL_STATE_FILE", None)
 
     def run_uninstall(self, theme: str, *args: str, stdin: str = "", log: Path = None, mode: str = "success"):
         env = os.environ.copy()
@@ -54,7 +51,8 @@ class UninstallerCliTests(unittest.TestCase):
         if log:
             env["FAKE_SQL_LOG"] = str(log)
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", "uninstall", "--theme", theme, *args],
+            ["python3", "-m", "lib.theme_factory.cli", "uninstall", "--theme", theme, *args,
+             *([] if "--backup-dir" in args else ["--backup-dir", str(self.tmp / "default-backups")])],
             input=stdin,
             text=True,
             capture_output=True,
@@ -66,7 +64,8 @@ class UninstallerCliTests(unittest.TestCase):
         env = os.environ.copy()
         env["FAKE_SQL_MODE"] = "success"
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args],
+            ["python3", "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args,
+             *([] if "--backup-dir" in args else ["--backup-dir", str(self.tmp / "default-backups")])],
             input=stdin,
             text=True,
             capture_output=True,
@@ -209,6 +208,7 @@ class UninstallerCliTests(unittest.TestCase):
                 "--workspace", "DEMO",
                 "--app-id", "314",
             ],
+            cwd=self.tmp,
             text=True,
             capture_output=True,
             env=os.environ.copy(),

@@ -67,7 +67,7 @@ Only after exact numeric confirmation is the staged APEXLang imported.
 
 ## Optional switcher
 The installer supports three switcher modes:
-- Default: Preserves existing switcher state (`--backup-dir` optional).
+- Default (no flag): preserves the target's existing switcher state; a target without Theme Factory integration gets fixed-theme mode.
 - `--with-switcher`: Enables the native navigation bar theme switcher and pre-paint bootstrap.
 - `--without-switcher`: Disables the theme switcher and removes runtime JavaScript references.
 
@@ -98,6 +98,10 @@ If you need to restore from an immutable backup created during install:
 PYTHONPATH=. python3 -m lib.theme_factory.cli restore --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
 ```
 
+Restore compares the live application with the state recorded right after the backed-up operation. If anything changed in between, it refuses (exit 7) until you pass `--discard-later-changes`.
+
+Ownership is stored in data APEX keeps: the Page 0 regions carry Static IDs `theme_factory_bootstrap` / `theme_factory_bootstrap_dialog` and an HTML marker comment, switcher entries use the `theme-factory-` Static ID namespace, and `theme-factory/runtime/registry.json` records the SHA-256 of every installed file. Reinstalling, upgrading, adding a second package and uninstalling all rely on that data, so do not rename or edit those components by hand; installations made by pre-release builds without file digests must be removed manually or through `restore` before this installer will touch them.
+
 ---
 
 ## Exit codes and recovery artifacts
@@ -106,6 +110,7 @@ PYTHONPATH=. python3 -m lib.theme_factory.cli restore --connection <saved-connec
 - `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 / Iris)
 - `4`: Database drift detected during staging
 - `5`: APEXLang validation or SQLcl import failure
-- `6`: Post-import verification check failed
+- `6`: Post-import verification check failed (the import happened; inspect the printed differences, then uninstall or restore)
+- `7`: Operation cancelled at the confirmation prompt, or a restore refused because the application changed after the backed-up operation (re-run with `--discard-later-changes` to accept losing those changes)
 
 Recovery artifacts and backups are preserved in `./theme-factory-backups/<WORKSPACE>-<APP_ID>/<TIMESTAMP>-before-__THEME_NAME__/`.

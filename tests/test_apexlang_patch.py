@@ -171,3 +171,160 @@ class ApexLangPatchTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RealShapeTargetTests(unittest.TestCase):
+    """Targets shaped like real SQLcl 26.2 exports (lists.apx, comment-free re-exports)."""
+
+    PACKAGE = Path("tests/fixtures/packages/valid-basic")
+
+    def fixture_copy(self, name: str = "real-shape") -> Path:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        shutil.copytree(Path("tests/fixtures/apexlang") / name, tmp / "app")
+        return tmp / "app"
+
+    def install_and_reexport(self, root: Path, mode: str = "preserve") -> None:
+        from tests.fixtures.bin.apexlang_roundtrip import simulate_export
+        apply_patch(plan_install(root, self.PACKAGE, mode))
+        simulate_export(root)
+
+    def test_reinstall_after_real_reexport_owns_its_regions(self):
+        root = self.fixture_copy()
+        self.install_and_reexport(root)
+        page_zero = root / "pages/p00000-global-page.apx"
+        self.assertNotIn("APEX_THEME_FACTORY_MANAGED:BEGIN", page_zero.read_text(encoding="utf-8"))
+
+        patch = plan_install(root, self.PACKAGE, "preserve")
+        after = patch.after_files[Path("pages/p00000-global-page.apx")]
+        self.assertEqual(after.count("region theme_factory_bootstrap ("), 1)
+        self.assertEqual(after.count("region theme_factory_bootstrap_dialog ("), 1)
+        self.assertIn("region business-global-banner (", after)
+
+    def test_unrelated_region_named_like_ours_is_still_a_collision(self):
+        root = self.fixture_copy()
+        page_zero = root / "pages/p00000-global-page.apx"
+        page_zero.write_text(
+            page_zero.read_text(encoding="utf-8").replace(
+                "\n)\n", "\n    region theme_factory_bootstrap (\n        name: Theme Factory Bootstrap\n        type: staticContent\n        source {\n            htmlCode: <p>user content</p>\n        }\n    )\n)\n"
+            ),
+            encoding="utf-8",
+        )
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, self.PACKAGE, "preserve")
+        self.assertIn("collision", str(context.exception).lower())
+
+    def test_switcher_entries_land_in_lists_apx_with_valid_grammar(self):
+        root = self.fixture_copy()
+        patch = plan_install(root, self.PACKAGE, "enable")
+        lists = patch.after_files[Path("shared-components/lists.apx")]
+        self.assertIn("entry theme-factory-switcher-parent (", lists)
+        self.assertIn("entry theme-factory-choice-valid-basic (", lists)
+        self.assertIn("entry theme-factory-choice-iris (", lists)
+        self.assertIn("parentEntry: @theme-factory-switcher-parent", lists)
+        self.assertIn("2: theme-factory-managed-switcher", lists)
+        self.assertNotIn("cssClasses", lists)
+        self.assertNotIn("APEX_THEME_FACTORY_MANAGED", lists)
+        # entries must be inside the navigation-bar list, not the navigation menu
+        nav_bar_start = lists.index("list navigation-bar (")
+        nav_menu_start = lists.index("list navigation-menu (")
+        parent_pos = lists.index("entry theme-factory-switcher-parent (")
+        self.assertTrue(nav_bar_start < parent_pos and (parent_pos < nav_menu_start or nav_menu_start < nav_bar_start))
+
+    def test_switcher_creates_javascript_block_when_absent(self):
+        root = self.fixture_copy()
+        patch = plan_install(root, self.PACKAGE, "enable")
+        app = patch.after_files[Path("application.apx")]
+        self.assertIn("#APP_FILES#theme-factory/runtime/theme-factory-runtime.js", app)
+        self.assertEqual(app.count("javaScript {"), 1)
+
+    def test_switcher_entries_survive_reexport_and_are_regenerated_once(self):
+        root = self.fixture_copy()
+        self.install_and_reexport(root, "enable")
+        patch = plan_install(root, self.PACKAGE, "enable")
+        lists = patch.after_files[Path("shared-components/lists.apx")]
+        self.assertEqual(lists.count("entry theme-factory-switcher-parent ("), 1)
+        self.assertEqual(lists.count("entry theme-factory-choice-iris ("), 1)
+
+    def test_disable_after_enable_removes_switcher_entries_and_runtime_url(self):
+        root = self.fixture_copy()
+        self.install_and_reexport(root, "enable")
+        patch = plan_install(root, self.PACKAGE, "disable")
+        self.assertNotIn("theme-factory-", patch.after_files[Path("shared-components/lists.apx")])
+        self.assertNotIn("theme-factory-runtime.js", patch.after_files[Path("application.apx")])
+
+    def test_switcher_refuses_sql_query_navigation_bar(self):
+        root = self.fixture_copy()
+        lists = root / "shared-components/lists.apx"
+        text = lists.read_text(encoding="utf-8")
+        head, tail = text.split("list navigation-bar (\n    name: Navigation Bar\n", 1)
+        body_end = tail.index("\n)\n")
+        text = head + "list navigation-bar (\n    name: Navigation Bar\n    source {\n        type: sqlQuery\n        sqlQuery:\n            ```sql\n            select 1 from dual\n            ```\n    }\n" + tail[body_end:]
+        lists.write_text(text, encoding="utf-8")
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, self.PACKAGE, "enable")
+        self.assertIn("MANUAL-INSTALL.md", str(context.exception))
+
+    def test_theme_file_is_resolved_from_current_theme(self):
+        root = self.fixture_copy()
+        legacy = root / "shared-components/themes/legacy/theme.apx"
+        legacy.parent.mkdir(parents=True)
+        legacy.write_text("theme legacy (\n    name: Legacy\n    themeNumber: 1\n    baseTheme: ut-24.2\n)\n", encoding="utf-8")
+        target = inspect_export(root)
+        self.assertEqual(target.theme_number, 42)
+
+    def test_ambiguous_theme_without_current_theme_is_refused(self):
+        root = self.fixture_copy()
+        legacy = root / "shared-components/themes/legacy/theme.apx"
+        legacy.parent.mkdir(parents=True)
+        legacy.write_text("theme legacy (\n    name: Legacy\n    themeNumber: 42\n    baseTheme: ut-26.1\n)\n", encoding="utf-8")
+        app = root / "application.apx"
+        app.write_text(app.read_text(encoding="utf-8").replace("        currentTheme: @universal-theme\n", ""), encoding="utf-8")
+        with self.assertRaises(PackageError) as context:
+            inspect_export(root)
+        self.assertIn("theme", str(context.exception).lower())
+
+    def styled_package(self) -> Path:
+        package = Path(tempfile.mkdtemp()) / "valid-basic"
+        self.addCleanup(shutil.rmtree, package.parent)
+        shutil.copytree(self.PACKAGE, package)
+        manifest = json.loads((package / "theme.json").read_text(encoding="utf-8"))
+        manifest["templateOptions"] = {"navigationMenuStyle": "t-TreeNav--styleB"}
+        (package / "theme.json").write_text(json.dumps(manifest), encoding="utf-8")
+        return package
+
+    def test_navigation_menu_style_from_manifest_replaces_existing_style(self):
+        root = self.fixture_copy()
+        patch = plan_install(root, self.styled_package(), "preserve")
+        app = patch.after_files[Path("application.apx")]
+        self.assertIn("t-TreeNav--styleB", app)
+        self.assertNotIn("t-TreeNav--styleA", app)
+        self.assertIn("js-defaultCollapsed", app)
+
+    def test_navigation_menu_style_is_skipped_without_side_navigation_template(self):
+        root = self.fixture_copy()
+        app_file = root / "application.apx"
+        app_file.write_text(
+            app_file.read_text(encoding="utf-8").replace("listTemplate: @/side-navigation-menu", "listTemplate: @/top-navigation-menu"),
+            encoding="utf-8",
+        )
+        patch = plan_install(root, self.styled_package(), "preserve")
+        self.assertIn("t-TreeNav--styleA", patch.after_files[Path("application.apx")])
+
+    def test_projection_is_stable_across_real_reexport(self):
+        from lib.theme_factory.apexlang import theme_factory_projection
+        from tests.fixtures.bin.apexlang_roundtrip import simulate_export
+        root = self.fixture_copy()
+        apply_patch(plan_install(root, self.PACKAGE, "enable"))
+        staged = theme_factory_projection(root)
+        simulate_export(root)
+        self.assertEqual(staged, theme_factory_projection(root))
+        self.assertIn("valid-basic", json.dumps(staged))
+
+    def test_projection_detects_unrelated_static_file_change(self):
+        from lib.theme_factory.apexlang import theme_factory_projection
+        root = self.fixture_copy()
+        apply_patch(plan_install(root, self.PACKAGE, "preserve"))
+        before = theme_factory_projection(root)
+        (root / "shared-components/static-files/css/business-brand.css").write_text("changed", encoding="utf-8")
+        self.assertNotEqual(before, theme_factory_projection(root))

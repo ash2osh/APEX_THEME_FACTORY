@@ -10,13 +10,15 @@ import subprocess
 from typing import Optional, Union
 
 EVIDENCE_ROOT = ".agents/evaluations/runtime"
+# Paths that never influence a package or the installer: evidence artifacts and Markdown docs.
+NON_SOURCE_PATHSPECS = (".", f":(exclude){EVIDENCE_ROOT}", ":(exclude,glob)**/*.md")
 
 
 def last_source_commit(cwd: Union[str, Path, None] = None) -> Optional[str]:
-    """SHA of the most recent commit touching paths outside EVIDENCE_ROOT, or None."""
+    """SHA of the most recent commit touching source (not evidence, not Markdown), or None."""
     try:
         result = subprocess.run(
-            ["git", "log", "-1", "--format=%H", "--", ".", f":(exclude){EVIDENCE_ROOT}"],
+            ["git", "log", "-1", "--format=%H", "--", *NON_SOURCE_PATHSPECS],
             cwd=cwd, capture_output=True, text=True, check=False,
         )
     except (OSError, subprocess.SubprocessError):
@@ -26,12 +28,12 @@ def last_source_commit(cwd: Union[str, Path, None] = None) -> Optional[str]:
 
 
 def source_equivalent(commit_a: str, commit_b: str, cwd: Union[str, Path, None] = None) -> bool:
-    """True when the two commits differ only under EVIDENCE_ROOT (or are identical)."""
+    """True when the two commits differ only in evidence or Markdown (or are identical)."""
     if commit_a == commit_b:
         return True
     try:
         result = subprocess.run(
-            ["git", "diff", "--quiet", commit_a, commit_b, "--", ".", f":(exclude){EVIDENCE_ROOT}"],
+            ["git", "diff", "--quiet", commit_a, commit_b, "--", *NON_SOURCE_PATHSPECS],
             cwd=cwd, capture_output=True, text=True, check=False,
         )
     except (OSError, subprocess.SubprocessError):

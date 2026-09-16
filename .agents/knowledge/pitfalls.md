@@ -27,6 +27,13 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - **Evidence:** `.t-Region{color:var(--ut-region-text-color,var(--ut-component-text-default-color))}` in Core
   resolved to `#161513` on p1500 until `--ut-region-text-color` was set. Finding: `pending/2026-09-14-ut-literal-root-tokens.md`.
 
+### 1.1b Iris 26.1.4 does not render Oracle Sans
+- `oraclesans-apex.min.css` is linked on every page, but `--a-base-font-family` is the system UI
+  stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", …`); `document.fonts` lists the Oracle Sans
+  faces as `unloaded` and `document.fonts.check('16px "Oracle Sans"')` is false (app 102 p500/p1410,
+  consumers 9010/9011, 2026-09-16). Do not assert or "restore" Oracle Sans in a theme; a font-less
+  package must leave the body family identical to bare Iris, which the browser matrix checks.
+
 ### 1.2 `var()` chains in Iris `:root` resolve at `:root`, not where consumed
 - **Symptom:** `--a-button-text-color` overridden on body, but IG pager buttons still `#161513`.
 - **Cause:** Iris `:root { --a-gv-pagination-button-text-color: var(--a-button-text-color) }` is computed on
@@ -295,6 +302,13 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - Skills still described `static-files/css/apex/` two commits after packages moved to `sample-themes/`. When
   the architecture moves, file the finding and fix the routing table in the same change (spec §58); the
   evaluation (`10-theme-package-routing.md`) is what keeps it honest.
+
+### 5.x Evidence is bound to the last *source* commit
+- Committing `.agents/evaluations/runtime/**` or Markdown moves HEAD but not the source under test;
+  package banners and `release.py` bind to `lib/theme_factory/gitstate.py: last_source_commit()`
+  (everything except the evidence root and `**/*.md`). Any other change — even to a tool or test —
+  invalidates captured Layer C/D/E evidence and the packages' SHA-256, so finish source work, commit,
+  build, capture, then commit evidence and docs.
 
 ## 6. Evaluation protocol (spec §58/§62) — traps from the 2026-09-14 run
 

@@ -1,7 +1,13 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: live Chrome DevTools measurement on 2+ IG pages (e.g. app 102 page 1410 and consumer business page) verifying whether `.is-stuck` class is set at rest and whether box-shadow causes double-line artifact. Requires live CONNECTED session.
+Pending (2026-09-16) — Partial live evidence: on consumer 9011 page 2 (`business_ig`, Linen, 1440 px, scrollY 0)
+the IG header `.t-fht-thead.js-stickyTableHeader` has **no** `.is-stuck` at rest and `box-shadow: none`; the
+first cell's `border-top` is `0.8px solid rgba(0,0,0,.1)`. So the sticky shadow is not the doubled line at
+rest — the proposed `box-shadow: none` rule would change nothing there. App 102 page 1410 exposes no
+`.js-stickyTableHeader` element at all (IG renders without the sticky widget on that page). Still missing: a
+second IG page with the sticky widget, and a measurement while scrolled (`.is-stuck` true) to see whether the
+doubled line only appears in the stuck state.
 
 Category:
 UNIVERSAL-THEME-KNOWLEDGE

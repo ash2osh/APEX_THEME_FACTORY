@@ -275,15 +275,22 @@ class EvidenceCommitBindingTests(unittest.TestCase):
         (evidence / "evidence.json").write_text("{}", encoding="utf-8")
         git("add", "-A"); git("commit", "-q", "-m", "evidence")
         evidence_commit = git("rev-parse", "HEAD")
+        (root / "docs").mkdir()
+        (root / "docs/NOTES.md").write_text("# notes\n", encoding="utf-8")
+        git("add", "-A"); git("commit", "-q", "-m", "docs only")
+        docs_commit = git("rev-parse", "HEAD")
         (root / "lib.py").write_text("print(2)\n", encoding="utf-8")
         git("add", "-A"); git("commit", "-q", "-m", "source change")
         changed_commit = git("rev-parse", "HEAD")
+        self.docs_commit = docs_commit
         return root, source_commit, evidence_commit, changed_commit
 
     def test_evidence_only_commits_are_source_equivalent(self):
         from lib.theme_factory.release import source_equivalent
         root, source_commit, evidence_commit, changed_commit = self.make_repo()
         self.assertTrue(source_equivalent(source_commit, evidence_commit, cwd=root))
+        # markdown never reaches a package or the installer: docs-only commits are equivalent too
+        self.assertTrue(source_equivalent(source_commit, self.docs_commit, cwd=root))
         self.assertFalse(source_equivalent(source_commit, changed_commit, cwd=root))
         self.assertTrue(source_equivalent(source_commit, source_commit, cwd=root))
 

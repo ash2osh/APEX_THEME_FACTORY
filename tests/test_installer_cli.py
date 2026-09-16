@@ -74,6 +74,23 @@ class InstallerCliTests(unittest.TestCase):
         sql_calls = log.read_text(encoding="utf-8") if log.exists() else ""
         self.assertNotIn("apex import", sql_calls)
 
+    def test_packaged_install_wrapper_runs_outside_package_directory(self):
+        result = subprocess.run(
+            [
+                "bash", str(self.package_dir / "install.sh"),
+                "--connection", "demo",
+                "--workspace", "DEMO",
+                "--app-id", "314",
+            ],
+            cwd=self.tmp,
+            text=True,
+            capture_output=True,
+            env=os.environ.copy(),
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("STAGED_ONLY", result.stdout)
+
     def test_checksum_failure_before_sqlcl(self):
         bad_pkg = self.tmp / "bad-pkg"
         shutil.copytree(self.package_dir, bad_pkg)
@@ -143,6 +160,21 @@ class InstallerCliTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 5)
 
+    def test_rejects_target_outside_apex_26_1_before_export(self):
+        log = self.tmp / "sql.log"
+        result = self.run_cli(
+            self.package_dir,
+            "--connection", "demo",
+            "--workspace", "DEMO",
+            "--app-id", "314",
+            mode="unsupported-apex",
+            log=log,
+        )
+        self.assertEqual(result.returncode, 3)
+        self.assertIn("APEX 26.1.x", result.stderr)
+        calls = log.read_text(encoding="utf-8")
+        self.assertNotIn("apex export", calls)
+
     def test_postcheck_failure_exits_code_6(self):
         result = self.run_cli(
             self.package_dir,
@@ -154,6 +186,14 @@ class InstallerCliTests(unittest.TestCase):
             mode="postcheck-fail",
         )
         self.assertEqual(result.returncode, 6)
+        self.assertIn("IMPORTED_POSTCHECK_FAILED", result.stdout)
+
+    def test_postcheck_detects_any_imported_export_divergence(self):
+        result = self.run_cli(
+            self.package_dir, "--connection", "demo", "--workspace", "DEMO",
+            "--app-id", "314", "--apply", stdin="314\n", mode="postcheck-diverge",
+        )
+        self.assertEqual(result.returncode, 6, result.stderr + result.stdout)
         self.assertIn("IMPORTED_POSTCHECK_FAILED", result.stdout)
 
     def test_switcher_flags_are_mutually_exclusive(self):

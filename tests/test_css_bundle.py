@@ -43,6 +43,42 @@ class CssBundleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "data: URL CSS imports are forbidden"):
                 flatten_css(root / "a.css", (root,))
 
+    def test_flattens_unquoted_url_import(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "entry.css").write_text(
+                "@import url(other.css);\n.entry { color: blue; }\n",
+                encoding="utf-8",
+            )
+            (root / "other.css").write_text(".other { color: red; }\n", encoding="utf-8")
+
+            flattened = flatten_css(root / "entry.css", (root,))
+
+            self.assertNotIn("@import", flattened)
+            self.assertEqual(
+                flattened,
+                ".other { color: red; }\n.entry { color: blue; }\n",
+            )
+
+    def test_rejects_unrecognized_import_syntax(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "entry.css").write_text(
+                "@import layer(theme);\n.entry { color: blue; }\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "unresolved CSS import"):
+                flatten_css(root / "entry.css", (root,))
+
+    def test_import_text_inside_comment_is_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            original = '/*\n@import "missing.css";\n*/\n.entry { color: blue; }\n'
+            (root / "entry.css").write_text(original, encoding="utf-8")
+
+            self.assertEqual(flatten_css(root / "entry.css", (root,)), original)
+
     def test_detects_import_cycles(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

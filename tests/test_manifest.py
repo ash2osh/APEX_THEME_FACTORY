@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 
@@ -43,7 +44,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-mismatch-name",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -72,7 +73,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -97,7 +98,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -122,7 +123,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Vita",  # Not Iris
@@ -138,6 +139,25 @@ class ManifestTests(unittest.TestCase):
             load_manifest(root / "theme.json", root)
         self.assertIn("compatibility/themeStyle must be 'Iris'", str(ctx.exception))
 
+    def test_apex_compatibility_must_be_exact_26_1_range(self):
+        payload = json.loads(
+            Path("tests/fixtures/packages/valid-basic/theme.json").read_text(encoding="utf-8")
+        )
+        payload["compatibility"]["apex"] = ">=24.1.0"
+        root = self.write_package(payload)
+
+        with self.assertRaisesRegex(PackageError, "compatibility/apex"):
+            load_manifest(root / "theme.json", root)
+
+    def test_unreferenced_woff2_file_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "custom-font"
+            shutil.copytree(Path("tests/fixtures/packages/custom-font"), root)
+            (root / "fonts/rogue.woff2").write_bytes(b"wOF2not-declared")
+
+            with self.assertRaisesRegex(PackageError, "unreferenced font"):
+                load_manifest(root / "theme.json", root)
+
     def test_missing_body_role_when_fonts_defined_fails(self):
         payload = {
             "schemaVersion": 1,
@@ -147,7 +167,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -180,7 +200,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -221,7 +241,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -260,7 +280,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -299,7 +319,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Testing all three font roles.",
             "class": "app-theme-font-theme",
             "compatibility": {
-                "apex": ">=26.1.0",
+                "apex": ">=26.1.0 <26.2.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",

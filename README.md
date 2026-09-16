@@ -94,5 +94,4 @@ bash tests/run-offline.sh
 #### Continuous Integration Boundary
 The GitHub Actions workflow (`.github/workflows/verify.yml`) executes `tests/run-offline.sh` and packages release ZIPs.
 > [!NOTE]
-> CI validates **Layer A (Repository Source)** and **Layer B (Package Portability)** only. A passing CI run does **NOT** prove live database installation (Layer C), browser runtime correctness (Layer D), or consumer application portability (Layer E). Layers C-E require local execution with SQLcl and Chrome DevTools MCP as defined in [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
-
+> CI validates **Layer A (Repository Source)** and **Layer B (Package Artifact)** only. A passing CI run does **NOT** prove live database installation (Layer C), browser runtime correctness and consumer portability (Layer D), or agent behavior (Layer E). Layers C-E require retained local evidence as defined in [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).

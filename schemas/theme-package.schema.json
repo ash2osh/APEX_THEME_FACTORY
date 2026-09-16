@@ -34,7 +34,8 @@
       "required": ["apex", "themeNumber", "baseTheme", "themeStyle"],
       "properties": {
         "apex": {
-          "type": "string"
+          "type": "string",
+          "const": ">=26.1.0 <26.2.0"
         },
         "themeNumber": {
           "type": "integer",

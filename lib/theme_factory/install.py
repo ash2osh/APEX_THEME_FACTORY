@@ -5,6 +5,7 @@ import datetime
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import sys
 import tempfile
@@ -16,6 +17,8 @@ from lib.theme_factory.apexlang import (
     plan_install,
     apply_patch,
     TargetExport,
+    read_install_state,
+    verify_package_ownership,
 )
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
@@ -43,6 +46,17 @@ class OperationReport:
     message: str = ""
 
 
+APEX_26_1_RE = re.compile(r"^26\.1(?:\.\d+)?(?:[-+].*)?$")
+
+
+def require_supported_apex_version(version: str) -> None:
+    if not APEX_26_1_RE.fullmatch(str(version).strip()):
+        raise PackageError(
+            f"Target APEX version '{version}' is unsupported; expected APEX 26.1.x",
+            exit_code=3,
+        )
+
+
 def matches_install(target: TargetExport, manifest: ThemeManifest, switcher_mode: str) -> bool:
     if target.theme_number != 42 or target.base_theme != "ut-26.1" or target.style != "iris":
         return False
@@ -66,6 +80,7 @@ def run_install(options: InstallOptions) -> OperationReport:
 
     # 3. SQLcl preflight check
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
+    require_supported_apex_version(target_meta.apex_version)
 
     # 4. Fresh export into staging
     staging_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-stage-"))
@@ -194,6 +209,12 @@ def run_install(options: InstallOptions) -> OperationReport:
     post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-post-"))
     try:
         post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
+        if canonical_digest(post_dir) != staged_digest:
+            print("Status: IMPORTED_POSTCHECK_FAILED")
+            return OperationReport(
+                status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
+                staged_dir=staged_dir, message="Imported export digest differs from staged transaction",
+            )
         post_target = inspect_export(post_dir)
         if not matches_install(post_target, manifest, options.switcher_mode):
             print("WARNING: Post-check inspection did not match expected installed state!")
@@ -205,6 +226,20 @@ def run_install(options: InstallOptions) -> OperationReport:
                 staged_dir=staged_dir,
                 message="Imported but postcheck verification failed",
             )
+        installed_packages, default_theme, switcher_enabled = read_install_state(post_dir)
+        installed = next((package for package in installed_packages if package.name == manifest.name), None)
+        expected_switcher = options.switcher_mode == "enable" or (
+            options.switcher_mode == "preserve" and switcher_enabled
+        )
+        if not installed or default_theme != manifest.name or (
+            options.switcher_mode != "preserve" and switcher_enabled != expected_switcher
+        ):
+            print("Status: IMPORTED_POSTCHECK_FAILED")
+            return OperationReport(
+                status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
+                staged_dir=staged_dir, message="Imported but registry postcheck failed",
+            )
+        verify_package_ownership(post_dir, installed)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
 

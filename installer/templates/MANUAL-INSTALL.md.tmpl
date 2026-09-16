@@ -2,6 +2,8 @@
 
 Follow this guide to manually install `__THEME_NAME__` (`__THEME_TITLE__`, version `__THEME_VERSION__`) directly through Oracle APEX Builder without using SQLcl.
 
+Use only APEX 26.1.x with Universal Theme 42, base theme `ut-26.1`, and the Iris theme style. Stop if the target differs.
+
 ---
 
 ## Verify the ZIP
@@ -21,7 +23,7 @@ In Oracle APEX Builder:
 3. Upload the package assets with the exact directory prefix:
    - `theme.css` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
    - `theme.json` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
-   - `preview/cover.jpg` to directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
+   - `preview/cover.jpg` as `cover.jpg` in directory `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`
 4. If this package contains custom fonts (`fonts/*.woff2`) and licenses (`licenses/*.txt`), upload each file under:
    - `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/fonts/<filename>.woff2`
    - `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/licenses/<filename>.txt`
@@ -61,9 +63,12 @@ To prevent theme flickering on page load, add the pre-paint bootstrap script to 
 If you wish to allow end users to switch themes dynamically:
 1. In **Shared Components** → **User Interface Attributes** → **JavaScript** → **File URLs**, append:
    `#APP_FILES#theme-factory/runtime/theme-factory-runtime.js`
-2. In **Shared Components** → **Navigation Bar List**:
+2. In both Page 0 bootstrap regions, change `switcherEnabled: false` to `switcherEnabled: true`.
+3. In **Shared Components** → **Navigation Bar List**:
    - Create a parent list entry with CSS Class `theme-factory-managed-switcher` and Target `#`.
    - Add child entries for `Iris` and each installed theme name (e.g. `__THEME_TITLE__`).
+
+Selections persist per browser/device in `window.localStorage` under `apex.themeFactory.<APP_ID>`.
 
 ---
 
@@ -80,4 +85,4 @@ After applying the changes:
 To remove this theme manually:
 1. In **Shared Components** → **User Interface Attributes** → **Cascading Style Sheets**, delete `#APP_FILES#theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/theme.css`.
 2. In **Shared Components** → **Static Application Files**, delete all files under `theme-factory/packages/__THEME_NAME__/__THEME_VERSION__/`.
-3. If no other Theme Factory themes remain, remove the Page 0 bootstrap regions and runtime JavaScript reference.
+3. If no other Theme Factory themes remain, remove the Page 0 bootstrap regions, navigation switcher entries, runtime JavaScript reference, and files under `theme-factory/runtime/`.

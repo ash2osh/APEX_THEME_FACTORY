@@ -22,6 +22,26 @@ Chrome ≥ 144 exposes a user-consented remote-debugging endpoint:
 `http://127.0.0.1:9222/json/version` returns an empty body in this mode — that is expected; the
 endpoint is gated, not broken.
 
+## Persistent project daemon
+
+Start this once, while Chrome approval is available, before running project browser checks:
+
+```bash
+python3 tools/chrome_mcp_daemon.py
+```
+
+Then call the allowlisted MCP tools through:
+
+```bash
+python3 tools/chrome_devtools_client.py list_pages
+```
+
+The daemon keeps one MCP/Chrome session open. Its default socket is
+`$XDG_RUNTIME_DIR/chrome-mcp/chrome-mcp.sock` (or `/tmp/apex-theme-factory-<uid>/chrome-mcp/chrome-mcp.sock`),
+with a private `0700` directory and `0600` socket. Set `THEME_FACTORY_CHROME_MCP_SOCKET` only when deliberately
+connecting to a known existing project daemon. The client does not silently spawn a daemon; a missing or failed
+daemon is reported as an error. Do not start a second daemon while the first owns the approved Chrome session.
+
 ## Global installation (done 2026-09-13)
 
 ```bash

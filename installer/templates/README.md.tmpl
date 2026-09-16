@@ -80,7 +80,7 @@ Example:
 
 ## Per-browser persistence
 When the theme switcher is enabled, user theme selections are persisted in `window.localStorage` under the application-specific key:
-`apex.themeFactory.<APP_ID>.theme`
+`apex.themeFactory.<APP_ID>`
 
 Reloading the page applies the persisted theme class immediately via the Page 0 pre-paint bootstrap before rendering begins.
 
@@ -95,7 +95,7 @@ To safely remove `__THEME_NAME__` from your application:
 
 If you need to restore from an immutable backup created during install:
 ```bash
-python3 -m theme_factory.cli restore --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
+PYTHONPATH=. python3 -m lib.theme_factory.cli restore --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
 ```
 
 ---

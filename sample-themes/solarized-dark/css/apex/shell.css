@@ -60,7 +60,7 @@
 /* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
    override has to be !important too. */
 .app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
-    background-color: var(--app-surface-hover) !important;
+    background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
 }
 .app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
 .app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,

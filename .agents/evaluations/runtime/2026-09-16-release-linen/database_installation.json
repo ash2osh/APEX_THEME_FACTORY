@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "784add1fd080acfcdb790d3346faf8a03d221bf1",
-  "packageSha256": "3aec2bf68952ae33828d3dc86020e136270214bfa4515874e2e3c3d9781cc52c",
-  "capturedAt": "2026-09-16T11:31:29Z",
+  "gitCommit": "d47521f2be7e83ac4e422cefe463fffcd46c2d86",
+  "packageSha256": "79e90d4a8f11204048adfb5a4b23cedaf6aa900f9dcf0664dbe7ad1c896f2525",
+  "capturedAt": "2026-09-16T11:52:51Z",
   "layer": "C",
   "check": "database_installation",
-  "status": "FAIL",
+  "status": "PASS",
   "results": {
     "applications": [
       {
@@ -15,7 +15,7 @@
         "consumer": "minimal",
         "evidence": {
           "path": "raw/application-minimal.json",
-          "sha256": "33a3ad5af2cef8ae937e959e68cb291728de0f974554910e82fd7ec4067ac4c2"
+          "sha256": "eb4188a98f5883b70f7699f50e0b966e9040f479d865fd5df9192cfdf90f22cd"
         }
       },
       {
@@ -24,44 +24,40 @@
         "consumer": "business",
         "evidence": {
           "path": "raw/application-business.json",
-          "sha256": "2d11d41d72911d6b1a7b6b77d82503e64471e9b343bb2b4c703552c988760bb6"
+          "sha256": "c032ae79e3ec55272f26d36cade631bb42d0012f62df07bc5cef2fbd132c6e73"
         }
       }
     ],
     "operationEvidence": {
       "install": {
         "path": "raw/operation-install.json",
-        "sha256": "54f51680d6bc7350033b8561524e807bd6a1cda74b460e2363f49f258018d9e4"
+        "sha256": "ad3b5de6a61c6ca29f66fc5e2f15e6dab213f29759c283d8db25d5bc4d313c49"
       },
       "reinstall": {
         "path": "raw/operation-reinstall.json",
-        "sha256": "2398a9d621989c42a5b5309e7c086a121f01b6b778a252f9670e5f6acb12aef2"
+        "sha256": "54fc208d7a9fcaf1fa0bfc9ca0da4056b30a5c504e68ee3e110d320631724eb0"
       },
       "coexistence": {
         "path": "raw/operation-coexistence.json",
-        "sha256": "c5626992b48660b42eca727eb70e3018eb224d644559d8ba0559cfb791a6bcc3"
+        "sha256": "7377d959205c1781dc567a8b9ee6b671b68e779abd29d0770698bb24c717cefb"
       },
       "switcherEnableDisable": {
         "path": "raw/operation-switcherEnableDisable.json",
-        "sha256": "171b2f409157904a702ae4c93b82ff54b23daf05542b2c8165585ac53cfed0d6"
+        "sha256": "2ee5557fa4f9262dc2d371641a93013dd5cfe505d97cf3a82a3b0d1d754d92a0"
       },
       "uninstall": {
         "path": "raw/operation-uninstall.json",
-        "sha256": "ce2e3a68890d2eeb76474133218c1d29bfa6f240ceec15dce4e160e0c8f3b783"
+        "sha256": "5a57588756a24b320a2d6ca2a8acd50da22e641974acf2ed717b89f184039f12"
       },
       "restore": {
         "path": "raw/operation-restore.json",
-        "sha256": "d41afbe6f40c1519cf97676a6cbc5564335e8b43eea8afa742855bc56a10f9ef"
+        "sha256": "559ed6e8ade648973744f6febd7b246d72a8248597d87bb112513e0b694a37ad"
       },
       "preserveUnrelated": {
         "path": "raw/operation-preserveUnrelated.json",
-        "sha256": "7a9fb0cf032e04a8f99708c7dcc54c193eb7b32fc7ae96dbfc0528cfdea46cd1"
+        "sha256": "10a65f8cf9d1063bf5fae2ad2ed1d70756b81eda408fb652a9429aebfad32748"
       }
     },
-    "failures": [
-      "switcherEnableDisable: FAIL minimal: install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply: expected IMPORTED, got exit 5 status ''",
-      "uninstall: FAIL minimal: uninstall --theme linen --apply: expected UNINSTALLED, got exit 5 status ''",
-      "preserveUnrelated: FAIL minimal: uninstall did not complete; unrelated-file comparison skipped"
-    ]
+    "failures": []
   }
 }

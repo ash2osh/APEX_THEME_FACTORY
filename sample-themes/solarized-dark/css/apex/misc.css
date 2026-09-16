@@ -202,3 +202,17 @@
     color: var(--app-text-emphasized);
     background: var(--app-surface-hover);
 }
+
+/* Calendar (FullCalendar 5). UT gives default events a literal #2578cf background but colours their text
+   with --fc-event-text-color = --ut-palette-primary-contrast, which this package remaps to base03 for its
+   light primary: base03 on #2578cf is 3.3:1 (measured 2026-09-16, consumer 9011 page 3). Put default events
+   on the package primary so the contrast pair holds (base03 on --sol-blue-text = 5.2:1). */
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
+    background-color: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default:hover {
+    background-color: var(--app-color-primary);
+    filter: brightness(1.08);
+}

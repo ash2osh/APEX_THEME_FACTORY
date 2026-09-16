@@ -6,9 +6,9 @@ app AMBIGUOUS (
         globalPage: 0
     }
     css {
-        fileUrls: []
+        fileUrls: #APP_FILES#one.css
     }
     css {
-        fileUrls: []
+        fileUrls: #APP_FILES#two.css
     }
 )

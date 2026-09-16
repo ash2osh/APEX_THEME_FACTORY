@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "784add1fd080acfcdb790d3346faf8a03d221bf1",
+  "packageSha256": "3aec2bf68952ae33828d3dc86020e136270214bfa4515874e2e3c3d9781cc52c",
+  "capturedAt": "2026-09-16T11:31:29Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "preserveUnrelated",
+  "status": "FAIL",
+  "steps": [
+    {
+      "consumer": "business",
+      "command": "compare unrelated static files",
+      "before": 7,
+      "after": 7
+    }
+  ],
+  "notes": [
+    "minimal: uninstall did not complete; unrelated-file comparison skipped"
+  ]
+}

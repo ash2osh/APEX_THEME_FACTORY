@@ -909,34 +909,10 @@ def plan_install(
     if switcher_enabled:
         js_urls.append(runtime_js_url)
 
-    # Patch css {} block in application.apx
+    # Patch css {} / javaScript {} blocks (created, rewritten or removed as their URL lists require)
     after_app = before_app
-    css_formatted = "[\n" + "\n".join(f"            {u}" for u in css_urls) + "\n        ]" if css_urls else "[]"
-    if re.search(r"\bcss\s*\{", after_app):
-        after_app = re.sub(
-            r"(\bcss\s*\{\s*fileUrls:\s*)(?:\[[^\]]*\]|[^\s\(\)\{\}]+)",
-            r"\1" + css_formatted,
-            after_app,
-        )
-    else:
-        # insert before closing paren
-        last_paren = after_app.rfind(")")
-        css_block = f"    css {{\n        fileUrls: {css_formatted}\n    }}\n"
-        after_app = after_app[:last_paren] + css_block + after_app[last_paren:]
-
-    # Patch javaScript {} block in application.apx (create it when the runtime must load)
-    js_formatted = "[\n" + "\n".join(f"            {u}" for u in js_urls) + "\n        ]" if js_urls else "[]"
-    if re.search(r"\bjavaScript\s*\{", after_app):
-        after_app = re.sub(
-            r"(\bjavaScript\s*\{\s*fileUrls:\s*)(?:\[[^\]]*\]|[^\s\(\)\{\}]+)",
-            r"\1" + js_formatted,
-            after_app,
-        )
-    elif js_urls:
-        js_block = f"    javaScript {{\n        fileUrls: {js_formatted}\n    }}\n"
-        css_pos = re.search(r"^[ \t]*css\s*\{", after_app, re.MULTILINE)
-        insert_at = css_pos.start() if css_pos else after_app.rfind(")")
-        after_app = after_app[:insert_at] + js_block + after_app[insert_at:]
+    after_app = set_file_urls(after_app, "css", css_urls)
+    after_app = set_file_urls(after_app, "javaScript", js_urls)
 
     # Ensure userInterface.globalPage: 0 (target.global_page is None or 0 at this point)
     if target.global_page is None:
@@ -1001,6 +977,49 @@ def plan_install(
         staged_copies=staged_copies,
         staged_deletions=staged_deletions,
     )
+
+
+def set_file_urls(app_text: str, block_name: str, urls: List[str]) -> str:
+    """Set `<block_name> { fileUrls: ... }` in application.apx.
+
+    SQLcl emits a scalar for one URL and a list for several, and the compiler rejects an
+    empty `fileUrls`, so an empty list removes the whole block. A missing block is created
+    before `css {}` (javaScript precedes css in exports) or before the closing paren.
+    """
+    block = re.search(rf"^[ \t]*{block_name}\s*\{{", app_text, re.MULTILINE)
+    if block:
+        close = _find_matching_brace(app_text, block.end() - 1)
+        if close == -1:
+            raise PackageError(f"Unbalanced {block_name} block in application.apx")
+        end = close + 1
+        while end < len(app_text) and app_text[end] in "\r\n":
+            end += 1
+        if not urls:
+            return app_text[: block.start()] + app_text[end:]
+        body = app_text[block.end():close]
+        if not re.search(r"\bfileUrls:", body):
+            raise PackageError(f"Ambiguous {block_name} block without fileUrls in application.apx")
+        new_body = re.sub(
+            r"(\bfileUrls:\s*)(?:\[[^\]]*\]|[^\s(){}\[\]]+)",
+            lambda m: m.group(1) + _format_file_urls(urls),
+            body,
+            count=1,
+        )
+        return app_text[: block.end()] + new_body + app_text[close:]
+    if not urls:
+        return app_text
+    new_block = f"    {block_name} {{\n        fileUrls: {_format_file_urls(urls)}\n    }}\n"
+    anchor = None
+    if block_name == "javaScript":
+        anchor = re.search(r"^[ \t]*css\s*\{", app_text, re.MULTILINE)
+    insert_at = anchor.start() if anchor else app_text.rfind(")")
+    return app_text[:insert_at] + new_block + app_text[insert_at:]
+
+
+def _format_file_urls(urls: List[str]) -> str:
+    if len(urls) == 1:
+        return urls[0]
+    return "[\n" + "\n".join(f"            {url}" for url in urls) + "\n        ]"
 
 
 def apply_navigation_menu_style(app_text: str, style: str) -> str:

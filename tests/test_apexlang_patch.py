@@ -328,3 +328,53 @@ class RealShapeTargetTests(unittest.TestCase):
         before = theme_factory_projection(root)
         (root / "shared-components/static-files/css/business-brand.css").write_text("changed", encoding="utf-8")
         self.assertNotEqual(before, theme_factory_projection(root))
+
+
+class EmptyApplicationTargetTests(unittest.TestCase):
+    """A consumer with no CSS/JS URLs, no static files and no Global Page (real minimal consumer 9010)."""
+
+    PACKAGE = Path("tests/fixtures/packages/valid-basic")
+
+    def fixture_copy(self) -> Path:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        shutil.copytree(Path("tests/fixtures/apexlang/empty-app"), tmp / "app")
+        return tmp / "app"
+
+    def lint(self, root: Path) -> list:
+        import subprocess, sys
+        result = subprocess.run([sys.executable, "tests/fixtures/bin/apexlang_lint.py", str(root)], capture_output=True, text=True)
+        return [] if result.returncode == 0 else result.stdout.splitlines()
+
+    def test_disabling_the_switcher_removes_an_otherwise_empty_javascript_block(self):
+        from tests.fixtures.bin.apexlang_roundtrip import simulate_export
+        root = self.fixture_copy()
+        apply_patch(plan_install(root, self.PACKAGE, "enable"))
+        simulate_export(root)
+        apply_patch(plan_install(root, self.PACKAGE, "disable"))
+        app = (root / "application.apx").read_text(encoding="utf-8")
+        self.assertNotIn("javaScript {", app)
+        self.assertNotIn("fileUrls: []", app)
+        self.assertEqual(self.lint(root), [])
+
+    def test_uninstalling_the_only_package_leaves_no_empty_blocks_or_dangling_file_entries(self):
+        from tests.fixtures.bin.apexlang_roundtrip import simulate_export
+        from lib.theme_factory.uninstall import plan_and_apply_uninstall
+        root = self.fixture_copy()
+        apply_patch(plan_install(root, self.PACKAGE, "enable"))
+        simulate_export(root)  # theme entries now sit at line 1 of static-files.apx
+        plan_and_apply_uninstall(root, "valid-basic")
+        app = (root / "application.apx").read_text(encoding="utf-8")
+        self.assertNotIn("css {", app)
+        self.assertNotIn("javaScript {", app)
+        # pitfall 3.4: a component file with no components must be deleted, not left empty
+        self.assertFalse((root / "shared-components/static-files.apx").exists())
+        self.assertFalse((root / "shared-components/static-files").exists())
+        self.assertEqual(self.lint(root), [])
+
+    def test_install_creates_page_zero_named_global_page_and_registers_it(self):
+        root = self.fixture_copy()
+        patch = plan_install(root, self.PACKAGE, "preserve")
+        self.assertIn(Path("pages/p00000-global-page.apx"), patch.after_files)
+        self.assertIn("name: Global Page", patch.after_files[Path("pages/p00000-global-page.apx")])
+        self.assertIn("globalPage: 0", patch.after_files[Path("application.apx")])

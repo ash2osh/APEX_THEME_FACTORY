@@ -5,10 +5,4 @@ app MIN (
         currentTheme: @universal-theme
         globalPage: 0
     }
-    javaScript {
-        fileUrls: []
-    }
-    css {
-        fileUrls: []
-    }
 )

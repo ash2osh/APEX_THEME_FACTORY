@@ -10,17 +10,17 @@ scenario that motivated it passes and the others still pass (spec §58).
 | 01 | native-grid-preservation | passed 2026-09-14 (current only) — runs/2026-09-14/01-native-grid-preservation-current.md |
 | 02 | css-scoping | passed 2026-09-14 (current only) — runs/2026-09-14/02-css-scoping-current.md |
 | 03 | alpine-component-structure | passed 2026-09-14 (current only) on authoring structure; investigation found `alpine.min.js` itself was never loaded by `application.apx` (real fix on a separate branch/PR) — runs/2026-09-14/03-alpine-component-structure-current.md |
-| 04 | apex-refresh | unverified (ambiguous 2026-09-14) — pending live Chrome session on Page 409; missing live refresh execution & listener-count verification — runs/2026-09-14/04-apex-refresh-current.md |
-| 05 | source-persistence | unverified (ambiguous 2026-09-14) — pending live Chrome session; missing reload & post-reload computed style audit — runs/2026-09-14/05-source-persistence-current.md |
+| 04 | apex-refresh | **UNVERIFIED** 2026-09-16 (live Chrome) — the deployed fixture cannot refresh at all: its Dynamic Content region prints with `sys.htp.p`, so the envelope's `result` is `null`, no DOM is swapped and `apexafterrefresh` never fires (confirmed independently by the grader). The Alpine component itself measured clean over 4 DOM swaps. Needs the `.apx` fix imported, then one real refresh — runs/2026-09-16/04-apex-refresh-current.md |
+| 05 | source-persistence | **UNVERIFIED** 2026-09-16 (live Chrome) — prototype → source → `sync-static.sh` → validate all demonstrated live, and the evaluee stated the running app still serves the old build; the reload-with-no-injection half of `Expected` needs an import, which this session was forbidden to run — runs/2026-09-16/05-source-persistence-current.md |
 | 06 | component-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/06-component-reuse-current.md |
 | 07 | token-reuse | passed 2026-09-14 (current only) — runs/2026-09-14/07-token-reuse-current.md |
 | 08 | iris-only | passed 2026-09-14 (current only) — runs/2026-09-14/08-iris-only-current.md |
-| 09 | runtime-evidence | unverified (ambiguous 2026-09-14) — pending live Chrome session; missing live DOM inspection before proposing CSS — runs/2026-09-14/09-runtime-evidence-current.md |
+| 09 | runtime-evidence | **passed 2026-09-16** (live Chrome, current only) — real DOM dumped and `document.styleSheets` walked before any CSS was written, restyle prototyped and measured in the page, every class independently re-verified by the grader — runs/2026-09-16/09-runtime-evidence-current.md |
 | 10 | theme-package-routing | passed baseline / passed current 2026-09-14 (corrected: sync-static.sh permitted; current run has a noted DB-compliance caveat, routing behavior unaffected) — runs/2026-09-14/10-theme-package-routing-{baseline,current}-sync-permitted.md |
-| 11 | dark-package-coverage | unverified (ambiguous both sides 2026-09-14) — pending live Chrome session; missing live WCAG AA contrast audit across full release matrix — runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md |
+| 11 | dark-package-coverage | **FAILED 2026-09-16** (live Chrome; the verdict is on the package, not the evaluee) — 24-page AA audit plus the interaction states a resting sweep cannot see found 4 package-caused defects in solarized-dark 1.0.0 as built, worst 1.06:1 on Interactive Grid row selection (grader-confirmed). Fixes exist only as the patch quoted in the run log — runs/2026-09-16/11-dark-package-coverage-current.md |
 | 12 | apexlang-static-id | passed baseline / passed current 2026-09-14 — runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md |
 | 13 | cards-render-event | passed baseline 2026-09-14 (corrected isolation) / passed current 2026-09-14 — runs/2026-09-14/13-cards-render-event-baseline-eda510d.md, runs/2026-09-14/13-cards-render-event-current.md |
-| 14 | theme-style-scope | unverified (ambiguous both sides 2026-09-14) — pending fresh matched baseline/current run against neutral Given (no solution giveaway) — runs/2026-09-14/14-theme-style-scope-{baseline,current}.md |
+| 14 | theme-style-scope | **passed baseline / passed current 2026-09-16** — first validly matched pair (one task, one neutral `Given`). Both sides override `--a-field-input-border-*` on the theme-style scope, neither at `:root`, neither as a property override; the doc/skill text is therefore *not* load-bearing — runs/2026-09-16/14-theme-style-scope-{baseline,current}.md |
 
 ### Standardized Execution Modes (2026-09-15)
 
@@ -180,3 +180,51 @@ stand for the routing behavior under test despite the noted compliance gap.
 - Page 409 (`applications/ut/pages/p00409-theme-factory-lifecycle.apx`) and `themeFactoryDisclosure.js` committed as the real declarative refresh fixture for scenario 04.
 - Pending live browser execution via Chrome DevTools MCP and live database import authorization, scenarios 04, 05, 09, 11, and 14 remain explicitly marked UNVERIFIED, naming the exact missing runtime evidence.
 
+
+## 2026-09-16 run — the five Chrome-gated scenarios, finally run with Chrome
+
+Six evaluee runs (04, 05, 09, 11 current; 14 current **and** baseline), one fresh agent each, none told which
+skill was under test, each in its own `git worktree` at `4fc73b8` (baseline 14 at `97a3354`). Browser access
+went through the project Chrome MCP daemon (`tools/chrome_devtools_client.py`), each evaluee in its own
+background tab, the user's tab untouched, no `#theme=` navigation. No import, no install, no DB change: the
+only database contact permitted was the read-only `scripts/apex-validate.sh`, and the `CONNECTED` mode text
+says so, which removes the forbid-and-permit contradiction round 7 recorded as a systemic template defect.
+
+| # | Verdict | One-line reason |
+|---|---|---|
+| 04 | UNVERIFIED | the fixture itself cannot refresh — `sys.htp.p` region, `result: null`, `apexafterrefresh` never fires |
+| 05 | UNVERIFIED | persistence half proven live; reload-without-injection needs an import this session may not run |
+| 09 | **PASS** | DOM and matching rules read live before any CSS; every selector re-verified by the grader |
+| 11 | **FAIL** | live audit found 4 package-caused AA defects in `solarized-dark` 1.0.0 as built, worst 1.06:1 |
+| 14 | **PASS / PASS** | matched neutral pair; both sides scope the atom override correctly, so the text is not load-bearing |
+
+What changed methodologically, against the six traps in `knowledge/pitfalls.md` §6:
+- **§6.1 baseline isolation** — 14's baseline is `97a3354`, the parent of `43eec93`, verified before the run to
+  contain neither the `DESIGN_SYSTEM.md` §1 bullet nor the finding it came from.
+- **§6.2 prompt neutrality** — no prompt states a technique, a class name, a token family or a page range. The
+  evaluee prompts are quoted in full in each run log, with a neutrality note naming what was deliberately
+  withheld. `.agents/evaluations/` was placed out of scope for every evaluee, so none could read its own
+  Verdict Rule.
+- **§6.3 contradictory permissions** — resolved by the `OFFLINE`/`CONNECTED` modes: OFFLINE runs were told not
+  to run `apex-validate.sh` at all; CONNECTED runs were told they may, and that it connects.
+- **§6.4 untestable clauses** — where a Verdict-Rule clause was only partly reachable (09's "link to the
+  APEXLang region"), the run log says so explicitly and the grader completed the missing half itself rather
+  than letting the PASS imply it.
+- **§6.5 verdict sweep** — each verdict appears in exactly three places (run-log heading, the row above, the
+  affected finding's Status line) and they were reconciled after grading.
+- **§6.6 worktree evidence** — every run log embeds the **full** `git diff` plus the contents of any untracked
+  file, captured before the worktree was removed. The 2026-09-14 evidence caveat above does **not** apply to
+  `runs/2026-09-16/`: those logs can be re-applied and re-diffed.
+
+Two results matter beyond their scenarios:
+- **Scenario 11 is a release blocker.** `sample-themes/solarized-dark/` — and therefore
+  `dist/solarized-dark/solarized-dark-1.0.0.zip` and the Layer C/D evidence captured against it — contains
+  four measured package-caused AA failures, the worst of which makes a selected Interactive Grid row
+  unreadable (1.06:1). The corrective patch is quoted in the run log but was **not** applied: this session was
+  not permitted to edit `sample-themes/`.
+- **Scenario 04's fixture has never worked.** Page 409 was committed in round 8 as "the real declarative
+  refresh fixture"; it cannot refresh, and nothing noticed until a live run. See
+  `findings/pending/2026-09-16-dynamic-content-htp-p-cannot-refresh.md`.
+
+Finding dispositions from this run are in `findings/accepted/`, `findings/rejected/` and the Status lines of
+what remains in `findings/pending/`.

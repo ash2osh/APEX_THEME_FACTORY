@@ -1,7 +1,23 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: evaluation scenario isolating the routing guidance where `AGENTS.md` does not already specify `scripts/sync-static.sh`. Evaluated 2026-09-14 (demoted because both baseline and current passed when sync-static.sh was permitted; see evaluations/runs/2026-09-14/10-theme-package-routing-{baseline,current}-sync-permitted.md). The routing convention is accurate and active in current codebase.
+**Accepted 2026-09-17** — the convention is live, not just documented: the running app loads
+`r/demo/102/files/static/v…/css/app.css` with its generated `@themes` block and applies
+`html.app-theme-<name>`, both consumer fixtures carry the same routing with a working switcher (Layer D
+evidence, `evaluations/runtime/2026-09-16-release-*/`), and three of the five 2026-09-16 evaluees independently
+routed their work through `sample-themes/<name>/css/**` + `scripts/sync-static.sh` without being told to
+(scenarios 05, 09, 14).
+
+Promoted for the convention, with the isolation result kept visible: evaluation 10 passes on **both** sides
+once `sync-static.sh` is permitted, because `AGENTS.md` already stated the routing at the baseline commit
+byte-identically — so the skill-table change is not demonstrated load-bearing. What the 2026-09-16 round did
+add is a reason to keep the routing prose sharp: two independent evaluees found the generated export tree
+**stale** for `solarized-dark` (`sample-themes/` ahead of
+`applications/ut/shared-components/static-files/`), which is exactly the failure mode this finding exists to
+prevent, one layer further down. That drift is unfixed and worth a separate pass.
+
+Earlier status, for the record: *Pending (2026-09-15) — missing a scenario isolating the routing guidance
+where `AGENTS.md` does not already specify `scripts/sync-static.sh`.*
 
 Category:
 APPLICATION-CONVENTION

@@ -1,7 +1,22 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: evaluation scenario where no sibling component demonstrates `htmlDomId` (isolating skill guidance from codebase grepping), plus scenario testing app-level CSS/JS `userInterface` vs top-level routing blocks. Evaluated 2026-09-14 (see evaluations/runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md): PASS at baseline (evaluee grepped codebase) and current (no-op on already patched file). Retained in pending until isolated scenario confirms load-bearing behavior.
+**Accepted 2026-09-17** — the knowledge is runtime-verified (`advanced { staticId: … }` validates and produces
+no DOM id; `htmlDomId` does — `document.getElementById` after import, plus
+`tools/query-valid-props.mjs --component region`), and its scenario passes on both sides
+(`evaluations/runs/2026-09-14/12-apexlang-static-id-{baseline,current}.md`). The 2026-09-16 round confirmed the
+property again in passing: the scenario-09 grader probe resolved the p1410 Interactive Grid to `#Demo1_ig` from
+`advanced { htmlDomId: Demo1 }`.
+
+Promoted for the knowledge, with the isolation question recorded rather than pretended away: the baseline
+evaluee reached the right answer by grepping the export, so the skill-text correction is not demonstrated
+load-bearing, and no scenario in this suite isolates a case where no sibling component shows `htmlDomId`. The
+second half of this finding — app-level CSS/JS being top-level `css`/`javaScript` blocks rather than
+`userInterface` — is verified against `application.apx` but has never been exercised by an evaluation task;
+scenario 12's Expected was narrowed in round 7 to say so.
+
+Earlier status, for the record: *Pending (2026-09-15) — missing an evaluation scenario where no sibling
+component demonstrates `htmlDomId`, plus one testing app-level CSS/JS routing.*
 
 Category:
 APEXLANG-KNOWLEDGE

@@ -17,6 +17,13 @@
       "artifact": "browser_runtime_matrix.json",
       "artifactSha256": "d011e5d1b1b583a6c66396f68e3016c701c5611b1e7315a08cf70c5579a8e5d7",
       "details": "8/8 consumer/width rows verified live at commit 4c1abe1bb3d0"
+    },
+    {
+      "layer": "E",
+      "check": "agent_behavior_matrix",
+      "status": "UNVERIFIED",
+      "artifact": "",
+      "details": "Codex (codex-cli 0.154.0) and Antigravity (1.2.4) readiness smokes PASS on 2026-09-16 (tests/agent-smoke/runs/2026-09-16); Claude Code smoke UNVERIFIED because headless `claude -p` OAuth is expired on this machine; evaluation scenarios 04, 05, 09, 11 and 14 still need fresh-agent runs per .agents/evaluations/README.md, which this session was asked not to dispatch."
     }
   ]
 }

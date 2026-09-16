@@ -212,8 +212,9 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     finally:
         shutil.rmtree(drift_temp, ignore_errors=True)
 
-    # 9. Dry-run mode
+    # 9. Dry-run mode (target untouched: post-operation state == pre-export state)
     if not options.apply:
+        _record_post_digest(backup_dir, pre_digest)
         print(f"\nTarget Summary:")
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
@@ -249,6 +250,7 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     if typed != str(options.app_id):
         print(f"Confirmation mismatch (received '{typed}', expected '{options.app_id}'). Target untouched.")
         print("Status: TARGET_UNTOUCHED")
+        _record_post_digest(backup_dir, pre_digest)
         return OperationReport(
             status="TARGET_UNTOUCHED",
             exit_code=CANCELLED_EXIT_CODE,

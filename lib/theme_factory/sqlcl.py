@@ -43,13 +43,14 @@ def validate_app_id(app_id: int) -> None:
 
 
 class SqlclClient:
-    def __init__(self, connection: str, timeout_seconds: int = 120) -> None:
+    def __init__(self, connection: str, timeout_seconds: int = 300, env: Optional[dict] = None) -> None:
         if not isinstance(connection, str) or not CONNECTION_RE.match(connection):
             raise PackageError(
                 f"Invalid SQLcl connection name: '{connection}'. Must match ^[A-Za-z0-9_.-]{{1,128}}$"
             )
         self.connection = connection
         self.timeout_seconds = timeout_seconds
+        self.env = env  # None = inherit; tests inject a PATH with the fake `sql`
 
     def __repr__(self) -> str:
         return f"SqlclClient(connection='{self.connection}')"
@@ -63,6 +64,7 @@ class SqlclClient:
                 capture_output=True,
                 timeout=self.timeout_seconds,
                 check=False,
+                env=self.env,
             )
             return SqlclResult(res.returncode, res.stdout, res.stderr)
         except subprocess.TimeoutExpired as exc:

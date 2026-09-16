@@ -1,0 +1,6 @@
+page 1 (
+    name: Home
+    navigationMenu {
+        listPosition: side
+    }
+)

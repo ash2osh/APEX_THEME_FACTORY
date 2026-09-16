@@ -212,3 +212,40 @@ class ReleaseVerdictTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReleaseEvidenceDiscoveryTests(unittest.TestCase):
+    """The checker must find per-theme evidence under the runtime evidence root and ignore
+    unrelated runtime artifacts (parity reports carry a `checks` key of their own)."""
+
+    def test_per_theme_subdirectory_is_discovered_from_the_evidence_root(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "20260915T163631Z-parity.json").write_text(
+                json.dumps({"timestamp": "x", "workspace": "DEMO", "appId": 102, "verdict": "PASS", "checks": []}),
+                encoding="utf-8",
+            )
+            theme_dir = root / "2026-09-15-release-linen"
+            theme_dir.mkdir()
+            (theme_dir / "evidence.json").write_text(json.dumps({
+                "schemaVersion": 1, "theme": "linen",
+                "checks": [{"layer": "C", "check": "database_installation", "status": "UNVERIFIED", "artifact": "", "details": "none yet"}],
+            }), encoding="utf-8")
+            evidence = load_evidence(root, "linen")
+        by_check = {item["check"]: item for item in evidence}
+        self.assertEqual(by_check["database_installation"]["details"], "none yet")
+        self.assertEqual(by_check["browser_runtime_matrix"]["status"], "UNVERIFIED")
+
+    def test_release_cli_reports_package_errors_without_traceback(self):
+        import subprocess
+        import sys
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "broken.json").write_text(json.dumps({"schemaVersion": 2, "theme": "linen", "checks": []}), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, "-m", "lib.theme_factory.release", "--theme", "linen", "--evidence-dir", str(root)],
+                capture_output=True, text=True, check=False,
+            )
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("schemaVersion", result.stderr)

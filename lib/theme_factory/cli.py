@@ -61,6 +61,11 @@ def main() -> None:
     rest_p.add_argument("--app-id", type=int, required=True, help="APEX application ID")
     rest_p.add_argument("--backup", type=Path, required=True, help="Path to backup directory containing target.json and apexlang/")
     rest_p.add_argument("--apply", action="store_true", help="Apply restore to live application")
+    rest_p.add_argument(
+        "--discard-later-changes",
+        action="store_true",
+        help="Restore even though the application changed after the backed-up operation completed",
+    )
 
     args = parser.parse_args()
 

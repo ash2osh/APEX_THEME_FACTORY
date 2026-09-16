@@ -191,6 +191,30 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   export are removed from the app. Never import from a worktree that lacks the working tree's untracked
   packages; export → diff → import.
 
+### 3.8 APEXLang comment lines never come back from `apex export`
+- **Symptom (found 2026-09-16 review):** the installer marked its Page 0 regions and list entries with
+  `// APEX_THEME_FACTORY_MANAGED:BEGIN/END` comment lines and treated a managed region *without* the
+  markers as a foreign collision. APEX has no place to store APEXLang comments, so the first real
+  re-export was comment-free and every reinstall/upgrade/uninstall was refused.
+- **Fix:** ownership lives in data APEX keeps — region Static ID (`advanced { htmlDomId }`), an HTML
+  comment inside `htmlCode`, list-entry static ids (`entry <staticId> (` — the identifier *is* the
+  static id and round-trips), `userDefinedAttributes`, and file digests in `registry.json`
+  (`lib/theme_factory/apexlang.py`: `strip_bootstrap_regions`, `strip_switcher_entries`).
+- Corollary: never compare a staged export with a re-export byte-for-byte. SQLcl re-indents fenced
+  code to the fence column, sorts `file` blocks in `static-files.apx`, and names page files after the
+  page name. Compare a semantic projection (`theme_factory_projection`). The offline fake `sql`
+  (`tests/fixtures/bin/sql` + `apexlang_roundtrip.py`) reproduces these transforms on purpose.
+
+### 3.9 Lists are exported into one `shared-components/lists.apx`
+- SQLcl 26.2 writes every list into `lists.apx` (`list navigation-bar ( … )`); there is no
+  `navigation/lists/navigation-bar.apx`. Resolve the navigation bar through
+  `navigationBar { list: @alias }` in `application.apx`, and check the list is static — app 102's
+  navigation bar is a SQL-query list and cannot host static switcher entries.
+- Valid entry grammar: `layout { sequence, parentEntry: @id }`, `link { target: { type: url url: # } }`,
+  `icon { imageIconCssClasses }`, `userDefinedAttributes { 2: <li classes> }`. `cssClasses` is not an
+  entry property (`node ~/.claude/skills/apex/apexlang/tools/query-valid-props.mjs --component-type-id 3525`).
+- `application.apx` may have no `javaScript {}` block at all (app 104); create it next to `css {}`.
+
 ## 4. Tooling (Chrome DevTools MCP, SQLcl)
 
 ### 4.1 Shared browser state
@@ -232,6 +256,13 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   white) — not over `document.body`'s again. Sanity-check both cases before trusting a re-derived copy of this
   script: 50% red / 50% blue / white → `rgb(191,64,128)`; lone 50% black on `<body>` over an unstyled canvas →
   `rgb(128,128,128)`.
+
+### 4.3c A second `chrome-devtools-mcp --autoConnect` may never answer
+- When another instance already holds the Chrome connection (or Chrome is showing the consent prompt),
+  `tools/call` requests simply never return. The daemon now times out per request
+  (`THEME_FACTORY_CHROME_MCP_TIMEOUT`, default 60 s) and keeps serving; before 2026-09-16 the first
+  such call held the lock forever and every client hung. Use the daemon that owns the approved session
+  (`THEME_FACTORY_CHROME_MCP_SOCKET=…`) instead of starting a second one.
 
 ### 4.4 SQLcl / DB
 - `apex_application_theme_styles` lists the six Iris/Vita/Redwood rows; `apex_application_static_files`

@@ -7,6 +7,55 @@ from tools.agent_smoke import classify_result, redact
 
 
 class AgentSmokeTests(unittest.TestCase):
+    def test_schema_has_no_dialect_pointer_claude_cli_rejects(self):
+        # `claude --json-schema` rejects a "$schema" draft/2020-12 pointer outright, so the shared
+        # schema must stay dialect-agnostic or the Claude Code smoke can never run.
+        schema = json.loads(Path("tests/agent-smoke/result.schema.json").read_text(encoding="utf-8"))
+        self.assertNotIn("$schema", schema)
+
+    def test_harness_schema_rejection_is_a_fail_not_environment(self):
+        verdict = classify_result(
+            "claude", 1,
+            'Error: --json-schema is not a valid JSON Schema: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"',
+            "",
+        )
+        self.assertEqual(verdict.status, "FAIL")
+        self.assertIn("schema", verdict.message.lower())
+
+    def test_absolute_paths_inside_the_repository_are_accepted(self):
+        payload = {
+            "runtime": "codex",
+            "instructionEntry": "/work/repo/AGENTS.md",
+            "routerSkill": "/work/repo/.agents/skills/design-to-apex/SKILL.md",
+            "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+            "runtimeTruthTool": "chrome-devtools",
+            "importRequiresUserRequest": True,
+            "wouldEdit": False,
+        }
+        verdict = classify_result("codex", 0, "", json.dumps(payload), repo_root=Path("/work/repo"))
+        self.assertEqual(verdict.status, "PASS", verdict.message)
+        self.assertEqual(verdict.payload["instructionEntry"], "AGENTS.md")
+
+    def test_absolute_paths_outside_the_repository_still_fail(self):
+        payload = {
+            "runtime": "codex",
+            "instructionEntry": "/elsewhere/AGENTS.md",
+            "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+            "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+            "runtimeTruthTool": "chrome-devtools",
+            "importRequiresUserRequest": True,
+            "wouldEdit": False,
+        }
+        verdict = classify_result("codex", 0, "", json.dumps(payload), repo_root=Path("/work/repo"))
+        self.assertEqual(verdict.status, "FAIL")
+
+    def test_claude_json_envelope_error_surfaces_its_message(self):
+        stdout = json.dumps({"type": "result", "subtype": "success", "is_error": True, "num_turns": 1,
+                             "result": "Failed to authenticate: OAuth session expired and could not be refreshed"})
+        verdict = classify_result("claude", 1, "", stdout)
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIn("OAuth session expired", verdict.message)
+
     def test_authentication_failure_is_unverified(self):
         verdict = classify_result("codex", 1, "authentication required", "")
         self.assertEqual(verdict.status, "UNVERIFIED")

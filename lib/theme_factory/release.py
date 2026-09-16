@@ -91,19 +91,27 @@ def load_evidence(
     if not evidence_dir.exists():
         return []
     evidence: list[dict[str, Any]] = []
-    for path in sorted(evidence_dir.glob("*.json")):
+    # Release manifests live either directly in the evidence directory or one level down in
+    # per-theme folders (`<root>/<date>-release-<theme>/evidence.json`). Other runtime
+    # artifacts (parity reports, raw captures) sit beside them and are not release manifests.
+    candidates = sorted(evidence_dir.glob("*.json")) + sorted(evidence_dir.glob("*/*.json"))
+    for path in candidates:
         try:
             document = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise PackageError(f"Invalid evidence JSON {path}: {exc}") from exc
-        # Digest-bound raw artifacts may sit beside the evidence manifest. Only
-        # documents declaring checks are release manifests.
-        if isinstance(document, dict) and "checks" not in document:
+        if isinstance(document, list):
+            raise PackageError(f"Evidence {path} uses the legacy list format; a schemaVersion 1 manifest is required")
+        if not isinstance(document, dict) or "checks" not in document:
             continue
-        if not isinstance(document, dict) or document.get("schemaVersion") != 1:
-            raise PackageError(f"Evidence {path} must be a schemaVersion 1 object")
+        if "theme" not in document and "schemaVersion" not in document:
+            continue  # runtime artifact (parity report) that merely has its own `checks`
         if document.get("theme") != theme_name:
+            if path.parent != evidence_dir:
+                continue  # another theme's manifest in a shared evidence root
             raise PackageError(f"Evidence {path} is for theme {document.get('theme')!r}, not {theme_name!r}")
+        if document.get("schemaVersion") != 1:
+            raise PackageError(f"Evidence {path} must be a schemaVersion 1 object")
         checks = document.get("checks")
         if not isinstance(checks, list):
             raise PackageError(f"Evidence {path} checks must be an array")
@@ -118,7 +126,7 @@ def load_evidence(
             artifact = str(check.get("artifact", ""))
             digest = str(check.get("artifactSha256", ""))
             if status in {"PASS", "FAIL"}:
-                artifact_path = _artifact_path(evidence_dir, artifact)
+                artifact_path = _artifact_path(path.parent, artifact)
                 if artifact_path.suffix.lower() != ".json" or not artifact_path.is_file() or not re_full_sha256(digest):
                     raise PackageError(f"Evidence check {check_name!r} lacks a valid digest-bound artifact")
                 actual = hashlib.sha256(artifact_path.read_bytes()).hexdigest()
@@ -126,7 +134,7 @@ def load_evidence(
                     raise PackageError(f"Evidence artifact digest mismatch: {artifact}")
                 _validate_evidence_artifact(
                     artifact_path,
-                    evidence_dir,
+                    path.parent,
                     theme_name,
                     layer,
                     check_name,
@@ -563,7 +571,11 @@ def main() -> None:
     parser.add_argument("--package", help="Path to theme ZIP package")
     parser.add_argument("--output", help="Path to write release report markdown")
     args = parser.parse_args()
-    run_release_cli(args)
+    try:
+        run_release_cli(args)
+    except PackageError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(exc.exit_code)
 
 
 if __name__ == "__main__":

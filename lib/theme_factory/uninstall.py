@@ -12,20 +12,30 @@ import tempfile
 from typing import List, Optional, Tuple
 
 from lib.theme_factory.apexlang import (
+    RUNTIME_JS_URL,
     build_bootstrap_regions,
     build_switcher_entries,
     canonical_digest,
+    insert_switcher_entries,
     inspect_export,
     read_install_state,
     read_registry_document,
     strip_bootstrap_regions,
     strip_switcher_entries,
+    theme_factory_projection,
     TargetExport,
     verify_package_ownership,
     verify_runtime_ownership,
 )
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.install import OperationReport, require_supported_apex_version
+from lib.theme_factory.install import (
+    CANCELLED_EXIT_CODE,
+    OperationReport,
+    _record_post_digest,
+    make_staging_dir,
+    remove_staging_dir,
+    require_supported_apex_version,
+)
 from lib.theme_factory.manifest import NAME_REGEX
 from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
@@ -47,6 +57,7 @@ class RestoreOptions:
     app_id: int
     backup_dir: Path
     apply: bool = False
+    discard_later_changes: bool = False
 
 
 def choose_fallback(current_default: Optional[str], remaining: Tuple[str, ...] | List[str]) -> str:
@@ -86,7 +97,7 @@ def _remove_theme_from_app_css(app_apx: Path, theme_name: str) -> None:
     content = app_apx.read_text(encoding="utf-8")
     # In css { fileUrls: [ ... ] }
     pattern = re.compile(
-        r'([ \t]*)#[APP_FILES#]*theme-factory/packages/' + re.escape(theme_name) + r'/[^,\n\]]+,?[ \t]*\n?',
+        r'[ \t]*(?:#APP_FILES#)?theme-factory/packages/' + re.escape(theme_name) + r'/[^,\n\]]+,?[ \t]*\n?',
     )
     new_content = pattern.sub("", content)
     app_apx.write_text(new_content, encoding="utf-8")
@@ -97,31 +108,36 @@ def _remove_runtime_from_app(app_apx: Path) -> None:
         return
     content = app_apx.read_text(encoding="utf-8")
     pattern = re.compile(
-        r'([ \t]*)#[APP_FILES#]*theme-factory/runtime/[^,\n\]]+,?[ \t]*\n?',
+        r'[ \t]*(?:#APP_FILES#)?theme-factory/runtime/[^,\n\]]+,?[ \t]*\n?',
     )
     new_content = pattern.sub("", content)
     app_apx.write_text(new_content, encoding="utf-8")
 
 
-def _remove_managed_page_zero_regions(p0_path: Path) -> None:
-    if not p0_path.exists():
+def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> None:
+    """Strip owned bootstrap regions and, when other packages remain, regenerate them."""
+    if not target.page_zero_file or not target.page_zero_file.exists():
         return
-    content = p0_path.read_text(encoding="utf-8")
-    new_content = strip_bootstrap_regions(content)
-    p0_path.write_text(new_content, encoding="utf-8")
+    text = strip_bootstrap_regions(target.page_zero_file.read_text(encoding="utf-8"))
+    if regions_code:
+        last_paren = text.rfind(")")
+        text = text[:last_paren].rstrip() + "\n" + regions_code + "\n)\n"
+    target.page_zero_file.write_text(text, encoding="utf-8")
 
 
-def _remove_managed_nav_entries(nav_path: Path) -> None:
-    if not nav_path or not nav_path.exists():
+def _rewrite_navigation(target: TargetExport, entries_code: Optional[str]) -> None:
+    if not target.navigation_file or not target.navigation_file.exists():
         return
-    content = nav_path.read_text(encoding="utf-8")
-    new_content = strip_switcher_entries(content)
-    nav_path.write_text(new_content, encoding="utf-8")
+    text = strip_switcher_entries(target.navigation_file.read_text(encoding="utf-8"))
+    if entries_code and target.navigation_list_alias:
+        text = insert_switcher_entries(text, target.navigation_list_alias, entries_code)
+    target.navigation_file.write_text(text, encoding="utf-8")
 
 
 def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
     theme_name = validate_theme_name(theme_name)
     staged_dir = staged_dir.resolve()
+    target = inspect_export(staged_dir)
     # 1. Check packages dir
     packages_root = (
         staged_dir / "shared-components/static-files/theme-factory/packages"
@@ -140,65 +156,65 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
     shutil.rmtree(installed_version_dir)
     theme_pkg_dir.rmdir()
 
-    static_files_apx = staged_dir / "shared-components/static-files.apx"
+    static_files_apx = target.static_files_file
     _remove_theme_from_static_files(static_files_apx, f"theme-factory/packages/{theme_name}/")
 
-    app_apx = staged_dir / "application.apx"
+    app_apx = target.application_file
     _remove_theme_from_app_css(app_apx, theme_name)
 
-    # 2. Check registry.json
+    # 2. Registry: last package removes every Theme Factory trace, otherwise regenerate
     registry_file = staged_dir / "shared-components/static-files/theme-factory/runtime/registry.json"
-    if registry_file.exists():
-        reg = json.loads(registry_file.read_text(encoding="utf-8"))
-        themes = [t for t in reg.get("themes", []) if t["name"] != theme_name]
-        if not themes:
-            # No themes left: ownership has already been verified above.
-            runtime_dir = staged_dir / "shared-components/static-files/theme-factory/runtime"
-            if runtime_dir.exists():
-                shutil.rmtree(runtime_dir)
-            _remove_theme_from_static_files(static_files_apx, "theme-factory/runtime/")
-            _remove_runtime_from_app(app_apx)
+    reg = registry_document or {"themes": []}
+    themes = [t for t in reg.get("themes", []) if t["name"] != theme_name]
+    if not themes:
+        runtime_dir = staged_dir / "shared-components/static-files/theme-factory/runtime"
+        if runtime_dir.exists():
+            shutil.rmtree(runtime_dir)
+        namespace_root = staged_dir / "shared-components/static-files/theme-factory"
+        if namespace_root.exists() and not any(path.is_file() for path in namespace_root.rglob("*")):
+            shutil.rmtree(namespace_root)
+        _remove_theme_from_static_files(static_files_apx, "theme-factory/runtime/")
+        _remove_runtime_from_app(app_apx)
+        _rewrite_page_zero(target, None)
+        _rewrite_navigation(target, None)
+        return
 
-            p0 = staged_dir / "pages/p00000-global-page.apx"
-            _remove_managed_page_zero_regions(p0)
-
-            nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
-            _remove_managed_nav_entries(nav)
-        else:
-            reg["themes"] = themes
-            new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
-            reg["defaultTheme"] = new_default
-            registry_file.write_text(json.dumps(reg, indent=2), encoding="utf-8")
-
-            p0 = staged_dir / "pages/p00000-global-page.apx"
-            if p0.exists():
-                p0_text = strip_bootstrap_regions(p0.read_text(encoding="utf-8"))
-                new_regions = build_bootstrap_regions(
-                    default_theme=new_default,
-                    switcher_enabled=reg.get("switcherEnabled", False),
-                    themes=[{"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")} for t in themes],
-                )
-                last_paren = p0_text.rfind(")")
-                p0.write_text(p0_text[:last_paren].rstrip() + "\n" + new_regions + "\n)\n", encoding="utf-8")
-
-            nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
-            if nav.exists():
-                nav_text = strip_switcher_entries(nav.read_text(encoding="utf-8"))
-                if reg.get("switcherEnabled", False):
-                    switcher_code = build_switcher_entries(themes)
-                    last_paren = nav_text.rfind(")")
-                    nav.write_text(nav_text[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n", encoding="utf-8")
-                else:
-                    nav.write_text(nav_text, encoding="utf-8")
+    reg["themes"] = themes
+    new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
+    reg["defaultTheme"] = new_default
+    switcher_enabled = bool(reg.get("switcherEnabled", False))
+    registry_file.write_text(json.dumps(reg, indent=2) + "\n", encoding="utf-8")
+    remaining = [
+        {"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")}
+        for t in themes
+    ]
+    _rewrite_page_zero(target, build_bootstrap_regions(new_default, switcher_enabled, remaining))
+    _rewrite_navigation(target, build_switcher_entries(remaining) if switcher_enabled else None)
 
 
 def run_uninstall(options: UninstallOptions) -> OperationReport:
+    staging: list[Path] = []
+    try:
+        report = _run_uninstall(options, staging)
+    except Exception:
+        for path in staging:
+            remove_staging_dir(path)
+        raise
+    if report.status != "IMPORTED_POSTCHECK_FAILED":
+        for path in staging:
+            remove_staging_dir(path)
+        report = OperationReport(report.status, report.exit_code, report.backup_dir, None, report.message)
+    return report
+
+
+def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
     validate_theme_name(options.theme_name)
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
 
-    staging_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-uninst-"))
+    staging_temp = make_staging_dir("apex-theme-factory-uninst-")
+    staging.append(staging_temp)
     try:
         staged_dir = sqlcl.export_apexlang(options.app_id, staging_temp)
     except Exception as exc:
@@ -260,6 +276,7 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
     # Mutate staged export
     plan_and_apply_uninstall(staged_dir, options.theme_name)
     staged_digest = canonical_digest(staged_dir)
+    staged_projection = theme_factory_projection(staged_dir)
 
     # Validate
     try:
@@ -268,7 +285,7 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
         raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
 
     # Drift guard
-    drift_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-drift-"))
+    drift_temp = make_staging_dir(prefix="apex-theme-factory-drift-")
     try:
         drift_dir = sqlcl.export_apexlang(options.app_id, drift_temp)
         drift_digest = canonical_digest(drift_dir)
@@ -312,7 +329,7 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
         print("Status: TARGET_UNTOUCHED")
         return OperationReport(
             status="TARGET_UNTOUCHED",
-            exit_code=0,
+            exit_code=CANCELLED_EXIT_CODE,
             backup_dir=backup_dir,
             staged_dir=staged_dir,
             message="Target untouched due to confirmation mismatch",
@@ -323,14 +340,17 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
     except PackageError as exc:
         raise PackageError(f"Import failed during uninstall: {exc}", exit_code=5) from exc
 
-    post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-uninstall-post-"))
+    post_temp = make_staging_dir(prefix="apex-theme-factory-uninstall-post-")
     try:
         post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
-        if canonical_digest(post_dir) != staged_digest:
+        post_projection = theme_factory_projection(post_dir)
+        if post_projection != staged_projection:
+            differing = sorted(key for key in staged_projection if staged_projection[key] != post_projection.get(key))
+            print(f"Post-import export differs from the staged transaction in: {', '.join(differing)}")
             print("Status: IMPORTED_POSTCHECK_FAILED")
             return OperationReport(
                 status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
-                staged_dir=staged_dir, message="Uninstall export digest differs from staged transaction",
+                staged_dir=staged_dir, message="Uninstall export differs from staged transaction",
             )
         post_target = inspect_export(post_dir)
         prefix = f"theme-factory/packages/{options.theme_name}/"
@@ -341,8 +361,10 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
                 status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
                 staged_dir=staged_dir, message="Uninstall imported but postcheck verification failed",
             )
+        post_digest = canonical_digest(post_dir)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
+    _record_post_digest(backup_dir, post_digest)
 
     print(f"\nResult: UNINSTALLED theme '{options.theme_name}' from application {options.app_id}.")
     print("Status: UNINSTALLED")
@@ -382,7 +404,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
 
-    live_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-restore-live-"))
+    live_temp = make_staging_dir(prefix="apex-theme-factory-restore-live-")
     try:
         live_dir = sqlcl.export_apexlang(options.app_id, live_temp)
         live_digest = canonical_digest(live_dir)
@@ -394,6 +416,22 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     print(f"  Workspace:     {target_meta.workspace}")
     print(f"  Live Digest:   {live_digest}")
     print(f"  Backup Digest: {backup_digest}")
+
+    # Stale-version guard: the backup records how the application looked right after the
+    # operation it preceded. If the live application no longer matches that, someone changed
+    # it since, and restoring would silently discard those changes.
+    post_operation_digest = metadata.get("postOperationDigest")
+    if isinstance(post_operation_digest, str) and live_digest not in (post_operation_digest, backup_digest):
+        message = (
+            f"Application {options.app_id} has changed since this backup's operation completed "
+            "(live export digest differs from the recorded post-operation digest). Restoring would "
+            "discard those later changes; re-run with --discard-later-changes to accept that."
+        )
+        if not options.discard_later_changes:
+            raise PackageError(message, exit_code=7)
+        print(f"WARNING: {message.split('; re-run')[0]}. Proceeding because --discard-later-changes was given.")
+    elif post_operation_digest is None:
+        print("  Note: this backup predates post-operation digest recording; later changes cannot be detected.")
 
     if not options.apply:
         print("\nStatus: STAGED_ONLY (dry-run, backup validated, target untouched)")
@@ -415,7 +453,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
         print("Status: TARGET_UNTOUCHED")
         return OperationReport(
             status="TARGET_UNTOUCHED",
-            exit_code=0,
+            exit_code=CANCELLED_EXIT_CODE,
             backup_dir=backup_path,
             staged_dir=None,
             message="Restore cancelled by user",
@@ -426,7 +464,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     except PackageError as exc:
         raise PackageError(f"Import failed during restore: {exc}", exit_code=5) from exc
 
-    post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-restore-post-"))
+    post_temp = make_staging_dir(prefix="apex-theme-factory-restore-post-")
     try:
         restored_dir = sqlcl.export_apexlang(options.app_id, post_temp)
         if canonical_digest(restored_dir) != backup_digest:
@@ -476,6 +514,7 @@ def run_restore_cli(args) -> None:
         app_id=args.app_id,
         backup_dir=args.backup,
         apply=getattr(args, "apply", False),
+        discard_later_changes=getattr(args, "discard_later_changes", False),
     )
     report = run_restore(options)
     if report.exit_code != 0:

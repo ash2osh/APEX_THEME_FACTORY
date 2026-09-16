@@ -1,0 +1,8 @@
+{
+  "runtime": "claude",
+  "cliVersion": "2.1.235 (Claude Code)",
+  "dateUtc": "2026-09-16",
+  "status": "UNVERIFIED",
+  "message": "Environment/auth/quota limitation: failed to authenticate (Failed to authenticate: OAuth session expired and could not be refreshed)",
+  "payload": null
+}

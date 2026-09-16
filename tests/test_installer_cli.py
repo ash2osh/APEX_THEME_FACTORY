@@ -36,15 +36,12 @@ class InstallerCliTests(unittest.TestCase):
         self.fake_bin = str((Path(__file__).resolve().parent / "fixtures/bin").resolve())
         self.orig_path = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{self.fake_bin}:{self.orig_path}"
-        state_file = Path(f"/tmp/fake_sql_imported_{os.getenv('USER', 'default')}.txt")
-        if state_file.exists():
-            state_file.unlink()
+        # keep the fake SQLcl state and default backups inside this test's temp dir
+        os.environ["FAKE_SQL_STATE_FILE"] = str(self.tmp / "fake-sql-state.txt")
 
     def tearDown(self):
         os.environ["PATH"] = self.orig_path
-        state_file = Path(f"/tmp/fake_sql_imported_{os.getenv('USER', 'default')}.txt")
-        if state_file.exists():
-            state_file.unlink()
+        os.environ.pop("FAKE_SQL_STATE_FILE", None)
 
     def run_cli(self, package: Path, *args: str, stdin: str = "", mode: str = "success", log: Path = None):
         env = os.environ.copy()
@@ -52,7 +49,8 @@ class InstallerCliTests(unittest.TestCase):
         if log:
             env["FAKE_SQL_LOG"] = str(log)
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args],
+            ["python3", "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args,
+             *([] if "--backup-dir" in args else ["--backup-dir", str(self.tmp / "default-backups")])],
             input=stdin,
             text=True,
             capture_output=True,
@@ -119,7 +117,8 @@ class InstallerCliTests(unittest.TestCase):
             stdin="999\n",
             log=log,
         )
-        self.assertEqual(result.returncode, 0, result.stderr)
+        # explicit cancellation is not success: scripts must be able to tell it apart (exit 7)
+        self.assertEqual(result.returncode, 7, result.stderr)
         self.assertIn("TARGET_UNTOUCHED", result.stdout)
         sql_calls = log.read_text(encoding="utf-8") if log.exists() else ""
         self.assertNotIn("apex import", sql_calls)
@@ -218,6 +217,7 @@ class InstallerCliTests(unittest.TestCase):
             "THEME_TAGLINE": "Warm editorial styling",
             "THEME_CLASS": "app-theme-linen",
             "BOOTSTRAP_SNIPPET": "<!-- snippet -->",
+            "NAV_STYLE_LABEL": "t-TreeNav--styleB",
         }
 
         rendered_readme = render_template(self.repo_root / "installer/templates/README.md.tmpl", replacements)
@@ -259,3 +259,48 @@ class InstallerCliTests(unittest.TestCase):
         ]
         for h in manual_expected_headings:
             self.assertIn(h, rendered_manual)
+
+    def test_dry_run_and_apply_remove_staging_directories(self):
+        """Temporary staging exports must not accumulate in the system temp directory."""
+        tmpdir = self.tmp / "tmpdir"
+        tmpdir.mkdir()
+        env_backup = os.environ.get("TMPDIR")
+        os.environ["TMPDIR"] = str(tmpdir)
+        try:
+            dry = self.run_cli(self.package_dir, "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+                               "--backup-dir", str(self.tmp / "b"))
+            self.assertEqual(dry.returncode, 0, dry.stderr + dry.stdout)
+            applied = self.run_cli(self.package_dir, "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+                                   "--backup-dir", str(self.tmp / "b"), "--apply", stdin="314\n")
+            self.assertEqual(applied.returncode, 0, applied.stderr + applied.stdout)
+        finally:
+            if env_backup is None:
+                os.environ.pop("TMPDIR", None)
+            else:
+                os.environ["TMPDIR"] = env_backup
+        leftovers = sorted(path.name for path in tmpdir.iterdir() if path.name.startswith("apex-theme-factory-"))
+        self.assertEqual(leftovers, [])
+
+    def test_install_wrapper_refuses_python_older_than_3_10(self):
+        fake_bin = self.tmp / "oldpy"
+        fake_bin.mkdir()
+        shim = fake_bin / "python3"
+        shim.write_text(
+            "#!/usr/bin/env bash\n"
+            "if [ \"$1\" = -c ]; then\n"
+            "  # report an unsupported interpreter version for the wrapper's probe\n"
+            "  echo 3.8; exit 0\n"
+            "fi\n"
+            "echo 'lib should never be imported' >&2; exit 99\n",
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+        env = os.environ.copy()
+        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        result = subprocess.run(
+            ["bash", str(self.package_dir / "install.sh"), "--connection", "demo", "--workspace", "DEMO", "--app-id", "314"],
+            cwd=self.tmp, text=True, capture_output=True, env=env, check=False,
+        )
+        self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
+        self.assertIn("3.10", result.stderr)
+        self.assertNotIn("lib should never be imported", result.stderr)

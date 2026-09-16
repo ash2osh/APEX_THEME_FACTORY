@@ -46,16 +46,23 @@ To prevent theme flickering on page load, add the pre-paint bootstrap script to 
 1. Open **Page 0** (Global Page) in Page Designer. (If Page 0 does not exist, create it).
 2. Add a Static Content region in the **Banner** position:
    - **Title:** `Theme Factory Bootstrap`
+   - **Static ID** (Advanced): `theme_factory_bootstrap`
    - **Template:** Blank with Attributes (no decoration)
-   - **Source:**
+   - **Source** (keep the leading `<!-- APEX_THEME_FACTORY_MANAGED:BOOTSTRAP -->` comment: it is how the automated uninstaller recognises the region as Theme Factory-owned):
      ```html
      __BOOTSTRAP_SNIPPET__
      ```
 3. Add a second Static Content region in `#REGION_POSITION_01#` (Breadcrumb Bar / Dialog top):
    - **Title:** `Theme Factory Bootstrap (Dialog)`
+   - **Static ID** (Advanced): `theme_factory_bootstrap_dialog`
    - **Template:** Blank with Attributes
    - **Source:** Same bootstrap snippet as above.
 4. Save Page 0.
+
+---
+
+## Apply the navigation menu style (side navigation only)
+If the application uses the **Side Navigation Menu** list template (Shared Components → User Interface Attributes → Navigation Menu), set the template option **Style** to `__NAV_STYLE_LABEL__`. Skip this step for top navigation or when the application has no navigation menu; the theme works without it.
 
 ---
 
@@ -64,9 +71,9 @@ If you wish to allow end users to switch themes dynamically:
 1. In **Shared Components** → **User Interface Attributes** → **JavaScript** → **File URLs**, append:
    `#APP_FILES#theme-factory/runtime/theme-factory-runtime.js`
 2. In both Page 0 bootstrap regions, change `switcherEnabled: false` to `switcherEnabled: true`.
-3. In **Shared Components** → **Navigation Bar List**:
-   - Create a parent list entry with CSS Class `theme-factory-managed-switcher` and Target `#`.
-   - Add child entries for `Iris` and each installed theme name (e.g. `__THEME_TITLE__`).
+3. In **Shared Components** → **Lists** → the list used as the **Navigation Bar** (it must be a *static* list; a SQL-query navigation bar cannot host the switcher):
+   - Create a parent entry — Label `Theme`, Static ID `theme-factory-switcher-parent`, Target type URL `#`, Icon `fa-paint-brush`, **User Defined Attribute 2** = `theme-factory-managed-switcher` (Universal Theme renders attribute 2 as additional list-item classes; the runtime finds the menu through that class).
+   - Add child entries with Parent `theme-factory-switcher-parent`, Target URL `#`, Static ID `theme-factory-choice-<name>`: one per installed theme (e.g. `theme-factory-choice-__THEME_NAME__`, Label `__THEME_TITLE__`) and one `theme-factory-choice-iris` (Label `Iris`). The runtime replaces these placeholders with a radio group at page load.
 
 Selections persist per browser/device in `window.localStorage` under `apex.themeFactory.<APP_ID>`.
 

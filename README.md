@@ -77,7 +77,8 @@ To safely remove an installed theme and cleanly fallback to remaining themes or 
 
 To restore from an immutable pre-install backup:
 ```bash
-python3 -m theme_factory.cli restore --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --backup ./theme-factory-backups/<WORKSPACE>-<APP_ID>/<BACKUP_DIR> --apply
+# run from the extracted package directory (the bundled lib/ is on PYTHONPATH)
+PYTHONPATH=. python3 -m lib.theme_factory.cli restore --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --backup ./theme-factory-backups/<WORKSPACE>-<APP_ID>/<BACKUP_DIR> --apply
 ```
 
 ### Manual Installation

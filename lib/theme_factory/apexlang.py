@@ -24,6 +24,17 @@ MIME_BY_SUFFIX = {
 }
 
 MARKER = "APEX_THEME_FACTORY_MANAGED"
+# Ownership must live in data APEX stores and re-exports. APEXLang comment lines are not
+# part of the APEX metadata model and never come back from `apex export`, so the managed
+# Page 0 regions carry an HTML comment inside their source plus a fixed Static ID, and the
+# switcher list entries live in the `theme-factory-` static-id namespace.
+MARKER_HTML = f"<!-- {MARKER}:BOOTSTRAP -->"
+BOOTSTRAP_REGION_IDS = ("theme_factory_bootstrap", "theme_factory_bootstrap_dialog")
+BOOTSTRAP_REGION_NAME_PREFIX = "Theme Factory Bootstrap"
+SWITCHER_ENTRY_PREFIX = "theme-factory-"
+SWITCHER_PARENT_ID = f"{SWITCHER_ENTRY_PREFIX}switcher-parent"
+SWITCHER_ITEM_CLASS = "theme-factory-managed-switcher"
+RUNTIME_JS_URL = "#APP_FILES#theme-factory/runtime/theme-factory-runtime.js"
 
 
 @dataclass(frozen=True)
@@ -52,6 +63,10 @@ class TargetExport:
     static_files_file: Path
     page_zero_file: Optional[Path]
     navigation_file: Optional[Path]
+    navigation_list_alias: Optional[str] = None
+    navigation_list_static: bool = False
+    navigation_menu_template: Optional[str] = None
+    has_user_interface_block: bool = False
 
 
 @dataclass
@@ -102,42 +117,128 @@ def _find_matching_brace(text: str, open_pos: int) -> int:
     return -1
 
 
+def _iter_blocks(text: str, keyword: str):
+    """Yield (start, end, identifier, body) for top-level `<keyword> <id> ( ... )` blocks.
+
+    Blocks are consumed whole, so nested occurrences (for example the word `region`
+    inside fenced source code of an earlier block) are never matched again.
+    """
+    pattern = re.compile(rf"^[ \t]*{keyword}[ \t]+(\"[^\"\n]+\"|[^\s(]+)[ \t]*\(", re.MULTILINE)
+    position = 0
+    while True:
+        match = pattern.search(text, position)
+        if not match:
+            return
+        close = _find_matching_brace(text, match.end() - 1)
+        if close == -1:
+            raise PackageError(f"Unbalanced {keyword} block in APEXLang source")
+        end = close + 1
+        yield match.start(), end, match.group(1).strip('"'), text[match.start():end]
+        position = end
+
+
+def _remove_spans(text: str, spans: List[Tuple[int, int]]) -> str:
+    for start, end in sorted(spans, reverse=True):
+        # swallow the line break that followed the block and any blank line before it
+        while end < len(text) and text[end] in "\r\n":
+            end += 1
+        while start > 0 and text[start - 1] in " \t":
+            start -= 1
+        text = text[:start] + text[end:]
+    return re.sub(r"\n{3,}", "\n\n", text)
+
+
+def _is_bootstrap_identity(identifier: str, body: str) -> bool:
+    if identifier in BOOTSTRAP_REGION_IDS:
+        return True
+    dom_id = re.search(r"htmlDomId:\s*([A-Za-z0-9_-]+)", body)
+    if dom_id and dom_id.group(1) in BOOTSTRAP_REGION_IDS:
+        return True
+    name = re.search(r"^\s*name:\s*(.+?)\s*$", body, re.MULTILINE)
+    return bool(name and name.group(1).startswith(BOOTSTRAP_REGION_NAME_PREFIX))
+
+
+def _is_bootstrap_owned(body: str) -> bool:
+    return MARKER_HTML in body or "window.APEX_THEME_FACTORY_CONFIG" in body
+
+
 def strip_bootstrap_regions(p0_text: str) -> str:
-    """Strip Theme Factory bootstrap regions from page 0 APEXLang text."""
+    """Remove the Theme Factory bootstrap regions from Page 0 APEXLang text.
+
+    Ownership is proven by content APEX round-trips (the HTML marker / config object
+    inside the region source), never by APEXLang comments. A region that claims the
+    managed identity (static id, DOM id or name) without that content is a collision;
+    a region that carries our content under a foreign identity is refused as well.
+    """
     cleaned = re.sub(
         rf"\s*(?:--|//) {MARKER}:BEGIN:REGIONS[\s\S]*?(?:--|//) {MARKER}:END:REGIONS\s*",
         "\n",
         p0_text,
     )
-    if re.search(r"\bregion\s+(?:theme_factory_bootstrap\b|theme_factory_bootstrap_dialog\b|\"Theme Factory Bootstrap)", cleaned):
-        raise PackageError("Managed Page 0 region name collision outside Theme Factory markers")
-    return cleaned
+    spans: List[Tuple[int, int]] = []
+    for start, end, identifier, body in _iter_blocks(cleaned, "region"):
+        identity = _is_bootstrap_identity(identifier, body)
+        owned = _is_bootstrap_owned(body)
+        if identity and owned:
+            spans.append((start, end))
+        elif identity:
+            raise PackageError(
+                f"Managed Page 0 region name collision: region '{identifier}' uses the Theme Factory "
+                "identity but does not contain Theme Factory content"
+            )
+        elif owned:
+            raise PackageError(
+                f"Theme Factory bootstrap content found in unmanaged Page 0 region '{identifier}'"
+            )
+    return _remove_spans(cleaned, spans)
 
 
 def strip_switcher_entries(nav_text: str) -> str:
-    """Strip Theme Factory switcher list entries from navigation-bar APEXLang text."""
+    """Remove Theme Factory switcher entries (static-id namespace `theme-factory-`)."""
     cleaned = re.sub(
         rf"\s*(?:--|//) {MARKER}:BEGIN:SWITCHER[\s\S]*?(?:--|//) {MARKER}:END:SWITCHER\s*",
         "\n",
         nav_text,
     )
-    if re.search(r'\bentry\s+"theme-factory-[^"]*"\s*\(', cleaned):
-        raise PackageError("Managed navigation entry name collision outside Theme Factory markers")
-    return cleaned
-
-
-def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: list) -> str:
-    """Generate APEXLang code for Theme Factory bootstrap regions."""
-    themes_data = [
-        {
-            "name": t["name"] if isinstance(t, dict) else t.name,
-            "title": t["title"] if isinstance(t, dict) else t.title,
-            "className": t["className"] if isinstance(t, dict) else t.class_name,
-        }
-        for t in themes
+    spans = [
+        (start, end)
+        for start, end, identifier, _body in _iter_blocks(cleaned, "entry")
+        if identifier.startswith(SWITCHER_ENTRY_PREFIX)
     ]
-    themes_json_str = json.dumps(themes_data)
-    bootstrap_html = f"""<script>
+    return _remove_spans(cleaned, spans)
+
+
+def _list_block_span(lists_text: str, alias: str) -> Optional[Tuple[int, int]]:
+    for start, end, identifier, _body in _iter_blocks(lists_text, "list"):
+        if identifier == alias:
+            return start, end
+    return None
+
+
+def list_is_static(list_body: str) -> bool:
+    source = re.search(r"\bsource\s*\{", list_body)
+    if not source:
+        return True
+    close = _find_matching_brace(list_body, source.end() - 1)
+    source_body = list_body[source.end():close if close != -1 else len(list_body)]
+    kind = re.search(r"\btype:\s*([A-Za-z]+)", source_body)
+    return kind is None or kind.group(1).lower() == "static"
+
+
+def insert_switcher_entries(lists_text: str, alias: str, entries_code: str) -> str:
+    span = _list_block_span(lists_text, alias)
+    if span is None:
+        raise PackageError(f"Navigation bar list '{alias}' not found in lists source")
+    start, end = span
+    block = lists_text[start:end]
+    last_paren = block.rfind(")")
+    new_block = block[:last_paren].rstrip() + "\n\n" + entries_code.rstrip("\n") + "\n\n)"
+    return lists_text[:start] + new_block + lists_text[end:]
+
+
+def build_bootstrap_html(default_theme: str, switcher_enabled: bool, themes_json_str: str) -> str:
+    return f"""{MARKER_HTML}
+<script>
 window.APEX_THEME_FACTORY_CONFIG = {{
   appId: &APP_ID.,
   defaultTheme: "{default_theme}",
@@ -170,83 +271,99 @@ window.APEX_THEME_FACTORY_CONFIG = {{
 }}(document, window.APEX_THEME_FACTORY_CONFIG));
 </script>"""
 
-    return f"""
-    // {MARKER}:BEGIN:REGIONS
-    region theme_factory_bootstrap (
-        name: Theme Factory Bootstrap
-        type: staticContent
-        source {{
-            htmlCode:
-                ```html
-                {bootstrap_html}
-                ```
-        }}
-        layout {{
-            sequence: 10
-            slot: banner
-        }}
-        appearance {{
-            template: @/blank-with-attributes
-            templateOptions: #DEFAULT#
-        }}
+
+def _indent(text: str, prefix: str) -> str:
+    return "\n".join(prefix + line if line.strip() else line for line in text.splitlines())
+
+
+def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: list) -> str:
+    """Generate APEXLang for the two owned Page 0 bootstrap regions (standard + dialog slots)."""
+    themes_data = [
+        {
+            "name": t["name"] if isinstance(t, dict) else t.name,
+            "title": t["title"] if isinstance(t, dict) else t.title,
+            "className": t["className"] if isinstance(t, dict) else t.class_name,
+        }
+        for t in themes
+    ]
+    bootstrap_html = _indent(
+        build_bootstrap_html(default_theme, switcher_enabled, json.dumps(themes_data)), " " * 16
     )
 
-    region theme_factory_bootstrap_dialog (
-        name: Theme Factory Bootstrap (Dialog)
+    def region(identifier: str, name: str, sequence: int, slot: str) -> str:
+        return f"""    region {identifier} (
+        name: {name}
         type: staticContent
         source {{
             htmlCode:
                 ```html
-                {bootstrap_html}
+{bootstrap_html}
                 ```
         }}
         layout {{
-            sequence: 11
-            slot: breadcrumbBar
+            sequence: {sequence}
+            slot: {slot}
         }}
         appearance {{
             template: @/blank-with-attributes
             templateOptions: #DEFAULT#
         }}
+        advanced {{
+            htmlDomId: {identifier}
+        }}
     )
-    // {MARKER}:END:REGIONS
 """
+
+    return (
+        "\n"
+        + region(BOOTSTRAP_REGION_IDS[0], "Theme Factory Bootstrap", 10, "banner")
+        + "\n"
+        + region(BOOTSTRAP_REGION_IDS[1], "Theme Factory Bootstrap (Dialog)", 11, "breadcrumbBar")
+    )
 
 
 def build_switcher_entries(themes: list) -> str:
-    """Generate APEXLang code for Theme Factory switcher list entries."""
-    entries_code = [
-        f"    // {MARKER}:BEGIN:SWITCHER",
-        '    entry "theme-factory-switcher-parent" (',
-        '        label: "Theme"',
-        '        sequence: 9000',
-        '        cssClasses: "theme-factory-managed-switcher"',
-        '        link { target: { type: url url: "javascript:void(0);" } }',
-        '    )',
-    ]
-    seq = 9010
-    for p in themes:
-        name = p["name"] if isinstance(p, dict) else p.name
-        title = p["title"] if isinstance(p, dict) else p.title
-        entries_code.append(
-            f'    entry "theme-factory-choice-{name}" (\n'
-            f'        label: "{title}"\n'
-            f'        sequence: {seq}\n'
-            f'        parentEntry: "theme-factory-switcher-parent"\n'
-            f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
-            f'    )'
+    """Generate static navigation-bar list entries in the grammar SQLcl 26.2 exports.
+
+    The parent entry gets list attribute 2 (Universal Theme navigation bar: additional
+    list item classes) so the runtime can find `.t-NavigationBar-item.theme-factory-managed-switcher`.
+    """
+
+    def entry(identifier: str, label: str, sequence: int, parent: Optional[str], extra: str = "") -> str:
+        parent_line = f"\n            parentEntry: @{parent}" if parent else ""
+        return (
+            f"    entry {identifier} (\n"
+            f"        label: {label}\n"
+            f"        layout {{\n"
+            f"            sequence: {sequence}{parent_line}\n"
+            f"        }}\n"
+            f"        link {{\n"
+            f"            target: {{\n"
+            f"                type: url\n"
+            f"                url: #\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"{extra}"
+            f"    )\n"
         )
-        seq += 10
-    entries_code.append(
-        f'    entry "theme-factory-choice-iris" (\n'
-        f'        label: "Iris"\n'
-        f'        sequence: {seq}\n'
-        f'        parentEntry: "theme-factory-switcher-parent"\n'
-        f'        link {{ target: {{ type: url url: "javascript:void(0);" }} }}\n'
-        f'    )'
+
+    parent_extra = (
+        "        icon {\n"
+        "            imageIconCssClasses: fa-paint-brush\n"
+        "        }\n"
+        "        userDefinedAttributes {\n"
+        f"            2: {SWITCHER_ITEM_CLASS}\n"
+        "        }\n"
     )
-    entries_code.append(f"    // {MARKER}:END:SWITCHER\n")
-    return "\n".join(entries_code)
+    chunks = [entry(SWITCHER_PARENT_ID, "Theme", 9000, None, parent_extra)]
+    sequence = 9010
+    for package in themes:
+        name = package["name"] if isinstance(package, dict) else package.name
+        title = package["title"] if isinstance(package, dict) else package.title
+        chunks.append(entry(f"{SWITCHER_ENTRY_PREFIX}choice-{name}", title, sequence, SWITCHER_PARENT_ID))
+        sequence += 10
+    chunks.append(entry(f"{SWITCHER_ENTRY_PREFIX}choice-iris", "Iris", sequence, SWITCHER_PARENT_ID))
+    return "\n".join(chunks)
 
 
 def inspect_export(export_dir: Path) -> TargetExport:
@@ -325,30 +442,52 @@ def inspect_export(export_dir: Path) -> TargetExport:
                 if single_match:
                     js_urls.append(single_match.group(1).strip('"\''))
 
-    # Locate theme file
-    theme_files = list(export_dir.glob("**/theme.apx"))
+    # Resolve the *current* theme through userInterface.currentTheme rather than the first
+    # theme.apx on disk: applications may keep legacy themes installed.
+    ui_match = re.search(r"\buserInterface\s*\{", app_text)
+    ui_body = ""
+    if ui_match:
+        ui_close = _find_matching_brace(app_text, ui_match.end() - 1)
+        ui_body = app_text[ui_match.end():ui_close] if ui_close != -1 else ""
+    theme_files = sorted(export_dir.glob("**/themes/*/theme.apx")) or sorted(export_dir.glob("**/theme.apx"))
     if not theme_files:
-        raise PackageError(f"No theme.apx found in {export_dir}")
-    theme_file = theme_files[0]
+        raise PackageError(f"No theme.apx found in {export_dir}", exit_code=3)
+    current_theme = re.search(r"currentTheme:\s*@([^\s(){}]+)", ui_body)
+    if current_theme:
+        alias = current_theme.group(1)
+        candidates = [path for path in theme_files if path.parent.name == alias]
+        if len(candidates) != 1:
+            raise PackageError(
+                f"Current theme '@{alias}' does not resolve to exactly one theme.apx ({len(candidates)} found)",
+                exit_code=3,
+            )
+        theme_file = candidates[0]
+    elif len(theme_files) == 1:
+        theme_file = theme_files[0]
+    else:
+        raise PackageError(
+            "Ambiguous target: several themes are installed and userInterface.currentTheme is missing",
+            exit_code=3,
+        )
     theme_text = theme_file.read_text(encoding="utf-8")
 
     # Check themeNumber
     tn_match = re.search(r"themeNumber:\s*([0-9]+)", theme_text)
     theme_num = int(tn_match.group(1)) if tn_match else 0
     if theme_num != 42:
-        raise PackageError(f"Unsupported themeNumber: {theme_num} (expected 42)")
+        raise PackageError(f"Unsupported themeNumber: {theme_num} (expected 42)", exit_code=3)
 
     # Check baseTheme
     bt_match = re.search(r"baseTheme:\s*([^\s\(\)\{\}]+)", theme_text)
     base_theme = bt_match.group(1).strip('"\'') if bt_match else ""
     if base_theme != "ut-26.1":
-        raise PackageError(f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1')")
+        raise PackageError(f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1')", exit_code=3)
 
     # Check currentThemeStyle
     ts_match = re.search(r"currentThemeStyle:\s*@/([^\s\(\)\{\}]+)", theme_text)
     theme_style = ts_match.group(1).strip('"\'').lower() if ts_match else ""
     if theme_style != "iris":
-        raise PackageError(f"Unsupported themeStyle: '{theme_style}' (expected 'iris')")
+        raise PackageError(f"Unsupported themeStyle: '{theme_style}' (expected 'iris')", exit_code=3)
 
     # Locate static-files.apx
     sf_files = list(export_dir.glob("**/static-files.apx"))
@@ -357,15 +496,38 @@ def inspect_export(export_dir: Path) -> TargetExport:
     else:
         sf_file = sf_files[0]
 
-    # Locate page 0
-    p0_files = list(export_dir.glob("**/p00000-global-page.apx"))
-    if not p0_files:
-        p0_files = list(export_dir.glob("**/page-0*.apx"))
+    # Locate the global page file by page number (SQLcl names files pNNNNN-<page-name>.apx)
+    page_number = global_page if global_page is not None else 0
+    p0_files = sorted(export_dir.glob(f"pages/p{page_number:05d}-*.apx"))
+    if len(p0_files) > 1:
+        raise PackageError(f"Ambiguous page {page_number} source: {[path.name for path in p0_files]}", exit_code=3)
     p0_file = p0_files[0] if p0_files else None
 
-    # Locate navigation-bar list file
-    nav_files = list(export_dir.glob("**/navigation-bar.apx"))
-    nav_file = nav_files[0] if nav_files else None
+    # Resolve the navigation bar list (SQLcl 26.2 exports all lists into shared-components/lists.apx)
+    nav_alias = None
+    nav_file = None
+    nav_static = False
+    nav_bar = re.search(r"\bnavigationBar\s*\{", app_text)
+    if nav_bar:
+        nav_close = _find_matching_brace(app_text, nav_bar.end() - 1)
+        nav_body = app_text[nav_bar.end():nav_close] if nav_close != -1 else ""
+        alias_match = re.search(r"\blist:\s*@([^\s(){}]+)", nav_body)
+        if alias_match:
+            nav_alias = alias_match.group(1)
+            for candidate in sorted(export_dir.glob("**/lists.apx")) + sorted(export_dir.glob(f"**/lists/{nav_alias}.apx")):
+                text = candidate.read_text(encoding="utf-8")
+                span = _list_block_span(text, nav_alias)
+                if span:
+                    nav_file = candidate
+                    nav_static = list_is_static(text[span[0]:span[1]])
+                    break
+    nav_menu_template = None
+    nav_menu = re.search(r"\bnavigationMenu\s*\{", app_text)
+    if nav_menu:
+        menu_close = _find_matching_brace(app_text, nav_menu.end() - 1)
+        menu_body = app_text[nav_menu.end():menu_close] if menu_close != -1 else ""
+        template = re.search(r"\blistTemplate:\s*(@/[^\s(){}]+)", menu_body)
+        nav_menu_template = template.group(1) if template else None
 
     return TargetExport(
         export_dir=export_dir,
@@ -382,6 +544,10 @@ def inspect_export(export_dir: Path) -> TargetExport:
         static_files_file=sf_file,
         page_zero_file=p0_file,
         navigation_file=nav_file,
+        navigation_list_alias=nav_alias,
+        navigation_list_static=nav_static,
+        navigation_menu_template=nav_menu_template,
+        has_user_interface_block=ui_match is not None,
     )
 
 
@@ -557,6 +723,29 @@ def plan_install(
         switcher_enabled = False
     else:  # preserve
         switcher_enabled = prior_switcher
+
+    if switcher_enabled and (target.navigation_file is None or not target.navigation_list_static):
+        reason = (
+            "no static navigation bar list is referenced by the application"
+            if target.navigation_file is None
+            else f"navigation bar list '{target.navigation_list_alias}' is not a static list"
+        )
+        raise PackageError(
+            f"Cannot install the theme switcher: {reason}. Install without --with-switcher or "
+            "follow MANUAL-INSTALL.md to add the switcher by hand.",
+            exit_code=3,
+        )
+    if target.global_page not in (None, 0):
+        raise PackageError(
+            f"Unsupported target: the application's global page is page {target.global_page}; "
+            "only page 0 is supported. See MANUAL-INSTALL.md.",
+            exit_code=3,
+        )
+    if not target.has_user_interface_block:
+        raise PackageError(
+            "Unsupported target: application.apx has no userInterface block to reference the global page",
+            exit_code=3,
+        )
 
     # Build updated packages list
     pkg_stylesheet_url = f"#APP_FILES#theme-factory/packages/{manifest.name}/{manifest.version}/theme.css"
@@ -735,7 +924,7 @@ def plan_install(
         css_block = f"    css {{\n        fileUrls: {css_formatted}\n    }}\n"
         after_app = after_app[:last_paren] + css_block + after_app[last_paren:]
 
-    # Patch javaScript {} block in application.apx
+    # Patch javaScript {} block in application.apx (create it when the runtime must load)
     js_formatted = "[\n" + "\n".join(f"            {u}" for u in js_urls) + "\n        ]" if js_urls else "[]"
     if re.search(r"\bjavaScript\s*\{", after_app):
         after_app = re.sub(
@@ -743,15 +932,19 @@ def plan_install(
             r"\1" + js_formatted,
             after_app,
         )
+    elif js_urls:
+        js_block = f"    javaScript {{\n        fileUrls: {js_formatted}\n    }}\n"
+        css_pos = re.search(r"^[ \t]*css\s*\{", after_app, re.MULTILINE)
+        insert_at = css_pos.start() if css_pos else after_app.rfind(")")
+        after_app = after_app[:insert_at] + js_block + after_app[insert_at:]
 
-    # Ensure globalPage: 0
-    if not re.search(r"globalPage:\s*0", after_app):
-        if re.search(r"\buserInterface\s*\{", after_app):
-            after_app = re.sub(
-                r"(\buserInterface\s*\{)",
-                r"\1\n        globalPage: 0",
-                after_app,
-            )
+    # Ensure userInterface.globalPage: 0 (target.global_page is None or 0 at this point)
+    if target.global_page is None:
+        after_app = re.sub(r"(\buserInterface\s*\{)", r"\1\n        globalPage: 0", after_app, count=1)
+
+    # Apply the manifest's navigation menu style to the side navigation template options
+    if manifest.navigation_menu_style and target.navigation_menu_template == "@/side-navigation-menu":
+        after_app = apply_navigation_menu_style(after_app, manifest.navigation_menu_style)
 
     after_files[app_rel] = after_app
 
@@ -766,7 +959,7 @@ def plan_install(
     bootstrap_regions = build_bootstrap_regions(default_theme, switcher_enabled, all_pkgs)
 
     if not before_p0:
-        after_p0 = f"page 0 (\n    name: Page Zero\n{bootstrap_regions}\n)\n"
+        after_p0 = f"page 0 (\n    name: Global Page\n{bootstrap_regions}\n)\n"
     else:
         # Strip existing marked or managed regions
         clean_p0 = strip_bootstrap_regions(before_p0)
@@ -775,22 +968,15 @@ def plan_install(
 
     after_files[p0_rel] = after_p0
 
-    # 5. Switcher Navigation List entries if enabled
+    # 5. Switcher navigation-bar entries live inside the referenced list in lists.apx
     if target.navigation_file and target.navigation_file.exists():
         nav_rel = target.navigation_file.relative_to(export_dir)
         before_nav = target.navigation_file.read_text(encoding="utf-8")
         before_files[nav_rel] = before_nav
-
         clean_nav = strip_switcher_entries(before_nav)
-
         if switcher_enabled:
-            switcher_code = build_switcher_entries(all_pkgs)
-            last_paren = clean_nav.rfind(")")
-            after_nav = clean_nav[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n"
-        else:
-            after_nav = clean_nav
-
-        after_files[nav_rel] = after_nav
+            clean_nav = insert_switcher_entries(clean_nav, target.navigation_list_alias, build_switcher_entries(all_pkgs))
+        after_files[nav_rel] = clean_nav
 
     # Compute unified diff
     diff_lines = []
@@ -815,6 +1001,91 @@ def plan_install(
         staged_copies=staged_copies,
         staged_deletions=staged_deletions,
     )
+
+
+def apply_navigation_menu_style(app_text: str, style: str) -> str:
+    """Replace or add the `t-TreeNav--*` option inside navigationMenu.templateOptions."""
+    menu = re.search(r"\bnavigationMenu\s*\{", app_text)
+    if not menu:
+        return app_text
+    close = _find_matching_brace(app_text, menu.end() - 1)
+    if close == -1:
+        return app_text
+    body = app_text[menu.end():close]
+    options = re.search(r"templateOptions:\s*(\[[^\]]*\]|[^\s(){}]+)", body)
+    if not options:
+        return app_text
+    value = options.group(1)
+    if value.startswith("["):
+        if re.search(r"\bt-TreeNav--[A-Za-z0-9_-]+", value):
+            new_value = re.sub(r"\bt-TreeNav--[A-Za-z0-9_-]+", style, value)
+        else:
+            new_value = value[: value.rfind("]")].rstrip() + f"\n            {style}\n        ]"
+    else:
+        new_value = f"[\n            {value}\n            {style}\n        ]"
+    new_body = body[: options.start(1)] + new_value + body[options.end(1):]
+    return app_text[: menu.end()] + new_body + app_text[close:]
+
+
+def _normalized_block(text: str) -> str:
+    return "\n".join(line.strip() for line in text.splitlines() if line.strip())
+
+
+def theme_factory_projection(export_dir: Path) -> dict:
+    """Semantic view of everything Theme Factory owns or must not disturb.
+
+    Used to compare the staged export with the post-import export: SQLcl reformats text
+    (indentation, ordering, dropped comments), so byte digests are not comparable, but
+    the URLs, files, registry, owned regions and switcher entries must match exactly.
+    """
+    export_dir = export_dir.resolve()
+    target = inspect_export(export_dir)
+    static_root = export_dir / "shared-components/static-files"
+    theme_files: Dict[str, str] = {}
+    other_files: Dict[str, str] = {}
+    if static_root.exists():
+        for path in sorted(static_root.rglob("*")):
+            if path.is_file():
+                rel = path.relative_to(static_root).as_posix()
+                (theme_files if rel.startswith("theme-factory/") else other_files)[rel] = _sha256_file(path)
+    declared = []
+    if target.static_files_file.exists():
+        declared = sorted(
+            match.group(1).strip('"')
+            for match in re.finditer(r"^file\s+(\"[^\"\n]+\"|\S+)\s*\(", target.static_files_file.read_text(encoding="utf-8"), re.MULTILINE)
+        )
+    regions = []
+    if target.page_zero_file and target.page_zero_file.exists():
+        for _start, _end, identifier, body in _iter_blocks(target.page_zero_file.read_text(encoding="utf-8"), "region"):
+            if _is_bootstrap_identity(identifier, body) and _is_bootstrap_owned(body):
+                source = re.search(r"```html\n([\s\S]*?)\n\s*```", body)
+                regions.append({
+                    "id": identifier,
+                    "content": _normalized_block(source.group(1) if source else body),
+                    "slot": (re.search(r"slot:\s*(\S+)", body) or [None, None])[1],
+                })
+    entries = []
+    if target.navigation_file and target.navigation_file.exists():
+        for _start, _end, identifier, body in _iter_blocks(target.navigation_file.read_text(encoding="utf-8"), "entry"):
+            if identifier.startswith(SWITCHER_ENTRY_PREFIX):
+                label = re.search(r"^\s*label:\s*(.+?)\s*$", body, re.MULTILINE)
+                parent = re.search(r"parentEntry:\s*@?(\S+)", body)
+                entries.append({"id": identifier, "label": label.group(1) if label else "", "parent": parent.group(1) if parent else None})
+    pages = sorted(path.name.split("-", 1)[0] for path in (export_dir / "pages").glob("p*.apx")) if (export_dir / "pages").exists() else []
+    registry = read_registry_document(export_dir)
+    return {
+        "theme": [target.theme_number, target.base_theme, target.style],
+        "cssUrls": list(target.css_urls),
+        "javascriptUrls": list(target.javascript_urls),
+        "globalPage": target.global_page,
+        "registry": registry,
+        "themeFactoryFiles": theme_files,
+        "otherStaticFiles": other_files,
+        "declaredStaticFiles": declared,
+        "bootstrapRegions": sorted(regions, key=lambda item: item["id"]),
+        "switcherEntries": sorted(entries, key=lambda item: item["id"]),
+        "pages": pages,
+    }
 
 
 def apply_patch(patch: InstallPatch) -> None:

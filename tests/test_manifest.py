@@ -158,6 +158,16 @@ class ManifestTests(unittest.TestCase):
             with self.assertRaisesRegex(PackageError, "unreferenced font"):
                 load_manifest(root / "theme.json", root)
 
+    def test_non_woff2_font_file_in_fonts_directory_fails(self):
+        # TrueType/OpenType (or any stray file) under fonts/ is rejected before packaging, per spec §4.2
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "custom-font"
+            shutil.copytree(Path("tests/fixtures/packages/custom-font"), root)
+            (root / "fonts/stray.ttf").write_bytes(b"\x00\x01\x00\x00")
+            with self.assertRaises(PackageError) as context:
+                load_manifest(root / "theme.json", root)
+            self.assertIn("fonts/stray.ttf", str(context.exception))
+
     def test_missing_body_role_when_fonts_defined_fails(self):
         payload = {
             "schemaVersion": 1,

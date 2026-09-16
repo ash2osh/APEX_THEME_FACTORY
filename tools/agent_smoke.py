@@ -62,21 +62,54 @@ def redact(text: str) -> str:
     return "\n".join(redacted_lines)
 
 
-def classify_result(runtime: str, exit_code: int, stderr: str, stdout: str) -> SmokeVerdict:
+def _repo_relative(value: Any, repo_root: Path | None) -> Any:
+    """Normalise an absolute path inside the repository to its repo-relative form.
+
+    Models legitimately answer with absolute paths; a path *outside* the repository is left
+    untouched so the equality checks below reject it.
+    """
+    if not isinstance(value, str) or repo_root is None or not value.startswith("/"):
+        return value
+    try:
+        return Path(value).resolve().relative_to(Path(repo_root).resolve()).as_posix()
+    except ValueError:
+        return value
+
+
+def classify_result(
+    runtime: str, exit_code: int, stderr: str, stdout: str, repo_root: Path | None = None
+) -> SmokeVerdict:
     """Classify agent output into PASS, FAIL, or UNVERIFIED."""
+    # Claude Code reports failures inside its JSON envelope (`is_error`/`result`) with an empty
+    # stderr; surface that text so the record explains itself.
+    envelope_error = ""
+    try:
+        envelope = json.loads(stdout.strip())
+        if isinstance(envelope, dict) and envelope.get("is_error") and isinstance(envelope.get("result"), str):
+            envelope_error = envelope["result"]
+    except Exception:
+        pass
+    if envelope_error and not stderr.strip():
+        stderr = envelope_error
     combined_err = (stderr + " " + stdout).lower()
-    
+
+    # A CLI rejecting our own schema is a harness defect, never an environment limitation.
+    if exit_code != 0 and "not a valid json schema" in combined_err:
+        return SmokeVerdict(status="FAIL", message=f"Harness schema rejected by the CLI: {stderr.strip()[:200]}")
+
     # Check for authentication, quota, rate-limit, missing binary, or network issues
     unverified_indicators = [
         "authentication required", "auth required", "not authenticated", "login required",
         "unauthorized", "quota exceeded", "rate limit", "insufficient quota", "too many requests",
         "command not found", "no such file or directory", "connection refused",
         "timed out", "timeout", "could not connect", "connection error", "api error",
-        "model not found", "not logged in", "cannot access the model",
+        "model not found", "not logged in", "cannot access the model", "failed to authenticate",
+        "oauth session expired",
     ]
     for ind in unverified_indicators:
         if ind in combined_err and exit_code != 0:
-            return SmokeVerdict(status="UNVERIFIED", message=f"Environment/auth/quota limitation: {ind}")
+            detail = f" ({stderr.strip()[:160]})" if stderr.strip() else ""
+            return SmokeVerdict(status="UNVERIFIED", message=f"Environment/auth/quota limitation: {ind}{detail}")
 
     if exit_code != 0:
         return SmokeVerdict(status="UNVERIFIED" if "error" in combined_err else "FAIL", message=f"Process exited with code {exit_code}: {stderr.strip()[:200]}")
@@ -111,6 +144,9 @@ def classify_result(runtime: str, exit_code: int, stderr: str, stdout: str) -> S
 
     if raw_json is None or not isinstance(raw_json, dict):
         return SmokeVerdict(status="FAIL", message="Failed to extract valid JSON object matching schema from output")
+    for key in ("instructionEntry", "routerSkill"):
+        if key in raw_json:
+            raw_json[key] = _repo_relative(raw_json[key], repo_root)
 
     # Validate against expected schema properties
     required_keys = ["runtime", "instructionEntry", "routerSkill", "apexBoundary", "runtimeTruthTool", "importRequiresUserRequest", "wouldEdit"]
@@ -194,13 +230,13 @@ def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeV
     except subprocess.TimeoutExpired:
         exit_code = 124
         stdout = ""
-        stderr = "Command timed out after 120 seconds"
+        stderr = "Command timed out after 180 seconds"
     except Exception as e:
         exit_code = 1
         stdout = ""
         stderr = str(e)
 
-    verdict = classify_result(runtime, exit_code, stderr, stdout)
+    verdict = classify_result(runtime, exit_code, stderr, stdout, repo_root=repo_root)
 
     # Worktree guard check after
     status_after = subprocess.run(["git", "status", "--porcelain=v1"], cwd=repo_root, capture_output=True, text=True, check=False).stdout

@@ -40,6 +40,20 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   `:root` with `:root`'s value; a body-level override of `--a-button-text-color` never reaches it.
 - **Fix:** override the *derived* atom too (`--a-gv-pagination-button-text-color`). Same for
   `--a-gv-header-text-color: var(--ut-component-text-muted-color)` etc.
+- **Three whole families work this way and are easy to miss** (measured live on app 102, 2026-09-17):
+  `Core.min.css :root` declares all 15 `--a-palette-*` atoms as `var(--ut-palette-*)` and
+  `--a-base-link-text-color` as `var(--ut-link-text-color)`; `Iris.min.css :root` declares 32 `--oj-*`
+  (Oracle JET) tokens as `var(--ut-*)`. Symptoms under a dark package: selecting an IG/IRR/Card View/Media
+  List/Timeline/Comments row paints Iris' `#e4f1f7` under light text (**1.06:1** measured on p1410), faceted
+  search's text buttons keep Iris' link blue (2.39:1, p1411), and JET chart axis/legend text is painted `#000`
+  / `rgba(0,0,0,.65)` (1.46–1.62:1, p1902). Restate `--a-palette-*` and `--a-base-link-text-color` on the body
+  scope; `--oj-*` has to go on the **html** scope — JET reads it off the document element, once, at bootstrap,
+  and bakes the result into SVG `fill`, so it only responds to CSS present at page load (clearing
+  `oj.ThemeUtils`' cache and refreshing the region is not enough). Consequence for auditing: an AA sweep that
+  reads CSS `color` scores SVG text by the wrong property and will report a chart page clean.
+- **Counter-example — not every library family is frozen:** UT declares FullCalendar's `--fc-*` on
+  `.apex-fullcalendar-5`, an *element* scope, so those chains resolve there and do pick up a body-level
+  `--ut-*` override (verified on p1800). Check the declaring selector before assuming a freeze.
 
 ### 1.3 "Atom not found in Core/Iris" ≠ dead
 - **Symptom:** grep of `Core.min.css`/`Iris.min.css` shows no `--a-gv-header-cell-font-size`,

@@ -1,7 +1,23 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: live Chrome DevTools WCAG AA contrast audit across all pages, components, and viewports in `tests/live/RELEASE-MATRIX.md` with zero package-caused contrast failures. Full source-level literal/derived-token audit completed 2026-09-14 in this repo; live browser pass remains strictly gated on user authorization and active Chrome DevTools MCP session.
+Pending (2026-09-17) — A live Chrome pass finally ran (24 pages of app 102, 4 469 text nodes; Evidence §8) and
+**found four more package-caused defects the completed source audit had not reached**, one severe (Interactive
+Grid row selection, 1.06:1). Three are fixed and A/B-measured live; the fourth (Oracle JET chart text) is fixed
+in source but unobservable without an import, because JET bakes its colours at bootstrap. Still missing before
+this can be closed: an import plus a re-run of the sweep against the shipped bundle, the remaining 98 pages,
+the 1024/768 widths, and the untested selection/focus states.
+**None of those three fixes is in this repository.** They were authored in the scenario-11 evaluation
+worktree, which was thrown away; the 2026-09-16 evaluation session was not permitted to edit `sample-themes/`.
+`sample-themes/solarized-dark/` and `dist/solarized-dark/solarized-dark-1.0.0.zip` therefore still carry every
+defect measured below, including the 1.06:1 one. The complete patch is quoted in
+`.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md` — re-apply it there, rebuild,
+install, and re-audit before this package ships.
+Superseded: the 2026-09-14 claim that "every literal/derived-token gap findable by source review is fixed" was
+wrong in scope — it missed two whole `:root`-frozen families (`--a-palette-*` and `--a-base-link-text-color`)
+besides the `--oj-*` family it had explicitly deferred. Earlier status line, for the record: *Pending
+(2026-09-15) — missing evidence: live Chrome AA contrast audit across the pages/components/viewports in
+`tests/live/RELEASE-MATRIX.md` with zero package-caused failures.*
 
 Category:
 BUG
@@ -124,6 +140,37 @@ withheld Chrome/import/DB) — source-level audits, not runtime ones:
      property on the same selector, loaded later in the cascade, so it already wins regardless of the atom;
      confirmed not a real gap, not just an unfixed one).
 
+8. **2026-09-17, first live Chrome pass** (project Chrome MCP daemon, own background tab, theme applied before
+   paint, 1440×900 plus 375×812 on four pages; import and DB changes withheld, so everything below measures
+   app 102 as installed at commit `4c1abe1`). 24 pages — 500, 405, 423, 1202, 1208, 1304, 1402, 1405, 1410,
+   1411, 1412, 1500, 1600, 1601, 1800, 1902, 1903, 1906, 1910, 3003, 3110, 4000, 6303, 6304 — plus dialog page
+   1912 in its iframe; 4 469 visible text nodes; 0 console errors. Audit = the documented snippet plus a
+   light-surface sweep (opaque backgrounds of luminance ≥ 0.6) for the "stayed white" failure mode.
+   - Resting state: 10 failures, of which 7 are Universal Theme's / APEX's own literals (p1304 `--u-color-*`
+     badge values 2.94:1 and 3.70:1; p1800 `apex-cal-green` events, white on the literal `#2ecc71`, 2.10:1 ×5),
+     and 3 are the package's: p1411 Faceted Search `Show All`/`Clear All` at **2.39:1** and the p1906 MapLibre
+     attribution text and links at **2.57:1**.
+   - Non-resting: p1410 selecting an Interactive Grid row paints the cells Iris' `#e4f1f7` under base2 text —
+     **1.06:1**; p1601's date picker renders its current day as a light `#e4f1f7` chip (5.43:1, AA-passing and
+     visually wrong); p1902's JET charts paint **24 of 25** text nodes at 1.46–1.62:1.
+   - Causes: `Core.min.css` declares `--a-palette-*` (15 atoms) and `--a-base-link-text-color` as `var(--ut-*)`
+     **on `:root`**, and `Iris.min.css` does the same for 32 `--oj-*` tokens — the §1.2 freeze, in families
+     this finding's §6 pass never enumerated. MapLibre's attribution plate is its own white surface inheriting
+     the package's light body text.
+   - Fixes and live A/B (candidate CSS injected into the running page, then re-measured): faceted search
+     2.39 → **4.50**; map attribution 2.57 → **12.25**; IG selected row 1.06 → **8.17**; date picker current
+     day → **9.28** on the dark wash. Re-running the whole 24-page sweep with the candidate CSS applied
+     produced **no new failure and no new light surface** anywhere.
+   - JET remains unverified: setting the `--oj-*` properties live, clearing `oj.ThemeUtils`' cache and
+     refreshing the chart regions re-rendered the SVG (a marked text node was replaced) yet the new text still
+     came out `rgb(0,0,0)` — JET resolves style defaults once at bootstrap, so only an import + reload can
+     confirm the fix. FullCalendar, by contrast, is answered in the package's favour: UT declares `--fc-*` on
+     `.apex-fullcalendar-5`, an element scope, so the package's body-level `--ut-*` does reach it (measured
+     `--fc-page-bg-color` `#073642`, `--fc-event-bg-color` `#4b9fda`, `--fc-event-text-color` `#002b36`).
+   - Method note worth keeping: the documented audit reads CSS `color`, so it scores SVG text by the wrong
+     property and reported the chart page clean. An AA sweep that does not read `fill` cannot verify any
+     package that ships charts.
+
 ## Existing Assumption
 
 `sample-themes/README.md` and this package's own README stated "verified 2026-09-14" with a specific 14-page
@@ -136,9 +183,10 @@ before the status was written (now corrected in this PR).
 A theme package can look complete after a narrow, plausible-seeming spot check (the two most-visited pages)
 while large parts of a 122-page reference app — anything using Interactive Grid rather than Interactive Report,
 any hover state, any of ~10 item/region types absent from both checked pages — ship unthemed. A false "Verified"
-claim is worse than no claim: it tells the next agent/human not to re-check. Closed by the full source audit in
-Evidence §6 — every literal/derived-token gap with verifiable consumption and a confirmed-present page is now
-fixed; only the JET/FullCalendar custom-property families remain genuinely unverifiable without Chrome.
+claim is worse than no claim: it tells the next agent/human not to re-check. The full source audit in Evidence
+§6 closed every gap it enumerated — but the live pass in §8 then found four more, three of them in families
+that audit never enumerated at all, and the worst of them in a *state* no source diff can rank. The general
+lesson stands and is now measured: source review finds gaps, only the browser establishes correctness.
 
 ## Proposed Knowledge Change
 
@@ -163,9 +211,9 @@ actually be run with Chrome.
 
 ## Scope
 
-Page-specific bug in this package, now closed at the source-review level (see Evidence §6): every gap with
-confirmed consumption and a confirmed-present page is fixed as of this PR. Two categories remain genuinely
-open, per §7: Oracle JET's/FullCalendar's own custom-property theming (unverifiable offline — their consuming
-CSS isn't in the reference bundle) and a live Chrome contrast-audit pass to confirm every fix actually renders
-as intended. Also a reusable process point: a theme package's "Verified" section should name exactly what was
+Page-specific bug in this package. Closed at the source-review level by Evidence §6, then reopened and widened
+by the live pass in §8 (four further defects, three families the source pass had not enumerated). FullCalendar
+is now resolved in the package's favour; Oracle JET is confirmed broken with a written but unverified fix; and
+the live pass itself still needs to be repeated against an imported build, on the remaining 98 pages, at the
+1024/768 widths and over the untested selection/focus states. Also a reusable process point: a theme package's "Verified" section should name exactly what was
 runtime-checked vs. source-reviewed, since the two give very different confidence.

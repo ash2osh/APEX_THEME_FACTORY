@@ -20,6 +20,10 @@ EXPECTED = {
     "antigravity": (".agents/rules/apex-theme-factory.md", "chrome-devtools-mcp"),
 }
 
+# Model runtimes vary a lot in start-up cost (Antigravity has needed >180s on a cold cache);
+# a slow run is an environment limit, so make the ceiling configurable instead of a FAIL.
+DEFAULT_SMOKE_TIMEOUT = 300
+
 COMMANDS: dict[str, Callable[[str, Path], list[str]]] = {
     "codex": lambda prompt, schema: [
         "codex", "exec", "--ephemeral", "--sandbox", "read-only",
@@ -117,12 +121,17 @@ def classify_result(
     envelope_error = ""
     try:
         envelope = json.loads(stdout.strip())
-        if isinstance(envelope, dict) and envelope.get("is_error") and isinstance(envelope.get("result"), str):
-            envelope_error = envelope["result"]
+        if isinstance(envelope, dict):
+            if envelope.get("is_error") and isinstance(envelope.get("result"), str):
+                envelope_error = envelope["result"]
+            # Antigravity reports provider failures in its own envelope and still exits 0
+            elif str(envelope.get("status", "")).upper() == "ERROR" and isinstance(envelope.get("error"), str):
+                envelope_error = envelope["error"]
     except Exception:
         pass
     if envelope_error and not stderr.strip():
         stderr = envelope_error
+        stdout = ""  # the envelope carries no result object; do not mine it for a payload
     combined_err = (stderr + " " + stdout).lower()
 
     # A CLI rejecting our own schema is a harness defect, never an environment limitation.
@@ -138,6 +147,15 @@ def classify_result(
         "model not found", "not logged in", "cannot access the model", "failed to authenticate",
         "oauth session expired",
     ]
+    # A provider that is unavailable or out of capacity says nothing about repository compatibility,
+    # and some CLIs report it while exiting 0.
+    environment_regardless_of_exit = [
+        "no capacity", "unavailable", "code 503", "503", "overloaded", "service_unavailable",
+    ]
+    for ind in environment_regardless_of_exit:
+        if ind in combined_err:
+            detail = f" ({stderr.strip()[:160]})" if stderr.strip() else ""
+            return SmokeVerdict(status="UNVERIFIED", message=f"Provider capacity/availability limitation: {ind}{detail}")
     for ind in unverified_indicators:
         if ind in combined_err and exit_code != 0:
             detail = f" ({stderr.strip()[:160]})" if stderr.strip() else ""
@@ -146,33 +164,39 @@ def classify_result(
     if exit_code != 0:
         return SmokeVerdict(status="UNVERIFIED" if "error" in combined_err else "FAIL", message=f"Process exited with code {exit_code}: {stderr.strip()[:200]}")
 
-    # Extract JSON payload
-    raw_json = None
-    # 1. Try parsing stdout directly as JSON
+    # Extract the result object. CLIs either print it bare or wrap it in an envelope, and some
+    # (agy) print a notice line before the JSON, so parse the whole stream first, then the first
+    # JSON object found in it, and apply the same envelope rules to whichever we got.
+    document = None
     try:
-        data = json.loads(stdout.strip())
-        if isinstance(data, dict):
-            # Check for envelope: structured_output or result
-            if "structured_output" in data and isinstance(data["structured_output"], dict):
-                raw_json = data["structured_output"]
-            elif "result" in data:
-                if isinstance(data["result"], dict):
-                    raw_json = data["result"]
-                elif isinstance(data["result"], str):
-                    try:
-                        raw_json = json.loads(data["result"].strip())
-                    except Exception:
-                        pass
-            else:
-                raw_json = data
+        document = json.loads(stdout.strip())
     except Exception:
-        # Try finding json block in markdown/prose
         match = re.search(r"\{[\s\S]*\}", stdout)
         if match:
             try:
-                raw_json = json.loads(match.group(0))
+                document = json.loads(match.group(0))
             except Exception:
-                pass
+                document = None
+
+    raw_json = None
+    if isinstance(document, dict):
+        envelope_field = next((f for f in ("structured_output", "result", "response") if f in document), None)
+        if envelope_field is None:
+            raw_json = document
+        else:
+            value = document[envelope_field]
+            if isinstance(value, dict):
+                raw_json = value
+            elif isinstance(value, str) and value.strip():
+                try:
+                    raw_json = json.loads(value.strip())
+                except Exception:
+                    raw_json = None
+            else:
+                return SmokeVerdict(
+                    status="UNVERIFIED",
+                    message=f"Runtime exited successfully but its '{envelope_field}' was empty: no structured output to assess",
+                )
 
     if raw_json is None or not isinstance(raw_json, dict):
         return SmokeVerdict(status="FAIL", message="Failed to extract valid JSON object matching schema from output")
@@ -214,7 +238,7 @@ def classify_result(
     return SmokeVerdict(status="PASS", message=f"All assertions passed{note}", payload=raw_json)
 
 
-def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeVerdict]:
+def run_smoke(runtime: str, repo_root: Path, date_str: str, timeout: int = DEFAULT_SMOKE_TIMEOUT) -> tuple[int, SmokeVerdict]:
     """Execute smoke for a given runtime and write output files."""
     if runtime not in COMMANDS:
         raise ValueError(f"Unknown runtime: {runtime}")
@@ -257,7 +281,7 @@ def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeV
             capture_output=True,
             text=True,
             check=False,
-            timeout=180,
+            timeout=timeout,
         )
         exit_code = res.returncode
         stdout = res.stdout
@@ -265,7 +289,7 @@ def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeV
     except subprocess.TimeoutExpired:
         exit_code = 124
         stdout = ""
-        stderr = "Command timed out after 180 seconds"
+        stderr = f"Command timed out after {timeout} seconds"
     except Exception as e:
         exit_code = 1
         stdout = ""
@@ -295,6 +319,20 @@ def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeV
         return 2, verdict
 
 
+SCHEMA_FIELDS = (
+    "runtime", "instructionEntry", "routerSkill", "apexBoundary",
+    "runtimeTruthTool", "importRequiresUserRequest", "wouldEdit",
+)
+
+
+def schema_fields_only(payload: Any) -> dict[str, Any] | None:
+    """Keep the contract's fields and drop everything else (conversation ids, usage, echoes)."""
+    if not isinstance(payload, dict):
+        return None
+    kept = {key: payload[key] for key in SCHEMA_FIELDS if key in payload}
+    return kept or None
+
+
 def record_evidence(
     out_dir: Path,
     runtime: str,
@@ -307,13 +345,14 @@ def record_evidence(
     json_path = out_dir / f"{runtime}.json"
     md_path = out_dir / f"{runtime}.md"
 
+    payload = schema_fields_only(verdict.payload)
     record_data = {
         "runtime": runtime,
         "cliVersion": redact(cli_version),
         "dateUtc": date_str,
         "status": verdict.status,
         "message": redact(verdict.message),
-        "payload": verdict.payload,
+        "payload": payload,
     }
     json_path.write_text(json.dumps(record_data, indent=2) + "\n", encoding="utf-8")
 
@@ -327,7 +366,7 @@ def record_evidence(
 ## Result Payload
 
 ```json
-{json.dumps(verdict.payload, indent=2) if verdict.payload else "null"}
+{json.dumps(payload, indent=2) if payload else "null"}
 ```
 
 ## Raw Execution Output (Redacted)
@@ -345,14 +384,19 @@ def record_evidence(
     md_path.write_text(md_content, encoding="utf-8")
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run agent compatibility smoke test")
     parser.add_argument("runtime", choices=["codex", "claude", "antigravity"], help="Agent runtime to test")
     parser.add_argument("--repo", default=Path.cwd(), type=Path, help="Repository root")
     parser.add_argument("--date", default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), help="UTC date string (YYYY-MM-DD)")
-    args = parser.parse_args()
+    parser.add_argument("--timeout", type=int, default=DEFAULT_SMOKE_TIMEOUT, help="Seconds to wait for the runtime")
+    return parser
 
-    exit_code, verdict = run_smoke(args.runtime, args.repo.resolve(), args.date)
+
+def main():
+    args = build_parser().parse_args()
+
+    exit_code, verdict = run_smoke(args.runtime, args.repo.resolve(), args.date, timeout=args.timeout)
     print(f"SMOKE {args.runtime}: status={verdict.status} message={verdict.message}")
     sys.exit(exit_code)
 

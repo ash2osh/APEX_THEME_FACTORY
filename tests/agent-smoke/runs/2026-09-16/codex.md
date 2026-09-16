@@ -40,27 +40,26 @@ reasoning summaries: none
 session id: <SESSION>
 --------
 user
-Inspect this repository's agent instructions and skill discovery paths. Return only one JSON object matching the supplied schema. Report the instruction entry you actually discovered, the design-work router skill you actually discovered, the exact supported APEX/theme/style boundary, and the configured Chrome runtime-truth server name. Confirm whether an application import requires an explicit user request and whether you would edit anything for this inspection. Do not edit files, commit, call a database, call a browser tool, or access the network.
+Inspect this repository's agent instructions and skill discovery paths. Return only one JSON object matching the supplied schema. Report the instruction entry you actually discovered, the design-work router skill you actually discovered, the exact supported APEX/theme/style boundary, and the configured Chrome runtime-truth server name. Confirm whether an application import requires an explicit user request and whether you would edit anything for this inspection.
+
+Every string field takes a bare value and no prose: `instructionEntry` and `routerSkill` are repository-relative paths on their own (no parentheses, no explanation, no second path), and `runtimeTruthTool` is the MCP server name exactly as configured, on its own.
+
+Do not edit files, commit, call a database, call a browser tool, or access the network.
 
 codex
-{"runtime":"codex","instructionEntry":"Inspecting the repository instructions and design-work skill router, with read-only file access only.","routerSkill":".agents/skills/design-to-apex/SKILL.md","apexBoundary":"APEX 26.1.x / Universal Theme 42 / Iris","runtimeTruthTool":"Chrome DevTools MCP","importRequiresUserRequest":true,"wouldEdit":false}
+{"runtime":"codex","instructionEntry":"AGENTS.md","routerSkill":".agents/skills/design-to-apex/SKILL.md","apexBoundary":"APEX 26.1.x / Universal Theme 42 / Iris","runtimeTruthTool":"chrome-devtools","importRequiresUserRequest":true,"wouldEdit":false}
 exec
-/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g 'docs/AGENT_SPEC.md' -g 'docs/PROJECT.md' -g 'docs/CHROME_DEVTOOLS_MCP.md' -g '.agents/skills/**/SKILL.md' -g '.agents/knowledge/pitfalls.md' | sort" in <HOME>/projects/APEX_THEME_FACTORY
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g '.agents/skills/design-to-apex/SKILL.md' -g 'docs/AGENT_SPEC.md' -g 'docs/PROJECT.md' -g 'docs/CHROME_DEVTOOLS_MCP.md' -g 'config.toml' -g '*mcp*' | sort" in <HOME>/projects/APEX_THEME_FACTORY
  succeeded in 0ms:
 <HOME>/projects/APEX_THEME_FACTORY
 AGENTS.md
 docs/AGENT_SPEC.md
 docs/CHROME_DEVTOOLS_MCP.md
 docs/PROJECT.md
+tests/fixtures/mcp/fake_mcp_server.py
+tests/test_chrome_mcp_daemon.py
+tools/chrome_mcp_daemon.py
 
 exec
-/bin/bash -lc "sed -n '1,260p' 'AGENTS.md'" in <HOME>/projects/APEX_THEME_FACTORY
- succeeded in 0ms:
-# APEX Theme Factory — agent instructions
-
-You are the Oracle APEX design-engineering agent defined in **docs/AGENT_SPEC.md**. Read it first.
-Then read **docs/PROJECT.md** for the target app, URL, connection and hard constraints.
-
-Non-negotiables
-- APEX 26.1.x, Universal Theme 42, theme style **Iris only** (light). Never switch styles or use
+/bin/bash -lc "wc -l '<HOME>/projects/APEX_THEME_FACTORY/AGENTS.md' && sed -n '1,260p' '<HOME>/projects/APEX_THEME_FACTORY/AGENTS.md'" in <HOME>/projects/APEX_THEME_FA
 ```

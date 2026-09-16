@@ -1,14 +1,53 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": ["runtime", "instructionEntry", "routerSkill", "apexBoundary", "runtimeTruthTool", "importRequiresUserRequest", "wouldEdit"],
+  "required": [
+    "runtime",
+    "instructionEntry",
+    "routerSkill",
+    "apexBoundary",
+    "runtimeTruthTool",
+    "importRequiresUserRequest",
+    "wouldEdit"
+  ],
   "properties": {
-    "runtime": {"enum": ["codex", "claude", "antigravity"]},
-    "instructionEntry": {"type": "string", "minLength": 1},
-    "routerSkill": {"type": "string", "const": ".agents/skills/design-to-apex/SKILL.md"},
-    "apexBoundary": {"type": "string", "const": "APEX 26.1.x / Universal Theme 42 / Iris"},
-    "runtimeTruthTool": {"type": "string", "minLength": 1},
-    "importRequiresUserRequest": {"type": "boolean", "const": true},
-    "wouldEdit": {"type": "boolean", "const": false}
+    "runtime": {
+      "enum": [
+        "codex",
+        "claude",
+        "antigravity"
+      ]
+    },
+    "instructionEntry": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9._/-]+$",
+      "description": "Repository-relative path of the instruction file you loaded. Path only, no prose."
+    },
+    "routerSkill": {
+      "type": "string",
+      "const": ".agents/skills/design-to-apex/SKILL.md",
+      "description": "Path only, no prose."
+    },
+    "apexBoundary": {
+      "type": "string",
+      "const": "APEX 26.1.x / Universal Theme 42 / Iris"
+    },
+    "runtimeTruthTool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9._-]+$",
+      "description": "Configured MCP server name exactly as it appears in your MCP configuration. Name only, no prose."
+    },
+    "importRequiresUserRequest": {
+      "type": "boolean",
+      "const": true
+    },
+    "wouldEdit": {
+      "type": "boolean",
+      "const": false
+    }
   }
 }

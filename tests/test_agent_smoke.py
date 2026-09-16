@@ -225,3 +225,153 @@ class InstructionEntryAndServerNamingTests(unittest.TestCase):
             repo_root=repo,
         )
         self.assertEqual(verdict.status, "FAIL")
+
+
+class SchemaShapeTests(unittest.TestCase):
+    """The schema, not the parser, must force bare paths and a bare server name."""
+
+    def setUp(self):
+        self.schema = json.loads(Path("tests/agent-smoke/result.schema.json").read_text(encoding="utf-8"))
+
+    def matches(self, field: str, value: str) -> bool:
+        import re
+        pattern = self.schema["properties"][field].get("pattern")
+        self.assertIsNotNone(pattern, f"{field} must constrain its format")
+        return re.fullmatch(pattern, value) is not None
+
+    def test_instruction_entry_accepts_a_path_and_rejects_prose(self):
+        self.assertTrue(self.matches("instructionEntry", "CLAUDE.md"))
+        self.assertTrue(self.matches("instructionEntry", ".agents/rules/apex-theme-factory.md"))
+        self.assertFalse(self.matches("instructionEntry", "CLAUDE.md (project instructions at /home/x/CLAUDE.md), pointing to docs/AGENT_SPEC.md"))
+
+    def test_runtime_truth_tool_accepts_a_server_name_and_rejects_prose(self):
+        self.assertTrue(self.matches("runtimeTruthTool", "chrome-devtools"))
+        self.assertTrue(self.matches("runtimeTruthTool", "chrome-devtools-mcp"))
+        self.assertFalse(self.matches("runtimeTruthTool", "chrome-devtools (mcp__chrome-devtools__* MCP server)"))
+
+    def test_prompt_demands_bare_values(self):
+        prompt = Path("tests/agent-smoke/readiness-prompt.md").read_text(encoding="utf-8").lower()
+        self.assertIn("no prose", prompt)
+
+
+class SmokeTimeoutTests(unittest.TestCase):
+    """A slow runtime must be retryable without editing the harness."""
+
+    def test_timeout_is_configurable_with_a_documented_default(self):
+        from tools.agent_smoke import DEFAULT_SMOKE_TIMEOUT, build_parser
+        self.assertGreaterEqual(DEFAULT_SMOKE_TIMEOUT, 180)
+        args = build_parser().parse_args(["antigravity", "--timeout", "420"])
+        self.assertEqual(args.timeout, 420)
+        self.assertEqual(build_parser().parse_args(["codex"]).timeout, DEFAULT_SMOKE_TIMEOUT)
+
+    def test_timeout_message_reports_the_limit_actually_used(self):
+        verdict = classify_result("antigravity", 124, "Command timed out after 420 seconds", "")
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIn("420", verdict.message)
+
+
+class ErrorEnvelopeTests(unittest.TestCase):
+    """A CLI that exits 0 while reporting a provider error is an environment limit, not a FAIL."""
+
+    ENVELOPE = json.dumps({
+        "conversation_id": "b2d1c0cd-02d2-495b-ae29-12fff8ec76cf",
+        "status": "ERROR",
+        "response": "",
+        "error": "API error (attempt 1): UNAVAILABLE (code 503): No capacity available for model gemini-3.8-flash-high on the server",
+        "duration_seconds": 292.1,
+        "json_schema": {"type": "object"},
+    })
+
+    def test_provider_capacity_error_with_exit_zero_is_unverified(self):
+        verdict = classify_result("antigravity", 0, "", self.ENVELOPE)
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIn("capacity", verdict.message.lower())
+
+    def test_error_envelope_is_not_recorded_as_a_result_payload(self):
+        verdict = classify_result("antigravity", 0, "", self.ENVELOPE)
+        self.assertIsNone(verdict.payload)
+
+    def test_recorded_payload_never_carries_conversation_identifiers(self):
+        import shutil
+        import tempfile
+        from tools.agent_smoke import SmokeVerdict, record_evidence
+        temp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, temp, True)
+        leaky = {"runtime": "antigravity", "conversation_id": "b2d1c0cd-02d2-495b-ae29-12fff8ec76cf",
+                 "instructionEntry": ".agents/rules/apex-theme-factory.md"}
+        record_evidence(temp, "antigravity", "1.2.4", "2026-09-16",
+                        SmokeVerdict(status="FAIL", message="x", payload=leaky), "", "")
+        recorded = (temp / "antigravity.json").read_text(encoding="utf-8")
+        self.assertNotIn("b2d1c0cd", recorded)
+        self.assertNotIn("conversation_id", recorded)
+        self.assertIn("apex-theme-factory.md", recorded)
+
+
+class ResponseEnvelopeTests(unittest.TestCase):
+    """Antigravity wraps the result in `response`; an empty one is no evidence either way."""
+
+    def envelope(self, response) -> str:
+        return json.dumps({"conversation_id": "b2d1c0cd-02d2-495b-ae29-12fff8ec76cf", "status": "SUCCESS",
+                           "response": response, "duration_seconds": 288.3, "json_schema": {"type": "object"}})
+
+    def test_result_inside_the_response_field_is_parsed(self):
+        payload = {
+            "runtime": "antigravity",
+            "instructionEntry": ".agents/rules/apex-theme-factory.md",
+            "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+            "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+            "runtimeTruthTool": "chrome-devtools-mcp",
+            "importRequiresUserRequest": True,
+            "wouldEdit": False,
+        }
+        for wrapped in (payload, json.dumps(payload)):
+            verdict = classify_result("antigravity", 0, "", self.envelope(wrapped))
+            self.assertEqual(verdict.status, "PASS", verdict.message)
+            self.assertEqual(verdict.payload["runtimeTruthTool"], "chrome-devtools-mcp")
+
+    def test_empty_response_is_unverified_not_fail(self):
+        verdict = classify_result("antigravity", 0, "", self.envelope(""))
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIn("empty", verdict.message.lower())
+        self.assertIsNone(verdict.payload)
+
+    def test_envelope_echo_of_the_schema_is_never_mistaken_for_a_result(self):
+        # the envelope echoes json_schema; its keys must not be read as the runtime's answer
+        verdict = classify_result("antigravity", 0, "", self.envelope(""))
+        self.assertIsNone(verdict.payload)
+
+
+class PrefixedEnvelopeTests(unittest.TestCase):
+    """`agy` prints its own notice before the JSON when it hits its 5-minute print cap."""
+
+    PREFIX = "[agy] print timeout after 5m0s with turn in progress; returning partial output\n"
+
+    def envelope(self, **fields) -> str:
+        base = {"conversation_id": "712c35e3-9f1f-4c1b-84ba-375329d1c93f", "status": "SUCCESS",
+                "response": "", "duration_seconds": 300.0}
+        base.update(fields)
+        return self.PREFIX + json.dumps(base)
+
+    def test_prefixed_empty_response_is_unverified_not_fail(self):
+        verdict = classify_result("antigravity", 0, "", self.envelope())
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIsNone(verdict.payload)
+
+    def test_prefixed_capacity_error_is_unverified(self):
+        verdict = classify_result("antigravity", 0, "", self.envelope(
+            status="ERROR", error="API error (attempt 1): UNAVAILABLE (code 503): No capacity available for model x"))
+        self.assertEqual(verdict.status, "UNVERIFIED")
+        self.assertIn("capacity", verdict.message.lower())
+
+    def test_prefixed_valid_response_still_passes(self):
+        payload = {
+            "runtime": "antigravity",
+            "instructionEntry": ".agents/rules/apex-theme-factory.md",
+            "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+            "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+            "runtimeTruthTool": "chrome-devtools-mcp",
+            "importRequiresUserRequest": True,
+            "wouldEdit": False,
+        }
+        verdict = classify_result("antigravity", 0, "", self.envelope(response=payload))
+        self.assertEqual(verdict.status, "PASS", verdict.message)

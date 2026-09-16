@@ -1,51 +1,49 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "784add1fd080acfcdb790d3346faf8a03d221bf1",
-  "packageSha256": "3aec2bf68952ae33828d3dc86020e136270214bfa4515874e2e3c3d9781cc52c",
-  "capturedAt": "2026-09-16T11:31:29Z",
+  "gitCommit": "d47521f2be7e83ac4e422cefe463fffcd46c2d86",
+  "packageSha256": "79e90d4a8f11204048adfb5a4b23cedaf6aa900f9dcf0664dbe7ad1c896f2525",
+  "capturedAt": "2026-09-16T11:52:51Z",
   "evidenceType": "sqlcl-operation",
   "operation": "switcherEnableDisable",
-  "status": "FAIL",
+  "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/minimal/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: 8d68e3633031b093403485f4120116fe26bbfb15e0da8e7b2fe98a03aadb6f53\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/backups/DEMO-9010/20260916T111922Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: dc5d16e6281d577a1ff1049521be5eb9dcb5df5e946ad29961c0f19c3fc2be2e\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/minimal/backups/DEMO-9010/20260916T113949Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
       "appId": 9010,
-      "exitCode": 5,
-      "status": "",
-      "stdoutTail": "",
-      "stderrTail": "Error: Staged export validation failed: APEXLang validation did not confirm success:\nAPEXlang Compile Errors:\nFile: application.apx\nLine: 38\nColumn: 8\nType: MISSING_PROPERTY_VALUE\nError: Invalid property (specified property has to have a value): fileUrls\n"
-    },
-    {
-      "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/business/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
-      "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 3ee5ce146207e51a399200358acb30408f6fc12ed3bfbcbf04214dc904110c23\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/business/backups/DEMO-9011/20260916T112610Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: 588716bc8d635e739968ed446404089f236e9d984926a4e99d7b2168d107477b\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/minimal/backups/DEMO-9010/20260916T114140Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/business/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/business/packages/linen-1.0.0/linen-1.0.0 --with-switcher --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 51820dddfb48daac9581a49499c7b22b56fa856efab62d29583c2580bab4de21\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/business/backups/DEMO-9011/20260916T112804Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: f4c997f4af65ee7a412f7a039290c31c833c8555ee90214005034b9880107264\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/business/backups/DEMO-9011/20260916T114735Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/business/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 65a21e499628d5878d253c6cb7cda17d48abddf8fa77c005a05168265e44b70e\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix2/business/backups/DEMO-9011/20260916T114929Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],
-  "notes": [
-    "minimal: install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply: expected IMPORTED, got exit 5 status ''"
-  ]
+  "notes": []
 }

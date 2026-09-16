@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "784add1fd080acfcdb790d3346faf8a03d221bf1",
-  "packageSha256": "3aec2bf68952ae33828d3dc86020e136270214bfa4515874e2e3c3d9781cc52c",
-  "capturedAt": "2026-09-16T11:31:29Z",
+  "gitCommit": "d47521f2be7e83ac4e422cefe463fffcd46c2d86",
+  "packageSha256": "79e90d4a8f11204048adfb5a4b23cedaf6aa900f9dcf0664dbe7ad1c896f2525",
+  "capturedAt": "2026-09-16T11:52:51Z",
   "evidenceType": "sqlcl-operation",
   "operation": "uninstall",
-  "status": "FAIL",
+  "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
       "command": "uninstall --theme linen --apply",
       "appId": 9010,
-      "exitCode": 5,
-      "status": "",
-      "stdoutTail": "",
-      "stderrTail": "Error: Staged export validation failed: APEXLang validation did not confirm success:\nAPEXlang Compile Errors:\nFile: shared-components/static-files.apx\nLine: 1\nColumn: 0\nType: REFERENCE_NOT_FOUND\nError: referenced file shared-components/static-files/theme-factory/packages/linen/1.0.0/cover.jpg in the fileName property is not found\n"
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
     },
     {
       "consumer": "minimal",
@@ -45,7 +45,5 @@
       "stderrTail": ""
     }
   ],
-  "notes": [
-    "minimal: uninstall --theme linen --apply: expected UNINSTALLED, got exit 5 status ''"
-  ]
+  "notes": []
 }

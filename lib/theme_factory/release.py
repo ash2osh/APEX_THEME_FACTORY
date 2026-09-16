@@ -30,6 +30,31 @@ REQUIRED_EVIDENCE_CHECKS = {
     "D": "browser_runtime_matrix",
     "E": "agent_behavior_matrix",
 }
+# Evidence artifacts live here; committing them moves HEAD without changing the source under test.
+EVIDENCE_ROOT = ".agents/evaluations/runtime"
+
+
+def source_equivalent(commit_a: str, commit_b: str, cwd: str | Path | None = None) -> bool:
+    """True when the two commits differ only under EVIDENCE_ROOT (or are identical).
+
+    Layer C/D/E artifacts record the commit they were captured against. Committing those
+    artifacts creates a new HEAD whose source is byte-identical, so the binding must accept
+    it — while any change outside the evidence root still invalidates the evidence.
+    """
+    if commit_a == commit_b:
+        return True
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--quiet", commit_a, commit_b, "--", ".", f":(exclude){EVIDENCE_ROOT}"],
+            cwd=cwd, capture_output=True, text=True, check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return result.returncode == 0
+
+
+def commit_matches(expected: str | None, actual: str) -> bool:
+    return expected is None or source_equivalent(expected, actual)
 
 
 def release_verdict(layers: dict[str, str]) -> str:
@@ -200,8 +225,8 @@ def _load_bound_raw_artifact(
     )
     if not identity_valid:
         raise PackageError(f"{context} raw evidence identity/schema mismatch: {relative}")
-    if expected_git_commit is not None and git_commit != expected_git_commit:
-        raise PackageError(f"{context} raw evidence is for Git commit {git_commit}, not {expected_git_commit}")
+    if not commit_matches(expected_git_commit, git_commit):
+        raise PackageError(f"{context} raw evidence is for Git commit {git_commit}, whose source differs from {expected_git_commit}")
     if expected_package_sha256 is not None and package_sha256 != expected_package_sha256:
         raise PackageError(f"{context} raw evidence is for a different package: {relative}")
     return document
@@ -268,9 +293,9 @@ def _validate_evidence_artifact(
     )
     if not required_identity:
         raise PackageError(f"Evidence artifact identity/schema mismatch: {path}")
-    if expected_git_commit is not None and artifact["gitCommit"] != expected_git_commit:
+    if not commit_matches(expected_git_commit, artifact["gitCommit"]):
         raise PackageError(
-            f"Evidence artifact is for Git commit {artifact['gitCommit']}, not {expected_git_commit}: {path}"
+            f"Evidence artifact is for Git commit {artifact['gitCommit']}, whose source differs from {expected_git_commit}: {path}"
         )
     if expected_package_sha256 is not None and artifact["packageSha256"] != expected_package_sha256:
         raise PackageError(f"Evidence artifact is for a different package: {path}")

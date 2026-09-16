@@ -5,10 +5,10 @@
     {
       "layer": "C",
       "check": "database_installation",
-      "status": "FAIL",
+      "status": "PASS",
       "artifact": "database_installation.json",
-      "artifactSha256": "01b647bb36f03f0cd4d829b8e84ec84c4d458dad111f161d5c16f09e2ed60fcd",
-      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 784add1fd080; failures: switcherEnableDisable: FAIL minimal: install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/live-matrix/minimal/packages/linen-1.0.0/linen-1.0.0 --without-switcher --apply: expected IMPORTED, got exit 5 status ''; uninstall: FAIL minimal: uninstall --theme linen --apply: expected UNINSTALLED, got exit 5 status ''; preserveUnrelated: FAIL minimal: uninstall did not complete; unrelated-file comparison skipped"
+      "artifactSha256": "2dab0a718dc43bf837430e3e362665632f75be2d21a29ba610072ab857a26690",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit d47521f2be7e"
     }
   ]
 }

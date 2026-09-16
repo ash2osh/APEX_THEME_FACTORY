@@ -347,9 +347,11 @@ def main() -> None:
     args = parser.parse_args()
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-    dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True).stdout.strip()
+    # evidence artifacts are outputs of this tool; anything else uncommitted invalidates the binding
+    dirty = subprocess.run(["git", "status", "--porcelain", "--", ".", ":(exclude).agents/evaluations/runtime"],
+                           capture_output=True, text=True, check=True).stdout.strip()
     if dirty:
-        print("Refusing: working tree is dirty; live evidence must be bound to a committed source state", file=sys.stderr)
+        print("Refusing: working tree is dirty outside the evidence root; live evidence must be bound to a committed source state", file=sys.stderr)
         sys.exit(2)
     primary = PackageRef.from_zip(args.primary)
     secondary = PackageRef.from_zip(args.secondary)

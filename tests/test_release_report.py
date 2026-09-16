@@ -249,3 +249,40 @@ class ReleaseEvidenceDiscoveryTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertNotIn("Traceback", result.stderr)
         self.assertIn("schemaVersion", result.stderr)
+
+
+class EvidenceCommitBindingTests(unittest.TestCase):
+    """Committing evidence moves HEAD; the evidence stays valid as long as the source under
+    test (everything outside the evidence root) is identical between the two commits."""
+
+    def make_repo(self):
+        import subprocess
+        temp = tempfile.mkdtemp()
+        self.addCleanup(lambda: __import__("shutil").rmtree(temp, ignore_errors=True))
+        root = Path(temp)
+
+        def git(*args):
+            return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=True).stdout.strip()
+
+        git("init", "-q")
+        git("config", "user.email", "t@example.com")
+        git("config", "user.name", "t")
+        (root / "lib.py").write_text("print(1)\n", encoding="utf-8")
+        git("add", "-A"); git("commit", "-q", "-m", "source")
+        source_commit = git("rev-parse", "HEAD")
+        evidence = root / ".agents/evaluations/runtime/2026-09-16-release-linen"
+        evidence.mkdir(parents=True)
+        (evidence / "evidence.json").write_text("{}", encoding="utf-8")
+        git("add", "-A"); git("commit", "-q", "-m", "evidence")
+        evidence_commit = git("rev-parse", "HEAD")
+        (root / "lib.py").write_text("print(2)\n", encoding="utf-8")
+        git("add", "-A"); git("commit", "-q", "-m", "source change")
+        changed_commit = git("rev-parse", "HEAD")
+        return root, source_commit, evidence_commit, changed_commit
+
+    def test_evidence_only_commits_are_source_equivalent(self):
+        from lib.theme_factory.release import source_equivalent
+        root, source_commit, evidence_commit, changed_commit = self.make_repo()
+        self.assertTrue(source_equivalent(source_commit, evidence_commit, cwd=root))
+        self.assertFalse(source_equivalent(source_commit, changed_commit, cwd=root))
+        self.assertTrue(source_equivalent(source_commit, source_commit, cwd=root))

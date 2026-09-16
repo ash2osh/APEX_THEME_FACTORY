@@ -45,6 +45,12 @@ case "${FAKE_SQL_MODE:-success}" in
     if [[ "$input" == *"THEME_FACTORY_TARGET="* ]]; then
       printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
     fi
+    # `apex validate -input <dir>`: apply the compiler checks the real SQLcl would
+    if [[ "$input" =~ apex[[:space:]]+validate[[:space:]]+-input[[:space:]]+\"([^\"]+)\" ]] || [[ "$input" =~ apex[[:space:]]+validate[[:space:]]+-input[[:space:]]+([^[:space:]]+) ]]; then
+      if ! python3 "$fixture_bin/apexlang_lint.py" "${BASH_REMATCH[1]}"; then
+        exit 1
+      fi
+    fi
     if [[ "$input" == *"between 9000 and 9099"* ]] || [[ "$input" == *"CONSUMER_OCCUPIED_QUERY"* ]]; then
       if [ -n "${FAKE_SQL_OCCUPIED_IDS:-}" ]; then
         IFS=',' read -ra ADDR <<< "$FAKE_SQL_OCCUPIED_IDS"

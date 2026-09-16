@@ -4,10 +4,4 @@ app NO_GP (
     userInterface {
         currentTheme: @universal-theme
     }
-    javaScript {
-        fileUrls: []
-    }
-    css {
-        fileUrls: []
-    }
 )

@@ -13,6 +13,7 @@ from typing import List, Optional, Tuple
 
 from lib.theme_factory.apexlang import (
     RUNTIME_JS_URL,
+    set_file_urls,
     build_bootstrap_regions,
     build_switcher_entries,
     canonical_digest,
@@ -82,12 +83,20 @@ def _remove_theme_from_static_files(static_files_apx: Path, prefix: str) -> None
     if not static_files_apx.exists():
         return
     content = static_files_apx.read_text(encoding="utf-8")
-    # File block pattern: file "prefix/..." (...)
+    # `file "<prefix>..." ( ... )` blocks, anchored at line start so an entry on line 1 is matched too
     pattern = re.compile(
-        r'\n[ \t]*file[ \t]+"' + re.escape(prefix) + r'[^"]*"[ \t]*\([^\)]*\)',
-        re.MULTILINE | re.DOTALL,
+        r'^[ \t]*file[ \t]+"' + re.escape(prefix) + r'[^"\n]*"[ \t]*\([^)]*\)[ \t]*\n?(?:[ \t]*\n)?',
+        re.MULTILINE,
     )
-    new_content = pattern.sub("", content)
+    new_content = pattern.sub("", content).lstrip("\n")
+    if not new_content.strip():
+        # A component file with no components must be deleted, not left empty (pitfalls §3.4);
+        # drop the now-empty static-files directory as well so the export matches a pristine one.
+        static_files_apx.unlink()
+        static_dir = static_files_apx.parent / "static-files"
+        if static_dir.exists() and not any(path.is_file() for path in static_dir.rglob("*")):
+            shutil.rmtree(static_dir)
+        return
     static_files_apx.write_text(new_content, encoding="utf-8")
 
 
@@ -95,23 +104,18 @@ def _remove_theme_from_app_css(app_apx: Path, theme_name: str) -> None:
     if not app_apx.exists():
         return
     content = app_apx.read_text(encoding="utf-8")
-    # In css { fileUrls: [ ... ] }
-    pattern = re.compile(
-        r'[ \t]*(?:#APP_FILES#)?theme-factory/packages/' + re.escape(theme_name) + r'/[^,\n\]]+,?[ \t]*\n?',
-    )
-    new_content = pattern.sub("", content)
-    app_apx.write_text(new_content, encoding="utf-8")
+    target = inspect_export(app_apx.parent)
+    remaining = [url for url in target.css_urls if f"theme-factory/packages/{theme_name}/" not in url]
+    app_apx.write_text(set_file_urls(content, "css", remaining), encoding="utf-8")
 
 
 def _remove_runtime_from_app(app_apx: Path) -> None:
     if not app_apx.exists():
         return
     content = app_apx.read_text(encoding="utf-8")
-    pattern = re.compile(
-        r'[ \t]*(?:#APP_FILES#)?theme-factory/runtime/[^,\n\]]+,?[ \t]*\n?',
-    )
-    new_content = pattern.sub("", content)
-    app_apx.write_text(new_content, encoding="utf-8")
+    target = inspect_export(app_apx.parent)
+    remaining = [url for url in target.javascript_urls if url != RUNTIME_JS_URL]
+    app_apx.write_text(set_file_urls(content, "javaScript", remaining), encoding="utf-8")
 
 
 def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> None:

@@ -29,6 +29,8 @@ import tempfile
 import zipfile
 from typing import Dict, List, Optional
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # allow `python3 tools/live_matrix.py`
+
 from lib.theme_factory.apexlang import canonical_digest, inspect_export, read_install_state
 from lib.theme_factory.sqlcl import SqlclClient
 

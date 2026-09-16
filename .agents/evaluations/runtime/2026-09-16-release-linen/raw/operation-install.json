@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "4c1abe1bb3d0f58a8d5b3c16627af4440640fbce",
+  "packageSha256": "60c03d1393e2b00b4d8467fb568b18146ecf42c5a8295c7256ec205b6809bda6",
+  "capturedAt": "2026-09-16T13:48:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/packages/linen-1.0.0/linen-1.0.0",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "\",\n+  \"switcherEnabled\": false,\n+  \"runtimeFiles\": {\n+    \"theme-factory-runtime.js\": \"112dbaaf8f4583e6e525c242066f7b80dc812a3ab2de4303891effca73aae9dd\"\n+  },\n+  \"themes\": [\n+    {\n+      \"name\": \"linen\",\n+      \"title\": \"Linen\",\n+      \"version\": \"1.0.0\",\n+      \"className\": \"app-theme-linen\",\n+      \"stylesheetUrl\": \"#APP_FILES#theme-factory/packages/linen/1.0.0/theme.css\",\n+      \"files\": {\n+        \"theme-factory/packages/linen/1.0.0/theme.json\": \"22065698cd155504ed8883ebf5633ae67503c027a99628ac76681fc4221876a7\",\n+        \"theme-factory/packages/linen/1.0.0/theme.css\": \"1e74b3d8caa36c702468f9199ff5e9a2e9f65cf65fac782b373bbb571de545bb\",\n+        \"theme-factory/packages/linen/1.0.0/cover.jpg\": \"ab3cd2cd467eac085bcb107027941a43629113c84cebbad6e1567c32640ccf84\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,24 @@\n+file \"theme-factory/packages/linen/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/linen/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/linen/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/packages/linen-1.0.0/linen-1.0.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: 3d36730b30af5be0cd82b8accfb1f6eac336e91364af504034df71ccea86670f\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260916T133352Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/packages/linen-1.0.0/linen-1.0.0",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "lse,\n+  \"runtimeFiles\": {\n+    \"theme-factory-runtime.js\": \"112dbaaf8f4583e6e525c242066f7b80dc812a3ab2de4303891effca73aae9dd\"\n+  },\n+  \"themes\": [\n+    {\n+      \"name\": \"linen\",\n+      \"title\": \"Linen\",\n+      \"version\": \"1.0.0\",\n+      \"className\": \"app-theme-linen\",\n+      \"stylesheetUrl\": \"#APP_FILES#theme-factory/packages/linen/1.0.0/theme.css\",\n+      \"files\": {\n+        \"theme-factory/packages/linen/1.0.0/theme.json\": \"22065698cd155504ed8883ebf5633ae67503c027a99628ac76681fc4221876a7\",\n+        \"theme-factory/packages/linen/1.0.0/theme.css\": \"1e74b3d8caa36c702468f9199ff5e9a2e9f65cf65fac782b373bbb571de545bb\",\n+        \"theme-factory/packages/linen/1.0.0/cover.jpg\": \"ab3cd2cd467eac085bcb107027941a43629113c84cebbad6e1567c32640ccf84\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,27 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/linen/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/linen/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/linen/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/packages/linen-1.0.0/linen-1.0.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 73ff3b02653ad02f4a5a2260c3a6b93c42339cb35079827f632d48f13a17286c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260916T134133Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

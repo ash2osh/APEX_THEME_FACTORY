@@ -1,7 +1,26 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: live Chrome DevTools WCAG AA contrast audit on reference surfaces (p4000, p6303, p6304, and consumer fixtures) reporting 0 package failures before marking verified. Evaluated 2026-09-14 (demoted because both corrected runs are AMBIGUOUS due to lack of Chrome session; see evaluations/runs/2026-09-14/11-dark-package-coverage-{baseline-eda510d,current-neutral}.md). The knowledge in pitfalls.md §1.1–1.4 is accurate and retained.
+**Accepted 2026-09-17** — the live contrast audit this finding was waiting for finally ran (24 pages of app
+102, 4 469 text nodes, plus interaction states; `evaluations/runs/2026-09-16/11-dark-package-coverage-current.md`),
+and it confirms the mechanism decisively — then **extends** it. Every package-caused failure it found traces to
+exactly the `:root` freeze described below, including one the grader re-measured independently: selecting an
+Interactive Grid row under the dark package paints the cells Iris' literal `#e4f1f7` under light text,
+**1.06:1**, because `Core.min.css` declares all 15 `--a-palette-*` atoms (and `--a-base-link-text-color`) as
+`var(--ut-*)` on `:root`. `Iris.min.css` does the same for 32 `--oj-*` (Oracle JET) tokens, which JET then
+bakes into SVG `fill` at bootstrap. Counter-example worth knowing: FullCalendar's `--fc-*` are declared on an
+element scope (`.apex-fullcalendar-5`) and are therefore *not* frozen. All three additions are recorded in
+`knowledge/pitfalls.md` §1.2.
+
+Note on the promotion condition: the earlier status made this knowledge finding's promotion depend on the
+audit reporting **0 package failures** — a condition about a *package's* release readiness, not about whether
+this knowledge is true. The audit reported failures, and each one is a positive confirmation of the mechanism.
+The package-readiness question is a separate, still-open finding
+(`findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md`), and scenario 11 is recorded as FAILED
+against the package.
+
+Earlier status, for the record: *Pending (2026-09-15) — missing evidence: live Chrome WCAG AA contrast audit on
+reference surfaces reporting 0 package failures before marking verified.*
 
 Category:
 UNIVERSAL-THEME-KNOWLEDGE

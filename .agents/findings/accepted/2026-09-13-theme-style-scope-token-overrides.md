@@ -1,7 +1,22 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: matched baseline/current re-run of scenario 14 against the canonical form-field-border prompt with the neutral Given (no solution giveaway). Evaluation 14 run 2026-09-14 (see evaluations/runs/2026-09-14/14-theme-style-scope-{baseline,current}.md) was corrected across two review rounds: baseline tested buttons task while current tested form fields; prompt handed Given solution verbatim. Scenario file updated with evidence completeness checklist; awaiting clean matched re-run.
+**Accepted 2026-09-17** — evaluation 14 run as a valid matched pair for the first time (one task, one neutral
+`Given` that states only where atoms and modifiers are declared): **current PASS, baseline PASS**
+(`evaluations/runs/2026-09-16/14-theme-style-scope-{current,baseline}.md`). Both evaluees placed the
+`--a-field-input-border-*` override on the theme-style scope, neither at `:root`, neither as a property
+override that would fight a modifier.
+
+Promoted on the strength of the knowledge, not of a differential: the observation below is runtime-verified
+(computed atom values and CSSOM walk on the live app, and the same mechanism re-confirmed across the
+2026-09-16 live runs), and its scenario passes. The `docs/DESIGN_SYSTEM.md` §1 bullet this finding produced is
+**not load-bearing** for the tested task, and the baseline run shows why: at `97a3354`
+`static-files/css/apex/forms.css` already carried an `.apex-theme-iris { --a-field-input-*: … }` block, so the
+repository taught the technique by example before the prose stated it. The bullet stays because it makes the
+rule explicit for cases with no such example, not because an evaluee needed it here.
+
+Earlier status, for the record: *Pending (2026-09-15) — missing a matched baseline/current re-run against the
+canonical form-field prompt with the neutral Given.*
 
 Category:
 APPLICATION-CONVENTION

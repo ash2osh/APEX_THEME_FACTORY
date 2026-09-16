@@ -1,7 +1,22 @@
 # Finding
 
 Status:
-Pending (2026-09-15) — Missing evidence: evaluation scenario isolating the load-bearing effect of Cards render timing (`tablemodelviewpagechange`) and navigation menu radio groups where the correct code is not already present in sibling files. Evaluated 2026-09-14 (demoted because baseline passed by reading existing code; see evaluations/runs/2026-09-14/13-cards-render-event-baseline-eda510d.md). Current still passes; knowledge in pitfalls.md §2.4 is accurate and retained.
+**Accepted 2026-09-17** — runtime-verified knowledge (listener dumps on `document`/`window`, the `theme42.min.js`
+trigger sequence, live `menu('option','items')` reads, and the p1912 console error that disappears with the
+guard), and its scenario passes on both sides
+(`evaluations/runs/2026-09-14/13-cards-render-event-{baseline-eda510d,current}.md`, the corrected isolation
+point).
+
+Promoted for the knowledge, with the same caveat as the `htmlDomId` finding: the baseline passed by reading
+the handler that already existed in application code, so the skill-text change is not demonstrated
+load-bearing, and scenario 13 exercises only the Cards-render-timing half — the navigation-menu radio group
+and the `$('#missing').menu(…)` empty-set guard are still untested by any scenario (narrowed in round 7 to say
+so). The 2026-09-16 round adds an independent instance of the same class of trap, recorded separately: a
+Dynamic Content region's refresh never fires `apexafterrefresh` at all when the region prints with `htp.p`
+(`findings/pending/2026-09-16-dynamic-content-htp-p-cannot-refresh.md`).
+
+Earlier status, for the record: *Pending (2026-09-15) — missing a scenario isolating the load-bearing effect
+where the correct code is not already present in sibling files.*
 
 Category:
 APEX-JAVASCRIPT-PATTERN

@@ -7,9 +7,31 @@ from typing import Sequence
 from lib.theme_factory.manifest import FontFace, ThemeManifest
 
 IMPORT_RE = re.compile(
-    r'^[ \t]*@import\s+(?:url\()?\s*["\']([^"\']+)["\']\s*\)?\s*;[ \t]*(?:\r?\n)?',
+    r"^[ \t]*@import\s+(?:"
+    r"url\(\s*(?:\"(?P<url_dq>[^\"]+)\"|'(?P<url_sq>[^']+)'|(?P<url_bare>[^)\s\"']+))\s*\)"
+    r"|\"(?P<dq>[^\"]+)\"|'(?P<sq>[^']+)'"
+    r")[ \t]*;[ \t]*(?:\r?\n|$)",
     re.MULTILINE,
 )
+ANY_IMPORT_RE = re.compile(r"^[ \t]*@import\b", re.MULTILINE)
+
+
+def _mask_comments(content: str) -> str:
+    """Replace comment bytes with spaces while preserving offsets/newlines."""
+    chars = list(content)
+    index = 0
+    while index < len(chars) - 1:
+        if chars[index] == "/" and chars[index + 1] == "*":
+            end = content.find("*/", index + 2)
+            if end == -1:
+                end = len(chars) - 2
+            for pos in range(index, min(end + 2, len(chars))):
+                if chars[pos] not in "\r\n":
+                    chars[pos] = " "
+            index = end + 2
+        else:
+            index += 1
+    return "".join(chars)
 
 HEADING_SELECTORS = (
     "h1", "h2", "h3", "h4", "h5", "h6",
@@ -43,18 +65,31 @@ def flatten_css(entry: Path, allowed_roots: Sequence[Path]) -> str:
         active_stack.append(file_path)
 
         content = file_path.read_text(encoding="utf-8")
+        scan_content = _mask_comments(content)
         out_chunks = []
         last_idx = 0
 
-        for match in IMPORT_RE.finditer(content):
+        consumed_spans: list[tuple[int, int]] = []
+        for match in IMPORT_RE.finditer(scan_content):
             start, end = match.span()
+            consumed_spans.append((start, end))
             # Add text before import
             pre_text = content[last_idx:start]
             if pre_text:
                 out_chunks.append(pre_text)
             last_idx = end
 
-            target_str = match.group(1).strip()
+            target_str = next(
+                value
+                for value in (
+                    match.group("url_dq"),
+                    match.group("url_sq"),
+                    match.group("url_bare"),
+                    match.group("dq"),
+                    match.group("sq"),
+                )
+                if value is not None
+            ).strip()
             # Validate target string
             if target_str.startswith(("http://", "https://", "//")):
                 raise ValueError(f"remote CSS imports are forbidden: {target_str}")
@@ -68,6 +103,14 @@ def flatten_css(entry: Path, allowed_roots: Sequence[Path]) -> str:
         post_text = content[last_idx:]
         if post_text:
             out_chunks.append(post_text)
+
+        masked_remainder = list(scan_content)
+        for start, end in consumed_spans:
+            for pos in range(start, end):
+                if masked_remainder[pos] not in "\r\n":
+                    masked_remainder[pos] = " "
+        if ANY_IMPORT_RE.search("".join(masked_remainder)):
+            raise ValueError(f"unresolved CSS import in {file_path}")
 
         active_stack.pop()
 
@@ -185,7 +228,7 @@ def build_theme_css(
 
     # 3. Scoped Theme CSS
     theme_css_entry = theme_root / "css/theme.css"
-    allowed_theme_roots = (theme_root / "css", repo_root / "static-files/css")
+    allowed_theme_roots = (theme_root / "css",)
     parts.append("\n/* ==========================================================================\n   Theme Package Styles\n   ========================================================================== */\n")
     parts.append(flatten_css(theme_css_entry, allowed_theme_roots))
 

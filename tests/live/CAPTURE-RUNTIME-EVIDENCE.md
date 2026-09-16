@@ -28,7 +28,14 @@ Execute the following JavaScript snippet via `evaluate_expression` inside the se
   const switcherBtn = document.querySelector('.t-NavigationBar-item.theme-factory-managed-switcher');
 
   return {
+    schemaVersion: 1,
+    evidenceType: 'browser-runtime',
+    theme: document.documentElement.dataset.appThemeCurrent || '',
+    gitCommit: '<FULL_GIT_COMMIT>',
+    packageSha256: '<PACKAGE_SHA256>',
     capturedAt: new Date().toISOString(),
+    consumer: '<minimal|business>',
+    viewportWidth: window.innerWidth,
     url: window.location.href,
     appId: String(window.apex?.env?.APP_ID || ''),
     appAlias: String(window.apex?.env?.APP_ALIAS || ''),
@@ -48,7 +55,10 @@ Execute the following JavaScript snippet via `evaluate_expression` inside the se
     failedRequests: [], // Populated from MCP network tools
     fonts: [],
     fontApexFamilyBefore: window.getComputedStyle(document.body).fontFamily,
-    fontApexFamilyAfter: window.getComputedStyle(document.body).fontFamily
+    fontApexFamilyAfter: window.getComputedStyle(document.body).fontFamily,
+    fontsVerified: false,
+    accessibilityVerified: false,
+    persistenceVerified: false
   };
 })();
 ```
@@ -58,4 +68,6 @@ Execute the following JavaScript snippet via `evaluate_expression` inside the se
 2. Use `get_network_activity` to retrieve failed requests (status >= 400 or failed). Map failed request URLs to `failedRequests`.
 
 ## 4. Save Evidence JSON
-Validate the result against `tests/live/runtime-evidence.schema.json` and save to `.agents/evaluations/runtime/<timestamp>-evidence.json`.
+Replace the angle-bracket placeholders with the exact full Git commit, packaged ZIP SHA-256, and consumer identity. Set the three verification booleans to `true` only after their corresponding checks have actually passed. Validate the result against `tests/live/runtime-evidence.schema.json` and save it below the release evidence directory (normally `raw/`) so the Layer D summary can bind it by relative path and SHA-256.
+
+The release checker rejects summary-only claims. Every Layer C, D, and E `PASS` must be backed by raw JSON references of the form `{"path":"raw/file.json","sha256":"..."}`. Both summary and raw evidence must identify the exact theme, full Git commit, and packaged ZIP SHA-256 used for the release.

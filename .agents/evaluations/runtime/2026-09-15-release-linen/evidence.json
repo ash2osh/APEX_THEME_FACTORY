@@ -1,135 +1,27 @@
-[
-  {
-    "layer": "A",
-    "check": "offline_tests",
-    "path": "tests/run-offline.sh",
-    "status": "PASS",
-    "details": "All 178 offline unit tests and package verification tests pass"
-  },
-  {
-    "layer": "A",
-    "check": "css_policy",
-    "path": "sample-themes/linen/css/tokens.css",
-    "status": "PASS",
-    "details": "Zero unmapped literals; Iris token contract strictly respected"
-  },
-  {
-    "layer": "A",
-    "check": "package_verify",
-    "path": "dist/linen/linen-1.0.0.zip",
-    "status": "PASS",
-    "details": "SHA-256 manifest and archive checksum verified"
-  },
-  {
-    "layer": "B",
-    "check": "app102_export_parity",
-    "path": "DEMO-102",
-    "status": "PASS",
-    "details": "Parity report verified: 12/12 checks match between source and DB export"
-  },
-  {
-    "layer": "B",
-    "check": "consumer_minimal_parity",
-    "path": "DEMO-9010",
-    "status": "PASS",
-    "details": "APEXLang export matches staged patch, 0 compile errors"
-  },
-  {
-    "layer": "B",
-    "check": "consumer_business_parity",
-    "path": "DEMO-9011",
-    "status": "PASS",
-    "details": "APEXLang export matches staged patch, 0 compile errors"
-  },
-  {
-    "layer": "C",
-    "check": "browser_page409_lifecycle",
-    "path": "http://localhost:8181/ords/r/demo/ut/theme-factory-lifecycle",
-    "status": "PASS",
-    "details": "Dynamic region refresh, Alpine state preserved, P409_DISCLOSURE_OPEN synced"
-  },
-  {
-    "layer": "C",
-    "check": "browser_console",
-    "path": "http://localhost:8181/ords/r/demo/tf-consumer-minimal-9010/home",
-    "status": "PASS",
-    "details": "Chrome DevTools console clean: 0 errors"
-  },
-  {
-    "layer": "C",
-    "check": "browser_css_load",
-    "path": "#APP_FILES#theme-factory/packages/linen/1.0.0/theme.css",
-    "status": "PASS",
-    "details": "HTTP 200 OK, linen theme stylesheet applied"
-  },
-  {
-    "layer": "C",
-    "check": "browser_html_classes",
-    "path": "document.documentElement",
-    "status": "PASS",
-    "details": "html has app-theme-linen and data-app-theme-current='linen'"
-  },
-  {
-    "layer": "C",
-    "check": "browser_wcag_contrast",
-    "path": "sample-themes/linen",
-    "status": "PASS",
-    "details": "Text on #fbf9f8 background measures >= 11:1 (WCAG AA pass)"
-  },
-  {
-    "layer": "C",
-    "check": "font_apex_isolation",
-    "path": ".fa",
-    "status": "PASS",
-    "details": "Font APEX icons retain Font APEX family and bounding dimensions"
-  },
-  {
-    "layer": "D",
-    "check": "consumer_minimal_install",
-    "path": "DEMO-9010",
-    "status": "PASS",
-    "details": "Dry-run, confirmation, and import into minimal consumer succeeded"
-  },
-  {
-    "layer": "D",
-    "check": "consumer_business_install",
-    "path": "DEMO-9011",
-    "status": "PASS",
-    "details": "Multi-theme coexistence with solarized-dark and switcher verified"
-  },
-  {
-    "layer": "D",
-    "check": "state_persistence",
-    "path": "localStorage['apex.themeFactory.9011']",
-    "status": "PASS",
-    "details": "Theme choice persists across page navigation and reload"
-  },
-  {
-    "layer": "D",
-    "check": "consumer_uninstall",
-    "path": "DEMO-9011",
-    "status": "PASS",
-    "details": "Clean uninstallation, fallback to remaining theme, zero duplicate components"
-  },
-  {
-    "layer": "E",
-    "check": "agent_layout",
-    "path": "scripts/check-agent-layout.sh",
-    "status": "PASS",
-    "details": "20 skills verified, all router links present, zero broken paths"
-  },
-  {
-    "layer": "E",
-    "check": "agent_evaluations",
-    "path": ".agents/evaluations/",
-    "status": "PASS",
-    "details": "5 evaluation scenarios validated against runtime environment"
-  },
-  {
-    "layer": "E",
-    "check": "findings_resolution",
-    "path": ".agents/findings/",
-    "status": "PASS",
-    "details": "All pending findings updated with live test evidence"
-  }
-]
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "checks": [
+    {
+      "layer": "C",
+      "check": "database_installation",
+      "status": "UNVERIFIED",
+      "artifact": "",
+      "details": "No retained digest-bound SQLcl install, coexistence, uninstall, and restore artifact for Linen."
+    },
+    {
+      "layer": "D",
+      "check": "browser_runtime_matrix",
+      "status": "UNVERIFIED",
+      "artifact": "",
+      "details": "No retained Linen consumer evidence for all required pages, states, widths, fonts, console, network, accessibility, and persistence checks."
+    },
+    {
+      "layer": "E",
+      "check": "agent_behavior_matrix",
+      "status": "UNVERIFIED",
+      "artifact": "",
+      "details": "Claude Code and Antigravity behavioral smoke runs remain unverified; five agent evaluation scenarios remain open."
+    }
+  ]
+}

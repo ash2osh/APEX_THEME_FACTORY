@@ -58,7 +58,7 @@
 /* Iris declares the hover tint with !important (Iris.min.css: `.is-hover{…!important}`); a
    translucent-white tint is invisible on a white panel, so the override must be !important too. */
 .app-theme-linen .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
-    background-color: var(--ut-component-highlight-background-color) !important;
+    background-color: var(--ut-component-highlight-background-color) !important; /* Iris: `.is-hover{…!important}` */
 }
 .app-theme-linen .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
 .app-theme-linen .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,

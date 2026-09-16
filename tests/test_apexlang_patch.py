@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import shutil
 import tempfile
 import unittest
@@ -83,12 +84,89 @@ class ApexLangPatchTests(unittest.TestCase):
 
         self.assertEqual(digest1, digest2)
 
+    def test_invalid_registry_fails_closed(self):
+        root = self.fixture_copy("minimal")
+        registry = root / "shared-components/static-files/theme-factory/runtime/registry.json"
+        registry.parent.mkdir(parents=True)
+        registry.write_text("{not-json", encoding="utf-8")
+
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve")
+
+        self.assertIn("registry", str(context.exception).lower())
+
+    def test_upgrade_refuses_tampered_owned_file(self):
+        root = self.fixture_copy("minimal")
+        first = plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve")
+        apply_patch(first)
+        installed_css = root / "shared-components/static-files/theme-factory/packages/valid-basic/1.0.0/theme.css"
+        installed_css.write_text("tampered", encoding="utf-8")
+
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve")
+
+        self.assertIn("ownership", str(context.exception).lower())
+
+    def test_reinstall_refuses_tampered_runtime_file(self):
+        root = self.fixture_copy("minimal")
+        apply_patch(plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve"))
+        runtime = root / "shared-components/static-files/theme-factory/runtime/theme-factory-runtime.js"
+        runtime.write_text("tampered", encoding="utf-8")
+
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve")
+
+        self.assertIn("runtime ownership", str(context.exception).lower())
+
+    def test_upgrade_deletes_prior_owned_version(self):
+        root = self.fixture_copy("minimal")
+        package = Path(tempfile.mkdtemp()) / "valid-basic"
+        self.addCleanup(shutil.rmtree, package.parent)
+        shutil.copytree(Path("tests/fixtures/packages/valid-basic"), package)
+        apply_patch(plan_install(root, package, "preserve"))
+        manifest = json.loads((package / "theme.json").read_text(encoding="utf-8"))
+        manifest["version"] = "2.0.0"
+        (package / "theme.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+        upgrade = plan_install(root, package, "preserve")
+        old_version = root / "shared-components/static-files/theme-factory/packages/valid-basic/1.0.0"
+        self.assertIn(old_version, upgrade.staged_deletions)
+
+    def test_unmarked_managed_region_name_is_a_collision(self):
+        root = self.fixture_copy("minimal")
+        page_zero = root / "pages/p00000-global-page.apx"
+        page_zero.write_text(
+            page_zero.read_text(encoding="utf-8").replace(
+                "\n)", "\n    region theme_factory_bootstrap ( name: User Region )\n)"
+            ),
+            encoding="utf-8",
+        )
+
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, Path("tests/fixtures/packages/valid-basic"), "preserve")
+
+        self.assertIn("collision", str(context.exception).lower())
+
     def test_canonical_digest_stability_ignores_export_date(self):
         root = self.fixture_copy("minimal")
         d1 = canonical_digest(root)
         (root / "export.info").write_text("exportDate: 2026-09-15T12:00:00\n", encoding="utf-8")
         d2 = canonical_digest(root)
         self.assertEqual(d1, d2)
+
+    def test_canonical_digest_detects_semantic_whitespace_changes(self):
+        root = self.fixture_copy("minimal")
+        before = canonical_digest(root)
+        application = root / "application.apx"
+        application.write_text(application.read_text(encoding="utf-8").replace("    name:", "        name:", 1), encoding="utf-8")
+        self.assertNotEqual(before, canonical_digest(root))
+
+    def test_canonical_digest_does_not_ignore_date_like_source_lines(self):
+        root = self.fixture_copy("minimal")
+        before = canonical_digest(root)
+        application = root / "application.apx"
+        application.write_text(application.read_text(encoding="utf-8") + "\n-- Date: <img src=x>\n", encoding="utf-8")
+        self.assertNotEqual(before, canonical_digest(root))
 
 
 if __name__ == "__main__":

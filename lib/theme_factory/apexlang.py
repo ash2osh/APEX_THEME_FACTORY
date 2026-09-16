@@ -11,7 +11,7 @@ import shutil
 from typing import Dict, List, Optional, Set, Tuple
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import ThemeManifest, load_manifest
+from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX, ThemeManifest, load_manifest
 
 MIME_BY_SUFFIX = {
     ".css": "text/css",
@@ -33,6 +33,7 @@ class InstalledPackage:
     version: str
     class_name: str
     stylesheet_url: str
+    files: Dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -103,46 +104,26 @@ def _find_matching_brace(text: str, open_pos: int) -> int:
 
 def strip_bootstrap_regions(p0_text: str) -> str:
     """Strip Theme Factory bootstrap regions from page 0 APEXLang text."""
-    p0_text = re.sub(
+    cleaned = re.sub(
         rf"\s*(?:--|//) {MARKER}:BEGIN:REGIONS[\s\S]*?(?:--|//) {MARKER}:END:REGIONS\s*",
         "\n",
         p0_text,
     )
-    while True:
-        m = re.search(
-            r"\n([ \t]*)region\s+(?:theme_factory_bootstrap\b|theme_factory_bootstrap_dialog\b|\"Theme Factory Bootstrap[^\"]*\")\s*\(",
-            p0_text,
-        )
-        if not m:
-            break
-        open_pos = m.end() - 1
-        close_pos = _find_matching_brace(p0_text, open_pos)
-        if close_pos == -1:
-            break
-        p0_text = p0_text[:m.start()] + "\n" + p0_text[close_pos + 1:]
-    return p0_text
+    if re.search(r"\bregion\s+(?:theme_factory_bootstrap\b|theme_factory_bootstrap_dialog\b|\"Theme Factory Bootstrap)", cleaned):
+        raise PackageError("Managed Page 0 region name collision outside Theme Factory markers")
+    return cleaned
 
 
 def strip_switcher_entries(nav_text: str) -> str:
     """Strip Theme Factory switcher list entries from navigation-bar APEXLang text."""
-    nav_text = re.sub(
+    cleaned = re.sub(
         rf"\s*(?:--|//) {MARKER}:BEGIN:SWITCHER[\s\S]*?(?:--|//) {MARKER}:END:SWITCHER\s*",
         "\n",
         nav_text,
     )
-    while True:
-        m = re.search(
-            r"\n([ \t]*)entry\s+\"theme-factory-[^\"]*\"\s*\(",
-            nav_text,
-        )
-        if not m:
-            break
-        open_pos = m.end() - 1
-        close_pos = _find_matching_brace(nav_text, open_pos)
-        if close_pos == -1:
-            break
-        nav_text = nav_text[:m.start()] + "\n" + nav_text[close_pos + 1:]
-    return nav_text
+    if re.search(r'\bentry\s+"theme-factory-[^"]*"\s*\(', cleaned):
+        raise PackageError("Managed navigation entry name collision outside Theme Factory markers")
+    return cleaned
 
 
 def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: list) -> str:
@@ -404,29 +385,130 @@ def inspect_export(export_dir: Path) -> TargetExport:
     )
 
 
-def read_install_state(export_dir: Path) -> Tuple[List[InstalledPackage], str, bool]:
-    """Read installed Theme Factory packages, default theme, and switcher state."""
+def read_registry_document(export_dir: Path) -> Optional[dict]:
     registry_file = export_dir / "shared-components/static-files/theme-factory/runtime/registry.json"
     if not registry_file.exists():
-        return [], "iris", False
+        return None
 
     try:
         data = json.loads(registry_file.read_text(encoding="utf-8"))
-        packages = [
-            InstalledPackage(
-                name=p["name"],
-                title=p["title"],
-                version=p["version"],
-                class_name=p["className"],
-                stylesheet_url=p["stylesheetUrl"],
-            )
-            for p in data.get("themes", [])
-        ]
+        if not isinstance(data, dict) or not isinstance(data.get("themes", []), list):
+            raise ValueError("registry root or themes is invalid")
+        return data
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise PackageError(f"Invalid Theme Factory registry {registry_file}: {exc}") from exc
+
+
+def read_install_state(export_dir: Path) -> Tuple[List[InstalledPackage], str, bool]:
+    """Read installed Theme Factory packages, default theme, and switcher state."""
+    data = read_registry_document(export_dir)
+    if data is None:
+        return [], "iris", False
+    try:
+        packages = []
+        for package_data in data.get("themes", []):
+            if not isinstance(package_data, dict):
+                raise ValueError("theme entry is not an object")
+            name = package_data["name"]
+            version = package_data["version"]
+            class_name = package_data["className"]
+            stylesheet_url = package_data["stylesheetUrl"]
+            expected_stylesheet = f"#APP_FILES#theme-factory/packages/{name}/{version}/theme.css"
+            if not isinstance(name, str) or NAME_REGEX.fullmatch(name) is None:
+                raise ValueError("theme name is unsafe")
+            if not isinstance(version, str) or SEMVER_REGEX.fullmatch(version) is None:
+                raise ValueError("theme version is unsafe")
+            if class_name != f"app-theme-{name}" or stylesheet_url != expected_stylesheet:
+                raise ValueError("theme class or stylesheet URL does not match its identity")
+            files = package_data.get("files", {})
+            if not isinstance(files, dict):
+                raise ValueError("theme files are not an object")
+            packages.append(InstalledPackage(
+                name=name,
+                title=package_data["title"],
+                version=version,
+                class_name=class_name,
+                stylesheet_url=stylesheet_url,
+                files=dict(files),
+            ))
         default_theme = data.get("defaultTheme", "iris")
         switcher_enabled = bool(data.get("switcherEnabled", False))
         return packages, default_theme, switcher_enabled
-    except Exception:
-        return [], "iris", False
+    except (ValueError, TypeError, KeyError) as exc:
+        raise PackageError(f"Invalid Theme Factory registry content: {exc}") from exc
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def verify_package_ownership(export_dir: Path, package: InstalledPackage) -> None:
+    """Refuse destructive replacement/removal unless every owned byte matches the registry."""
+    if not package.files:
+        raise PackageError(f"Missing ownership digests for installed theme '{package.name}'")
+    if NAME_REGEX.fullmatch(package.name) is None or SEMVER_REGEX.fullmatch(package.version) is None:
+        raise PackageError(f"Unsafe ownership identity for installed theme '{package.name}'")
+    static_root = (export_dir / "shared-components/static-files").resolve()
+    packages_root = (static_root / "theme-factory/packages").resolve()
+    if not packages_root.is_relative_to(static_root):
+        raise PackageError("Theme Factory package namespace escapes the static-file root")
+    theme_path = packages_root / package.name
+    version_path = theme_path / package.version
+    if theme_path.is_symlink() or version_path.is_symlink():
+        raise PackageError(f"Ownership path is a symlink for installed theme '{package.name}'")
+    theme_root = theme_path.resolve()
+    version_root = version_path.resolve()
+    if theme_root.parent != packages_root or version_root.parent != theme_root:
+        raise PackageError(f"Ownership path escapes package namespace for installed theme '{package.name}'")
+    expected_paths: Set[Path] = set()
+    for relative, expected_digest in package.files.items():
+        if not isinstance(relative, str) or not re.fullmatch(r"[a-f0-9]{64}", str(expected_digest)):
+            raise PackageError(f"Invalid ownership metadata for installed theme '{package.name}'")
+        expected_prefix = f"theme-factory/packages/{package.name}/{package.version}/"
+        if not relative.startswith(expected_prefix):
+            raise PackageError(f"Ownership path is outside installed theme '{package.name}': {relative}")
+        raw_target = static_root / relative
+        target = raw_target.resolve()
+        if raw_target.is_symlink() or not target.is_relative_to(version_root) or not target.is_file():
+            raise PackageError(f"Ownership check failed for installed theme '{package.name}': {relative}")
+        if _sha256_file(target) != expected_digest:
+            raise PackageError(f"Ownership digest mismatch for installed theme '{package.name}': {relative}")
+        expected_paths.add(target)
+    actual_paths = {path.resolve() for path in version_root.rglob("*") if path.is_file()}
+    if actual_paths != expected_paths:
+        raise PackageError(f"Ownership file set mismatch for installed theme '{package.name}'")
+    siblings = {path.resolve() for path in theme_root.iterdir()} if theme_root.exists() else set()
+    if siblings != {version_root}:
+        raise PackageError(f"Unowned sibling content exists for installed theme '{package.name}'")
+
+
+def verify_runtime_ownership(export_dir: Path, registry: Optional[dict]) -> None:
+    runtime_root = (export_dir / "shared-components/static-files/theme-factory/runtime").resolve()
+    if not runtime_root.exists():
+        return
+    if registry is None or not isinstance(registry.get("runtimeFiles"), dict):
+        raise PackageError("Runtime files exist without ownership digests")
+    expected: Set[Path] = set()
+    for relative, expected_digest in registry["runtimeFiles"].items():
+        if not isinstance(relative, str) or not re.fullmatch(r"[a-f0-9]{64}", str(expected_digest)):
+            raise PackageError("Invalid runtime ownership metadata")
+        raw_target = runtime_root / relative
+        target = raw_target.resolve()
+        if raw_target.is_symlink() or not target.is_relative_to(runtime_root) or not target.is_file():
+            raise PackageError(f"Runtime ownership check failed: {relative}")
+        if _sha256_file(target) != expected_digest:
+            raise PackageError(f"Runtime ownership digest mismatch: {relative}")
+        expected.add(target)
+    actual = {
+        path.resolve() for path in runtime_root.rglob("*")
+        if path.is_file() and path.name != "registry.json"
+    }
+    if actual != expected:
+        raise PackageError("Runtime ownership file set mismatch")
 
 
 def canonical_digest(export_dir: Path) -> str:
@@ -438,14 +520,10 @@ def canonical_digest(export_dir: Path) -> str:
             if rel in ("export.info", "export.log"):
                 continue
             content = path.read_bytes()
-            # Normalize export date and newlines
-            lines = []
-            for line in content.splitlines():
-                line_str = line.decode("utf-8", errors="replace").strip()
-                if line_str.startswith(("exportDate:", "-- Date:")):
-                    continue
-                lines.append(line_str)
-            norm = "\n".join(lines).encode("utf-8")
+            if path.suffix == ".apx":
+                norm = content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+            else:
+                norm = content
             digest.update(rel.encode("utf-8") + b"\0" + norm + b"\0")
     return digest.hexdigest()
 
@@ -465,6 +543,12 @@ def plan_install(
     target = inspect_export(export_dir)
 
     installed_pkgs, current_default, prior_switcher = read_install_state(export_dir)
+    registry_document = read_registry_document(export_dir)
+    verify_runtime_ownership(export_dir, registry_document)
+
+    prior_package = next((package for package in installed_pkgs if package.name == manifest.name), None)
+    if prior_package:
+        verify_package_ownership(export_dir, prior_package)
     
     # Determine switcher enabled state
     if mode == "enable":
@@ -482,6 +566,7 @@ def plan_install(
         version=manifest.version,
         class_name=manifest.class_name,
         stylesheet_url=pkg_stylesheet_url,
+        files={},
     )
     other_pkgs = [p for p in installed_pkgs if p.name != manifest.name]
     all_pkgs = sorted(other_pkgs + [new_pkg], key=lambda x: x.name)
@@ -516,6 +601,24 @@ def plan_install(
             dst_asset = pkg_static_dir / asset_rel
             staged_copies.append((src_asset, dst_asset))
 
+    package_files = {
+        destination.relative_to(export_dir / "shared-components/static-files").as_posix(): _sha256_file(source)
+        for source, destination in staged_copies
+        if destination.is_relative_to(pkg_static_dir)
+    }
+    new_pkg = InstalledPackage(
+        name=new_pkg.name,
+        title=new_pkg.title,
+        version=new_pkg.version,
+        class_name=new_pkg.class_name,
+        stylesheet_url=new_pkg.stylesheet_url,
+        files=package_files,
+    )
+    all_pkgs = sorted(other_pkgs + [new_pkg], key=lambda package: package.name)
+    if prior_package and prior_package.version != manifest.version:
+        prior_dir = export_dir / f"shared-components/static-files/theme-factory/packages/{manifest.name}/{prior_package.version}"
+        staged_deletions.append(prior_dir)
+
     # Runtime assets
     runtime_dir = export_dir / "shared-components/static-files/theme-factory/runtime"
     runtime_js_src = package_root / "theme-factory-runtime.js"
@@ -527,10 +630,17 @@ def plan_install(
     if runtime_js_src.exists():
         staged_copies.append((runtime_js_src, runtime_dir / "theme-factory-runtime.js"))
 
+    runtime_files = {
+        destination.relative_to(runtime_dir).as_posix(): _sha256_file(source)
+        for source, destination in staged_copies
+        if destination.is_relative_to(runtime_dir)
+    }
+
     # Write registry.json
     registry_payload = {
         "defaultTheme": default_theme,
         "switcherEnabled": switcher_enabled,
+        "runtimeFiles": runtime_files,
         "themes": [
             {
                 "name": p.name,
@@ -538,6 +648,7 @@ def plan_install(
                 "version": p.version,
                 "className": p.class_name,
                 "stylesheetUrl": p.stylesheet_url,
+                "files": p.files,
             }
             for p in all_pkgs
         ],

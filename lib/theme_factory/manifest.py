@@ -13,6 +13,7 @@ SEMVER_REGEX = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?
 FONT_NAME_REGEX = re.compile(r"^[A-Za-z][A-Za-z0-9 _-]{0,63}$")
 FONT_FILE_REGEX = re.compile(r"^fonts/[a-z0-9]+(?:-[a-z0-9]+)*\.woff2$")
 LICENSE_FILE_REGEX = re.compile(r"^licenses/[A-Za-z0-9][A-Za-z0-9._-]*$")
+APEX_COMPATIBILITY = ">=26.1.0 <26.2.0"
 
 GENERIC_FONT_FAMILIES = {
     "serif", "sans-serif", "monospace", "system-ui", "ui-serif", "ui-sans-serif", "ui-monospace"
@@ -123,6 +124,10 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
         if req not in compat:
             raise PackageError(f"Missing required property 'compatibility/{req}'")
 
+    if compat["apex"] != APEX_COMPATIBILITY:
+        raise PackageError(
+            f"compatibility/apex must be '{APEX_COMPATIBILITY}'"
+        )
     if compat["themeNumber"] != 42:
         raise PackageError("compatibility/themeNumber must be 42")
     if compat["baseTheme"] != "ut-26.1":
@@ -264,6 +269,23 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
                 license=Path(license_str),
                 faces=tuple(parsed_faces),
             )
+
+    declared_font_files = {
+        face.file.as_posix()
+        for role in fonts_dict.values()
+        for face in role.faces
+    }
+    fonts_root = package_root / "fonts"
+    actual_font_files = {
+        path.relative_to(package_root).as_posix()
+        for path in fonts_root.rglob("*.woff2")
+        if path.is_file()
+    } if fonts_root.exists() else set()
+    unreferenced_fonts = sorted(actual_font_files - declared_font_files)
+    if unreferenced_fonts:
+        raise PackageError(
+            f"unreferenced font file '{unreferenced_fonts[0]}'"
+        )
 
     return ThemeManifest(
         schema_version=raw["schemaVersion"],

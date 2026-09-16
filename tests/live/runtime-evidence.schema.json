@@ -3,7 +3,14 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "schemaVersion",
+    "evidenceType",
+    "theme",
+    "gitCommit",
+    "packageSha256",
     "capturedAt",
+    "consumer",
+    "viewportWidth",
     "url",
     "appId",
     "appAlias",
@@ -23,10 +30,20 @@
     "failedRequests",
     "fonts",
     "fontApexFamilyBefore",
-    "fontApexFamilyAfter"
+    "fontApexFamilyAfter",
+    "fontsVerified",
+    "accessibilityVerified",
+    "persistenceVerified"
   ],
   "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": { "const": "browser-runtime" },
+    "theme": { "type": "string", "minLength": 1 },
+    "gitCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "packageSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "capturedAt": { "type": "string" },
+    "consumer": { "enum": ["minimal", "business"] },
+    "viewportWidth": { "enum": [1440, 1024, 768, 375] },
     "url": { "type": "string" },
     "appId": { "type": "string" },
     "appAlias": { "type": "string" },
@@ -62,6 +79,9 @@
       }
     },
     "fontApexFamilyBefore": { "type": "string" },
-    "fontApexFamilyAfter": { "type": "string" }
+    "fontApexFamilyAfter": { "type": "string" },
+    "fontsVerified": { "const": true },
+    "accessibilityVerified": { "const": true },
+    "persistenceVerified": { "const": true }
   }
 }

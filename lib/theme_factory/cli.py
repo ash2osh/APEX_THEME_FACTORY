@@ -41,7 +41,13 @@ def main() -> None:
 
     # uninstall
     uninst_p = subparsers.add_parser("uninstall", help="Uninstall theme from APEX application")
-    uninst_p.add_argument("--theme", required=True, help="Name of installed theme to remove")
+    uninstall_source = uninst_p.add_mutually_exclusive_group(required=True)
+    uninstall_source.add_argument("--theme", help="Name of installed theme to remove")
+    uninstall_source.add_argument(
+        "--package-root",
+        type=Path,
+        help="Path to the single-theme package whose theme should be removed",
+    )
     uninst_p.add_argument("--connection", required=True, help="SQLcl saved connection name")
     uninst_p.add_argument("--workspace", required=True, help="APEX workspace name")
     uninst_p.add_argument("--app-id", type=int, required=True, help="APEX application ID")

@@ -16,12 +16,17 @@ from lib.theme_factory.apexlang import (
     build_switcher_entries,
     canonical_digest,
     inspect_export,
+    read_install_state,
+    read_registry_document,
     strip_bootstrap_regions,
     strip_switcher_entries,
     TargetExport,
+    verify_package_ownership,
+    verify_runtime_ownership,
 )
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.install import OperationReport
+from lib.theme_factory.install import OperationReport, require_supported_apex_version
+from lib.theme_factory.manifest import NAME_REGEX
 from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
 
@@ -51,6 +56,15 @@ def choose_fallback(current_default: Optional[str], remaining: Tuple[str, ...] |
     if rem:
         return rem[0]
     return "iris"
+
+
+def validate_theme_name(theme_name: str) -> str:
+    if not isinstance(theme_name, str) or not NAME_REGEX.fullmatch(theme_name):
+        raise PackageError(
+            f"Invalid theme name '{theme_name}'; expected lowercase kebab-case",
+            exit_code=2,
+        )
+    return theme_name
 
 
 def _remove_theme_from_static_files(static_files_apx: Path, prefix: str) -> None:
@@ -106,10 +120,25 @@ def _remove_managed_nav_entries(nav_path: Path) -> None:
 
 
 def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
+    theme_name = validate_theme_name(theme_name)
+    staged_dir = staged_dir.resolve()
     # 1. Check packages dir
-    theme_pkg_dir = staged_dir / f"shared-components/static-files/theme-factory/packages/{theme_name}"
-    if theme_pkg_dir.exists():
-        shutil.rmtree(theme_pkg_dir, ignore_errors=True)
+    packages_root = (
+        staged_dir / "shared-components/static-files/theme-factory/packages"
+    ).resolve()
+    theme_pkg_dir = (packages_root / theme_name).resolve()
+    if not theme_pkg_dir.is_relative_to(packages_root):
+        raise PackageError(f"Theme path escapes package namespace: {theme_name}")
+    installed_packages, _default_theme, _switcher_enabled = read_install_state(staged_dir)
+    registry_document = read_registry_document(staged_dir)
+    verify_runtime_ownership(staged_dir, registry_document)
+    installed_package = next((package for package in installed_packages if package.name == theme_name), None)
+    if not installed_package:
+        raise PackageError(f"Theme '{theme_name}' is not owned by the Theme Factory registry")
+    verify_package_ownership(staged_dir, installed_package)
+    installed_version_dir = theme_pkg_dir / installed_package.version
+    shutil.rmtree(installed_version_dir)
+    theme_pkg_dir.rmdir()
 
     static_files_apx = staged_dir / "shared-components/static-files.apx"
     _remove_theme_from_static_files(static_files_apx, f"theme-factory/packages/{theme_name}/")
@@ -120,55 +149,54 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
     # 2. Check registry.json
     registry_file = staged_dir / "shared-components/static-files/theme-factory/runtime/registry.json"
     if registry_file.exists():
-        try:
-            reg = json.loads(registry_file.read_text(encoding="utf-8"))
-            themes = [t for t in reg.get("themes", []) if t["name"] != theme_name]
-            if not themes:
-                # No themes left! Remove entire runtime
-                runtime_dir = staged_dir / "shared-components/static-files/theme-factory/runtime"
-                if runtime_dir.exists():
-                    shutil.rmtree(runtime_dir, ignore_errors=True)
-                _remove_theme_from_static_files(static_files_apx, "theme-factory/runtime/")
-                _remove_runtime_from_app(app_apx)
+        reg = json.loads(registry_file.read_text(encoding="utf-8"))
+        themes = [t for t in reg.get("themes", []) if t["name"] != theme_name]
+        if not themes:
+            # No themes left: ownership has already been verified above.
+            runtime_dir = staged_dir / "shared-components/static-files/theme-factory/runtime"
+            if runtime_dir.exists():
+                shutil.rmtree(runtime_dir)
+            _remove_theme_from_static_files(static_files_apx, "theme-factory/runtime/")
+            _remove_runtime_from_app(app_apx)
 
-                p0 = staged_dir / "pages/p00000-global-page.apx"
-                _remove_managed_page_zero_regions(p0)
+            p0 = staged_dir / "pages/p00000-global-page.apx"
+            _remove_managed_page_zero_regions(p0)
 
-                nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
-                _remove_managed_nav_entries(nav)
-            else:
-                reg["themes"] = themes
-                new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
-                reg["defaultTheme"] = new_default
-                registry_file.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+            nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
+            _remove_managed_nav_entries(nav)
+        else:
+            reg["themes"] = themes
+            new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
+            reg["defaultTheme"] = new_default
+            registry_file.write_text(json.dumps(reg, indent=2), encoding="utf-8")
 
-                p0 = staged_dir / "pages/p00000-global-page.apx"
-                if p0.exists():
-                    p0_text = strip_bootstrap_regions(p0.read_text(encoding="utf-8"))
-                    new_regions = build_bootstrap_regions(
-                        default_theme=new_default,
-                        switcher_enabled=reg.get("switcherEnabled", False),
-                        themes=[{"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")} for t in themes],
-                    )
-                    last_paren = p0_text.rfind(")")
-                    p0.write_text(p0_text[:last_paren].rstrip() + "\n" + new_regions + "\n)\n", encoding="utf-8")
+            p0 = staged_dir / "pages/p00000-global-page.apx"
+            if p0.exists():
+                p0_text = strip_bootstrap_regions(p0.read_text(encoding="utf-8"))
+                new_regions = build_bootstrap_regions(
+                    default_theme=new_default,
+                    switcher_enabled=reg.get("switcherEnabled", False),
+                    themes=[{"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")} for t in themes],
+                )
+                last_paren = p0_text.rfind(")")
+                p0.write_text(p0_text[:last_paren].rstrip() + "\n" + new_regions + "\n)\n", encoding="utf-8")
 
-                nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
-                if nav.exists():
-                    nav_text = strip_switcher_entries(nav.read_text(encoding="utf-8"))
-                    if reg.get("switcherEnabled", False):
-                        switcher_code = build_switcher_entries(themes)
-                        last_paren = nav_text.rfind(")")
-                        nav.write_text(nav_text[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n", encoding="utf-8")
-                    else:
-                        nav.write_text(nav_text, encoding="utf-8")
-        except Exception:
-            pass
+            nav = staged_dir / "shared-components/navigation/lists/navigation-bar.apx"
+            if nav.exists():
+                nav_text = strip_switcher_entries(nav.read_text(encoding="utf-8"))
+                if reg.get("switcherEnabled", False):
+                    switcher_code = build_switcher_entries(themes)
+                    last_paren = nav_text.rfind(")")
+                    nav.write_text(nav_text[:last_paren].rstrip() + "\n" + switcher_code + "\n)\n", encoding="utf-8")
+                else:
+                    nav.write_text(nav_text, encoding="utf-8")
 
 
 def run_uninstall(options: UninstallOptions) -> OperationReport:
+    validate_theme_name(options.theme_name)
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
+    require_supported_apex_version(target_meta.apex_version)
 
     staging_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-uninst-"))
     try:
@@ -231,6 +259,7 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
 
     # Mutate staged export
     plan_and_apply_uninstall(staged_dir, options.theme_name)
+    staged_digest = canonical_digest(staged_dir)
 
     # Validate
     try:
@@ -294,6 +323,27 @@ def run_uninstall(options: UninstallOptions) -> OperationReport:
     except PackageError as exc:
         raise PackageError(f"Import failed during uninstall: {exc}", exit_code=5) from exc
 
+    post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-uninstall-post-"))
+    try:
+        post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
+        if canonical_digest(post_dir) != staged_digest:
+            print("Status: IMPORTED_POSTCHECK_FAILED")
+            return OperationReport(
+                status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
+                staged_dir=staged_dir, message="Uninstall export digest differs from staged transaction",
+            )
+        post_target = inspect_export(post_dir)
+        prefix = f"theme-factory/packages/{options.theme_name}/"
+        package_path = post_dir / f"shared-components/static-files/{prefix}"
+        if any(prefix in url for url in post_target.css_urls) or package_path.exists():
+            print("Status: IMPORTED_POSTCHECK_FAILED")
+            return OperationReport(
+                status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
+                staged_dir=staged_dir, message="Uninstall imported but postcheck verification failed",
+            )
+    finally:
+        shutil.rmtree(post_temp, ignore_errors=True)
+
     print(f"\nResult: UNINSTALLED theme '{options.theme_name}' from application {options.app_id}.")
     print("Status: UNINSTALLED")
     return OperationReport(
@@ -323,14 +373,19 @@ def run_restore(options: RestoreOptions) -> OperationReport:
             f"Backup appId '{metadata.get('appId')}' does not match requested appId '{options.app_id}'"
         )
 
+    backup_digest = canonical_digest(apexlang_path)
+    recorded_digest = metadata.get("preExportDigest")
+    if not isinstance(recorded_digest, str) or backup_digest != recorded_digest:
+        raise PackageError("Backup digest does not match target.json; restore refused")
+
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
+    require_supported_apex_version(target_meta.apex_version)
 
     live_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-restore-live-"))
     try:
         live_dir = sqlcl.export_apexlang(options.app_id, live_temp)
         live_digest = canonical_digest(live_dir)
-        backup_digest = canonical_digest(apexlang_path)
     finally:
         shutil.rmtree(live_temp, ignore_errors=True)
 
@@ -371,6 +426,18 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     except PackageError as exc:
         raise PackageError(f"Import failed during restore: {exc}", exit_code=5) from exc
 
+    post_temp = Path(tempfile.mkdtemp(prefix="apex-theme-factory-restore-post-"))
+    try:
+        restored_dir = sqlcl.export_apexlang(options.app_id, post_temp)
+        if canonical_digest(restored_dir) != backup_digest:
+            print("Status: IMPORTED_POSTCHECK_FAILED")
+            return OperationReport(
+                status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_path,
+                staged_dir=None, message="Restore imported but postcheck digest did not match",
+            )
+    finally:
+        shutil.rmtree(post_temp, ignore_errors=True)
+
     print(f"\nResult: RESTORED application {options.app_id} from {backup_path}.")
     print("Status: RESTORED")
     return OperationReport(
@@ -383,8 +450,14 @@ def run_restore(options: RestoreOptions) -> OperationReport:
 
 
 def run_uninstall_cli(args) -> None:
+    if getattr(args, "package_root", None):
+        from lib.theme_factory.archive import verify_package
+
+        theme_name = verify_package(args.package_root).name
+    else:
+        theme_name = args.theme
     options = UninstallOptions(
-        theme_name=args.theme,
+        theme_name=validate_theme_name(theme_name),
         connection=args.connection,
         workspace=args.workspace,
         app_id=args.app_id,

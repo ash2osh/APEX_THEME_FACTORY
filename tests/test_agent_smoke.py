@@ -165,3 +165,63 @@ class AgentSmokeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class InstructionEntryAndServerNamingTests(unittest.TestCase):
+    """A runtime may name the same file or the same MCP server differently than the table spells it."""
+
+    def repo_with_symlink(self) -> Path:
+        import shutil
+        import tempfile
+        temp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, temp, True)
+        (temp / "AGENTS.md").write_text("instructions\n", encoding="utf-8")
+        (temp / "CLAUDE.md").symlink_to("AGENTS.md")
+        (temp / "README.md").write_text("readme\n", encoding="utf-8")
+        return temp
+
+    def payload(self, **overrides) -> str:
+        values = {
+            "runtime": "claude",
+            "instructionEntry": "CLAUDE.md",
+            "routerSkill": ".agents/skills/design-to-apex/SKILL.md",
+            "apexBoundary": "APEX 26.1.x / Universal Theme 42 / Iris",
+            "runtimeTruthTool": "chrome-devtools",
+            "importRequiresUserRequest": True,
+            "wouldEdit": False,
+        }
+        values.update(overrides)
+        return json.dumps(values)
+
+    def test_instruction_entry_naming_the_symlink_target_is_accepted(self):
+        repo = self.repo_with_symlink()
+        verdict = classify_result("claude", 0, "", self.payload(instructionEntry="AGENTS.md"), repo_root=repo)
+        self.assertEqual(verdict.status, "PASS", verdict.message)
+        # the record keeps what the runtime actually said
+        self.assertEqual(verdict.payload["instructionEntry"], "AGENTS.md")
+
+    def test_instruction_entry_naming_a_different_file_still_fails(self):
+        repo = self.repo_with_symlink()
+        verdict = classify_result("claude", 0, "", self.payload(instructionEntry="README.md"), repo_root=repo)
+        self.assertEqual(verdict.status, "FAIL")
+
+    def test_server_name_with_a_qualifier_is_accepted(self):
+        repo = self.repo_with_symlink()
+        verdict = classify_result(
+            "claude", 0, "",
+            self.payload(runtimeTruthTool="chrome-devtools (mcp__chrome-devtools__* MCP server)"),
+            repo_root=repo,
+        )
+        self.assertEqual(verdict.status, "PASS", verdict.message)
+
+    def test_another_runtimes_server_name_still_fails(self):
+        repo = self.repo_with_symlink()
+        verdict = classify_result("claude", 0, "", self.payload(runtimeTruthTool="chrome-devtools-mcp"), repo_root=repo)
+        self.assertEqual(verdict.status, "FAIL")
+        verdict = classify_result(
+            "antigravity", 0, "",
+            self.payload(runtime="antigravity", instructionEntry=".agents/rules/apex-theme-factory.md",
+                         runtimeTruthTool="chrome-devtools"),
+            repo_root=repo,
+        )
+        self.assertEqual(verdict.status, "FAIL")

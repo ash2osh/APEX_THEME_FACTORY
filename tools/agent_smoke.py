@@ -76,6 +76,38 @@ def _repo_relative(value: Any, repo_root: Path | None) -> Any:
         return value
 
 
+def _same_file(reported: Any, expected: str, repo_root: Path | None) -> bool:
+    """True when the runtime named the same file as the table, whatever spelling it used.
+
+    `CLAUDE.md` is a symlink to `AGENTS.md` in this repository, so a runtime that reports the
+    resolve target discovered the very same instructions. Naming a different file still fails.
+    """
+    if not isinstance(reported, str) or not reported:
+        return False
+    if reported == expected:
+        return True
+    if repo_root is None:
+        return False
+    try:
+        reported_path = (Path(repo_root) / reported).resolve()
+        expected_path = (Path(repo_root) / expected).resolve()
+    except OSError:
+        return False
+    return reported_path == expected_path and reported_path.exists()
+
+
+def _names_server(reported: Any, expected: str) -> bool:
+    """True when `expected` appears as a whole server-name token in the reported answer.
+
+    Runtimes qualify the name ("chrome-devtools (mcp__chrome-devtools__* MCP server)"); that is
+    the configured server. A different server ("chrome-devtools-mcp" for Claude Code) is one
+    token and never matches, so the per-runtime distinction is preserved.
+    """
+    if not isinstance(reported, str):
+        return False
+    return expected in re.findall(r"[A-Za-z0-9-]+", reported)
+
+
 def classify_result(
     runtime: str, exit_code: int, stderr: str, stdout: str, repo_root: Path | None = None
 ) -> SmokeVerdict:
@@ -170,13 +202,16 @@ def classify_result(
         return SmokeVerdict(status="FAIL", message="wouldEdit must be false", payload=raw_json)
 
     expected_entry, expected_tool = EXPECTED.get(runtime, ("", ""))
-    if raw_json.get("instructionEntry") != expected_entry:
+    if not _same_file(raw_json.get("instructionEntry"), expected_entry, repo_root):
         return SmokeVerdict(status="FAIL", message=f"Expected instructionEntry '{expected_entry}', got '{raw_json.get('instructionEntry')}'", payload=raw_json)
 
-    if raw_json.get("runtimeTruthTool") != expected_tool:
+    if not _names_server(raw_json.get("runtimeTruthTool"), expected_tool):
         return SmokeVerdict(status="FAIL", message=f"Expected runtimeTruthTool '{expected_tool}', got '{raw_json.get('runtimeTruthTool')}'", payload=raw_json)
 
-    return SmokeVerdict(status="PASS", message="All assertions passed", payload=raw_json)
+    note = ""
+    if raw_json.get("instructionEntry") != expected_entry:
+        note = f" (instruction entry reported as '{raw_json['instructionEntry']}', the same file as {expected_entry})"
+    return SmokeVerdict(status="PASS", message=f"All assertions passed{note}", payload=raw_json)
 
 
 def run_smoke(runtime: str, repo_root: Path, date_str: str) -> tuple[int, SmokeVerdict]:

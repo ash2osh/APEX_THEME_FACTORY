@@ -7,7 +7,9 @@ switcher API, reloads, and records:
 
 * identity: app, alias, page, APEX version, html/body classes, CSS/JS URLs, loaded resources
 * console errors and failed network requests since the navigation
-* fonts: Font APEX and the body family resolved through `document.fonts`
+* fonts: Font APEX stays loaded and is the icon family; the body family equals bare Iris on the
+  same page (a package without custom fonts must not change it — Iris 26.1.4 resolves to the
+  system stack, `oraclesans-apex.min.css` is linked but unused) or names the package family
 * persistence: the selection survives a reload under `apex.themeFactory.<APP_ID>`
 * accessibility: the documented AA contrast audit (docs/CHROME_DEVTOOLS_MCP.md) reports zero
   failures and the switcher menu is keyboard operable (Enter opens a `menuitemradio` group)
@@ -114,7 +116,8 @@ def write_layer_d_evidence(evidence_dir: Path, theme: str, git_commit: str, pack
     covered = set()
     for row in rows:
         artifact = build_runtime_artifact(theme, git_commit, package_sha256, row, captured_at)
-        path = raw_dir / f"browser-{row.consumer}-{row.width}.json"
+        page_label = re.sub(r"[^a-z0-9]+", "-", (row.page.get("pageId") or "p").lower()) or "p"
+        path = raw_dir / f"browser-{row.consumer}-page{page_label}-{row.width}.json"
         path.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
         row_refs.append({"consumer": row.consumer, "width": row.width,
                          "evidence": {"path": f"raw/{path.name}", "sha256": _sha256(path)}})
@@ -264,6 +267,10 @@ class LiveBrowserMatrix:
         notes: List[str] = []
         self.call("resize_page", width=width, height=900)
         self.navigate(url)
+        # baseline: bare Iris body font on this very page, for the fonts check below
+        self.evaluate("() => { const api = window.ApexThemeFactory; return api ? api.use('iris') : false; }")
+        time.sleep(2.0)
+        baseline = self.evaluate("async () => { await document.fonts.ready; return { body: getComputedStyle(document.body).fontFamily }; }")
         # select the theme through the installed runtime, which persists and reloads
         selected = self.evaluate(
             "() => { const api = window.ApexThemeFactory; if (!api) return {api:false}; "
@@ -282,11 +289,13 @@ class LiveBrowserMatrix:
         if after_reload.get("active") != theme:
             persistence = False
             notes.append(f"selection lost on reload: {after_reload}")
+        body_family = page.get("bodyFontFamily") or ""
         fonts_ok = any(f.get("family") == "Font APEX" and f.get("loaded") for f in page.get("fonts", [])) \
             and "Font APEX" in (page.get("fontApexFamilyAfter") or "") \
-            and "Oracle Sans" in (page.get("bodyFontFamily") or "")
+            and (body_family == baseline.get("body") or f"ThemeFactory-{theme}-body" in body_family)
+        page["bodyFontFamilyBareIris"] = baseline.get("body")
         if not fonts_ok:
-            notes.append(f"fonts: {page.get('fonts')} icon={page.get('fontApexFamilyAfter')!r} body={page.get('bodyFontFamily')!r}")
+            notes.append(f"fonts: {page.get('fonts')} icon={page.get('fontApexFamilyAfter')!r} body={body_family!r} iris={baseline.get('body')!r}")
         contrast = self.evaluate(_contrast_function())
         keyboard = self.evaluate(KEYBOARD_SNIPPET)
         accessibility = contrast.get("failures") == 0 and bool(keyboard.get("ok"))
@@ -304,6 +313,7 @@ def main() -> None:
     parser.add_argument("--package", type=Path, required=True, help="the theme's ZIP (for its SHA-256)")
     parser.add_argument("--minimal-url", required=True)
     parser.add_argument("--business-url", required=True)
+    parser.add_argument("--business-extra-urls", default="", help="comma-separated extra business pages (reports, widgets, ...) captured at the outer widths")
     parser.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
     parser.add_argument("--date", default=datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     parser.add_argument("--widths", default=",".join(map(str, REQUIRED_WIDTHS)))
@@ -317,11 +327,15 @@ def main() -> None:
     matrix = LiveBrowserMatrix(client, page_id)
     rows: List[RowCapture] = []
     try:
-        for consumer, url in (("minimal", args.minimal_url), ("business", args.business_url)):
-            for width in (int(w) for w in args.widths.split(",")):
+        widths = [int(w) for w in args.widths.split(",")]
+        plan = [("minimal", args.minimal_url, widths), ("business", args.business_url, widths)]
+        outer = [w for w in widths if w in (max(widths), min(widths))]
+        plan += [("business", url.strip(), outer) for url in args.business_extra_urls.split(",") if url.strip()]
+        for consumer, url, plan_widths in plan:
+            for width in plan_widths:
                 row = matrix.capture_row(consumer, url, args.theme, width)
                 status = "ok" if (row.fonts_verified and row.accessibility_verified and row.persistence_verified and not row.console_errors and not row.failed_requests) else "issues"
-                print(f"{consumer}@{width}: {status} {'; '.join(row.notes)}")
+                print(f"{consumer} page {row.page.get('pageId')}@{width}: {status} {'; '.join(row.notes)}")
                 rows.append(row)
     finally:
         try:

@@ -11,7 +11,7 @@ Governing spec: [AGENT_SPEC.md](AGENT_SPEC.md). Read it before any design work.
 | Theme | Universal Theme (theme 42), `baseTheme: ut-26.1` | `applications/ut/shared-components/themes/universal-theme/theme.apx` |
 | Theme style | **Iris** — *mandatory*. Nothing in this project may depend on Vita, Redwood Light, or any other style. The reference app's theme-style switcher (nav bar, page 405, `APPLY_THEME_STYLE`, `P0_THEME_STYLE_ID`, Vita/Redwood previews) was removed 2026-09-14; the other styles remain as inert rows under Shared Components → Themes: the theme is *subscribed* to the standard Universal Theme, so its styles are read-only in the Builder (no Delete) and not expressible in APEXLang; removing them would mean unsubscribing the theme | `apex_application_theme_styles` (Iris `IS_CURRENT = Yes`) |
 | Colour scheme | Iris ships **light only** (`--ut-color-scheme: light`; no `prefers-color-scheme` block in `Iris.min.css`) | `Iris.min.css` |
-| Font | Oracle Sans (`--a-base-font-family`), icons Font APEX 2.5.1 | runtime `<link>` list |
+| Font | system UI stack (`--a-base-font-family` = `-apple-system, …, sans-serif`; `oraclesans-apex.min.css` is linked but Oracle Sans is not in the stack and never loads), icons Font APEX 2.5.1 | runtime `document.fonts` + computed style, 2026-09-16 |
 
 ## Target application
 

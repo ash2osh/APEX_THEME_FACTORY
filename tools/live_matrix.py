@@ -348,7 +348,8 @@ def main() -> None:
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     # evidence artifacts are outputs of this tool; anything else uncommitted invalidates the binding
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", ".", ":(exclude).agents/evaluations/runtime"],
+    from lib.theme_factory.gitstate import NON_SOURCE_PATHSPECS
+    dirty = subprocess.run(["git", "status", "--porcelain", "--", *NON_SOURCE_PATHSPECS],
                            capture_output=True, text=True, check=True).stdout.strip()
     if dirty:
         print("Refusing: working tree is dirty outside the evidence root; live evidence must be bound to a committed source state", file=sys.stderr)

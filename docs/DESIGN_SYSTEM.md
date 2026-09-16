@@ -90,7 +90,7 @@ Full list of 167 `--ut-*` values: [`.agents/knowledge/iris-ut-tokens.md`](../.ag
 
 | Token | Value |
 |---|---|
-| `--a-base-font-family` | `"Oracle Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, …, sans-serif` |
+| `--a-base-font-family` | `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif` — **measured 2026-09-16** on app 102 p500/p1410 and both consumer apps: Iris 26.1.4 links `oraclesans-apex.min.css` but the stack does not name Oracle Sans, so its faces stay `unloaded`; the body renders in the system UI font. Earlier "Oracle Sans" claims were the intent, not the runtime. |
 | `--a-base-font-family-mono` | `SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace` |
 | `--a-base-font-weight-semibold` | `500` (runtime-verified 2026-09-13; Core declares 600, Iris overrides to 500) |
 | `--a-button-font-size` / `--a-button-border-radius` | `.75rem` / `.125rem` |

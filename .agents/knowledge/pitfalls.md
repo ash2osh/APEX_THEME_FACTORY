@@ -418,15 +418,20 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   smoke JSONs *are* source by this definition, committing them moves `last_source_commit` and stales any
   evidence captured just before — so a mid-pipeline smoke re-run costs both remaining captures **and** the one
   that had already succeeded. Start a capture from a committed tree and leave it alone until `PIPELINE_DONE`.
-- **The `**/*.md` exclusion is wrong for Layer E, and knowingly so.** `last_source_commit()` treats Markdown as
-  non-source, which is right for docs and evidence — but Layer E's *subject* is Markdown: the agent-readiness
-  smokes measure what a runtime does after reading `AGENTS.md` / `.agents/rules/*.md` / the skills. So an edit
-  to those files leaves Layer E's artifacts "bound" to a commit whose instructions have since changed, and
-  nothing in the tooling notices (met 2026-09-17: the daemon rule was added to `AGENTS.md` and the workspace
-  rule after the three smokes were recorded). Until the binding distinguishes instruction Markdown from prose
-  Markdown, treat any edit under `AGENTS.md`, `.agents/rules/`, or `.agents/skills/` as invalidating Layer E by
-  hand and re-run `tools/agent_smoke.py` for all three runtimes. Layers C and D are unaffected — they depend on
-  code and package bytes, not on instructions.
+- **The `**/*.md` exclusion was wrong for Layer E — the tooling now catches this.** `last_source_commit()`
+  treats Markdown as non-source, which is right for docs and evidence — but Layer E's *subject* is Markdown:
+  the agent-readiness smokes measure what a runtime does after reading `AGENTS.md` / `.agents/rules/*.md` /
+  the skills. Met 2026-09-17 (the daemon rule was added to `AGENTS.md` and the workspace rule after the three
+  smokes were recorded) and handled by hand at the time — re-running `tools/agent_smoke.py` for all three
+  runtimes. Fixed the same day (verification-integrity-defects plan, Task 3): `lib/theme_factory/gitstate.py`
+  now has a *separate* `last_instruction_commit()` / `instruction_equivalent()` pair, scoped to
+  `AGENTS.md`, `CLAUDE.md`, `.agents/rules/`, `.agents/skills/`, and `release.py` binds Layer E's raw artifacts
+  (agent-runtime, agent-scenario, finding-resolution) on that instead of the general `source_equivalent`.
+  Deliberately *not* folded into the shared binding: Layers C and D depend on code and package bytes, not on
+  what an agent reads, so coupling them to instruction edits would force a full live re-capture (pitfalls
+  above) for a wording change in a skill file. An edit to `AGENTS.md`/`.agents/rules/`/`.agents/skills/` now
+  fails `release-check.sh` for Layer E by name automatically; editing `README.md` or `docs/*.md` still does
+  not invalidate anything.
 - **`scripts/sync-static.sh` output is source.** It writes into `applications/ut/shared-components/static-files/`,
   which is not excluded, so the ordinary import workflow (sync → validate → import) *always* produces a source
   change. Run it, commit it, and only then capture Layer C/D — capturing first and syncing afterwards costs a

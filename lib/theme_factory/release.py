@@ -35,11 +35,17 @@ REQUIRED_EVIDENCE_CHECKS = {
 # Task 1) - before that, the schema documented a shape nothing read, and the emitter drifted
 # from it without either side noticing.
 RUNTIME_EVIDENCE_SCHEMA = Path(__file__).resolve().parent.parent.parent / "tests" / "live" / "runtime-evidence.schema.json"
-from lib.theme_factory.gitstate import EVIDENCE_ROOT, last_source_commit, source_equivalent  # noqa: E402
+from lib.theme_factory.gitstate import (  # noqa: E402
+    EVIDENCE_ROOT, instruction_equivalent, last_source_commit, source_equivalent,
+)
 
 
-def commit_matches(expected: str | None, actual: str) -> bool:
-    return expected is None or source_equivalent(expected, actual)
+def commit_matches(expected: str | None, actual: str, *, equivalence=source_equivalent) -> bool:
+    """`equivalence` is pluggable so Layer E can bind on instruction Markdown instead of the
+    general source_equivalent (plan Task 3): the agent smokes' *subject* is AGENTS.md /
+    .agents/rules/ / .agents/skills/, so an edit there must invalidate Layer E even though
+    Markdown is otherwise excluded from what counts as source."""
+    return expected is None or equivalence(expected, actual)
 
 
 def release_verdict(layers: dict[str, str]) -> str:
@@ -180,6 +186,7 @@ def _load_bound_raw_artifact(
     expected_package_sha256: str | None,
     context: str,
     schema_path: Path | None = None,
+    commit_equivalence=source_equivalent,
 ) -> dict[str, Any]:
     if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
         raise PackageError(f"{context} must be a path/SHA-256 evidence reference")
@@ -211,7 +218,7 @@ def _load_bound_raw_artifact(
     )
     if not identity_valid:
         raise PackageError(f"{context} raw evidence identity/schema mismatch: {relative}")
-    if not commit_matches(expected_git_commit, git_commit):
+    if not commit_matches(expected_git_commit, git_commit, equivalence=commit_equivalence):
         raise PackageError(f"{context} raw evidence is for Git commit {git_commit}, whose source differs from {expected_git_commit}")
     if expected_package_sha256 is not None and package_sha256 != expected_package_sha256:
         raise PackageError(f"{context} raw evidence is for a different package: {relative}")
@@ -298,7 +305,10 @@ def _validate_evidence_artifact(
     )
     if not required_identity:
         raise PackageError(f"Evidence artifact identity/schema mismatch: {path}")
-    if not commit_matches(expected_git_commit, artifact["gitCommit"]):
+    # Layer E binds on instruction Markdown (AGENTS.md, .agents/rules/, .agents/skills/), not the
+    # general notion of source - its smokes measure what a runtime does after reading those files.
+    equivalence = instruction_equivalent if layer == "E" else source_equivalent
+    if not commit_matches(expected_git_commit, artifact["gitCommit"], equivalence=equivalence):
         raise PackageError(
             f"Evidence artifact is for Git commit {artifact['gitCommit']}, whose source differs from {expected_git_commit}: {path}"
         )
@@ -410,6 +420,7 @@ def _validate_evidence_artifact(
                 raw = _load_bound_raw_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E runtime {runtime}",
+                    commit_equivalence=instruction_equivalent,
                 )
                 if not (
                     raw.get("evidenceType") == "agent-runtime"
@@ -423,6 +434,7 @@ def _validate_evidence_artifact(
                 raw = _load_bound_raw_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E scenario {scenario}",
+                    commit_equivalence=instruction_equivalent,
                 )
                 if not (
                     raw.get("evidenceType") == "agent-scenario"
@@ -437,6 +449,7 @@ def _validate_evidence_artifact(
                 raw = _load_bound_raw_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E finding {index + 1}",
+                    commit_equivalence=instruction_equivalent,
                 )
                 finding = raw.get("finding")
                 if not (

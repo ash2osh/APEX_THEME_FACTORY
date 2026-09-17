@@ -15,6 +15,16 @@ EVIDENCE_ROOT = ".agents/evaluations/runtime"
 # Paths that never influence a package or the installer: evidence artifacts and Markdown docs.
 NON_SOURCE_PATHSPECS = (".", f":(exclude){EVIDENCE_ROOT}", ":(exclude,glob)**/*.md")
 
+# Markdown that IS source for Layer E: the agent-readiness smokes measure what a runtime does
+# after reading these files, so an edit here invalidates Layer E's binding even though it is
+# Markdown. Deliberately separate from NON_SOURCE_PATHSPECS rather than folded into it (plan
+# Task 3) - Layers C and D depend on code and package bytes, not on what an agent reads, so
+# coupling them to instruction edits would force a live re-capture for a skill wording change.
+# CLAUDE.md is a symlink to AGENTS.md (`git diff` follows symlink content, not just the link
+# target), so watching AGENTS.md alone would already catch a content edit; it is listed anyway
+# in case the symlink itself is ever repointed or replaced with a real file.
+INSTRUCTION_PATHSPECS = ("AGENTS.md", "CLAUDE.md", ".agents/rules", ".agents/skills")
+
 
 def last_source_commit(cwd: Union[str, Path, None] = None) -> Optional[str]:
     """SHA of the most recent commit touching source (not evidence, not Markdown), or None."""
@@ -36,6 +46,33 @@ def source_equivalent(commit_a: str, commit_b: str, cwd: Union[str, Path, None] 
     try:
         result = subprocess.run(
             ["git", "diff", "--quiet", commit_a, commit_b, "--", *NON_SOURCE_PATHSPECS],
+            cwd=cwd, capture_output=True, text=True, check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return result.returncode == 0
+
+
+def last_instruction_commit(cwd: Union[str, Path, None] = None) -> Optional[str]:
+    """SHA of the most recent commit touching instruction Markdown Layer E depends on, or None."""
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%H", "--", *INSTRUCTION_PATHSPECS],
+            cwd=cwd, capture_output=True, text=True, check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    commit = result.stdout.strip()
+    return commit if result.returncode == 0 and len(commit) == 40 else None
+
+
+def instruction_equivalent(commit_a: str, commit_b: str, cwd: Union[str, Path, None] = None) -> bool:
+    """True when the two commits agree on every instruction file Layer E's smokes read."""
+    if commit_a == commit_b:
+        return True
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--quiet", commit_a, commit_b, "--", *INSTRUCTION_PATHSPECS],
             cwd=cwd, capture_output=True, text=True, check=False,
         )
     except (OSError, subprocess.SubprocessError):

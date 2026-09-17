@@ -16,6 +16,7 @@ from typing import Any
 
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
+from lib.theme_factory.evidence_schema import validate as validate_evidence_schema
 
 LAYER_DESCRIPTIONS = {
     "A": "Repository source",
@@ -30,6 +31,10 @@ REQUIRED_EVIDENCE_CHECKS = {
     "D": "browser_runtime_matrix",
     "E": "agent_behavior_matrix",
 }
+# The Layer D artifact contract. Enforced here since 2026-09-17 (verification-integrity-defects
+# Task 1) - before that, the schema documented a shape nothing read, and the emitter drifted
+# from it without either side noticing.
+RUNTIME_EVIDENCE_SCHEMA = Path(__file__).resolve().parent.parent.parent / "tests" / "live" / "runtime-evidence.schema.json"
 from lib.theme_factory.gitstate import EVIDENCE_ROOT, last_source_commit, source_equivalent  # noqa: E402
 
 
@@ -174,6 +179,7 @@ def _load_bound_raw_artifact(
     expected_git_commit: str | None,
     expected_package_sha256: str | None,
     context: str,
+    schema_path: Path | None = None,
 ) -> dict[str, Any]:
     if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
         raise PackageError(f"{context} must be a path/SHA-256 evidence reference")
@@ -209,6 +215,11 @@ def _load_bound_raw_artifact(
         raise PackageError(f"{context} raw evidence is for Git commit {git_commit}, whose source differs from {expected_git_commit}")
     if expected_package_sha256 is not None and package_sha256 != expected_package_sha256:
         raise PackageError(f"{context} raw evidence is for a different package: {relative}")
+    if schema_path is not None:
+        schema_errors = validate_evidence_schema(document, schema_path)
+        if schema_errors:
+            joined = "; ".join(schema_errors)
+            raise PackageError(f"{context} does not satisfy the runtime-evidence schema ({relative}): {joined}")
     return document
 
 
@@ -356,6 +367,7 @@ def _validate_evidence_artifact(
                     evidence_dir, row.get("evidence"), theme_name,
                     expected_git_commit, expected_package_sha256,
                     f"Layer D {consumer}/{width}",
+                    schema_path=RUNTIME_EVIDENCE_SCHEMA,
                 )
                 if not _valid_browser_runtime_artifact(raw, theme_name, consumer, width):
                     valid = False

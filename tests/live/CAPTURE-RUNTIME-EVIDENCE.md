@@ -58,7 +58,8 @@ Execute the following JavaScript snippet via `evaluate_expression` inside the se
     fontApexFamilyAfter: window.getComputedStyle(document.body).fontFamily,
     fontsVerified: false,
     accessibilityVerified: false,
-    persistenceVerified: false
+    persistenceVerified: false,
+    notes: [] // Human-readable reasons for a failing row, e.g. "fonts: declared=5 evidence=[...]"
   };
 })();
 ```

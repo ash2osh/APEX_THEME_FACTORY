@@ -22,7 +22,7 @@ def capture(consumer: str, width: int, **overrides) -> RowCapture:
         "cssUrls": ["x.css"], "javascriptUrls": ["y.js"], "loadedUrls": ["x.css", "y.js"],
         "windowApp": None, "windowAlpine": None, "activeTheme": "linen",
         "registry": {"defaultTheme": "linen"}, "switcherAvailable": True,
-        "fonts": [{"family": "Font APEX", "loaded": True}],
+        "fonts": [],  # linen declares no faces; a themed fixture overrides this explicitly
         "fontApexFamilyBefore": "\"Font APEX\"", "fontApexFamilyAfter": "\"Font APEX\"",
     }
     values = dict(consumer=consumer, width=width, page=page, console_errors=[], failed_requests=[],
@@ -188,3 +188,76 @@ class FaceLoadForcingTests(unittest.TestCase):
                                  "weight": 400, "style": "normal", "file": "fonts/a.woff2"}])
         self.assertIn("ThemeFactory-linen-body", snippet)
         self.assertNotIn("__EXPECTED_FACES__", snippet)
+
+
+class SchemaEnforcedAtTheGateTests(unittest.TestCase):
+    """Task 1 (verification-integrity-defects plan): the release gate must validate Layer D
+    artifacts against tests/live/runtime-evidence.schema.json, not just check for a handful of
+    keys. Before this, `_valid_browser_runtime_artifact` only checked `isinstance(fonts, list)`,
+    so a font entry in the pre-2026-09-17 {family, loaded} shape - or any other schema violation -
+    passed the gate silently as long as the artifact still looked roughly right.
+    """
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+
+    def _themed_row(self, **font_overrides):
+        font = {
+            "role": "mono", "family": "ThemeFactory-solarized-dark-mono", "weight": 400,
+            "style": "normal", "check": True,
+            "requestUrl": "http://localhost:8181/.../ibm-plex-mono-regular.woff2",
+            "mimeType": "font/woff2",
+        }
+        font.update(font_overrides)
+        row = capture("business", 1440)
+        row.page = dict(row.page, fonts=[font], activeTheme="solarized-dark",
+                        htmlClasses=["app-theme-solarized-dark"])
+        return row
+
+    def test_a_schema_valid_font_entry_passes_the_gate(self):
+        row = self._themed_row()
+        evidence_dir = self.tmp / "2026-09-17-release-solarized-dark"
+        write_layer_d_evidence(evidence_dir, "solarized-dark", COMMIT, SHA, [row])
+        evidence = load_evidence(evidence_dir, "solarized-dark", expected_git_commit=COMMIT, expected_package_sha256=SHA)
+        # A single row can't satisfy full coverage, but it must get past schema validation to reach
+        # that (unrelated) coverage failure rather than being rejected for its shape.
+        by_check = {item["check"]: item for item in evidence}
+        self.assertIn("failures:", by_check["browser_runtime_matrix"]["details"].lower() + ":failures:")
+
+    def test_font_entry_missing_request_url_fails_the_gate_by_name(self):
+        from lib.theme_factory.release import RUNTIME_EVIDENCE_SCHEMA, _load_bound_raw_artifact
+        from lib.theme_factory.errors import PackageError
+
+        row = self._themed_row()
+        del row.page["fonts"][0]["requestUrl"]
+        raw_dir = self.tmp / "raw"
+        raw_dir.mkdir()
+        artifact = build_runtime_artifact("solarized-dark", COMMIT, SHA, row)
+        path = raw_dir / "browser-business-page1-1440.json"
+        path.write_text(json.dumps(artifact), encoding="utf-8")
+        import hashlib
+        reference = {"path": "raw/browser-business-page1-1440.json", "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+        with self.assertRaises(PackageError) as ctx:
+            _load_bound_raw_artifact(self.tmp, reference, "solarized-dark", COMMIT, SHA, "Layer D business/1440", schema_path=RUNTIME_EVIDENCE_SCHEMA)
+        message = str(ctx.exception)
+        self.assertIn("requestUrl", message)
+        self.assertIn("browser-business-page1-1440.json", message)
+
+    def test_extra_font_entry_key_fails_the_gate(self):
+        from lib.theme_factory.release import RUNTIME_EVIDENCE_SCHEMA, _load_bound_raw_artifact
+        from lib.theme_factory.errors import PackageError
+        import hashlib
+
+        row = self._themed_row(loaded=True)  # the pre-2026-09-17 shape smuggled in alongside the new one
+        raw_dir = self.tmp / "raw"
+        raw_dir.mkdir()
+        artifact = build_runtime_artifact("solarized-dark", COMMIT, SHA, row)
+        path = raw_dir / "browser-business-page1-1440.json"
+        path.write_text(json.dumps(artifact), encoding="utf-8")
+        reference = {"path": "raw/browser-business-page1-1440.json", "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+        with self.assertRaises(PackageError) as ctx:
+            _load_bound_raw_artifact(self.tmp, reference, "solarized-dark", COMMIT, SHA, "Layer D business/1440", schema_path=RUNTIME_EVIDENCE_SCHEMA)
+        self.assertIn("loaded", str(ctx.exception))

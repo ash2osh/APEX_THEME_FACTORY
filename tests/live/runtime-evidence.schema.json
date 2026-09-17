@@ -33,7 +33,8 @@
     "fontApexFamilyAfter",
     "fontsVerified",
     "accessibilityVerified",
-    "persistenceVerified"
+    "persistenceVerified",
+    "notes"
   ],
   "properties": {
     "schemaVersion": { "const": 1 },
@@ -82,6 +83,7 @@
     "fontApexFamilyAfter": { "type": "string" },
     "fontsVerified": { "const": true },
     "accessibilityVerified": { "const": true },
-    "persistenceVerified": { "const": true }
+    "persistenceVerified": { "const": true },
+    "notes": { "type": "array", "items": { "type": "string" } }
   }
 }

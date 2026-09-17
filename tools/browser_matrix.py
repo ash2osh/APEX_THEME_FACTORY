@@ -168,7 +168,6 @@ def write_layer_d_evidence(evidence_dir: Path, theme: str, git_commit: str, pack
 # ---------------------------------------------------------------- live capture
 
 PAGE_SNIPPET_TEMPLATE = """async () => {
-  const perf = performance.getEntriesByType('resource');
   const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href') || l.href);
   const scripts = Array.from(document.querySelectorAll('script[src]')).map(s => s.getAttribute('src') || s.src);
   const html = document.documentElement;
@@ -180,12 +179,27 @@ PAGE_SNIPPET_TEMPLATE = """async () => {
   const icon = document.querySelector('.fa, .t-Icon');
   // The faces this package declares, injected from its manifest; [] for a fontless package.
   const expected = __EXPECTED_FACES__;
+  // A @font-face is only downloaded once something renders text in that family, so a
+  // face no captured page happens to use (solarized-dark's mono) would look broken.
+  // Force each declared face, then judge that: `check` means usable, not exercised.
+  const faceChecks = [];
+  for (const f of expected) {
+    const spec = f.weight + ' ' + f.style + ' 16px "' + f.family + '"';
+    let ok = false;
+    try {
+      const got = await document.fonts.load(spec, 'Ag0');
+      ok = got.length > 0 && got.every(x => x.status === 'loaded');
+    } catch (e) { ok = false; }
+    faceChecks.push({ face: f, ok: ok && document.fonts.check(spec) });
+  }
+  // Read resources only now, so requestUrl proves the bytes came from the package.
+  const perf = performance.getEntriesByType('resource');
   const byName = {};
   for (const r of perf) { byName[r.name.split('/').pop()] = r.name; }
-  const faceResults = expected.map(f => ({
-    family: f.family, weight: f.weight, style: f.style,
-    check: document.fonts.check(f.weight + ' ' + f.style + ' 16px "' + f.family + '"'),
-    requestUrl: byName[f.file.split('/').pop()] || ''
+  const faceResults = faceChecks.map(fc => ({
+    family: fc.face.family, weight: fc.face.weight, style: fc.face.style,
+    check: fc.ok,
+    requestUrl: byName[fc.face.file.split('/').pop()] || ''
   }));
   const fontApexLoaded = document.fonts.check('16px "Font APEX"');
   return {
@@ -204,6 +218,15 @@ PAGE_SNIPPET_TEMPLATE = """async () => {
     innerWidth: innerWidth
   };
 }"""
+
+def page_snippet(expected: List[dict]) -> str:
+    """The page probe with this package's declared faces injected.
+
+    Separate from the template so the contract - every declared face is forced to
+    load before anything is measured - is testable without a browser.
+    """
+    return PAGE_SNIPPET_TEMPLATE.replace("__EXPECTED_FACES__", json.dumps(expected))
+
 
 CONTRAST_SNIPPET = Path(__file__).resolve().parent.parent.joinpath("docs/CHROME_DEVTOOLS_MCP.md")
 
@@ -343,7 +366,7 @@ class LiveBrowserMatrix:
             notes.append("ApexThemeFactory runtime not present (switcher disabled?)")
         time.sleep(2.0)
         expected_faces = font_expectations(self.package, theme) if self.package else []
-        page = self.evaluate(PAGE_SNIPPET_TEMPLATE.replace("__EXPECTED_FACES__", json.dumps(expected_faces)))
+        page = self.evaluate(page_snippet(expected_faces))
         persistence = page.get("activeTheme") == theme and page.get("storedSelection") == theme
         if not persistence:
             notes.append(f"persistence: active={page.get('activeTheme')!r} stored={page.get('storedSelection')!r}")

@@ -154,3 +154,37 @@ class FontExpectationTests(unittest.TestCase):
         ok, entries = evaluate_fonts(page, {"body": "system-ui"}, "linen", expected)
         self.assertTrue(ok)
         self.assertEqual(entries[0]["mimeType"], "font/woff2")
+
+
+class FaceLoadForcingTests(unittest.TestCase):
+    """A declared face must be proven usable, not merely observed being used.
+
+    Until 2026-09-17 the page snippet asked `document.fonts.check` and looked for a
+    resource entry, both of which only become true once something on the page renders
+    text in that family. `solarized-dark` declares a mono face that no captured page
+    exercises, so a correctly packaged, served and usable face was reported
+    `check: false` and the theme was refused. The capture must force each declared
+    face to load and judge *that*, then read the resource entries afterwards.
+    """
+
+    def test_snippet_forces_every_declared_face_to_load(self):
+        from tools.browser_matrix import page_snippet
+        snippet = page_snippet([{"role": "mono", "family": "ThemeFactory-solarized-dark-mono",
+                                 "weight": 400, "style": "normal", "file": "fonts/m.woff2"}])
+        self.assertIn("document.fonts.load(", snippet,
+                      "the snippet must force the face to load, not wait for the page to use it")
+
+    def test_snippet_reads_resource_entries_after_forcing_the_loads(self):
+        from tools.browser_matrix import page_snippet
+        snippet = page_snippet([])
+        forced = snippet.index("document.fonts.load(")
+        harvested = snippet.rindex("getEntriesByType('resource')")
+        self.assertLess(forced, harvested,
+                        "requestUrl is only meaningful if resources are read after the forced load")
+
+    def test_expected_faces_are_injected_into_the_snippet(self):
+        from tools.browser_matrix import page_snippet
+        snippet = page_snippet([{"role": "body", "family": "ThemeFactory-linen-body",
+                                 "weight": 400, "style": "normal", "file": "fonts/a.woff2"}])
+        self.assertIn("ThemeFactory-linen-body", snippet)
+        self.assertNotIn("__EXPECTED_FACES__", snippet)

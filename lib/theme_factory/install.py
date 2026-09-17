@@ -38,6 +38,7 @@ class InstallOptions:
     switcher_mode: str = "preserve"  # "preserve", "enable", "disable"
     backup_dir: Optional[Path] = None
     apply: bool = False
+    assume_yes: bool = False
 
 
 @dataclass(frozen=True)
@@ -242,10 +243,16 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     print(f"  Staged Digest: {staged_digest}")
     print(f"  Backup:        {backup_dir}")
 
-    try:
-        typed = input(f"Type application ID {options.app_id} to import: ").strip()
-    except EOFError:
-        typed = ""
+    if options.assume_yes:
+        # Requested explicitly by the operator. Recorded in the output so an unattended full
+        # replace is never silent: this is the one path where no human confirmed the target.
+        print(f"  Confirmation:  skipped via --yes (no wrong-application guard on {options.app_id})")
+        typed = str(options.app_id)
+    else:
+        try:
+            typed = input(f"Type application ID {options.app_id} to import: ").strip()
+        except EOFError:
+            typed = ""
 
     if typed != str(options.app_id):
         print(f"Confirmation mismatch (received '{typed}', expected '{options.app_id}'). Target untouched.")
@@ -329,6 +336,7 @@ def run_install_cli(args) -> None:
         switcher_mode = "preserve"
 
     options = InstallOptions(
+        assume_yes=getattr(args, "yes", False),
         package_root=args.package_root,
         connection=args.connection,
         workspace=args.workspace,

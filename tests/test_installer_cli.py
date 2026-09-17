@@ -123,6 +123,37 @@ class InstallerCliTests(unittest.TestCase):
         sql_calls = log.read_text(encoding="utf-8") if log.exists() else ""
         self.assertNotIn("apex import", sql_calls)
 
+    def test_yes_skips_the_confirmation_and_imports(self):
+        """--yes is the scripted path: no prompt, no stdin, still imports."""
+        log = self.tmp / "sql.log"
+        result = self.run_cli(
+            self.package_dir,
+            "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+            "--apply", "--yes", stdin="", log=log,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("apex import", log.read_text(encoding="utf-8") if log.exists() else "")
+
+    def test_yes_says_in_the_output_that_the_guard_was_skipped(self):
+        """A full replace with no human check must leave a trace in the log."""
+        result = self.run_cli(
+            self.package_dir,
+            "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+            "--apply", "--yes", stdin="", log=self.tmp / "sql.log",
+        )
+        self.assertIn("--yes", result.stdout)
+
+    def test_without_yes_an_empty_answer_still_cancels(self):
+        """The guard must still be the default: no --yes and no answer means untouched."""
+        log = self.tmp / "sql.log"
+        result = self.run_cli(
+            self.package_dir,
+            "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+            "--apply", stdin="", log=log,
+        )
+        self.assertEqual(result.returncode, 7, result.stderr)
+        self.assertNotIn("apex import", log.read_text(encoding="utf-8") if log.exists() else "")
+
     def test_apply_confirmation_match_imports(self):
         log = self.tmp / "sql.log"
         backup_dir = self.tmp / "backups"

@@ -38,6 +38,9 @@ def main() -> None:
     switcher_grp.add_argument("--without-switcher", action="store_true", help="Disable theme switcher in app")
     inst_p.add_argument("--backup-dir", type=Path, default=None, help="Backup directory")
     inst_p.add_argument("--apply", action="store_true", help="Apply changes (default is dry-run)")
+    inst_p.add_argument("--yes", action="store_true",
+                        help="Skip the typed confirmation (for scripts). Removes the wrong-application "
+                             "guard: whatever --app-id names is fully replaced without a human check.")
 
     # uninstall
     uninst_p = subparsers.add_parser("uninstall", help="Uninstall theme from APEX application")

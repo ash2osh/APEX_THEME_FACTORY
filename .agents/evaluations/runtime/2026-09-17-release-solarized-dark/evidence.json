@@ -7,23 +7,23 @@
       "check": "database_installation",
       "status": "PASS",
       "artifact": "database_installation.json",
-      "artifactSha256": "8cdcefd84b76a9dba6aacccbf55db37ec84dfc5926796db915a842a96700c876",
-      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit c88ce9df62cb"
+      "artifactSha256": "612e4f4c63fc217857d6a53ce3ec9e903dccbbb23a41401de296ed5bdadc384b",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 7ac2e0204ca0"
     },
     {
       "layer": "D",
       "check": "browser_runtime_matrix",
       "status": "PASS",
       "artifact": "browser_runtime_matrix.json",
-      "artifactSha256": "929306c788a7ddef15b9694378e474f85eeeb60a37b5f13705c6d1eae1a9a27a",
-      "details": "8/8 consumer/width rows verified live at commit c88ce9df62cb"
+      "artifactSha256": "ab1b8c54fac342e6e77a2b997846744cbffc1ce77fab21f6d2475d2a5d2f8e66",
+      "details": "8/8 consumer/width rows verified live at commit 7ac2e0204ca0"
     },
     {
       "layer": "E",
       "check": "agent_behavior_matrix",
       "status": "PASS",
       "artifact": "agent_behavior_matrix.json",
-      "artifactSha256": "a51e46225193d128b3fad43f42495c4259ee73464c4c0351bf4f7d45a9ac5dd8",
+      "artifactSha256": "488aba1796ab5b4193471d21f40ad95b0a5152a729b1cf2b2ba66d77ea9ab652",
       "details": "Three runtime readiness smokes PASS, all re-run 2026-09-17 against the instruction files as they now stand (codex 0.154.0, claude 2.1.273, antigravity 1.2.5) after the daemon rule was added to AGENTS.md and .agents/rules/ - Layer E is the one layer whose subject is Markdown, which source-equivalence excludes, so the re-run is by hand (pitfalls 5.x). The 2026-09-16 antigravity UNVERIFIED was a 503 no-capacity, confirmed by a control run on the previous schema. Evaluation scenarios 04, 05, 09, 11 and 14 all PASS: 09 and 14 were graded 2026-09-16; 04, 05 and 11 were blocked on an APEX import, which the user ran on 2026-09-17, and are graded in .agents/evaluations/runs/2026-09-17/. Zero pending findings. Bounds recorded rather than waived: 04, 05 and 11 were closed by grader measurement against the imported build, not by fresh evaluee sessions (each run log states this, and scenario 11's notes that the same session applied and measured the fixes); scenario 05 records that the evaluee's own CSS was never committed and so could not be the imported artifact; app 102's AA sweep covers 24 of 122 pages."
     }
   ]

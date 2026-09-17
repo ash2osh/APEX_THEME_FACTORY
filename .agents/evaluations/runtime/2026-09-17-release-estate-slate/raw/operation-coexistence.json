@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T17:41:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/packages/estate-slate-dark-1.0.0/estate-slate-dark-1.0.0 --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9012 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9012\n  Theme:         estate-slate-dark v1.0.0\n  Staged Digest: 0bd909cd56b92ee7a9e4e874ee5ced65fd7012169bba2a5d02e145bbf8572e8a\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/backups/DEMO-9012/20260917T172937Z-before-estate-slate-dark\nType application ID 9012 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.0.0 into application 9012.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/packages/estate-slate-dark-1.0.0/estate-slate-dark-1.0.0 --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9013 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9013\n  Theme:         estate-slate-dark v1.0.0\n  Staged Digest: b1e934fc4b99aa41388c88cbfadbb94663272a0afbd0d62c9b8d5ebc63ed76e3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/backups/DEMO-9013/20260917T173731Z-before-estate-slate-dark\nType application ID 9013 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.0.0 into application 9013.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

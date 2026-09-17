@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate-dark",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "8ab190d0e11182cd08bfdc119769d5de24ddcb6fd17907e0abf0bb2ecc8b6f76",
+  "capturedAt": "2026-09-17T17:57:47Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-estd/minimal/packages/estate-slate-1.0.0/estate-slate-1.0.0 --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9012 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9012\n  Theme:         estate-slate v1.0.0\n  Staged Digest: 6c7aa678a649d21bd50536bd3ef6c6eb7d52bd202e79f58646e1337e6a37cc8f\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-estd/minimal/backups/DEMO-9012/20260917T174540Z-before-estate-slate\nType application ID 9012 to import: \nResult: IMPORTED theme 'estate-slate' v1.0.0 into application 9012.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-estd/business/packages/estate-slate-1.0.0/estate-slate-1.0.0 --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9013 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9013\n  Theme:         estate-slate v1.0.0\n  Staged Digest: 53992680a226bb7887d6a7e49da2884bb3b615c6b6cf7f24e5079fb83487db2c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-estd/business/backups/DEMO-9013/20260917T175339Z-before-estate-slate\nType application ID 9013 to import: \nResult: IMPORTED theme 'estate-slate' v1.0.0 into application 9013.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

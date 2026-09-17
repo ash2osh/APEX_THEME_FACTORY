@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T18:14:48Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-ut-literal-root-tokens",
+  "status": "ACCEPTED",
+  "reason": "Scenario 11 passes against the fixed, imported package.",
+  "file": ".agents/findings/accepted/2026-09-14-ut-literal-root-tokens.md"
+}

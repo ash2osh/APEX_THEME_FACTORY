@@ -343,6 +343,26 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   dropped its static members (`apex.item.existsInMemoryState`) and aborted the very refresh under test with
   `TypeError`. Measure with element/DOM identity and `ajaxSuccess`/`ajaxError` hooks instead of monkey-patches.
 
+### 4.6 A `@font-face` is only downloaded when something renders text in it
+- A declared face that no captured page uses is indistinguishable, to a naive probe, from a face that is
+  missing: `document.fonts.check()` is false and no `performance` resource entry exists, because the browser
+  never fetched it. Met 2026-09-17 on `solarized-dark`, which declares an IBM Plex Mono face: no consumer page
+  renders monospace text, so `mono/400` came back `check: false` with an empty `requestUrl` on all 12 Layer D
+  rows, and `heading/700` failed on every page except the one business page that renders a 700-weight heading.
+  The package was correct throughout — `--app-font-family-mono` resolved to `"ThemeFactory-solarized-dark-mono",
+  ui-monospace, monospace`, the WOFF2 was registered and served, and a forced load fetched it from
+  `.../solarized-dark/1.1.0/fonts/ibm-plex-mono-regular.woff2` in ~20 ms.
+- **Force the face, then judge that.** `await document.fonts.load('<weight> <style> 16px "<family>"', 'Ag0')`
+  and require every returned `FontFace` to report `status === 'loaded'`. That answers the question the evidence
+  actually claims — *is this face installed and usable from the package* — instead of *did this page happen to
+  use it*. `tools/browser_matrix.py::page_snippet()` does this since `c88ce9d`.
+- **Read `performance.getEntriesByType('resource')` after the forced loads, never before.** The request only
+  exists once the load is forced, and `requestUrl` is what stops `document.fonts.check()` passing on a
+  system fallback with the same name. Order matters: probe, then harvest.
+- The inverse failure is worth naming too. A check can be wrong in the *pessimistic* direction, and that is
+  still a defect — it cost a 50-minute re-capture and briefly looked like a broken theme. "The gate said no"
+  is not the same as "the artifact is bad": confirm which, live, before changing either one.
+
 ## 5. Workflow
 
 ### 5.1 Another agent may be editing the same tree
@@ -413,6 +433,25 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   full re-record of both layers (paid on 2026-09-17). The same applies to any package-source edit: the theme
   ZIP's SHA-256 changes, so evidence bound to the old SHA is correctly rejected, even when the edit was only a
   comment.
+
+### 5.5 Hardcoding a package version in a helper script silently skips a theme
+- A capture driver written as `--package-root $S/pk/$t-1.0.0` keeps working until a theme is version-bumped,
+  and then fails for exactly one theme while the other proceeds normally. Met 2026-09-17: `solarized-dark` went
+  to 1.1.0 for its custom fonts, and the Layer D phase installed only `linen` into both consumer apps. The
+  installer refused correctly (*"Missing checksums.sha256 in .../solarized-dark-1.0.0"*) — the damage was that
+  the run continued and began measuring a half-installed estate.
+- Resolve the package instead of naming it: `ls dist/$t/$t-*.zip | head -1`, and echo the resolved filename
+  into the log so the binding is visible in the evidence trail rather than implied by the script.
+- The same applies to the extracted package root: derive it from the ZIP's basename, never re-spell the version.
+
+### 5.6 `pkill` on a wrapper shell orphans the Python process doing the work
+- Killing `pipeline.sh` leaves its in-flight `browser_matrix.py` / `live_matrix.py` child reparented to init and
+  still running — still driving the shared Chrome tab and still writing into the evidence root. Met 2026-09-17:
+  the replacement run's installs raced the orphan's Layer D capture for ~90 seconds.
+- Kill the worker, not just its shell: check `pgrep -af "browser_matrix|live_matrix|theme_factory.cli"` after any
+  `pkill`, and wait for an in-flight `install`/`uninstall` to finish before stopping a pipeline, so no consumer app
+  is left half-imported. (The bracket trick from §5.x still applies — `pipeline1[8].sh` so the pattern does not
+  match the `pkill` command line itself.)
 
 ## 6. Evaluation protocol (spec §58/§62) — traps from the evaluation rounds
 

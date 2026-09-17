@@ -28,7 +28,8 @@ Layer C (live import) is PASS: authorised `--apply` cycles were run against the 
 ## Verdict (updated 2026-09-17, after the post-import evaluation round)
 
 Layers A–E are **PASS** for both single-theme packages with retained, digest-bound evidence at commit
-`0edc66a69a7b`, so the release verdict for `linen` and `solarized-dark` is **VERIFIED**. What closed Layer E: all
+`c88ce9df62cb`, so the release verdict for `linen` and `solarized-dark` is **VERIFIED**. `solarized-dark` 1.1.0
+ships five licensed WOFF2 faces, and all five are proven loaded from the package on all 12 Layer D rows. What closed Layer E: all
 three runtime smokes pass (Codex and Claude Code 2026-09-16, Antigravity 2026-09-17 once its provider had
 capacity), evaluation scenarios 04, 05, 09, 11 and 14 all pass, and both remaining findings were promoted to
 `accepted` after the measurements that had been missing were taken against the imported build.

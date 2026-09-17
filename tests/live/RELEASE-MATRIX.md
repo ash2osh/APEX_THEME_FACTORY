@@ -4,7 +4,7 @@ A row may become `PASS` only when its referenced JSON artifact exists, validates
 contract, and is bound (SHA-256) to the theme package and the source commit. The tables below are generated
 from the retained evidence under `.agents/evaluations/runtime/2026-09-17-release-<theme>/`.
 
-## Current evidence status (2026-09-17, commit `0edc66a69a7b`, APEX 26.1.4)
+## Current evidence status (2026-09-17, commit `c88ce9df62cb`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
@@ -16,7 +16,9 @@ from the retained evidence under `.agents/evaluations/runtime/2026-09-17-release
 
 Each Layer D row records: `apex.env` identity, html/body classes, CSS/JS URLs, loaded resources, `registry.json`,
 console errors, failed requests (status ≥ 400 or network failure), `document.fonts` state for Font APEX, the icon
-`::before` family, the body family compared with bare Iris on the same page, the AA contrast audit from
+`::before` family, the body family compared with bare Iris on the same page, every font face the package
+declares — each one forced to load and then matched to the request that served it, so a face no page happens to
+render (solarized-dark's mono) is proven usable rather than reported missing (pitfalls §4.6) — the AA contrast audit from
 `docs/CHROME_DEVTOOLS_MCP.md` (zero failures required), the switcher menu opened by keyboard with exactly one
 checked `menuitemradio`, and the selection surviving a second reload under `apex.themeFactory.<APP_ID>`.
 

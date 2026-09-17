@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "e44627b93fc503defbc7f2f765765d2cc7f89528",
-  "packageSha256": "41996104130764518557862e675057365c1c3425b44f05ed001f8c25dafa8d67",
-  "capturedAt": "2026-09-17T08:08:43Z",
+  "gitCommit": "c88ce9df62cbe3d58f0d5844dcf1c949126374f1",
+  "packageSha256": "05cf66c84082cf5187dd16afd4735d0470e74e4ab91a62bf1a361945aaaad54e",
+  "capturedAt": "2026-09-17T13:35:18Z",
   "evidenceType": "sqlcl-operation",
   "operation": "install",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/packages/solarized-dark-1.0.0/solarized-dark-1.0.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/packages/solarized-dark-1.1.0/solarized-dark-1.1.0",
       "appId": 9010,
       "exitCode": 0,
       "status": "STAGED_ONLY",
-      "stdoutTail": "dbaaf8f4583e6e525c242066f7b80dc812a3ab2de4303891effca73aae9dd\"\n+  },\n+  \"themes\": [\n+    {\n+      \"name\": \"solarized-dark\",\n+      \"title\": \"Solarized Dark\",\n+      \"version\": \"1.0.0\",\n+      \"className\": \"app-theme-solarized-dark\",\n+      \"stylesheetUrl\": \"#APP_FILES#theme-factory/packages/solarized-dark/1.0.0/theme.css\",\n+      \"files\": {\n+        \"theme-factory/packages/solarized-dark/1.0.0/theme.json\": \"4bf35609166fa0ad7569550cd93c638a6e87c9a0235201c78ecd1adfafeb2658\",\n+        \"theme-factory/packages/solarized-dark/1.0.0/theme.css\": \"8bd24946241bcf12e053454f8bc3a6439308434f16c6745e077ef9bb1c367469\",\n+        \"theme-factory/packages/solarized-dark/1.0.0/cover.jpg\": \"5247d8d34f048ccf17e2b725895c610f27dc7559b1ebe9b8b5c69871138b2fa7\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,24 @@\n+file \"theme-factory/packages/solarized-dark/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stdoutTail": "/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-mono-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-sans-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-sans-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/space-grotesk-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/space-grotesk-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/licenses/ibm-plex-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/licenses/space-grotesk-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
       "stderrTail": ""
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/packages/solarized-dark-1.0.0/solarized-dark-1.0.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/packages/solarized-dark-1.1.0/solarized-dark-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: e4a48d101d5490100fa56fed814b3bec95576bcf9f3bcba422a0318d10d2bfdb\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075116Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.1.0\n  Staged Digest: 5034b86fe0a0c52619c31bb11d9bda127617de2be14da78d0459bd442d1f00a0\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T132027Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/packages/solarized-dark-1.0.0/solarized-dark-1.0.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/packages/solarized-dark-1.1.0/solarized-dark-1.1.0",
       "appId": 9011,
       "exitCode": 0,
       "status": "STAGED_ONLY",
-      "stdoutTail": "80dc812a3ab2de4303891effca73aae9dd\"\n+  },\n+  \"themes\": [\n+    {\n+      \"name\": \"solarized-dark\",\n+      \"title\": \"Solarized Dark\",\n+      \"version\": \"1.0.0\",\n+      \"className\": \"app-theme-solarized-dark\",\n+      \"stylesheetUrl\": \"#APP_FILES#theme-factory/packages/solarized-dark/1.0.0/theme.css\",\n+      \"files\": {\n+        \"theme-factory/packages/solarized-dark/1.0.0/theme.json\": \"4bf35609166fa0ad7569550cd93c638a6e87c9a0235201c78ecd1adfafeb2658\",\n+        \"theme-factory/packages/solarized-dark/1.0.0/theme.css\": \"8bd24946241bcf12e053454f8bc3a6439308434f16c6745e077ef9bb1c367469\",\n+        \"theme-factory/packages/solarized-dark/1.0.0/cover.jpg\": \"5247d8d34f048ccf17e2b725895c610f27dc7559b1ebe9b8b5c69871138b2fa7\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,27 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/solarized-dark/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stdoutTail": "/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-mono-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-sans-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/ibm-plex-sans-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/space-grotesk-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/fonts/space-grotesk-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/licenses/ibm-plex-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.1.0/licenses/space-grotesk-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/packages/solarized-dark-1.0.0/solarized-dark-1.0.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/packages/solarized-dark-1.1.0/solarized-dark-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: a6fd63d34d682ab11ef5d628d8a8e317c34db62ae3c987e6bc62f841bc90475b\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080045Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.1.0\n  Staged Digest: 674c324b9fde59ee4485603141c020c514ccde55485caa123b8614623f506815\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T132808Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

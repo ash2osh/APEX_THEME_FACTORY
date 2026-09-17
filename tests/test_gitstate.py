@@ -192,5 +192,84 @@ class LayerEBindingUsesInstructionEquivalenceTests(unittest.TestCase):
         self.assertEqual(raw["runtime"], "claude")
 
 
+class AssertCleanSourceTests(unittest.TestCase):
+    """Task 4 (verification-integrity-defects plan): tools/live_matrix.py and
+    tools/browser_matrix.py each checked git status --porcelain once, at startup. A tree that goes
+    dirty mid-run (e.g. re-running the agent smokes mid-pipeline, which writes
+    tests/agent-smoke/runs/*.json) passed the theme in flight and only failed the *next* one.
+    assert_clean_source is meant to be called before each unit of live capture work, not once.
+    """
+
+    def _git_repo(self):
+        temp = tempfile.mkdtemp()
+        self.addCleanup(lambda: __import__("shutil").rmtree(temp, ignore_errors=True))
+        root = Path(temp)
+
+        def git(*args):
+            return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=True).stdout.strip()
+
+        git("init", "-q")
+        git("config", "user.email", "t@example.com")
+        git("config", "user.name", "t")
+        (root / "lib.py").write_text("print(1)\n", encoding="utf-8")
+        git("add", "-A")
+        git("commit", "-q", "-m", "baseline")
+        return root
+
+    def test_a_clean_tree_passes_silently(self):
+        from lib.theme_factory.gitstate import assert_clean_source
+        root = self._git_repo()
+        assert_clean_source(root)  # must not raise
+
+    def test_a_dirty_tracked_file_raises_and_names_it(self):
+        from lib.theme_factory.gitstate import assert_clean_source
+        root = self._git_repo()
+        (root / "lib.py").write_text("print(2)\n", encoding="utf-8")
+        with self.assertRaises(RuntimeError) as ctx:
+            assert_clean_source(root)
+        self.assertIn("lib.py", str(ctx.exception))
+
+    def test_an_untracked_file_outside_the_evidence_root_raises_and_names_it(self):
+        # exactly the 2026-09-17 incident: re-running a smoke mid-pipeline wrote a new, untracked
+        # dated run directory under an already-tracked tests/agent-smoke/runs/.
+        from lib.theme_factory.gitstate import assert_clean_source
+        root = self._git_repo()
+        import subprocess as sp
+        (root / "tests" / "agent-smoke" / "runs" / "2026-09-16").mkdir(parents=True)
+        (root / "tests" / "agent-smoke" / "runs" / "2026-09-16" / "claude.json").write_text("{}", encoding="utf-8")
+        sp.run(["git", "add", "-A"], cwd=root, check=True)
+        sp.run(["git", "commit", "-q", "-m", "existing runs"], cwd=root, check=True)
+        (root / "tests" / "agent-smoke" / "runs" / "2026-09-17").mkdir(parents=True)
+        (root / "tests" / "agent-smoke" / "runs" / "2026-09-17" / "claude.json").write_text("{}", encoding="utf-8")
+        with self.assertRaises(RuntimeError) as ctx:
+            assert_clean_source(root)
+        self.assertIn("claude.json", str(ctx.exception))
+
+    def test_evidence_root_changes_do_not_raise(self):
+        from lib.theme_factory.gitstate import assert_clean_source, EVIDENCE_ROOT
+        root = self._git_repo()
+        evidence = root / EVIDENCE_ROOT / "2026-09-17-release-linen"
+        evidence.mkdir(parents=True)
+        (evidence / "evidence.json").write_text("{}", encoding="utf-8")
+        assert_clean_source(root)  # must not raise
+
+    def test_markdown_only_changes_do_not_raise(self):
+        from lib.theme_factory.gitstate import assert_clean_source
+        root = self._git_repo()
+        (root / "README.md").write_text("# notes\n", encoding="utf-8")
+        assert_clean_source(root)  # must not raise
+
+    def test_a_tree_that_goes_dirty_between_two_calls_aborts_on_the_second(self):
+        """The property the plan actually cares about: catching dirt introduced *between*
+        operations, not just at the start of the whole run."""
+        from lib.theme_factory.gitstate import assert_clean_source
+        root = self._git_repo()
+        assert_clean_source(root)  # first operation: tree is clean, proceeds
+        (root / "lib.py").write_text("print(2)\n", encoding="utf-8")  # something writes mid-run
+        with self.assertRaises(RuntimeError):
+            assert_clean_source(root)  # second operation: must abort now, not after it runs
+
+
 if __name__ == "__main__":
     unittest.main()
+

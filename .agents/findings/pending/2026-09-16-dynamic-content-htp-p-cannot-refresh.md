@@ -1,11 +1,12 @@
 # Finding
 
 Status:
-Pending (2026-09-16) — runtime-verified twice (scenario 04 evaluee and grader, independently); the source fix
-it names has **not** been applied, because applying it means editing `applications/ut/` and importing app 102,
-neither of which the 2026-09-16 evaluation session was permitted to do. Missing before promotion: the
-`plsqlFunctionBody` change committed, imported, and one live `REFRESH_FIXTURE` click showing
-`apexafterrefresh` = 1 — which is the same evidence scenario 04 needs to leave UNVERIFIED.
+Pending (2026-09-17) — runtime-verified twice (scenario 04 evaluee and grader, independently). The source fix
+it names is now **applied and compiled**: `applications/ut/pages/p00409-theme-factory-lifecycle.apx` returns
+the markup from `plsqlFunctionBody` instead of printing it, and `scripts/apex-validate.sh` reports
+`Validation successful.` (2026-09-17). Missing before promotion: an import of app 102 — which only the user
+may authorise (`scripts/apex-import.sh`) — and one live `REFRESH_FIXTURE` click showing `apexafterrefresh` = 1.
+That same import is what scenario 04 needs to leave UNVERIFIED.
 
 Category:
 BUG (also APEXLANG-KNOWLEDGE / APEX-JAVASCRIPT-PATTERN)

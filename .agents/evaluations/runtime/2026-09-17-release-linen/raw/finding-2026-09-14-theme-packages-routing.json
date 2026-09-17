@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
-  "packageSha256": "2fa168104dd7b749bab1c46b37a30a901e48bd1a0ade8f48bff027646b38fe69",
-  "capturedAt": "2026-09-17T08:19:12Z",
+  "gitCommit": "c88ce9df62cbe3d58f0d5844dcf1c949126374f1",
+  "packageSha256": "8c38fd0f618499c613419ccb830b29839c9f191f0555497e4b38a35b3c5543d2",
+  "capturedAt": "2026-09-17T13:44:18Z",
   "evidenceType": "finding-resolution",
   "finding": "2026-09-14-theme-packages-routing",
   "status": "ACCEPTED",

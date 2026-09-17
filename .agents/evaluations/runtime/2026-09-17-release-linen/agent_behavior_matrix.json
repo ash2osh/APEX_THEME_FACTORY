@@ -3,7 +3,7 @@
   "theme": "linen",
   "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
   "packageSha256": "2fa168104dd7b749bab1c46b37a30a901e48bd1a0ade8f48bff027646b38fe69",
-  "capturedAt": "2026-09-17T08:18:06Z",
+  "capturedAt": "2026-09-17T08:19:12Z",
   "layer": "E",
   "check": "agent_behavior_matrix",
   "status": "PASS",
@@ -11,71 +11,71 @@
     "runtimes": {
       "codex": {
         "path": "raw/agent-runtime-codex.json",
-        "sha256": "7283555a8a731cc27474d4f07a8c6839b994826adf657b5ad8550800af06ccb7"
+        "sha256": "c35f2bb4f916286d945d2ace7251c9eae45b85bdaceea2adb2d0da2d6e77691c"
       },
       "claude": {
         "path": "raw/agent-runtime-claude.json",
-        "sha256": "2d7558922688599a2151f3f910d199f18bfbc4b9eb687544c442b37fd3978911"
+        "sha256": "6f793e6ceb1f97ebbb74c6f604421a8d2ddebd64e8488494919617f2f213c193"
       },
       "antigravity": {
         "path": "raw/agent-runtime-antigravity.json",
-        "sha256": "1afb5ea4760cefd635acb3b3d61da420348c68a143ddef530ee1beb9ceeb3af1"
+        "sha256": "1ff6b62a80c49041344e267c8fdd3edf36202053dedc20a2f6177651ee7bc9b5"
       }
     },
     "scenarios": {
       "04": {
         "path": "raw/scenario-04.json",
-        "sha256": "e8acd9956e1afb6c1adadb5d7b6740ad863453c81308e45cbd36694aa21e3249"
+        "sha256": "2cd461ce7d4fd9727e75f106685928c51660496583f411978f4c95876a92ffca"
       },
       "05": {
         "path": "raw/scenario-05.json",
-        "sha256": "ecd35feaf3cb5f6d479658dd55536ab57fd0fdc5af6e692d2573845041467ace"
+        "sha256": "638ea665c7f95f89f6cdecc6d5cdda9d54b2838bdc4ba4c9cbd444ca900ab7a0"
       },
       "09": {
         "path": "raw/scenario-09.json",
-        "sha256": "3374d3ddcd294ac6a7f1118321279c066b97fe4f4de08c47cf529c556cb86517"
+        "sha256": "df5e492feba0ef34b74d7051e62ec197d3f1ada5237b6a99f8f708ae20fe563f"
       },
       "11": {
         "path": "raw/scenario-11.json",
-        "sha256": "ca9df2faf8458d0fd53343e74b68f89e089eb351f1a7ea03d166811205c0ccdf"
+        "sha256": "f3a50cf33bec67465133a13923e3c7fda6a9163df17a8bff91f4b37b3a1afb46"
       },
       "14": {
         "path": "raw/scenario-14.json",
-        "sha256": "7c0e299bba81c61d0c89fcd243e869fd69b707df3b85a2d295283dda2b80f026"
+        "sha256": "f16a2794776077a3157939bf2d246ceb85bee095f13661ea838f3ff5a8fe2945"
       }
     },
-    "findings": [
+    "findingEvidence": [
       {
         "path": "raw/finding-2026-09-13-theme-style-scope-token-overrides.json",
-        "sha256": "fd5876df28cf8640cd74831a3af45dcfbbec31966e01045d76d693d24796f849"
+        "sha256": "4efade699aa897bb342abafcc5a047f402c447d4e4a7018c34715cc37b4282e3"
       },
       {
         "path": "raw/finding-2026-09-14-apex-widget-events.json",
-        "sha256": "2a8d695957403b21857e1c023be87983c300a9a80c8472ee16a93f12c0ad505e"
+        "sha256": "b96426ece1e7b62adbea28b6a8018cb9e413e9aadf18f5cc3a2355130dd3b732"
       },
       {
         "path": "raw/finding-2026-09-14-apexlang-static-id-is-htmldomid.json",
-        "sha256": "37a922a2d8ff9da70151bb1378b58434ce3c638b2dda588c17248b14f307e622"
+        "sha256": "b21dfafce4e30ccfc8c7d46b9a91c5d904c10fad681f5a9bce606e9b3e98884e"
       },
       {
         "path": "raw/finding-2026-09-14-theme-packages-routing.json",
-        "sha256": "d82e13676b8b69421db04d126f9e66c0cb33a02f7e9f0e0b89d60012544c3501"
+        "sha256": "624bb9ac8f240fe7f537ca9733f4514b2fa36c1d264f2f962a6cfbca09e59d8f"
       },
       {
         "path": "raw/finding-2026-09-14-ut-literal-root-tokens.json",
-        "sha256": "525b5701184049f61f79d223fe05d9f7e38bcb97b15e9d618b5e099df24b45a0"
+        "sha256": "2d83ba93e8af070f33b2e1e9c4695e4155640ff2cb2fb404ad6e10caa2799a58"
       },
       {
         "path": "raw/finding-2026-09-14-solarized-dark-2page-coverage-gap.json",
-        "sha256": "fe406370d63ce46a28e50bd5ce328e4b9ba2d987c5ccd396fa7aa2b53f5eb7f8"
+        "sha256": "312a7b8866f7611f6ae9efccd40f3bb6b06714ed3fbbb1e992d228e1745714ec"
       },
       {
         "path": "raw/finding-2026-09-16-dynamic-content-htp-p-cannot-refresh.json",
-        "sha256": "032a8c9516f10cb942efe6b2ca15f06ca249595f6ae3b1d64ce455f1a752ef32"
+        "sha256": "bcfba89083a0c938e02054c970bf981d30b58e43fdba84a3af5549938f196f02"
       },
       {
         "path": "raw/finding-2026-09-13-ig-sticky-header-double-line.json",
-        "sha256": "52e079d6b3744b56fffbcc9f87b70743026d99eef50488c712a2faba7c0bc075"
+        "sha256": "01d78296a972331f332c0e29496f9a8cfdbf414d682e656f712ec3dcfd672b78"
       }
     ],
     "pendingFindings": 0,

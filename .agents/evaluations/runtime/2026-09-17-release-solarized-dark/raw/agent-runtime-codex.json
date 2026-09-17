@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "agent-runtime",
+  "runtime": "codex",
+  "status": "PASS",
+  "cliVersion": "codex-cli 0.154.0",
+  "dateUtc": "2026-09-17",
+  "message": "All assertions passed",
+  "source": "tests/agent-smoke/runs/2026-09-17/codex.json"
+}

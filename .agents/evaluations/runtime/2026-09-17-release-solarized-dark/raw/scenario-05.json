@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "05",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-17/05-source-persistence-postimport.md",
+  "reason": "Clauses (a)+(b) graded clean on 2026-09-16; (c)+(d) measured post-import on this repository's own prototype -> source -> sync-static.sh -> import -> reload path: p1906 MapLibre attribution 2.57:1 -> 12.25:1 and the restated --a-palette-* chain resolving to package values on the element scope, with 0 injected <style> tags. Substitution on record: the evaluee's own hero CSS lived only in a discarded worktree and was never committed, so it could not be the imported artifact."
+}

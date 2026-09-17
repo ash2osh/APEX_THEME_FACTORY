@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "checks": [
+    {
+      "layer": "C",
+      "check": "database_installation",
+      "status": "PASS",
+      "artifact": "database_installation.json",
+      "artifactSha256": "2674fb76a942b91f3cdf8d3a3a7a764e4324114bd446a534a0aabd92f5f6faa6",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 0edc66a69a7b"
+    },
+    {
+      "layer": "D",
+      "check": "browser_runtime_matrix",
+      "status": "PASS",
+      "artifact": "browser_runtime_matrix.json",
+      "artifactSha256": "8041c707e5488ed70d758744e709980d7b91a75cb00e6300fcfdffa02de092c4",
+      "details": "8/8 consumer/width rows verified live at commit 0edc66a69a7b"
+    },
+    {
+      "layer": "E",
+      "check": "agent_behavior_matrix",
+      "status": "PASS",
+      "artifact": "agent_behavior_matrix.json",
+      "artifactSha256": "d4a0b764201dc4c0f81d6351707dba1d4a1c44ec02f59a9a3c562727c77cfd86",
+      "details": "Three runtime readiness smokes PASS, all re-run 2026-09-17 against the instruction files as they now stand (codex 0.154.0, claude 2.1.273, antigravity 1.2.5) after the daemon rule was added to AGENTS.md and .agents/rules/ - Layer E is the one layer whose subject is Markdown, which source-equivalence excludes, so the re-run is by hand (pitfalls 5.x). The 2026-09-16 antigravity UNVERIFIED was a 503 no-capacity, confirmed by a control run on the previous schema. Evaluation scenarios 04, 05, 09, 11 and 14 all PASS: 09 and 14 were graded 2026-09-16; 04, 05 and 11 were blocked on an APEX import, which the user ran on 2026-09-17, and are graded in .agents/evaluations/runs/2026-09-17/. Zero pending findings. Bounds recorded rather than waived: 04, 05 and 11 were closed by grader measurement against the imported build, not by fresh evaluee sessions (each run log states this, and scenario 11's notes that the same session applied and measured the fixes); scenario 05 records that the evaluee's own CSS was never committed and so could not be the imported artifact; app 102's AA sweep covers 24 of 122 pages."
+    }
+  ]
+}

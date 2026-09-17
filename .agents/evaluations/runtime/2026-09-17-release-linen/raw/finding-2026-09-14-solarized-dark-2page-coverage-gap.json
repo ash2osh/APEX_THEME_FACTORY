@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "007bde7090f7deac3e915f2572f00f6d1c6760a10d9c19759e4324a079467ded",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-solarized-dark-2page-coverage-gap",
+  "status": "ACCEPTED",
+  "reason": "Promoted 2026-09-17: all four defects fixed, imported and re-measured as shipped (scenario 11 PASS). Residual coverage - 98 unopened pages, 1024/768, other selection states - is kept open in the finding's Status rather than claimed.",
+  "file": ".agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md"
+}

@@ -333,18 +333,8 @@ file "css/themes/linen/theme.json" (
     charSet: utf-8
 )
 
-file "css/themes/linen/cover.jpg" (
-    mimeType: image/jpeg
-    charSet: utf-8
-)
-
 file "css/themes/solarized-dark/theme.json" (
     mimeType: application/json
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/cover.jpg" (
-    mimeType: image/jpeg
     charSet: utf-8
 )
 
@@ -403,11 +393,6 @@ file "css/themes/estate-slate-dark/theme.json" (
     charSet: utf-8
 )
 
-file "css/themes/estate-slate-dark/cover.jpg" (
-    mimeType: image/jpeg
-    charSet: utf-8
-)
-
 file "css/themes/estate-slate/apex/buttons.css" (
     mimeType: text/css
     charSet: utf-8
@@ -458,72 +443,70 @@ file "css/themes/estate-slate/theme.json" (
     charSet: utf-8
 )
 
-file "css/themes/estate-slate/cover.jpg" (
-    mimeType: image/jpeg
-    charSet: utf-8
-)
-
 file "css/themes/estate-slate-dark/fonts/ibm-plex-sans-arabic-bold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate-dark/fonts/ibm-plex-sans-arabic-medium.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate-dark/fonts/ibm-plex-sans-arabic-regular.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate-dark/fonts/ibm-plex-sans-arabic-semibold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/cover.jpg" (
+    mimeType: image/jpeg
 )
 
 file "css/themes/estate-slate/fonts/ibm-plex-sans-arabic-bold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate/fonts/ibm-plex-sans-arabic-medium.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate/fonts/ibm-plex-sans-arabic-regular.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/estate-slate/fonts/ibm-plex-sans-arabic-semibold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
+)
+
+file "css/themes/estate-slate/cover.jpg" (
+    mimeType: image/jpeg
+)
+
+file "css/themes/linen/cover.jpg" (
+    mimeType: image/jpeg
 )
 
 file "css/themes/solarized-dark/fonts/ibm-plex-mono-regular.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/solarized-dark/fonts/ibm-plex-sans-regular.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/solarized-dark/fonts/ibm-plex-sans-semibold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/solarized-dark/fonts/space-grotesk-bold.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
 )
 
 file "css/themes/solarized-dark/fonts/space-grotesk-medium.woff2" (
     mimeType: font/woff2
-    charSet: utf-8
+)
+
+file "css/themes/solarized-dark/cover.jpg" (
+    mimeType: image/jpeg
 )

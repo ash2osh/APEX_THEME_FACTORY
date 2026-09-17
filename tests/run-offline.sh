@@ -13,7 +13,7 @@ python3 -m unittest \
   tests.test_runtime_parity tests.test_alpine_fixture \
   tests.test_consumer_fixture_scripts tests.test_release_report \
   tests.test_apexlang_roundtrip_sim tests.test_lifecycle_real_shape tests.test_live_matrix tests.test_browser_matrix \
-  tests.test_gitstate tests.test_capture_driver_dirty_checks -v
+  tests.test_gitstate tests.test_capture_driver_dirty_checks tests.test_sync_static -v
 python3 -m unittest tests.test_chrome_mcp_daemon -v
 
 scripts/check-agent-layout.sh

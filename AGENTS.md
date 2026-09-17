@@ -6,6 +6,10 @@ Then read **docs/PROJECT.md** for the target app, URL, connection and hard const
 Non-negotiables
 - APEX 26.1.x, Universal Theme 42, theme style **Iris only** (light). Never switch styles or use Theme Roller.
 - Runtime truth = Chrome DevTools MCP against the user's running Chrome (`--autoConnect`); see docs/CHROME_DEVTOOLS_MCP.md.
+  **Always go through the project daemon** — `python3 tools/chrome_devtools_client.py <tool> '<json>'` — never a
+  `chrome-devtools` MCP tool directly. One approved Chrome session is shared; a direct call or a second daemon
+  raises a consent prompt the user may not be at the machine to accept, and a second `--autoConnect` instance can
+  hold the connection without ever answering (pitfalls §4.3c).
 - Declarative source = `applications/ut/` (APEXLang, app 102, workspace DEMO) via SQLcl `docker-demo`; see docs/APEXLANG_ROUNDTRIP.md. Import only when the user asks.
 - Appearance = `static-files/css` (shared foundation + `--app-*` vocabulary aliasing Iris) plus theme packages in `sample-themes/<name>/css` scoped to `html.app-theme-<name>`; interaction = Alpine in `static-files/js/components`. Assemble with `scripts/sync-static.sh` before `apex-import`; default theme via `scripts/apply-theme.sh`.
 - Portable theme assets stay inside `sample-themes/<name>/`: custom fonts are optional licensed WOFF2 files, external font URLs are forbidden, and every built ZIP contains exactly one theme.

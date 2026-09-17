@@ -1,6 +1,6 @@
 {
   "runtime": "antigravity",
-  "cliVersion": "1.2.4",
+  "cliVersion": "1.2.5",
   "dateUtc": "2026-09-17",
   "status": "PASS",
   "message": "All assertions passed",

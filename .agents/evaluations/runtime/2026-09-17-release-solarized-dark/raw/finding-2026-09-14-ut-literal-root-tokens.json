@@ -3,7 +3,7 @@
   "theme": "solarized-dark",
   "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
   "packageSha256": "41996104130764518557862e675057365c1c3425b44f05ed001f8c25dafa8d67",
-  "capturedAt": "2026-09-17T08:18:06Z",
+  "capturedAt": "2026-09-17T08:19:12Z",
   "evidenceType": "finding-resolution",
   "finding": "2026-09-14-ut-literal-root-tokens",
   "status": "ACCEPTED",

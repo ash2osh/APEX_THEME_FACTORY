@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
-  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
-  "capturedAt": "2026-09-17T07:12:25Z",
+  "gitCommit": "e44627b93fc503defbc7f2f765765d2cc7f89528",
+  "packageSha256": "41996104130764518557862e675057365c1c3425b44f05ed001f8c25dafa8d67",
+  "capturedAt": "2026-09-17T08:08:43Z",
   "evidenceType": "sqlcl-operation",
   "operation": "switcherEnableDisable",
   "status": "PASS",
@@ -14,7 +14,7 @@
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: d8eb1afe9b4f9b6a75a1f2a47464e748c95097568c8770da4e579f594f1b875e\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T065623Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: 175ffe5df925e10340ceb0b6d6c711e51e827b3e4757f6006d40d69bf16ea7dc\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075413Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -23,7 +23,7 @@
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: 62160f1cb0b1d2ae492b5654030dd1504455183c9085699d3adfa442cf24d0b9\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T065828Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: a6a24388beeab7b6ea65226217451bb78225b6333631d3e02ee79a9c9ad96cb3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075635Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -32,7 +32,7 @@
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: ff488d2fb3f50ebae9ef2e501aef6f46a6f4cb5e22d8a8d9a3559ff553e6efef\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T070558Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: 45caafd32f2022beee2629eb872c922830528300170c611e410eb383c3f147e1\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080301Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -41,7 +41,7 @@
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: 3df70f1424a1489fae7c39d9e76c2d0e5c64a6cf6fbaaed7a21109705a4801b9\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T070840Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.0.0\n  Staged Digest: 36ed203c3e24f9ff1c7b075c421a9283919ef8fd2086b7c06e3ab1104bfe997f\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080507Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

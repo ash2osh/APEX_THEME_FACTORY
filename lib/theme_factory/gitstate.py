@@ -6,7 +6,9 @@ binding use the last commit that changed anything *outside* the evidence root.
 """
 
 from pathlib import Path
+import re
 import subprocess
+import zipfile
 from typing import Optional, Union
 
 EVIDENCE_ROOT = ".agents/evaluations/runtime"
@@ -39,3 +41,39 @@ def source_equivalent(commit_a: str, commit_b: str, cwd: Union[str, Path, None] 
     except (OSError, subprocess.SubprocessError):
         return False
     return result.returncode == 0
+
+
+BANNER_RE = re.compile(r"^\s*\*\s*Source commit:\s*(\S+)\s*$", re.MULTILINE)
+
+
+def package_source_commit(package: Union[str, Path]) -> Optional[str]:
+    """The `Source commit:` stamp inside a built package's theme.css, verbatim.
+
+    Returned as written, `-dirty` suffix included, so a caller can refuse it rather
+    than silently normalising a package that was built from an uncommitted tree.
+    """
+    package = Path(package)
+    try:
+        if package.is_dir():
+            css = (package / "theme.css").read_text(encoding="utf-8")
+        else:
+            with zipfile.ZipFile(package) as archive:
+                name = next((n for n in archive.namelist() if n.endswith("theme.css")), None)
+                if name is None:
+                    return None
+                css = archive.read(name).decode("utf-8")
+    except (OSError, KeyError, StopIteration, zipfile.BadZipFile, UnicodeDecodeError):
+        return None
+    match = BANNER_RE.search(css)
+    return match.group(1) if match else None
+
+
+def package_matches_source(package: Union[str, Path], source_commit: Optional[str]) -> bool:
+    """True when the package was built from exactly this source commit, cleanly.
+
+    Evidence captured against a package that does not satisfy this is bound to bytes the
+    current source does not produce, and `release-check.sh` rejects it *after* the whole
+    matrix has run. Check it before capturing, not after.
+    """
+    stamped = package_source_commit(package)
+    return bool(stamped) and bool(source_commit) and stamped == source_commit

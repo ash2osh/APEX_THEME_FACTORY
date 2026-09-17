@@ -360,6 +360,17 @@ def main() -> None:
     if dirty:
         print("Refusing: working tree is dirty outside the evidence root; live evidence must be bound to a committed source state", file=sys.stderr)
         sys.exit(2)
+    # The package must be what this source builds: theme.css carries a `Source commit:` banner, and a
+    # package built before the final commit (or from a dirty tree) is bound to bytes the source no longer
+    # produces. release-check.sh rejects that - but only after the whole matrix has run.
+    from lib.theme_factory.gitstate import last_source_commit, package_source_commit, package_matches_source
+    source_commit = last_source_commit()
+    for label, package in (("primary", args.primary), ("secondary", args.secondary)):
+        if not package_matches_source(package, source_commit):
+            print(f"Refusing: {label} package {package} was built at {package_source_commit(package)!r}, "
+                  f"but the current source is {source_commit!r}; rebuild it before capturing evidence",
+                  file=sys.stderr)
+            sys.exit(2)
     primary = PackageRef.from_zip(args.primary)
     secondary = PackageRef.from_zip(args.secondary)
     sqlcl = SqlclClient(args.connection)

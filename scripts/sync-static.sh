@@ -42,7 +42,23 @@ while IFS= read -r -d '' f; do rel="${f#"$SRC"/}"
   sync_one "$f" "$rel"
 done < <(find "$SRC/css" "$SRC/js" -type f -print0 | sort -z)
 for t in "${themes[@]}"; do
-  while IFS= read -r -d '' f; do sync_one "$f" "css/themes/$t/${f#"$THEMES/$t/css/"}"; done < <(find "$THEMES/$t/css" -type f -print0 | sort -z)
+  # A package with custom fonts needs its @font-face block here too. The package build generates that
+  # block into the distributable theme.css; the app's copy is assembled from source, so without this it
+  # would declare no faces, ship no WOFF2 files, and silently fall back to the system stack.
+  font_css="$(python3 "$ROOT/scripts/_font-css.py" "$ROOT" "$t")"
+  while IFS= read -r -d '' f; do
+    rel="css/themes/$t/${f#"$THEMES/$t/css/"}"
+    if [[ -n "$font_css" && "$f" == "$THEMES/$t/css/theme.css" ]]; then
+      tmp="$(mktemp)"; { cat "$f"; printf '\n'; printf '%s\n' "$font_css"; } > "$tmp"
+      sync_one "$tmp" "$rel"; rm -f "$tmp"
+    else
+      sync_one "$f" "$rel"
+    fi
+  done < <(find "$THEMES/$t/css" -type f -print0 | sort -z)
+  if [[ -n "$font_css" && -d "$THEMES/$t/fonts" ]]; then
+    while IFS= read -r -d '' f; do sync_one "$f" "css/themes/$t/fonts/$(basename "$f")"; done \
+      < <(find "$THEMES/$t/fonts" -type f -name '*.woff2' -print0 | sort -z)
+  fi
   sync_one "$THEMES/$t/theme.json" "css/themes/$t/theme.json"          # title/tagline for the switcher + gallery
   if [[ -f "$THEMES/$t/preview/cover.jpg" ]]; then sync_one "$THEMES/$t/preview/cover.jpg" "css/themes/$t/cover.jpg"; fi
 done

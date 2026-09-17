@@ -9,3 +9,42 @@
 @import "apex/reports.css";
 @import "apex/dialogs.css";
 @import "apex/misc.css";
+
+
+/* ==========================================================================
+   Theme Custom Fonts (@font-face)
+   ========================================================================== */
+@font-face {
+  font-family: "ThemeFactory-estate-slate-dark-body";
+  src: url("./fonts/ibm-plex-sans-arabic-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-estate-slate-dark-body";
+  src: url("./fonts/ibm-plex-sans-arabic-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-estate-slate-dark-body";
+  src: url("./fonts/ibm-plex-sans-arabic-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-estate-slate-dark-body";
+  src: url("./fonts/ibm-plex-sans-arabic-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Scoped font-family tokens */
+html.app-theme-estate-slate-dark {
+  --app-font-family-body: "ThemeFactory-estate-slate-dark-body", system-ui, BlinkMacSystemFont, Segoe UI, sans-serif;
+  --a-base-font-family: var(--app-font-family-body);
+}

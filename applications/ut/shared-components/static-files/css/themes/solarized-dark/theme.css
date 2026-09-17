@@ -8,3 +8,64 @@
 @import "apex/reports.css";
 @import "apex/dialogs.css";
 @import "apex/misc.css";
+
+/* ==========================================================================
+   Theme Custom Fonts (@font-face)
+   ========================================================================== */
+@font-face {
+  font-family: "ThemeFactory-solarized-dark-body";
+  src: url("./fonts/ibm-plex-sans-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-solarized-dark-body";
+  src: url("./fonts/ibm-plex-sans-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-solarized-dark-heading";
+  src: url("./fonts/space-grotesk-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-solarized-dark-heading";
+  src: url("./fonts/space-grotesk-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-solarized-dark-mono";
+  src: url("./fonts/ibm-plex-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Scoped font-family tokens */
+html.app-theme-solarized-dark {
+  --app-font-family-body: "ThemeFactory-solarized-dark-body", system-ui, sans-serif;
+  --a-base-font-family: var(--app-font-family-body);
+  --app-font-family-heading: "ThemeFactory-solarized-dark-heading", system-ui, sans-serif;
+  --app-font-family-mono: "ThemeFactory-solarized-dark-mono", ui-monospace, monospace;
+  --a-base-font-family-mono: var(--app-font-family-mono);
+}
+
+/* Scoped heading typography */
+html.app-theme-solarized-dark h1,
+html.app-theme-solarized-dark h2,
+html.app-theme-solarized-dark h3,
+html.app-theme-solarized-dark h4,
+html.app-theme-solarized-dark h5,
+html.app-theme-solarized-dark h6,
+html.app-theme-solarized-dark .t-HeroRegion-title,
+html.app-theme-solarized-dark .t-Region-title,
+html.app-theme-solarized-dark .t-Breadcrumb-label {
+  font-family: var(--app-font-family-heading);
+}

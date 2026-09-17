@@ -21,7 +21,7 @@ evaluate_script to measure the mismatched element → fix source → repeat
 Compare in order: hierarchy → structure → layout → proportions → typography → spacing → colour → surfaces → interaction → decoration → pixels.
 
 ## Noise to ignore (spec §74)
-≤ 1 px from font rendering/antialiasing/scale factor; Oracle Sans vs a design's Inter metrics; sub-pixel gaps. Stop when meaningful mismatches are gone.
+≤ 1 px from font rendering/antialiasing/scale factor; the system UI stack Iris renders vs a design's Inter metrics; sub-pixel gaps. Stop when meaningful mismatches are gone.
 
 ## Output of a comparison
 A short table: element · target · actual · fix. Keep it in the response, not in a file.

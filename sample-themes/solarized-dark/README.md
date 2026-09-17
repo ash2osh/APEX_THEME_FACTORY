@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | 2026-09-17: release verdict **`VERIFIED`** (Layers A–E, `.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`). A live pass over 24 pages found four package-caused defects; all four are fixed, imported and **re-measured as shipped** — 0 package-caused AA failures on the swept surfaces. Coverage is 24 of 122 pages of app 102 and two widths there, so this is verified-for-what-was-measured, not exhaustively |
+| Status | **1.1.0 (2026-09-17)** — now ships custom fonts (see *Typography* below), so the AA sweep recorded here predates them: colour ratios are unaffected (they are computed from colours, not glyphs), but layout, line length and overflow have **not** been re-measured with the new faces. Release verdict for 1.0.0 was `VERIFIED`; 1.1.0 needs its evidence re-captured |
 
 ## Preview
 
@@ -190,6 +190,30 @@ horizontal overflow on each.
   family (JET text fields, collections, popups, semantic danger/warning/success text) is deliberately left
   alone: no consuming component of that kind was found in app 102, and guessing values that cannot be seen is
   what got this package into trouble before.
+
+### Typography (1.1.0)
+
+Three roles, all subset to Latin and converted to WOFF2 — 132 KB for five faces:
+
+| Role | Face | Weights | Why |
+|---|---|---|---|
+| heading | Space Grotesk | 500, 700 | geometric, slightly technical — carries the package's character without shouting |
+| body | IBM Plex Sans | 400, 600 | humanist, neutral at small sizes, pairs cleanly with Plex Mono |
+| mono | IBM Plex Mono | 400 | Solarized is a code-editor palette; the mono role is where that origin shows |
+
+The browser never sees the upstream names. Each face is declared as
+`ThemeFactory-solarized-dark-<role>`, which is also what satisfies the OFL **Reserved Font Name** clause:
+subsetting and TTF→WOFF2 conversion make these Modified Versions, and a Modified Version may not be
+distributed under the reserved name. The full licence text and that modification notice ship in
+`licenses/ibm-plex-OFL.txt` and `licenses/space-grotesk-OFL.txt`.
+
+`heading` is applied to `h1`–`h6`, `.t-HeroRegion-title`, `.t-Region-title` and `.t-Breadcrumb-label`;
+`body` drives `--a-base-font-family`; `mono` drives `--a-base-font-family-mono`. Font APEX icons are untouched.
+
+**Where they render:** in the packaged ZIP (what `install.sh` deploys) the `@font-face` block is generated
+into `theme.css` and the WOFF2 files are staged as static files. `scripts/sync-static.sh` now does the same
+for app 102 — but the running app only picks that up after an `apex-import`, so app 102 shows the fonts only
+once someone imports.
 
 #### Still required before "Verified"
 

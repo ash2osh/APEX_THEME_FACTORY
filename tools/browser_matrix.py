@@ -52,6 +52,10 @@ class RowCapture:
     accessibility_verified: bool = False
     persistence_verified: bool = False
     notes: List[str] = field(default_factory=list)
+    # How many faces the package's own manifest declares (tools.browser_matrix.font_expectations),
+    # recorded independently of the `fonts` evidence list so the gate can catch a regression that
+    # silently drops entries rather than trusting a self-consistent but wrong array (Task 2).
+    declared_face_count: int = 0
 
 
 def _now() -> str:
@@ -95,6 +99,7 @@ def build_runtime_artifact(theme: str, git_commit: str, package_sha256: str, row
         "consoleErrors": list(row.console_errors),
         "failedRequests": list(row.failed_requests),
         "fonts": list(page.get("fonts", [])),
+        "declaredFaceCount": int(row.declared_face_count),
         "fontApexFamilyBefore": str(page.get("fontApexFamilyBefore", "")),
         "fontApexFamilyAfter": str(page.get("fontApexFamilyAfter", "")),
         "fontsVerified": bool(row.fonts_verified),
@@ -390,7 +395,8 @@ class LiveBrowserMatrix:
         errors = self.console_errors()
         failed = self.failed_requests()
         return RowCapture(consumer=consumer, width=width, page=page, console_errors=errors, failed_requests=failed,
-                          fonts_verified=fonts_ok, accessibility_verified=accessibility, persistence_verified=persistence, notes=notes)
+                          fonts_verified=fonts_ok, accessibility_verified=accessibility, persistence_verified=persistence,
+                          notes=notes, declared_face_count=len(expected_faces))
 
 
 def main() -> None:

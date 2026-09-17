@@ -261,3 +261,38 @@ class SchemaEnforcedAtTheGateTests(unittest.TestCase):
         with self.assertRaises(PackageError) as ctx:
             _load_bound_raw_artifact(self.tmp, reference, "solarized-dark", COMMIT, SHA, "Layer D business/1440", schema_path=RUNTIME_EVIDENCE_SCHEMA)
         self.assertIn("loaded", str(ctx.exception))
+
+
+class FontEvidenceCountTests(unittest.TestCase):
+    """Task 2 (verification-integrity-defects plan): the gate must check font evidence, not just
+    its presence. Before this, `_valid_browser_runtime_artifact` only checked
+    `isinstance(fonts, list)` and `fontsVerified is True` - both satisfied by `fonts: []` with
+    `fontsVerified: true`, so a hand-written or regressed artifact could claim verified fonts for
+    a font-bearing package.
+    """
+
+    def _artifact(self, *, declared_face_count, fonts):
+        row = capture("business", 1440, fonts_verified=True, declared_face_count=declared_face_count)
+        row.page = dict(row.page, fonts=fonts, activeTheme="solarized-dark",
+                        htmlClasses=["app-theme-solarized-dark"])
+        return build_runtime_artifact("solarized-dark", COMMIT, SHA, row)
+
+    def test_empty_fonts_array_fails_when_the_package_declares_faces(self):
+        artifact = self._artifact(declared_face_count=5, fonts=[])
+        self.assertFalse(_valid_browser_runtime_artifact(artifact, "solarized-dark", "business", 1440))
+
+    def test_an_entry_with_check_false_fails_even_if_fontsverified_is_true(self):
+        font = {"role": "mono", "family": "ThemeFactory-solarized-dark-mono", "weight": 400,
+                "style": "normal", "check": False, "requestUrl": "", "mimeType": "font/woff2"}
+        artifact = self._artifact(declared_face_count=1, fonts=[font])
+        self.assertFalse(_valid_browser_runtime_artifact(artifact, "solarized-dark", "business", 1440))
+
+    def test_full_count_with_every_check_true_passes(self):
+        font = {"role": "mono", "family": "ThemeFactory-solarized-dark-mono", "weight": 400,
+                "style": "normal", "check": True, "requestUrl": "http://x/m.woff2", "mimeType": "font/woff2"}
+        artifact = self._artifact(declared_face_count=1, fonts=[font])
+        self.assertTrue(_valid_browser_runtime_artifact(artifact, "solarized-dark", "business", 1440))
+
+    def test_fontless_theme_with_zero_declared_and_empty_array_still_passes(self):
+        artifact = build_runtime_artifact("linen", COMMIT, SHA, capture("business", 1440, fonts_verified=True))
+        self.assertTrue(_valid_browser_runtime_artifact(artifact, "linen", "business", 1440))

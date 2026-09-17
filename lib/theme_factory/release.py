@@ -233,6 +233,20 @@ def _valid_browser_runtime_artifact(
         "consoleErrors", "failedRequests", "fonts", "fontApexFamilyBefore",
         "fontApexFamilyAfter",
     }
+    fonts = artifact.get("fonts")
+    declared_face_count = artifact.get("declaredFaceCount")
+    # `isinstance(fonts, list)` alone is satisfied by `fonts: []` with `fontsVerified: true`, which
+    # a hand-written or regressed artifact can claim for a font-bearing package just as easily as a
+    # fontless one. declaredFaceCount is recorded at capture time from the package's own manifest
+    # (tools.browser_matrix.font_expectations), independently of how `fonts` gets built, so a
+    # mismatch here means the evidence for at least one declared face is simply missing (Task 2).
+    fonts_evidence_complete = (
+        isinstance(fonts, list)
+        and isinstance(declared_face_count, int) and not isinstance(declared_face_count, bool)
+        and declared_face_count >= 0
+        and len(fonts) == declared_face_count
+        and all(isinstance(entry, dict) and entry.get("check") is True for entry in fonts)
+    )
     return (
         artifact.get("evidenceType") == "browser-runtime"
         and artifact.get("consumer") == consumer
@@ -247,7 +261,7 @@ def _valid_browser_runtime_artifact(
         and isinstance(artifact.get("loadedUrls"), list)
         and artifact.get("consoleErrors") == []
         and artifact.get("failedRequests") == []
-        and isinstance(artifact.get("fonts"), list)
+        and fonts_evidence_complete
         and artifact.get("fontsVerified") is True
         and artifact.get("accessibilityVerified") is True
         and artifact.get("persistenceVerified") is True

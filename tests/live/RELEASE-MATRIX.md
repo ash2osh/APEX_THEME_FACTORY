@@ -4,7 +4,7 @@ A row may become `PASS` only when its referenced JSON artifact exists, validates
 contract, and is bound (SHA-256) to the theme package and the source commit. The tables below are generated
 from the retained evidence under `.agents/evaluations/runtime/2026-09-16-release-<theme>/`.
 
-## Current evidence status (2026-09-16, commit `4c1abe1bb3d0`, APEX 26.1.4)
+## Current evidence status (2026-09-17, commit `1f17a5efa769`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
@@ -20,9 +20,15 @@ console errors, failed requests (status ≥ 400 or network failure), `document.f
 `docs/CHROME_DEVTOOLS_MCP.md` (zero failures required), the switcher menu opened by keyboard with exactly one
 checked `menuitemradio`, and the selection surviving a second reload under `apex.themeFactory.<APP_ID>`.
 
+The audit scores CSS `color` for HTML text and `fill` for `svg text`/`tspan` (added 2026-09-17: evaluation
+scenario 11 found Oracle JET chart labels failing at 1.46:1 while the older sweep reported the page clean).
+
 Not covered by the automated rows (remains manual): driven hover/empty/validation-error states, Popup LOV and
 date picker, dialog/drawer open states, IG edit/sort/filter interactions, and the reference app 102 itself.
-The Page 409 artifact from 2026-09-15 proves the App 102 Alpine lifecycle fixture only.
+Scenario 11's 24-page sweep of app 102 with driven states is the widest audit run so far and is what caught
+the four `solarized-dark` defects fixed on 2026-09-17; its log is
+`.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md`. Re-running it against the fixed
+build (and the remaining 98 pages, 1024/768 widths) is the next coverage step.
 
 ## Layer D rows
 

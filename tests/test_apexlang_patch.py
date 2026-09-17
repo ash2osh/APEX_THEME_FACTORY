@@ -378,3 +378,15 @@ class EmptyApplicationTargetTests(unittest.TestCase):
         self.assertIn(Path("pages/p00000-global-page.apx"), patch.after_files)
         self.assertIn("name: Global Page", patch.after_files[Path("pages/p00000-global-page.apx")])
         self.assertIn("globalPage: 0", patch.after_files[Path("application.apx")])
+
+    def test_find_matching_brace_handles_apostrophes_in_unquoted_text(self):
+        from lib.theme_factory.apexlang import _find_matching_brace
+        sample = """entry test (
+    label: Test
+    userDefinedAttributes {
+        1: Toggle the visibility of a region's content.
+    }
+)"""
+        close = _find_matching_brace(sample, sample.find("("))
+        self.assertEqual(close, len(sample) - 1)
+

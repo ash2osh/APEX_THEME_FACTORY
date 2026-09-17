@@ -1,0 +1,13 @@
+/* Alerts, badges, tabs — status pills and indicator badges.
+   Scoped to .app-theme-estate-slate .apex-theme-iris. */
+
+.app-theme-estate-slate .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: var(--app-shadow-sm);
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+}
+

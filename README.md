@@ -88,6 +88,26 @@ theme — so a re-install never silently takes the menu away.
 > The switcher needs a *static* navigation-bar list to attach to. If your app's nav bar is built some other
 > way, the installer refuses and points you at `MANUAL-INSTALL.md` rather than rewriting your list.
 
+### Install all themes at once (with switcher)
+
+To install all built Theme Factory packages (`linen`, `solarized-dark`, `estate-slate`, `estate-slate-dark`) into any APEX application with the switcher in a single command:
+
+```bash
+# Dry-run first (exports, stages, and validates via SQLcl without writing to DB):
+scripts/install-all-themes.sh --app-id <APP_ID>
+
+# Apply live to the database:
+scripts/install-all-themes.sh --app-id <APP_ID> --apply
+```
+
+Options:
+- `--app-id <ID>`: Target APEX application ID (required).
+- `--connection <CONN>`: SQLcl saved connection name (default: `docker-demo`).
+- `--workspace <WS>`: Target APEX workspace name (default: `DEMO`).
+- `--themes <list>`: Comma-separated theme list (default: `linen,solarized-dark,estate-slate,estate-slate-dark`).
+- `--with-switcher` / `--without-switcher`: Control the navigation bar switcher (default: `--with-switcher`). Automatically migrates legacy dynamic SQL navigation bars to declarative static lists.
+- `--apply`: Apply live changes to the database (default is safe dry-run).
+
 ### 4. Check it worked
 
 Load any page of your app. `<html>` should carry `app-theme-<name>`, and the console should be clean. If you

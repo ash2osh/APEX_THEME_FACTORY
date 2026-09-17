@@ -104,7 +104,7 @@ def _find_matching_brace(text: str, open_pos: int) -> int:
             if c == quote_char:
                 in_str = False
         else:
-            if c in ('"', "'"):
+            if c == '"':
                 in_str = True
                 quote_char = c
             elif c in "{([":

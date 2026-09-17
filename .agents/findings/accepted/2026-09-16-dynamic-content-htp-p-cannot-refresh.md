@@ -1,12 +1,16 @@
 # Finding
 
 Status:
-Pending (2026-09-17) — runtime-verified twice (scenario 04 evaluee and grader, independently). The source fix
-it names is now **applied and compiled**: `applications/ut/pages/p00409-theme-factory-lifecycle.apx` returns
-the markup from `plsqlFunctionBody` instead of printing it, and `scripts/apex-validate.sh` reports
-`Validation successful.` (2026-09-17). Missing before promotion: an import of app 102 — which only the user
-may authorise (`scripts/apex-import.sh`) — and one live `REFRESH_FIXTURE` click showing `apexafterrefresh` = 1.
-That same import is what scenario 04 needs to leave UNVERIFIED.
+**Accepted (2026-09-17)** — scenario 04 passes against the imported build
+(`.agents/evaluations/runs/2026-09-17/04-apex-refresh-postimport.md`). The source fix
+(`applications/ut/pages/p00409-theme-factory-lifecycle.apx` returns its markup instead of `sys.htp.p`-ing it)
+was imported by the user on 2026-09-17, and one real `REFRESH_FIXTURE` click now produces
+`apexbeforerefresh` = 1 / **`apexafterrefresh` = 1** with a new Alpine root node and `"result"` carrying the
+markup inside the JSON envelope — the exact inverse of the measurement below. Measured over three consecutive
+refreshes: `beforeCount` 3 / `afterCount` 3, `alpineStartCalls` 0, one component instance per swap, one click
+handler, `P409_DISCLOSURE_OPEN` synced both ways, `ajaxError` null.
+Prior status, for the record: *Pending (2026-09-17) — runtime-verified twice… Missing before promotion: an
+import of app 102 and one live `REFRESH_FIXTURE` click showing `apexafterrefresh` = 1.*
 
 Category:
 BUG (also APEXLANG-KNOWLEDGE / APEX-JAVASCRIPT-PATTERN)

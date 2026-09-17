@@ -37,7 +37,7 @@ package appears in both as soon as it is imported — nothing to register by han
 | Theme | Direction | Status |
 |---|---|---|
 | [linen](linen/) | quiet product — white chrome, hairlines, flat 8px surfaces, teal for actions only | default in app 102 (2026-09-13) |
-| [solarized-dark](solarized-dark/) | VS Code Solarized Dark: `#002b36` canvas, `#073642` surfaces, cyan/blue accents; text levels base3/base2/base1 for AA | live-measured on 24 pages 2026-09-17, four defects fixed in source; **not release-verified** — fixes unimported, JET chart fix unverified — see solarized-dark/README.md |
+| [solarized-dark](solarized-dark/) | VS Code Solarized Dark: `#002b36` canvas, `#073642` surfaces, cyan/blue accents; text levels base3/base2/base1 for AA | live-measured on 24 pages 2026-09-17, four defects fixed, imported and re-measured as shipped: **0 package-caused AA failures** on the swept surfaces (IG selection 8.17:1, JET charts 25/25). Coverage is 24 of 122 pages and two widths, so it is verified-for-what-was-measured — see solarized-dark/README.md |
 
 Adding a theme: copy `linen/` → `<name>/`, rename the class in `theme.json`/`css`, add `preview/cover.jpg`
 (960 px, page 500 at 1280×700 with the side navigation open), run `sync-static.sh`, import — it shows up in the

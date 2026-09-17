@@ -1,23 +1,32 @@
 # Finding
 
 Status:
-Pending (2026-09-17) — A live Chrome pass finally ran (24 pages of app 102, 4 469 text nodes; Evidence §8) and
-**found four more package-caused defects the completed source audit had not reached**, one severe (Interactive
-Grid row selection, 1.06:1). Three are fixed and A/B-measured live; the fourth (Oracle JET chart text) is fixed
-in source but unobservable without an import, because JET bakes its colours at bootstrap. Still missing before
-this can be closed: an import plus a re-run of the sweep against the shipped bundle, the remaining 98 pages,
-the 1024/768 widths, and the untested selection/focus states.
-**None of those three fixes is in this repository.** They were authored in the scenario-11 evaluation
-worktree, which was thrown away; the 2026-09-16 evaluation session was not permitted to edit `sample-themes/`.
-`sample-themes/solarized-dark/` and `dist/solarized-dark/solarized-dark-1.0.0.zip` therefore still carry every
-defect measured below, including the 1.06:1 one. The complete patch is quoted in
-`.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md` — re-apply it there, rebuild,
-install, and re-audit before this package ships.
+**Accepted (2026-09-17)** — scenario 11 passes against the fixed, imported package
+(`.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md`). All four defects the live pass
+found are now in `sample-themes/solarized-dark/css/**`, were built, installed and imported, and are measured
+fixed on the running app: Interactive Grid row selection **1.06:1 → 8.17:1**, faceted-search text buttons
+2.39:1 → 0 failures on the page, MapLibre attribution 2.57:1 → **12.25:1**, and the Oracle JET chart text that
+could not be observed at all before an import — **25 of 25 SVG text nodes pass**, worst 4.86:1, fills exactly
+the package's base1/base2. The 24-page sweep reports 7 failures, **0 package-caused**: p1304 badges and p1800
+`apex-cal-green` are byte-identical with and without `html.app-theme-solarized-dark` (bare-Iris A/B), so they
+are Universal Theme / APEX literals. The project's audit instrument, which scored SVG text by CSS `color` and
+so reported the chart page clean, was fixed too (`tools/browser_matrix.py`, regression test in
+`tests/test_browser_matrix.py::ContrastInstrumentTests`).
+
+**Residual coverage, deliberately kept open and not claimed:** 98 of app 102's 122 pages were never opened;
+1024/768 were not swept in app 102 (Layer D covers them for the consumer apps); IRR / Card View / Media List /
+Timeline / Comments selection states were not driven individually — they share the `--a-palette-*` chain whose
+fix is measured on the Interactive Grid, which is inference, not measurement; keyboard focus rings and further
+chip/error states are untested. This finding is accepted for what it identified and fixed, not as a claim of
+exhaustive coverage.
+
+Prior status, for the record: *Pending (2026-09-17) — … **None of those three fixes is in this repository.**
+They were authored in the scenario-11 evaluation worktree, which was thrown away … re-apply it there, rebuild,
+install, and re-audit before this package ships.* That re-application happened on 2026-09-17 and is what the
+run log above measures.
 Superseded: the 2026-09-14 claim that "every literal/derived-token gap findable by source review is fixed" was
 wrong in scope — it missed two whole `:root`-frozen families (`--a-palette-*` and `--a-base-link-text-color`)
-besides the `--oj-*` family it had explicitly deferred. Earlier status line, for the record: *Pending
-(2026-09-15) — missing evidence: live Chrome AA contrast audit across the pages/components/viewports in
-`tests/live/RELEASE-MATRIX.md` with zero package-caused failures.*
+besides the `--oj-*` family it had explicitly deferred.
 
 Category:
 BUG

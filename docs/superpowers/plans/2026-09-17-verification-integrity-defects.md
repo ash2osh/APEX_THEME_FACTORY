@@ -1,5 +1,14 @@
 # Verification Integrity Defect Remediation Plan
 
+> **Status: COMPLETE (2026-09-17).** All six tasks implemented, TDD throughout; final commit
+> `9b14741`, source commit `7ac2e0204ca0`. Task 6's decision (asked the repository owner): capture
+> full evidence for `estate-slate`/`estate-slate-dark` rather than mark them unverified, which
+> widened Task 7 from a two-theme to a four-theme re-capture (two more consumer fixtures, 9012/9013,
+> provisioned the same day). All four release checks exit 0 with verdict `VERIFIED`. One real defect
+> was found and fixed along the way, outside this plan's original six: the Layer D font probe asked
+> "did this page use the face" rather than "is the face usable," reporting `solarized-dark`'s mono
+> face as missing when it was correctly packaged and served — see pitfalls.md §4.6.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (or
 > superpowers:subagent-driven-development) to implement this plan task-by-task. Steps use checkbox
 > (`- [ ]`) syntax. Every task is TDD: write the failing test, watch it fail *for the right reason*,
@@ -59,16 +68,16 @@ hand, which is a coincidence waiting to lapse.
 schema uses only `type`/`required`/`const`/`enum`/`pattern`/`additionalProperties`/`items`), or add
 `jsonschema` to the project's dependencies and document how it is installed on a PEP 668 machine.
 
-- [ ] Write `tests/test_evidence_schema.py`: a known-good artifact validates; one with a font entry
+- [x] Write `tests/test_evidence_schema.py`: a known-good artifact validates; one with a font entry
       missing `requestUrl` fails; one with an extra key fails; one with `viewportWidth: 1441` fails.
       Watch them fail — the module does not exist yet.
-- [ ] Implement `lib/theme_factory/evidence_schema.py::validate(document, schema_path) -> list[str]`
+- [x] Implement `lib/theme_factory/evidence_schema.py::validate(document, schema_path) -> list[str]`
       returning human-readable errors (empty list = valid). Support exactly the keywords the schema uses;
       raise on an unsupported keyword rather than silently ignoring it — an ignored keyword is how this
       defect started.
-- [ ] Add a test asserting every artifact under `.agents/evaluations/runtime/*/raw/browser-*.json`
+- [x] Add a test asserting every artifact under `.agents/evaluations/runtime/*/raw/browser-*.json`
       validates. This is the property test that would have caught the original drift.
-- [ ] Wire `validate()` into `_load_bound_raw_artifact` in `release.py` for Layer D artifacts.
+- [x] Wire `validate()` into `_load_bound_raw_artifact` in `release.py` for Layer D artifacts.
 
 **Acceptance:** deleting `requestUrl` from any captured artifact makes `scripts/release-check.sh` exit
 non-zero with a message naming the file and the field.
@@ -79,12 +88,12 @@ non-zero with a message naming the file and the field.
 `artifact.get("fontsVerified") is True`. Both are satisfied by `"fonts": []` with `fontsVerified: true`,
 so a hand-written or regressed artifact can claim verified fonts for a font-bearing package.
 
-- [ ] Write the failing test: an artifact for a theme whose package declares 5 faces, but whose `fonts`
+- [x] Write the failing test: an artifact for a theme whose package declares 5 faces, but whose `fonts`
       array is empty, must be rejected. A second test: an entry with `check: false` must be rejected.
-- [ ] Extend `_valid_browser_runtime_artifact` to take the expected face count (derive it from the
+- [x] Extend `_valid_browser_runtime_artifact` to take the expected face count (derive it from the
       package via `tools.browser_matrix.font_expectations`, or record `declaredFaceCount` in the artifact
       at capture time — prefer the latter, so the gate does not need the ZIP).
-- [ ] Require every entry's `check` to be `true` when `fontsVerified` is `true`.
+- [x] Require every entry's `check` to be `true` when `fontsVerified` is `true`.
 
 **Acceptance:** a `solarized-dark` artifact with fewer than 5 font entries fails the gate; `linen`, with
 0 declared faces and an empty array, still passes.
@@ -97,13 +106,13 @@ Layer E, whose *subject* is Markdown: the agent smokes measure what a runtime do
 claiming a binding they no longer have, and nothing detects it. On 2026-09-17 this was handled by
 re-running all three smokes by hand — a procedure, not a fix.
 
-- [ ] Write the failing test: `source_equivalent(a, b)` must be **False** when the only difference is
+- [x] Write the failing test: `source_equivalent(a, b)` must be **False** when the only difference is
       `AGENTS.md`, `.agents/rules/x.md` or `.agents/skills/y/SKILL.md`, and still **True** when the only
       difference is `README.md`, `docs/*.md` or anything under the evidence root.
-- [ ] Introduce `INSTRUCTION_PATHSPECS` and subtract them from the Markdown exclusion, e.g. exclude
+- [x] Introduce `INSTRUCTION_PATHSPECS` and subtract them from the Markdown exclusion, e.g. exclude
       `**/*.md` but re-include `AGENTS.md`, `.agents/rules/**/*.md`, `.agents/skills/**/*.md`.
-- [ ] Decide explicitly whether `CLAUDE.md` (a symlink to `AGENTS.md`) needs its own entry — test it.
-- [ ] Update `pitfalls.md` §5.x: the manual re-run rule becomes "the tooling now catches this", and say
+- [x] Decide explicitly whether `CLAUDE.md` (a symlink to `AGENTS.md`) needs its own entry — test it.
+- [x] Update `pitfalls.md` §5.x: the manual re-run rule becomes "the tooling now catches this", and say
       what replaced it.
 
 **Cost to know before starting:** this makes instruction edits invalidate Layers C and D as well as E,
@@ -119,10 +128,10 @@ happened on 2026-09-17 when re-running the agent smokes mid-pipeline wrote
 `tests/agent-smoke/runs/*.json`. The new banner guard (`package_matches_source`) narrows this but does not
 close it.
 
-- [ ] Write the failing test: a capture whose tree goes dirty between two operations must abort.
-- [ ] Extract the check into `gitstate.assert_clean_source(cwd)` and call it before **each** consumer's
+- [x] Write the failing test: a capture whose tree goes dirty between two operations must abort.
+- [x] Extract the check into `gitstate.assert_clean_source(cwd)` and call it before **each** consumer's
       lifecycle and before each Layer D row, not once at startup.
-- [ ] Make the failure message name the dirty paths, so the cause is obvious without re-running.
+- [x] Make the failure message name the dirty paths, so the cause is obvious without re-running.
 
 **Acceptance:** touching a tracked source file mid-capture aborts within one operation, naming the file.
 
@@ -132,10 +141,10 @@ close it.
 `.woff2` and `.jpg`. Harmless in practice — APEX ignores it for binaries — but it is a false statement in
 generated source, and it will mislead the next person reading the export.
 
-- [ ] Write the failing test over the generated `static-files.apx`: no `file` block whose `mimeType` is
+- [x] Write the failing test over the generated `static-files.apx`: no `file` block whose `mimeType` is
       `font/woff2` or `image/*` may declare `charSet`.
-- [ ] Emit `charSet` only for text types in the `sync_one` registration.
-- [ ] Re-run `scripts/sync-static.sh` and `scripts/apex-validate.sh` — expect `Validation successful.`
+- [x] Emit `charSet` only for text types in the `sync_one` registration.
+- [x] Re-run `scripts/sync-static.sh` and `scripts/apex-validate.sh` — expect `Validation successful.`
 
 **Note:** this changes `applications/ut/**`, which is source, so it belongs in this batch rather than
 after the re-capture.
@@ -147,31 +156,31 @@ Layer C/D/E evidence at all, and their `dist/` builds are stamped `0edc66a`, whi
 refuses. They are also not in `tests/live/RELEASE-MATRIX.md` or the release pipeline, so nothing reports
 them as unverified — they are simply invisible to the release system.
 
-- [ ] Decide with the repository owner: (a) capture full evidence for them too — roughly doubles the
+- [x] Decide with the repository owner: (a) capture full evidence for them too — roughly doubles the
       pipeline to ~2 hours and needs two more consumer fixtures or serialised runs; (b) mark them
       explicitly `UNVERIFIED — not release candidates` in `sample-themes/README.md` and their own
       READMEs; or (c) move them out of `sample-themes/` until they are ready.
-- [ ] Whichever is chosen, add a check that **every** directory in `sample-themes/` either has evidence or
+- [x] Whichever is chosen, add a check that **every** directory in `sample-themes/` either has evidence or
       is explicitly marked unverified. Silence is the actual defect here.
 
 ## Task 7 — One re-capture, then verify
 
-- [ ] Confirm the tree is clean and all of Tasks 1–5 are committed.
-- [ ] Rebuild both packages; confirm `package_matches_source` is true for each.
-- [ ] Run the Layer C/D pipeline, touching nothing until `PIPELINE_DONE`.
-- [ ] Regenerate Layer E (all three smokes — Task 3 makes this mandatory after any instruction edit).
-- [ ] `scripts/release-check.sh linen` and `solarized-dark`; both must exit 0.
-- [ ] Update `tests/live/RELEASE-MATRIX.md` and the implementation report with the new commit.
+- [x] Confirm the tree is clean and all of Tasks 1–5 are committed.
+- [x] Rebuild both packages; confirm `package_matches_source` is true for each.
+- [x] Run the Layer C/D pipeline, touching nothing until `PIPELINE_DONE`.
+- [x] Regenerate Layer E (all three smokes — Task 3 makes this mandatory after any instruction edit).
+- [x] `scripts/release-check.sh linen` and `solarized-dark`; both must exit 0.
+- [x] Update `tests/live/RELEASE-MATRIX.md` and the implementation report with the new commit.
 
 ## Plan Acceptance
 
-- [ ] `bash tests/run-offline.sh` → `ALL_OFFLINE_CHECKS status=PASS`.
-- [ ] Both release checks exit 0 with verdict `VERIFIED`.
-- [ ] Each of Tasks 1–5 has at least one test that was demonstrated failing before its implementation.
-- [ ] Deleting a required field from a captured artifact now fails the gate (Task 1 acceptance) — verify
+- [x] `bash tests/run-offline.sh` → `ALL_OFFLINE_CHECKS status=PASS`.
+- [x] Both release checks exit 0 with verdict `VERIFIED`.
+- [x] Each of Tasks 1–5 has at least one test that was demonstrated failing before its implementation.
+- [x] Deleting a required field from a captured artifact now fails the gate (Task 1 acceptance) — verify
       this by hand once, then restore the file.
-- [ ] `pitfalls.md` §5.x no longer describes a manual procedure that the tooling now enforces.
-- [ ] No `sample-themes/` package is silently unverified (Task 6).
+- [x] `pitfalls.md` §5.x no longer describes a manual procedure that the tooling now enforces.
+- [x] No `sample-themes/` package is silently unverified (Task 6).
 
 ## Explicitly out of scope
 

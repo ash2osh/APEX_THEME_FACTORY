@@ -65,5 +65,17 @@ class BrowserMatrixEvidenceTests(unittest.TestCase):
         self.assertEqual({item["check"]: item for item in evidence}["browser_runtime_matrix"]["status"], "FAIL")
 
 
+class ContrastInstrumentTests(unittest.TestCase):
+    """The audit must score SVG text too: JET charts paint their labels with `fill`, not `color`."""
+
+    def test_documented_snippet_scores_svg_text_fill(self):
+        from tools.browser_matrix import _contrast_function
+        snippet = _contrast_function()
+        self.assertIn("svg", snippet.lower())
+        self.assertIn("fill", snippet)
+        # a tree walker over text nodes alone cannot reach SVG <text>; the snippet must query them
+        self.assertRegex(snippet, r"querySelectorAll\(\s*['\"][^'\"]*svg[^'\"]*text")
+
+
 if __name__ == "__main__":
     unittest.main()

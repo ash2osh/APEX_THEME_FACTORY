@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | 2026-09-14: AA contrast pass, tokens consolidated, verified on the pages below |
+| Status | 2026-09-17: live Chrome pass over 24 pages — four package-caused defects found, measured and fixed here. **Not release-verified**: the fixes are source-only, nothing has been imported or re-measured as shipped (see *Status* below) |
 
 ## Preview
 
@@ -21,7 +21,8 @@
 ```text
 theme.json               manifest: name, title, tagline, direction, class, declarative template options (nav Style B)
 css/theme.css            entry, loaded by static-files/css/app.css (@themes block, generated)
-css/tokens.css           --sol-* palette, --app-* deltas (html scope), --ut-* / --a-* remaps (body scope)
+css/tokens.css           --sol-* palette, --app-* deltas + --oj-* (JET) remaps (html scope),
+                         --ut-* / --a-* remaps incl. the --a-palette-* family (body scope)
 css/apex/
   shell.css              header (#002c39) · side nav (#00212b, #005a6f pill, light text) · title bar · footer
   regions.css            Cards-region atoms · wizard (cyan active, green complete) · card list · metric card · headings
@@ -30,7 +31,8 @@ css/apex/
   reports.css            IRR / IG / classic: #00212b header 13px/600 · 40px rows · solid hover · themed pager and footer
   dialogs.css            jQuery UI dialog and menu atoms · wizard dialog pages
   misc.css               shadows off · badges · tabs · alert accent edge · Prism.js code samples ·
-                          faceted search · percent graph · help dialog · map legend · chart tooltips
+                          faceted search · percent graph · help dialog · map legend + attribution ·
+                          chart tooltips · FullCalendar default events
 preview/                 cover.jpg (gallery) + the four captures above
 ```
 
@@ -49,6 +51,12 @@ precedence. Two things a dark package must do that a light one can skip:
   resolve at `:root` (`--a-gv-pagination-button-text-color: var(--a-button-text-color)`), so the derived atom
   has to be set as well. Widget state atoms live in `/i/app_ui/css/Theme-Standard.min.css`
   (`--a-gv-pagination-button-selected-background-color`, fallback `#e0e0e0`).
+- **Restate the whole atom family, not just the atoms you can see.** The same `:root` freeze applies to
+  families a page-by-page review never reaches: `--a-palette-*` (15 atoms, declared as `var(--ut-palette-*)`
+  on `:root` in `Core.min.css`) drives every *selection* state in the app, and Oracle JET's `--oj-*` family is
+  mapped onto `--ut-*` on `:root` by `Iris.min.css`. Both were missed until the 2026-09-17 live pass; see
+  *Status*. Third-party surfaces that take their text by inheritance (MapLibre's attribution plate) need a
+  rule of their own.
 - **Keep the hierarchy inside AA.** See below.
 
 The five `!important`s in `shell.css` mirror Iris' own (`.a-TreeView-row.is-hover{…!important}`,
@@ -84,27 +92,124 @@ scripts/apex-import.sh                  # validate + import
 Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=solarized-dark` in a URL;
 `App.theme.use('solarized-dark')` in the console.
 
-## Status: source-reviewed, NOT fully verified — a live Chrome pass is still required
+## Status: live-measured 2026-09-17, four defects fixed — NOT release-verified
 
-**Not "Verified".** The line below records a real automated contrast pass, but it is resting-state and
-14-page only; several rounds of PR review since (2026-09-14, `chatgpt-codex-connector` on #2 and #5) and a
-follow-up source audit (`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md`) have found
-and fixed real gaps that pass missed. As of the last addendum below, every literal/derived-token gap findable
-by source review (grep against the offline reference CSS + confirmed page presence) is fixed — only Oracle
-JET's and FullCalendar's own custom-property families remain, and those are unverifiable without Chrome (their
-consuming CSS isn't in the offline reference bundle). Read this section as "the last known-good baseline plus
-a changelog of fixes since", not as a current verification — do not extend "Verified" to the whole package
-until a live pass of the audit below runs against the expanded page list (below) and the two JET/Calendar
-pages get a real look.
+**Not "Verified".** A live Chrome pass finally ran (2026-09-17, details below). It is the first runtime
+evidence this package has, and it changes the picture in both directions: the 2026-09-14 resting-state numbers
+reproduced, *and* the pass found four real package-caused defects that no resting-state sweep could ever see —
+one of them (Interactive Grid row selection at **1.06:1**) severe.
 
-### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris) — as claimed by the session that ran it, unverified since
+Three things keep "Verified" out of reach:
 
-**Not independently re-confirmed.** The paragraph below reports what a prior session's automated audit script
-claimed; no later review (including the multiple PR-review rounds that found real gaps this pass missed — see
-the addenda below) has re-run it or otherwise confirmed its own reliability. Given this package's demonstrated
-pattern of overclaimed verification, treat these specific numbers the same way as everything else in this
-README not labeled "confirmed 2026-09-15 or later": plausible, sourced from a real script run, but not
-something this session can vouch for.
+1. **The fixes in this worktree have never been rendered.** The pass measured app 102 as installed, i.e. the
+   previous commit; the four fixes were validated by injecting the candidate CSS into the live page and
+   re-measuring (A/B, numbers below), which proves the rule works but not that the shipped bundle contains it.
+   Nothing has been imported. A shipped build must be re-measured before any release claim.
+2. **The JET chart fix cannot be validated that way at all** — Oracle JET reads its colours once at bootstrap
+   and bakes them into SVG `fill` attributes, so it only responds to CSS that is present at page load. See
+   *JET (`--oj-*`)* below: the defect is measured and confirmed, the fix is reasoned but **unverified**.
+3. **Coverage is 24 of 122 pages**, one desktop width plus four pages at 375. See *Still required*.
+
+### 2026-09-17 live Chrome pass (APEX 26.1.4 / Iris, app 102) — what was actually measured
+
+Method: own background tab through the project Chrome MCP daemon; theme applied before paint (the browser's
+stored theme was already `solarized-dark`, so no `#theme=` navigation and no `localStorage` write); viewport
+`1440x900x1`, plus `375x812x2,mobile,touch` for four pages. The audit is the documented
+`docs/CHROME_DEVTOOLS_MCP.md` snippet (every visible text node vs its composited effective background, AA
+thresholds), extended with a *light-surface sweep* (any opaque background of relative luminance ≥ 0.6 and
+≥ 300 px² — the "stayed white" failure mode a contrast audit cannot see, since a light-on-light pair can still
+pass AA).
+
+**Pages (24):** 500, 405, 423, 1202, 1208, 1304, 1402, 1405, 1410, 1411, 1412, 1500, 1600, 1601, 1800, 1902,
+1903, 1906, 1910, 3003, 3110, 4000, 6303, 6304 — plus dialog page 1912 inside its iframe (opened from 1910).
+**4 469 visible text nodes measured. Console: 0 errors on every page.** That includes all 14 pages of the
+2026-09-14 baseline, whose resting-state "0 package failures" claim is hereby independently reproduced — and
+shown to be insufficient, because every defect below is a state, a widget-rendered glyph, or a non-text
+surface.
+
+**Resting-state failures: 10 → 3 package-caused → 0 after the fix.**
+
+| Page | What fails | Measured | After the fix | Owner |
+|---|---|---|---|---|
+| 1411 | Faceted Search `Show All` / `Clear All` text buttons | #0e7295 on `#073642` = **2.39:1** | 4.50:1 | package (fixed) |
+| 1906 | MapLibre attribution bar text and its links | base2 on the white plate = **2.57:1** | 12.25:1 | package (fixed) |
+| 1304 | `t-BadgeList` demo values, white on `--u-color-2` `#de7f11` / `#b47282` | 2.94:1 / 3.70:1 | unchanged | Universal Theme (`--u-color-*` literals; the package never touches them — identical under plain Iris) |
+| 1800 | Calendar `apex-cal-green` events, white on `#2ecc71` | 2.10:1 ×5 | unchanged | APEX (`#2ecc71` is a literal in `app_ui-Core.min.css`'s `apex-cal-*` classes) |
+
+**Non-resting-state failures — the ones that matter, and the reason a resting sweep is not a verification:**
+
+| Where | State | Measured | After the fix |
+|---|---|---|---|
+| p1410 Interactive Grid | select a row | cells paint Iris' `#e4f1f7` under base2 text: **1.06:1** — the row becomes unreadable | 8.17:1 (cells take the package's cyan wash) |
+| p1601 date picker | open the picker | current day is a light `#e4f1f7` chip (5.43:1, so *AA-passing and still wrong*) in a dark calendar | 9.28:1 on the dark wash |
+| p1902 JET charts | at rest, but SVG-rendered | axis/group/legend labels `rgba(0,0,0,.65)` = **1.46:1**, series labels `#000` = 1.62:1; **24 of 25 chart text nodes fail** | unverified (see below) |
+
+The chart failures are invisible to the documented audit because it reads CSS `color`; SVG text takes its
+colour from `fill`. Any future "verified" claim for a package that ships charts has to measure `fill`.
+
+**Root causes — all three are the same mechanism (pitfalls.md §1.2), in families the source audit had not
+covered:**
+
+- `--a-palette-*` (15 atoms). `Core.min.css` declares the whole family as `var(--ut-palette-*)` **on `:root`**,
+  so it freezes to Iris' `#00688c` / `#e4f1f7` / `#fff` before this package's body-level `--ut-palette-*`
+  reaches it. Consumers are element-scoped rules, so restating the chain on the body scope fixes them all:
+  IG/IRR/Card View/Icon List/Media List/Timeline/Comments selection, subtle badges, the date picker's current
+  day, the report-controls error state. Fixed in `css/tokens.css`.
+- `--a-base-link-text-color` — same shape (`Core.min.css`, `:root`, `var(--ut-link-text-color)`); the faceted
+  search text buttons read it *on the element*, so they kept Iris' link blue. Fixed in `css/tokens.css`.
+- MapLibre's attribution plate is its own white surface that takes the inherited text colour. Fixed in
+  `css/apex/misc.css`; the zoom control group is deliberately left white (its glyphs are dark SVG images that
+  CSS cannot recolour) — an opaque light patch, not a contrast failure.
+
+**Also checked live, no failures:** side navigation expanded (labels 6.27:1, current item 15.54:1); modal
+dialog page 1912 inside its iframe (theme class present in the iframe, surface `#073642`, title 13.72:1);
+hover on the IR search field (10.35:1 / input text 11.75:1) and on the IR *Actions* toolbar button (10.61:1) —
+the two 2026-09-14 hover fixes hold at runtime; 375 px on pages 500 / 1402 / 1600 / 1410 — 0 failures and 0 px
+horizontal overflow on each.
+
+#### The two open questions from 2026-09-14, answered
+
+- **FullCalendar (`--fc-*`) — reached, no action needed.** UT declares the family on `.apex-fullcalendar-5`,
+  an element scope, so the chain resolves *there* and picks up this package's body-level `--ut-*`: measured on
+  p1800, `--fc-page-bg-color` `#073642`, `--fc-event-bg-color` `#4b9fda`, `--fc-event-text-color` `#002b36`,
+  `--fc-border-color` the package hairline. Day numbers
+  measured base2 on the dark grid. The only calendar failures left are APEX's own `apex-cal-*` demo colours.
+- **Oracle JET (`--oj-*`) — consumed, *not* reached, fix written but NOT verified.** `Iris.min.css` maps 32
+  `--oj-*` tokens onto `--ut-*` atoms **on `:root`** — same freeze. Live proof: at `:root`
+  `--oj-core-text-color-primary` = `#000` and `--oj-core-text-color-secondary` = `rgba(0,0,0,.65)`, which are
+  exactly the two `fill` values the chart text carries, while the same tokens at body scope hold the package's
+  values. `css/tokens.css` now restates the text/divider/heading/link members on the **html** scope (JET reads
+  them off the document element). It could not be validated in-session: setting the properties live, clearing
+  `oj.ThemeUtils`' cache and refreshing the regions re-rendered the SVG (verified: a marked node was replaced)
+  but the new text still came out `rgb(0,0,0)` — JET resolves its style defaults once at bootstrap. **This one
+  needs an import and a reload to confirm, and it is the single biggest open item.** The rest of the `--oj-*`
+  family (JET text fields, collections, popups, semantic danger/warning/success text) is deliberately left
+  alone: no consuming component of that kind was found in app 102, and guessing values that cannot be seen is
+  what got this package into trouble before.
+
+#### Still required before "Verified"
+
+1. Import this worktree and re-run the sweep above against the shipped CSS — in particular p1902, whose fix is
+   unverifiable any other way, and a re-measure of the four fixed defects as rendered rather than as injected.
+2. Pages: 98 of app 102's 122 are still unopened under this package. Widths: 1024 and 768 were not exercised at
+   all (spec §45 wants ≥ 3), and 375 covered only four pages.
+3. States: only IG row selection, the date picker, two hovers, one dialog and the side nav were driven. IR row
+   selection, Card View / Icon List / Media List / Timeline / Comments selection, the report-controls error
+   state, chips, drag-and-drop and keyboard focus rings are untested — and every defect found this pass lived
+   in a state, not at rest.
+4. An SVG-`fill`-aware contrast audit, and the light-surface sweep, should be folded into the documented audit
+   snippet; the current one would have reported this package clean on the chart page.
+
+### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris) — reproduced 2026-09-17 for resting state only
+
+**Re-run 2026-09-17, and it holds — for what it measures.** The 14-page resting-state result below was
+reproduced independently by the live pass above (all 14 pages re-audited; 0 package-caused resting failures on
+each, the p1304 `u-color-*` exception included). What the 2026-09-17 pass also showed is that this number was
+never evidence of a verified package: the four defects found that day are all outside its sampling window
+(a selection state, an open date picker, a MapLibre surface, SVG `fill` text). The interaction claims in the
+paragraph below ("IG paging, dialog open/close, nav-bar menu, keyboard focus ring checked") remain
+unre-confirmed in that specific form; dialog open/close and the side nav were re-checked on 2026-09-17,
+IG paging and the focus ring were not.
 
 Automated text-contrast audit (every visible text node vs its effective background, AA thresholds) on pages
 500, 1202, 1208, 1304, 1402, 1410, 1500, 1600, 3110, 4000, 6303, 6304, 405 and dialog page 1912: **0 failures
@@ -156,3 +261,9 @@ new sections for Faceted Search (p1411), Percent Graph (p423/p1601), Help Text (
 need Chrome to determine whether Oracle JET's/FullCalendar's own theming reaches this package at all — the
 one remaining open question, unresolved by source review because their consuming CSS isn't in the offline
 reference mirror.
+
+*Closed 2026-09-17:* all eleven pages were opened and audited live, and both library questions were answered —
+see the 2026-09-17 section at the top of this Status block. Two of those pages (1411, 1906) carried real
+failures, and 1410 carried the worst one found so far. The source-review pass this addendum describes was
+therefore necessary but not sufficient: it never reached `--a-palette-*`, `--a-base-link-text-color` or the
+`--oj-*` family, all of which are the same `:root`-freeze mechanism it set out to close.

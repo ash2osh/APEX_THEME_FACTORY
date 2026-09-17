@@ -216,3 +216,17 @@
     background-color: var(--app-color-primary);
     filter: brightness(1.08);
 }
+
+/* Map (p1906, p1601 map item). MapLibre's attribution bar paints its own translucent white plate and takes
+   its text colour by inheritance, so the package's base2 body text landed on it: measured 2.57:1 on p1906,
+   2026-09-17. Give the plate the package overlay so the inherited text has a dark ground: 12.25:1 for both
+   the text and its links, measured with this rule injected. The zoom control group keeps MapLibre's white
+   chrome on purpose (it is an opaque light patch, not a contrast failure) — its glyphs are
+   dark SVG images that are not themable from CSS. */
+.app-theme-solarized-dark .maplibregl-ctrl-attrib {
+    background-color: var(--app-overlay-background);
+}
+.app-theme-solarized-dark .maplibregl-ctrl-attrib,
+.app-theme-solarized-dark .maplibregl-ctrl-attrib a {
+    color: var(--app-text-primary);
+}

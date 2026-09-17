@@ -28,6 +28,7 @@
     "switcherAvailable",
     "consoleErrors",
     "failedRequests",
+    "declaredFaceCount",
     "fonts",
     "fontApexFamilyBefore",
     "fontApexFamilyAfter",
@@ -62,6 +63,7 @@
     "switcherAvailable": { "type": "boolean" },
     "consoleErrors": { "type": "array", "items": { "type": "string" } },
     "failedRequests": { "type": "array", "items": { "type": "string" } },
+    "declaredFaceCount": { "type": "integer" },
     "fonts": {
       "type": "array",
       "items": {

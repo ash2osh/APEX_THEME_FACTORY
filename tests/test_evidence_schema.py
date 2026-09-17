@@ -41,6 +41,7 @@ def _good_artifact() -> dict:
         "switcherAvailable": True,
         "consoleErrors": [],
         "failedRequests": [],
+        "declaredFaceCount": 1,
         "fonts": [{
             "role": "mono", "family": "ThemeFactory-solarized-dark-mono", "weight": 400,
             "style": "normal", "check": True,
@@ -115,6 +116,7 @@ class EvidenceSchemaTests(unittest.TestCase):
         artifact["activeTheme"] = "linen"
         artifact["htmlClasses"] = ["app-theme-linen"]
         artifact["fonts"] = []
+        artifact["declaredFaceCount"] = 0
         errors = validate(artifact, SCHEMA_PATH)
         self.assertEqual(errors, [])
 

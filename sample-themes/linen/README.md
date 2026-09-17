@@ -71,4 +71,11 @@ Live, per browser: open any page with `#theme=linen` (or `App.theme.use('linen')
 
 Pages 500, 1201, 1402, 1410, 1500, 1600, 1910 · widths 1440 / 1024 / 768 / 375 · console clean ·
 IG refresh, dialog open/close, keyboard focus · text contrast ≥ 5.4:1, input border 3.3:1.
-Runtime hooks recorded in `.agents/knowledge/ut-dom-*.md`; open items in `.agents/findings/pending/`.
+Runtime hooks recorded in `.agents/knowledge/ut-dom-*.md`. No findings are open against this package.
+
+**Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-linen/`, verdict
+`VERIFIED`): Layer C exercised install, stale-restore guard, reinstall, switcher on/off, coexistence with
+`solarized-dark`, uninstall ×2, unrelated-file preservation and restore — 7/7 on a minimal consumer app and a
+business one. Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus Reports and Widgets, with
+zero console errors, zero failed requests, an AA-clean contrast sweep, a keyboard-operable switcher and a
+selection that survives reload.

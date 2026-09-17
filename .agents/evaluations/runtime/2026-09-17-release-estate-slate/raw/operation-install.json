@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T17:41:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/packages/estate-slate-1.0.0/estate-slate-1.0.0",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "a7a677fc3e369c5c007d49d02b75283af05a4d5722fd33e618030533\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,49 @@\n+file \"theme-factory/packages/estate-slate/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/packages/estate-slate-1.0.0/estate-slate-1.0.0 --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9012 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9012\n  Theme:         estate-slate v1.0.0\n  Staged Digest: 14659bd73e3cc5253c0e024210b4d1cb292fe15735b2bf47ef36977fec17806d\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/backups/DEMO-9012/20260917T172638Z-before-estate-slate\nType application ID 9012 to import: \nResult: IMPORTED theme 'estate-slate' v1.0.0 into application 9012.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/packages/estate-slate-1.0.0/estate-slate-1.0.0",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "5283af05a4d5722fd33e618030533\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,52 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/estate-slate/1.0.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/fonts/ibm-plex-sans-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/estate-slate/1.0.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/packages/estate-slate-1.0.0/estate-slate-1.0.0 --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9013 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9013\n  Theme:         estate-slate v1.0.0\n  Staged Digest: 7fc5dc69755487ceaab7d32ace9adc0966845e8b48031038cb24990c1ac42f6f\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/backups/DEMO-9013/20260917T173429Z-before-estate-slate\nType application ID 9013 to import: \nResult: IMPORTED theme 'estate-slate' v1.0.0 into application 9013.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

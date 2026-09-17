@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T17:41:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "restore",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/backups/DEMO-9012/20260917T172610Z-before-estate-slate --apply",
+      "appId": 9012,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9012 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   0e92a8c32dfcfee9b89084462b04fff545419460e6a81a155dc4d6cfb8e637c7\n  Backup Digest: 04c3c24272f3132bc2b728d681a4634811ab187d0a5ec92a282021eaed723aaf\n",
+      "stderrTail": "Error: Application 9012 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/backups/DEMO-9012/20260917T172610Z-before-estate-slate --discard-later-changes --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9012 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   9524677b0dee71aa74dff527db549225e5cfbf3399e5b11f24b08b4f0553f433\n  Backup Digest: 04c3c24272f3132bc2b728d681a4634811ab187d0a5ec92a282021eaed723aaf\nWARNING: Application 9012 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9012 to restore: \nResult: RESTORED application 9012 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/minimal/backups/DEMO-9012/20260917T172610Z-before-estate-slate.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/backups/DEMO-9013/20260917T173400Z-before-estate-slate --apply",
+      "appId": 9013,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9013 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   0a7407fb7618e973ea29b2080d9b3e8ddef8ce38d1ef92b797715cbb310df659\n  Backup Digest: e82a4a120f06f406c4488b47e7274deaabffabb6ef7ad0b22ad290382d4db0db\n",
+      "stderrTail": "Error: Application 9013 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/backups/DEMO-9013/20260917T173400Z-before-estate-slate --discard-later-changes --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9013 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   024b3753fadfb39a74bf097cfc33f06f0a5764cc3f7502db89de35a75b870905\n  Backup Digest: e82a4a120f06f406c4488b47e7274deaabffabb6ef7ad0b22ad290382d4db0db\nWARNING: Application 9013 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9013 to restore: \nResult: RESTORED application 9013 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-est/business/backups/DEMO-9013/20260917T173400Z-before-estate-slate.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

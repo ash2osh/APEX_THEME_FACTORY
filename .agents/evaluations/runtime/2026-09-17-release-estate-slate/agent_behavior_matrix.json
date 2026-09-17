@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T18:14:48Z",
+  "layer": "E",
+  "check": "agent_behavior_matrix",
+  "status": "PASS",
+  "results": {
+    "runtimes": {
+      "codex": {
+        "path": "raw/agent-runtime-codex.json",
+        "sha256": "830f49e5cfc9b6dbf0e57e3203cc0e457da98d31bb983ff731bea850a7a16dc5"
+      },
+      "claude": {
+        "path": "raw/agent-runtime-claude.json",
+        "sha256": "a7947a19dc6cb1ccfb275bbe297d7ce26d78c034d65e18b26531e243493888fa"
+      },
+      "antigravity": {
+        "path": "raw/agent-runtime-antigravity.json",
+        "sha256": "6e1837c4daf9d3797097869e4363cbe82da2172bf15778f863f3e6101e42815d"
+      }
+    },
+    "scenarios": {
+      "04": {
+        "path": "raw/scenario-04.json",
+        "sha256": "9e9f589d72cee48b87830f72132f0ff74c11f009a1a06dc0650e001b89290ea0"
+      },
+      "05": {
+        "path": "raw/scenario-05.json",
+        "sha256": "e2a2899051bc60d8814caf50010c318e22da0ddbf4147e45a60255554190c834"
+      },
+      "09": {
+        "path": "raw/scenario-09.json",
+        "sha256": "bcd3ebb3972584936a3aa439b0bc160639d3e481776c377b9d0f3414653db175"
+      },
+      "11": {
+        "path": "raw/scenario-11.json",
+        "sha256": "16488681ecb79470753fe3df1759dc31b03bb8089d58588e5b8a1cb93608159e"
+      },
+      "14": {
+        "path": "raw/scenario-14.json",
+        "sha256": "58105f082c5d7c013636fe9848709977402c1a6fe709d00254410dce90d6007b"
+      }
+    },
+    "findingEvidence": [
+      {
+        "path": "raw/finding-2026-09-13-theme-style-scope-token-overrides.json",
+        "sha256": "76ea29eaab9afd277b990f242eafc739046cee7049d63726f178d59c9fd58810"
+      },
+      {
+        "path": "raw/finding-2026-09-14-apex-widget-events.json",
+        "sha256": "caee6b6007879dc467acaf58989bf1bd6ee2801254af49e1fa6898a4d55811f2"
+      },
+      {
+        "path": "raw/finding-2026-09-14-apexlang-static-id-is-htmldomid.json",
+        "sha256": "04ddb491d6e89b4b065de3ce3226a1f92231b6b382311f27ace0a3d05fd13160"
+      },
+      {
+        "path": "raw/finding-2026-09-14-theme-packages-routing.json",
+        "sha256": "862e629ad6671c7d651a824e8e258326cf9ff19dbf6303caff843f0d67f1fe6e"
+      },
+      {
+        "path": "raw/finding-2026-09-14-ut-literal-root-tokens.json",
+        "sha256": "b10bf8669b56057d5bb370257e12b3075437c005011928a5728265d7f50acba8"
+      },
+      {
+        "path": "raw/finding-2026-09-14-solarized-dark-2page-coverage-gap.json",
+        "sha256": "c87e852f3f79ad939e55d0e88051e183a99c3f53c1230fea067424c8cc01ffb1"
+      },
+      {
+        "path": "raw/finding-2026-09-16-dynamic-content-htp-p-cannot-refresh.json",
+        "sha256": "de21106ca13fcff825cf780fdf42d337c57683c24e01fed6242e496263af7f6c"
+      },
+      {
+        "path": "raw/finding-2026-09-13-ig-sticky-header-double-line.json",
+        "sha256": "bfc7cc276b7778f5ade85fc5d009b72655a789bd2199b86d277e0abb9012f472"
+      }
+    ],
+    "pendingFindings": 0,
+    "failures": []
+  }
+}

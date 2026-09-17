@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "a320f93fdb8cc2660cc16ac7ba1181c02beebb403033b1c933e2ecb69bd41d98",
+  "capturedAt": "2026-09-17T17:41:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "uninstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme estate-slate --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9012 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate\nType application ID 9012 to uninstall: \nResult: UNINSTALLED theme 'estate-slate' from application 9012.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme estate-slate-dark --apply",
+      "appId": 9012,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9012 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate-dark\nType application ID 9012 to uninstall: \nResult: UNINSTALLED theme 'estate-slate-dark' from application 9012.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme estate-slate --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9013 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate\nType application ID 9013 to uninstall: \nResult: UNINSTALLED theme 'estate-slate' from application 9013.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme estate-slate-dark --apply",
+      "appId": 9013,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9013 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate-dark\nType application ID 9013 to uninstall: \nResult: UNINSTALLED theme 'estate-slate-dark' from application 9013.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

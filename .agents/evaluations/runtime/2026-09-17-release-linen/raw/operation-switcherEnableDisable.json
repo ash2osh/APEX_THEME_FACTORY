@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "c88ce9df62cbe3d58f0d5844dcf1c949126374f1",
-  "packageSha256": "8c38fd0f618499c613419ccb830b29839c9f191f0555497e4b38a35b3c5543d2",
-  "capturedAt": "2026-09-17T13:19:32Z",
+  "gitCommit": "7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995",
+  "packageSha256": "d579f1c343a2001561b78be6496506ed177f9af1fcf2467337180000fa2376a0",
+  "capturedAt": "2026-09-17T17:09:56Z",
   "evidenceType": "sqlcl-operation",
   "operation": "switcherEnableDisable",
   "status": "PASS",
@@ -14,7 +14,7 @@
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: 9707e36dad4a57c75b151037f25f78a2611f9bc026c80a5acecd7cf08e796483\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260917T130644Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: c09d1f934b777c8eec7b2ced4c89e6d01fe9536e8724931e3783c7b54edd749c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260917T165716Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -23,7 +23,7 @@
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: a2a8d82309026fd9918c5afc891c21528fe494406938f57ff2fc576ab08cd211\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260917T130836Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.0.0\n  Staged Digest: 0d2f84cffabadb45f7c7163f94f3e9fbbb970e15c2fcb6e94a042cf0fd17c153\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/minimal/backups/DEMO-9010/20260917T165905Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -32,7 +32,7 @@
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 6a7f7e86f08bf6f9e1e6012011c2eabb54f34f1ea37d23a7d52429ad58702348\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260917T131434Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 22e81a91f43433009defa7e485d8500a485f979f3a5015fbeb513982ccb91d5c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260917T170457Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
@@ -41,7 +41,7 @@
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 278832007d92333b902123f8ab36ccd749255ca0e3d269967a84c043b467a116\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260917T131626Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.0.0\n  Staged Digest: 060973ade407702e178791fdc383fa7a10a7e1a8e1207c759cad698988ba53bf\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-linen/business/backups/DEMO-9011/20260917T170649Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.0.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

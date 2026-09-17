@@ -25,20 +25,43 @@ the observed SQLcl transforms, and `tests/test_lifecycle_real_shape.py` drives i
 coexistence → switcher off → uninstall → uninstall → restore against a fixture cut from a real consumer export.
 Layer C (live import) is PASS: authorised `--apply` cycles were run against the disposable consumers on 2026-09-16 and re-recorded on 2026-09-17.
 
-## Verdict (updated 2026-09-17, after the post-import evaluation round)
+## Verdict (updated 2026-09-17, after the verification-integrity remediation)
 
-Layers A–E are **PASS** for both single-theme packages with retained, digest-bound evidence at commit
-`c88ce9df62cb`, so the release verdict for `linen` and `solarized-dark` is **VERIFIED**. `solarized-dark` 1.1.0
-ships five licensed WOFF2 faces, and all five are proven loaded from the package on all 12 Layer D rows. What closed Layer E: all
-three runtime smokes pass (Codex and Claude Code 2026-09-16, Antigravity 2026-09-17 once its provider had
-capacity), evaluation scenarios 04, 05, 09, 11 and 14 all pass, and both remaining findings were promoted to
-`accepted` after the measurements that had been missing were taken against the imported build.
+Layers A–E are **PASS** for all four single-theme packages — `linen`, `solarized-dark`, `estate-slate`,
+`estate-slate-dark` — with retained, digest-bound evidence at commit `7ac2e0204ca0`, so the release verdict
+for each is **VERIFIED**. `solarized-dark` 1.1.0 ships five licensed WOFF2 faces and `estate-slate` /
+`estate-slate-dark` ship four each; all are proven loaded from their package on every Layer D row. What closed
+Layer E: all three runtime smokes pass (Codex and Claude Code 2026-09-16, Antigravity 2026-09-17 once its
+provider had capacity), evaluation scenarios 04, 05, 09, 11 and 14 all pass, and both remaining findings were
+promoted to `accepted` after the measurements that had been missing were taken against the imported build.
+
+`estate-slate` and `estate-slate-dark` were committed 2026-09-17 (`a38076b`) by a concurrent session with no
+Layer C/D/E evidence at all and no row in this report or `tests/live/RELEASE-MATRIX.md` — invisible to the
+release system rather than flagged as unverified. Closed the same day as Task 6 of the verification-integrity
+remediation (below): two more consumer fixtures were provisioned (9012 minimal, 9013 business) and both themes
+were captured through the same Layer C/D/E pipeline as `linen`/`solarized-dark`.
+
+Between the 2026-09-17 post-import round and this one, six defects were found and fixed in the verification
+system itself — not in any theme — documented in
+`docs/superpowers/plans/2026-09-17-verification-integrity-defects.md` and `.agents/knowledge/pitfalls.md` §4.6
+and §5.5–5.6: the runtime-evidence schema went from documented-but-unenforced to validated at the gate; the
+gate now checks font-evidence *completeness* (a count and a per-face check), not just its presence; Layer E
+binds on instruction Markdown specifically, separate from the general source binding Layers C/D use; both
+capture drivers re-check the working tree before each unit of live work, not only at start; `sync-static.sh`
+stopped declaring `charSet` on binary files; and every `sample-themes/` directory is now checked to be either
+verified or explicitly marked otherwise (`scripts/check-sample-themes-coverage.sh`). One of these — the font
+evidence check — found a real measurement defect while the fix for another was being validated: a probe that
+asked "did this page happen to use the face" rather than "is the face usable" had reported `solarized-dark`'s
+mono face as missing on all 12 rows of the *previous* capture, when it was in fact correctly packaged and
+served. Fixed and re-verified live before this evidence was captured.
 
 The verdict is bounded by what the evidence covers, and the bounds are recorded rather than waived: app 102's
 AA sweep covers 24 of its 122 pages at 1440 plus 4 at 375 (Layer D covers the consumer apps at all four
 widths), and selection states beyond the Interactive Grid, keyboard focus rings and further chip/error states
-are untested — see `.agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md`. No known code
-defect remains open.
+are untested — see `.agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md`. `estate-slate`
+and `estate-slate-dark` have the same automated per-row Layer D coverage as the other two themes but have not
+had a dedicated multi-page driven-state accessibility sweep the way `solarized-dark` did. No known code defect
+remains open.
 
 The earlier report's `VERIFIED` claims for Apps 9010/9011 (2026-09-15) were withdrawn; they are now replaced by
 actual evidence captured on the same application IDs, re-provisioned from the committed fixtures.

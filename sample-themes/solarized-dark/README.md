@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | **1.1.0 (2026-09-17)** — now ships custom fonts (see *Typography* below), so the AA sweep recorded here predates them: colour ratios are unaffected (they are computed from colours, not glyphs), but layout, line length and overflow have **not** been re-measured with the new faces. Release verdict for 1.0.0 was `VERIFIED`; 1.1.0 needs its evidence re-captured |
+| Status | **VERIFIED** (1.1.0, re-captured 2026-09-17 with custom fonts): Layers A–E all PASS, retained evidence in `.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`. All 5 declared WOFF2 faces proven loaded from the package on every Layer D row. |
 
 ## Preview
 
@@ -92,12 +92,17 @@ scripts/apex-import.sh                  # validate + import
 Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=solarized-dark` in a URL;
 `App.theme.use('solarized-dark')` in the console.
 
-## Status: live-measured 2026-09-17, four defects fixed — NOT release-verified
+## Status: VERIFIED (2026-09-17) — history of how it got there
 
-**Not "Verified".** A live Chrome pass finally ran (2026-09-17, details below). It is the first runtime
-evidence this package has, and it changes the picture in both directions: the 2026-09-14 resting-state numbers
-reproduced, *and* the pass found four real package-caused defects that no resting-state sweep could ever see —
-one of them (Interactive Grid row selection at **1.06:1**) severe.
+**Release verdict: `VERIFIED`.** Layers A–E all pass with retained, digest-bound evidence at commit
+`7ac2e0204ca0` (`.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`); see the "Release evidence"
+paragraph at the end of this section and `tests/live/RELEASE-MATRIX.md` for the full row-by-row record. The
+rest of this section is kept as the history of how that verdict was earned: a live Chrome pass finally ran
+(2026-09-17, details below) — the first runtime evidence this package ever had — and it changed the picture in
+both directions: the 2026-09-14 resting-state numbers reproduced, *and* the pass found four real
+package-caused defects that no resting-state sweep could ever see — one of them (Interactive Grid row
+selection at **1.06:1**) severe. All four were fixed, imported and re-measured as shipped before this verdict
+was reached.
 
 Two of the three blockers recorded here are now closed (2026-09-17, after the import; full log in
 `.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md`):
@@ -296,3 +301,12 @@ see the 2026-09-17 section at the top of this Status block. Two of those pages (
 failures, and 1410 carried the worst one found so far. The source-review pass this addendum describes was
 therefore necessary but not sufficient: it never reached `--a-palette-*`, `--a-base-link-text-color` or the
 `--oj-*` family, all of which are the same `:root`-freeze mechanism it set out to close.
+
+**Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`, verdict
+`VERIFIED`, commit `7ac2e0204ca0`): Layer C exercised install, stale-restore guard, reinstall, switcher on/off,
+coexistence with `linen`, uninstall ×2, unrelated-file preservation and restore — 7/7 on a minimal consumer app
+and a business one. Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus Reports and Widgets,
+with zero console errors, zero failed requests, an AA-clean contrast sweep, a keyboard-operable switcher, a
+selection that survives reload, and all 5 declared WOFF2 faces forced to load and matched to the request that
+served them from the package (the earlier capture had reported the mono face as missing on every row — a
+probe defect, not a package defect; see `.agents/knowledge/pitfalls.md` §4.6).

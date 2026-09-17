@@ -18,6 +18,10 @@ APPCSS="$SRC/css/app.css"
 mime() { case "${1##*.}" in css) echo text/css;; js) echo application/javascript;; json|map) echo application/json;;
          svg) echo image/svg+xml;; png) echo image/png;; jpg|jpeg) echo image/jpeg;; woff2) echo font/woff2;;
          *) echo application/octet-stream;; esac; }
+# A charSet only means something for text content; APEX ignores it for binaries, but declaring one
+# anyway is a false statement in generated source (plan Task 5). image/svg+xml is XML text, unlike
+# the other image/* types here, so it keeps a charSet.
+is_text_mime() { case "$1" in text/*|application/javascript|application/json|image/svg+xml) return 0;; *) return 1;; esac; }
 
 # (1) themes block in app.css
 themes=(); for j in "$THEMES"/*/theme.json; do [[ -f "$j" ]] && themes+=("$(basename "$(dirname "$j")")"); done
@@ -31,11 +35,36 @@ PY
 # (2) copy + register
 declare -A wanted; copied=0; added=0
 sync_one() { # src-file rel-dest
-  local f="$1" rel="$2"; wanted["$rel"]=1
+  local f="$1" rel="$2" m want status; wanted["$rel"]=1
+  m="$(mime "$rel")"
   mkdir -p "$DST/$(dirname "$rel")"
   if ! cmp -s "$f" "$DST/$rel"; then cp "$f" "$DST/$rel"; copied=$((copied+1)); fi
-  if ! grep -qF "file \"$rel\" (" "$APX"; then
-    printf '\nfile "%s" (\n    mimeType: %s\n    charSet: utf-8\n)\n' "$rel" "$(mime "$rel")" >> "$APX"; added=$((added+1)); fi
+  if is_text_mime "$m"; then
+    printf -v want 'file "%s" (\n    mimeType: %s\n    charSet: utf-8\n)' "$rel" "$m"
+  else
+    printf -v want 'file "%s" (\n    mimeType: %s\n)' "$rel" "$m"
+  fi
+  # Reconcile a registration that has drifted from what this file should look like now - e.g. a
+  # charSet left over from before its mimeType classification changed here - not just add files
+  # never registered at all. A no-op when the existing block already matches, so an unchanged file
+  # doesn't get needlessly reordered to the end on every run.
+  status="$(python3 - "$APX" "$rel" "$want" <<'PY'
+import re, sys
+apx_path, rel, want = sys.argv[1], sys.argv[2], sys.argv[3]
+text = open(apx_path, encoding="utf-8").read()
+pattern = re.compile(r'file "' + re.escape(rel) + r'" \(\n(?:    [^\n]*\n)*\)')
+match = pattern.search(text)
+if match and match.group(0) == want:
+    print("same"); sys.exit(0)
+if match:
+    text = pattern.sub('', text, count=1)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+text = text.rstrip('\n') + '\n\n' + want + '\n'
+open(apx_path, 'w', encoding='utf-8').write(text)
+print("new" if not match else "changed")
+PY
+)"
+  if [[ "$status" == "new" ]]; then added=$((added+1)); fi
 }
 while IFS= read -r -d '' f; do rel="${f#"$SRC"/}"
   case "$rel" in *README.md|*/.about*|*LICENSE*|js/vendor/alpine.js) continue;; esac

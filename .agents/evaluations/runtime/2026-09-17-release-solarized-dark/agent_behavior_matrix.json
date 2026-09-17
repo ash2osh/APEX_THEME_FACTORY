@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "theme": "solarized-dark",
   "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
-  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
-  "capturedAt": "2026-09-17T07:22:43Z",
+  "packageSha256": "41996104130764518557862e675057365c1c3425b44f05ed001f8c25dafa8d67",
+  "capturedAt": "2026-09-17T08:18:06Z",
   "layer": "E",
   "check": "agent_behavior_matrix",
   "status": "PASS",
@@ -11,71 +11,71 @@
     "runtimes": {
       "codex": {
         "path": "raw/agent-runtime-codex.json",
-        "sha256": "52efcb735e2bbf9f8333eb9c6a25183ea75d5123071ae2855187eea23defce99"
+        "sha256": "29b5e3c16f27e23e25809e60429c2152e90c297c549de4ed0538bdc4df5f0a2e"
       },
       "claude": {
         "path": "raw/agent-runtime-claude.json",
-        "sha256": "b74235957d26e1a545f145224e664eecc68c7241b8209d3716200424b91063d1"
+        "sha256": "23177ab21c0e1b3a7d3d550170161bdc45f70f3e0e384485b5991a1e1bad8b3d"
       },
       "antigravity": {
         "path": "raw/agent-runtime-antigravity.json",
-        "sha256": "0b11655417aa8565f201e47234603b5b8ecf40ce39638a3a3b66031d9ceefa1e"
+        "sha256": "ae703c77b61b34bd1c42952d7cade6d614a5cc671259edfb390608edcbc42cb6"
       }
     },
     "scenarios": {
       "04": {
         "path": "raw/scenario-04.json",
-        "sha256": "8478cdc88a3c8e6fc7585e78e0044cbe226e4cfef9358ea95ff0498843678d1a"
+        "sha256": "b67b2f296215439a3363717626b3dd4e006fabde1b7ff997d091685b092abf88"
       },
       "05": {
         "path": "raw/scenario-05.json",
-        "sha256": "150c81558dabe467118ef63683597cdb33c4ff05ca24b9d791986bea55d39cdd"
+        "sha256": "0d5d52c35b07b401c310e304e7daa2ad78a64f513d5bec47eb1e2c0e95fe22c3"
       },
       "09": {
         "path": "raw/scenario-09.json",
-        "sha256": "328c82c4c220bf6fa789f1873041cd5b9dda44ef64c761d8c7bdbcad2ff7b39d"
+        "sha256": "2cb06230c3e2695fdc7800585aa132240d985158d59ad87025b54720059fef1c"
       },
       "11": {
         "path": "raw/scenario-11.json",
-        "sha256": "cab8035d583a988bb03901a4a735f9fd0851eb73e29eb41972973d281fbebba3"
+        "sha256": "01682311686bba2e6b95e1be1f7cf04fde373e7a920c670a140a6dc8a9c09775"
       },
       "14": {
         "path": "raw/scenario-14.json",
-        "sha256": "f5e3059e35ad991dbdf105372d77aee5b1cdbb752593ee7a08468491aa8a9424"
+        "sha256": "12bf59321d72687a0e509314156c5370ed02b694d0eef45167fe5be69e3e16dc"
       }
     },
     "findings": [
       {
         "path": "raw/finding-2026-09-13-theme-style-scope-token-overrides.json",
-        "sha256": "1875a2cb68bc34fe2efd96424177df10fdda139f9f862c43ef4d1c47822f6c27"
+        "sha256": "69e0c643fe5ef62093410c3196aa8139ac5bdd02e1083753701c300a7f9a5973"
       },
       {
         "path": "raw/finding-2026-09-14-apex-widget-events.json",
-        "sha256": "dbccbc9226929e9f956e44fa9deb890b25c7e46ee7ee3739f196914d8549119a"
+        "sha256": "20208b57903f969da82ace764af640de3764e72bdc4bac9462ba487577e28703"
       },
       {
         "path": "raw/finding-2026-09-14-apexlang-static-id-is-htmldomid.json",
-        "sha256": "22ce9070424849167207455db722dba2876051f161dd9e601347373ac781e1e8"
+        "sha256": "32f0cc6687348a8bc624f660765cf69bcfad3acd701bef358a4689f289e2a116"
       },
       {
         "path": "raw/finding-2026-09-14-theme-packages-routing.json",
-        "sha256": "5f49c3083af57398f77756706d1b5684f17c1a388881fe70d7aaee974779c454"
+        "sha256": "ac06f5e9976b367d29ee523fe7149467dfe099ae4d30c70fddd70a4c558d5c5f"
       },
       {
         "path": "raw/finding-2026-09-14-ut-literal-root-tokens.json",
-        "sha256": "899d8d5748c79d87fb1f2cbf41daea03afa58e88826e6cd017dfeac50b56228a"
+        "sha256": "216fa07f7e746952fc44fe4273f92c3bfe6132afb98499d49be6230442063d43"
       },
       {
         "path": "raw/finding-2026-09-14-solarized-dark-2page-coverage-gap.json",
-        "sha256": "409828a023d234fdb96460de64efde4dd527537dccfeb22d2560d9150a447763"
+        "sha256": "211f12f4a6eb384c2ee24403c4bd1094faccfe1bb1d48127bd6857f376068118"
       },
       {
         "path": "raw/finding-2026-09-16-dynamic-content-htp-p-cannot-refresh.json",
-        "sha256": "72bb1948222d4080fd68caea7975c81f8bb0ee6cb4e904d44e31aa5d337d157f"
+        "sha256": "c741fc45da37aabe142ee2c80183c67e8f008502e64d5efb0dd46e1e15582521"
       },
       {
         "path": "raw/finding-2026-09-13-ig-sticky-header-double-line.json",
-        "sha256": "8f95228c9dc228457a9c6f9d208064eb80ed924e632ebbcb47041d86b0cbf7c8"
+        "sha256": "62abe05cbdcd5b8327caa60c7e1258bf1eb39dd76a1ba70d6b323da8889dbec9"
       }
     ],
     "pendingFindings": 0,

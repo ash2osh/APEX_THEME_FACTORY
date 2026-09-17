@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
-  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
-  "capturedAt": "2026-09-17T07:12:25Z",
+  "gitCommit": "e44627b93fc503defbc7f2f765765d2cc7f89528",
+  "packageSha256": "41996104130764518557862e675057365c1c3425b44f05ed001f8c25dafa8d67",
+  "capturedAt": "2026-09-17T08:08:43Z",
   "evidenceType": "sqlcl-operation",
   "operation": "restore",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T065326Z-before-solarized-dark --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075032Z-before-solarized-dark --apply",
       "appId": 9010,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   f4b712407e6e82d22ce3c5a751c9a7f460c18aca90ffb1166d575ecf934e001d\n  Backup Digest: 25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   422de46bc630a157e074d3035b3c0384c146f5f6fa06b3f9e0892faf593794fa\n  Backup Digest: 25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n",
       "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T065326Z-before-solarized-dark --discard-later-changes --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075032Z-before-solarized-dark --discard-later-changes --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T065326Z-before-solarized-dark.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/minimal/backups/DEMO-9010/20260917T075032Z-before-solarized-dark.\nStatus: RESTORED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T070220Z-before-solarized-dark --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080013Z-before-solarized-dark --apply",
       "appId": 9011,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   6ce11e41039a3553be86616c29f06a9a751a10bc1224b6ad19185202f2372d29\n  Backup Digest: e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   771680fdf37c248e747216bed77281da4d22eee5711dd4e78257a3337354e3d0\n  Backup Digest: e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n",
       "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T070220Z-before-solarized-dark --discard-later-changes --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080013Z-before-solarized-dark --discard-later-changes --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T070220Z-before-solarized-dark.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/201034e4-2e31-43fd-8774-855988810cec/scratchpad/lm-sol/business/backups/DEMO-9011/20260917T080013Z-before-solarized-dark.\nStatus: RESTORED\n",
       "stderrTail": ""
     }
   ],

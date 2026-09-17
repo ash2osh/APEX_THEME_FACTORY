@@ -23,15 +23,21 @@ re-export, and fixed the following in the working tree (all covered by `tests/ru
 The offline fake `sql` now re-exports through `tests/fixtures/bin/apexlang_roundtrip.py`, which reproduces
 the observed SQLcl transforms, and `tests/test_lifecycle_real_shape.py` drives install → reinstall →
 coexistence → switcher off → uninstall → uninstall → restore against a fixture cut from a real consumer export.
-Layer C (live import) remains UNVERIFIED until an authorised `--apply` cycle is run against disposable consumers.
+Layer C (live import) is PASS: authorised `--apply` cycles were run against the disposable consumers on 2026-09-16 and re-recorded on 2026-09-17.
 
-## Verdict (updated 2026-09-16, after the live matrix)
+## Verdict (updated 2026-09-17, after the post-import evaluation round)
 
-Layers A–D are **PASS** for both single-theme packages with retained, digest-bound evidence; Layer E is
-**UNVERIFIED**, so the release verdict for `linen` and `solarized-dark` is `UNVERIFIED` — not because of a known
-defect but because the agent-behaviour layer is incomplete: the Claude Code readiness smoke cannot authenticate
-headlessly on this machine, and evaluation scenarios 04/05/09/11/14 require fresh agent sessions that were
-not dispatched in this pass. Codex and Antigravity smokes pass. No known code defect remains open.
+Layers A–E are **PASS** for both single-theme packages with retained, digest-bound evidence at commit
+`0edc66a69a7b`, so the release verdict for `linen` and `solarized-dark` is **VERIFIED**. What closed Layer E: all
+three runtime smokes pass (Codex and Claude Code 2026-09-16, Antigravity 2026-09-17 once its provider had
+capacity), evaluation scenarios 04, 05, 09, 11 and 14 all pass, and both remaining findings were promoted to
+`accepted` after the measurements that had been missing were taken against the imported build.
+
+The verdict is bounded by what the evidence covers, and the bounds are recorded rather than waived: app 102's
+AA sweep covers 24 of its 122 pages at 1440 plus 4 at 375 (Layer D covers the consumer apps at all four
+widths), and selection states beyond the Interactive Grid, keyboard focus rings and further chip/error states
+are untested — see `.agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md`. No known code
+defect remains open.
 
 The earlier report's `VERIFIED` claims for Apps 9010/9011 (2026-09-15) were withdrawn; they are now replaced by
 actual evidence captured on the same application IDs, re-provisioned from the committed fixtures.
@@ -55,20 +61,31 @@ actual evidence captured on the same application IDs, re-provisioned from the co
 
 ## Evidence layers
 
-| Layer | Meaning | Status (2026-09-16) | Evidence |
+| Layer | Meaning | Status (2026-09-17) | Evidence |
 |---|---|---|---|
 | A | Repository source | PASS | clean tree, `tests/run-offline.sh` (208 + 11 + 113 test runs), `AGENT_LAYOUT status=PASS` |
 | B | Package artifact | PASS | deterministic ZIPs, `verify-package`, `RELEASE-REPORT.md` |
-| C | Database installation | PASS (both themes) | `tools/live_matrix.py` on TF-CONSUMER-MINIMAL-9010 and TF-CONSUMER-BUSINESS-9011, APEX 26.1.4: install, stale-restore guard, reinstall, switcher on/off, coexistence, uninstall ×2, unrelated-file preservation, restore — `.agents/evaluations/runtime/2026-09-16-release-<theme>/` |
+| C | Database installation | PASS (both themes) | `tools/live_matrix.py` on TF-CONSUMER-MINIMAL-9010 and TF-CONSUMER-BUSINESS-9011, APEX 26.1.4: install, stale-restore guard, reinstall, switcher on/off, coexistence, uninstall ×2, unrelated-file preservation, restore — `.agents/evaluations/runtime/2026-09-17-release-<theme>/` |
 | D | Browser runtime | PASS (both themes, 12 rows each) | `tools/browser_matrix.py` through the Chrome MCP daemon: both consumers at 1440/1024/768/375 + business Reports/Widgets; zero console errors, zero failed requests, AA contrast clean, keyboard-operable switcher, persisted selection, Font APEX intact |
-| E | Agent behavior | UNVERIFIED | Codex PASS, Antigravity PASS, Claude Code UNVERIFIED (headless OAuth); scenarios 04/05/09/11/14 open |
+| E | Agent behavior | PASS (both themes) | three runtime smokes PASS (`tests/agent-smoke/runs/2026-09-16/{codex,claude}.json`, `2026-09-17/antigravity.json`); scenarios 04, 05, 09, 11, 14 PASS; 0 pending findings — `2026-09-17-release-<theme>/agent_behavior_matrix.json` + `raw/` |
 
 Live findings fixed during the matrix: empty `fileUrls` after switcher disable / last uninstall, a `file` block
 on line 1 surviving uninstall (both invisible to the fake SQLcl until it gained the compiler checks in
 `tests/fixtures/bin/apexlang_lint.py`), and Solarized Dark's default calendar events at 3.3:1.
 
-## Required work before a `VERIFIED` release
+## Work completed for the `VERIFIED` release, and what it does not cover
 
-1. Authenticate the Claude Code CLI on the release machine (`claude login`) and re-run `python3 tools/agent_smoke.py claude`.
-2. Run evaluation scenarios 04, 05, 09, 11 and 14 with fresh agent sessions per `.agents/evaluations/README.md`, retaining full diffs, and resolve the seven pending findings through the documented protocol.
-3. Regenerate `scripts/release-check.sh <theme>`; the verdict flips to `VERIFIED` only when Layer E carries digest-bound PASS artifacts for all three runtimes and the five scenarios.
+1. ~~Authenticate the Claude Code CLI and re-run its smoke.~~ Done 2026-09-16 (PASS). Antigravity followed on
+   2026-09-17 once its provider had capacity — its 2026-09-16 `UNVERIFIED` was a `503 No capacity`, confirmed
+   by a control run against the previous schema, not a repository defect.
+2. ~~Run scenarios 04, 05, 09, 11, 14 and resolve the pending findings.~~ Done. 09 and 14 were graded
+   2026-09-16; 04, 05 and 11 were blocked on an APEX import, which the user ran on 2026-09-17, and are graded
+   in `.agents/evaluations/runs/2026-09-17/`. Both remaining findings are promoted to `accepted`.
+3. ~~Regenerate `scripts/release-check.sh <theme>`.~~ Done — the verdict is `VERIFIED` for both themes.
+
+**What `VERIFIED` here does not claim:** 98 of app 102's 122 pages were never opened under either package, the
+1024/768 widths were exercised on the consumer apps but not on app 102, and interaction states beyond those
+listed in the scenario-11 run log are untested. Scenarios 04, 05 and 11 were closed by grader measurement
+against the imported build rather than by fresh evaluee sessions; each run log says so in its own header, and
+scenario 05 additionally records that the evaluee's own CSS was never committed and so could not be the
+imported artifact.

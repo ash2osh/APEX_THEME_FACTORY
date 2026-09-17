@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "007bde7090f7deac3e915f2572f00f6d1c6760a10d9c19759e4324a079467ded",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "05",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-17/05-source-persistence-postimport.md",
+  "reason": "Clauses (a)+(b) graded clean on 2026-09-16; (c)+(d) measured post-import on this repository's own prototype -> source -> sync-static.sh -> import -> reload path: p1906 MapLibre attribution 2.57:1 -> 12.25:1 and the restated --a-palette-* chain resolving to package values on the element scope, with 0 injected <style> tags. Substitution on record: the evaluee's own hero CSS lived only in a discarded worktree and was never committed, so it could not be the imported artifact."
+}

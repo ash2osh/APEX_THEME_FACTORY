@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "007bde7090f7deac3e915f2572f00f6d1c6760a10d9c19759e4324a079467ded",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "04",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-17/04-apex-refresh-postimport.md",
+  "reason": "Three real REFRESH_FIXTURE clicks on the imported, corrected page 409: apexbeforerefresh 3 / apexafterrefresh 3 (2026-09-16: 1 / 0), a new Alpine root node each time with the old one disconnected, one component instance and one click handler after every swap, Alpine.start() never re-called, P409_DISCLOSURE_OPEN synced both ways, ajaxError null, and the AJAX envelope carrying the markup inside \"result\". Evaluee half graded 2026-09-16 (runs/2026-09-16/04-apex-refresh-current.md)."
+}

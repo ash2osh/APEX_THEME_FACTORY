@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "e91d23f88b9930670c5397017067023e55a6b2280cbbde8bc4b7d24ee6df4cfd",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-ut-literal-root-tokens",
+  "status": "ACCEPTED",
+  "reason": "Scenario 11 passes against the fixed, imported package.",
+  "file": ".agents/findings/accepted/2026-09-14-ut-literal-root-tokens.md"
+}

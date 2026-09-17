@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "007bde7090f7deac3e915f2572f00f6d1c6760a10d9c19759e4324a079467ded",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "agent-scenario",
+  "scenario": "14",
+  "status": "PASS",
+  "runLog": ".agents/evaluations/runs/2026-09-16/14-theme-style-scope-current.md",
+  "reason": "Matched neutral pair; both sides scope the atom override on the theme-style scope, neither at :root, so the doc/skill text is not load-bearing."
+}

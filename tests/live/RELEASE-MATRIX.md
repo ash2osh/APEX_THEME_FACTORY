@@ -2,17 +2,17 @@
 
 A row may become `PASS` only when its referenced JSON artifact exists, validates against the runtime evidence
 contract, and is bound (SHA-256) to the theme package and the source commit. The tables below are generated
-from the retained evidence under `.agents/evaluations/runtime/2026-09-16-release-<theme>/`.
+from the retained evidence under `.agents/evaluations/runtime/2026-09-17-release-<theme>/`.
 
-## Current evidence status (2026-09-17, commit `1f17a5efa769`, APEX 26.1.4)
+## Current evidence status (2026-09-17, commit `0edc66a69a7b`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
-| linen | C database | install, stale-restore guard, reinstall, switcher enable/disable, coexistence with solarized-dark, uninstall ×2, unrelated-file preservation, restore — on TF-CONSUMER-MINIMAL-9010 (no Global Page, no static files) and TF-CONSUMER-BUSINESS-9011 | `2026-09-16-release-linen/database_installation.json` + `raw/operation-*.json`, `raw/application-*.json` | **PASS** |
-| solarized-dark | C database | same operations with linen as the coexisting package | `2026-09-16-release-solarized-dark/database_installation.json` + raw | **PASS** |
-| linen | D browser | minimal Home and business Home at 1440/1024/768/375; business Reports (IR + editable IG) and Widgets (Calendar + JET chart) at 1440/375 | `2026-09-16-release-linen/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
-| solarized-dark | D browser | same pages and widths | `2026-09-16-release-solarized-dark/browser_runtime_matrix.json` + raw | **PASS** (12 rows) |
-| both | E agent | Codex PASS, Antigravity PASS, Claude Code UNVERIFIED (headless OAuth expired); scenarios 04/05/09/11/14 not re-run | `tests/agent-smoke/runs/2026-09-16/` | UNVERIFIED |
+| linen | C database | install, stale-restore guard, reinstall, switcher enable/disable, coexistence with solarized-dark, uninstall ×2, unrelated-file preservation, restore — on TF-CONSUMER-MINIMAL-9010 (no Global Page, no static files) and TF-CONSUMER-BUSINESS-9011 | `2026-09-17-release-linen/database_installation.json` + `raw/operation-*.json`, `raw/application-*.json` | **PASS** |
+| solarized-dark | C database | same operations with linen as the coexisting package | `2026-09-17-release-solarized-dark/database_installation.json` + raw | **PASS** |
+| linen | D browser | minimal Home and business Home at 1440/1024/768/375; business Reports (IR + editable IG) and Widgets (Calendar + JET chart) at 1440/375 | `2026-09-17-release-linen/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
+| solarized-dark | D browser | same pages and widths | `2026-09-17-release-solarized-dark/browser_runtime_matrix.json` + raw | **PASS** (12 rows) |
+| both | E agent | Codex PASS, Claude Code PASS (2026-09-16), Antigravity PASS (2026-09-17); scenarios 04, 05, 09, 11, 14 all PASS; 0 pending findings | `2026-09-17-release-<theme>/agent_behavior_matrix.json` + `raw/agent-runtime-*.json`, `raw/scenario-*.json`, `raw/finding-*.json` | **PASS** |
 
 Each Layer D row records: `apex.env` identity, html/body classes, CSS/JS URLs, loaded resources, `registry.json`,
 console errors, failed requests (status ≥ 400 or network failure), `document.fonts` state for Font APEX, the icon
@@ -26,9 +26,11 @@ scenario 11 found Oracle JET chart labels failing at 1.46:1 while the older swee
 Not covered by the automated rows (remains manual): driven hover/empty/validation-error states, Popup LOV and
 date picker, dialog/drawer open states, IG edit/sort/filter interactions, and the reference app 102 itself.
 Scenario 11's 24-page sweep of app 102 with driven states is the widest audit run so far and is what caught
-the four `solarized-dark` defects fixed on 2026-09-17; its log is
-`.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md`. Re-running it against the fixed
-build (and the remaining 98 pages, 1024/768 widths) is the next coverage step.
+the four `solarized-dark` defects fixed on 2026-09-17
+(`.agents/evaluations/runs/2026-09-16/11-dark-package-coverage-current.md`). It was re-run against the fixed,
+imported build on 2026-09-17 — 0 package-caused failures, the two remaining groups proven UT/APEX-owned by a
+bare-Iris A/B (`.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md`). The remaining
+coverage step is the other 98 pages of app 102 and the 1024/768 widths there.
 
 ## Layer D rows
 

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "0edc66a69a7bb5dac97d49caf954623820886da1",
+  "packageSha256": "007bde7090f7deac3e915f2572f00f6d1c6760a10d9c19759e4324a079467ded",
+  "capturedAt": "2026-09-17T07:22:43Z",
+  "evidenceType": "finding-resolution",
+  "finding": "2026-09-14-ut-literal-root-tokens",
+  "status": "ACCEPTED",
+  "reason": "Scenario 11 passes against the fixed, imported package.",
+  "file": ".agents/findings/accepted/2026-09-14-ut-literal-root-tokens.md"
+}

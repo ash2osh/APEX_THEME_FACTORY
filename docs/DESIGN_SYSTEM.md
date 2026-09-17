@@ -98,7 +98,7 @@ Full list of 167 `--ut-*` values: [`.agents/knowledge/iris-ut-tokens.md`](../.ag
 
 ### Custom theme fonts (portable packages)
 Theme packages may supply optional self-hosted custom fonts:
-- Roles: `body` (required if fonts declared), optional `heading`, optional `mono`. Missing roles fall back to Iris Oracle Sans / monospace.
+- Roles: `body` (required if fonts declared), optional `heading`, optional `mono`. Missing roles fall back to what Iris actually renders - the system UI stack, and `--a-base-font-family-mono` for mono (not Oracle Sans; see the `--a-base-font-family` row above).
 - Storage: WOFF2 assets in `sample-themes/<name>/fonts/<name>-<weight>-<style>.woff2` and non-empty licenses in `sample-themes/<name>/licenses/`.
 - Format: Must be valid WOFF2 binary starting with signature `wOF2`. Lower-kebab-case naming.
 - Prohibition: External font URLs (e.g. Google Fonts), `@import url(...)`, data URLs, TTF, and OTF files are strictly forbidden.
@@ -152,7 +152,7 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 | `--app-radius-sm/md/lg` | 6 / 8 / 12 px | 4 / 6 / 8 px |
 | `--app-shadow-dialog` | `0 16px 48px -12px rgba(22,21,19,.25)` | `0 16px 48px -12px rgba(0,0,0,.75)` |
 | `--app-control-h` | 2.25rem (36px) | 2.25rem |
-| `--app-font-weight-semibold` | 600 (Oracle Sans has a true 600) | 600 |
+| `--app-font-weight-semibold` | 600 | 600 |
 | `--app-focus-ring` | Iris | `0 0 0 2px #002b36, 0 0 0 4px rgba(42,161,152,.6)` |
 
 Both packages then remap the Universal Theme tokens on `body.apex-theme-iris` (§1). Solarized Dark additionally

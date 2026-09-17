@@ -11,6 +11,7 @@ import shutil
 import tempfile
 import unittest
 import zipfile
+import zipfile
 
 from lib.theme_factory.archive import build_package_from_root
 from lib.theme_factory.release import load_evidence
@@ -104,3 +105,48 @@ class LiveMatrixLifecycleAgainstFakeSqlTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PackageSourceBindingTests(unittest.TestCase):
+    """A capture must refuse a package that is not what the current source builds.
+
+    Each theme.css carries a `Source commit:` banner. Building before the final source
+    commit (or from a dirty tree) stamps something other than last_source_commit(), and
+    the mismatch is only discovered after the whole matrix has run - it cost an hour on
+    2026-09-17. Catch it in milliseconds instead.
+    """
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+
+    def _package(self, stamp):
+        root = self.tmp / "pkg"
+        root.mkdir(parents=True, exist_ok=True)
+        (root / "theme.css").write_text(
+            "/**\n * Theme: linen (Linen)\n * Version: 1.0.0\n"
+            f" * Source commit: {stamp}\n */\n\nhtml{{}}\n", encoding="utf-8")
+        archive = self.tmp / "linen-1.0.0.zip"
+        with zipfile.ZipFile(archive, "w") as zf:
+            zf.write(root / "theme.css", "linen-1.0.0/theme.css")
+        return archive
+
+    def test_reads_the_stamped_commit_from_a_zip(self):
+        from lib.theme_factory.gitstate import package_source_commit
+        self.assertEqual(package_source_commit(self._package("a" * 40)), "a" * 40)
+
+    def test_a_dirty_build_is_reported_verbatim_so_it_can_be_refused(self):
+        from lib.theme_factory.gitstate import package_source_commit
+        self.assertEqual(package_source_commit(self._package("b" * 40 + "-dirty")), "b" * 40 + "-dirty")
+
+    def test_package_built_from_a_dirty_tree_never_matches_source(self):
+        from lib.theme_factory.gitstate import package_matches_source
+        self.assertFalse(package_matches_source(self._package("c" * 40 + "-dirty"), "c" * 40))
+
+    def test_package_built_at_another_commit_does_not_match(self):
+        from lib.theme_factory.gitstate import package_matches_source
+        self.assertFalse(package_matches_source(self._package("d" * 40), "e" * 40))
+
+    def test_package_built_at_the_current_source_matches(self):
+        from lib.theme_factory.gitstate import package_matches_source
+        self.assertTrue(package_matches_source(self._package("f" * 40), "f" * 40))

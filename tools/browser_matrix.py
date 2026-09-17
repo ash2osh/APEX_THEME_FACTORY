@@ -25,12 +25,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 import re
 import subprocess
 import sys
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -166,7 +167,7 @@ def write_layer_d_evidence(evidence_dir: Path, theme: str, git_commit: str, pack
 
 # ---------------------------------------------------------------- live capture
 
-PAGE_SNIPPET = """async () => {
+PAGE_SNIPPET_TEMPLATE = """async () => {
   const perf = performance.getEntriesByType('resource');
   const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href') || l.href);
   const scripts = Array.from(document.querySelectorAll('script[src]')).map(s => s.getAttribute('src') || s.src);
@@ -177,10 +178,16 @@ PAGE_SNIPPET = """async () => {
   const switcherItem = document.querySelector('.t-NavigationBar-item.theme-factory-managed-switcher');
   await document.fonts.ready;
   const icon = document.querySelector('.fa, .t-Icon');
-  const fonts = [];
-  for (const family of ['Font APEX', 'Oracle Sans']) {
-    fonts.push({ family, loaded: document.fonts.check('16px "' + family + '"') });
-  }
+  // The faces this package declares, injected from its manifest; [] for a fontless package.
+  const expected = __EXPECTED_FACES__;
+  const byName = {};
+  for (const r of perf) { byName[r.name.split('/').pop()] = r.name; }
+  const faceResults = expected.map(f => ({
+    family: f.family, weight: f.weight, style: f.style,
+    check: document.fonts.check(f.weight + ' ' + f.style + ' 16px "' + f.family + '"'),
+    requestUrl: byName[f.file.split('/').pop()] || ''
+  }));
+  const fontApexLoaded = document.fonts.check('16px "Font APEX"');
   return {
     url: location.href, appId: String(apex.env.APP_ID), appAlias: String(apex.env.APP_ALIAS || ''),
     pageId: String(apex.env.APP_PAGE_ID), apexVersion: String(apex.env.APEX_VERSION),
@@ -189,7 +196,7 @@ PAGE_SNIPPET = """async () => {
     windowApp: window.App ? { keys: Object.keys(window.App) } : null,
     windowAlpine: window.Alpine ? window.Alpine.version : null,
     activeTheme, registry, switcherAvailable: Boolean(switcherItem),
-    fonts,
+    faceResults, fontApexLoaded,
     fontApexFamilyBefore: icon ? getComputedStyle(icon, '::before').fontFamily || getComputedStyle(icon).fontFamily : '',
     fontApexFamilyAfter: icon ? getComputedStyle(icon, '::before').fontFamily || getComputedStyle(icon).fontFamily : '',
     bodyFontFamily: getComputedStyle(document.body).fontFamily,
@@ -217,6 +224,61 @@ KEYBOARD_SNIPPET = """async () => {
 }"""
 
 
+
+def font_expectations(package: Path, theme: str) -> List[dict]:
+    """Faces the package declares, as the browser should see them.
+
+    Read from the packaged manifest rather than the repository so the evidence
+    describes the artifact under test. Family names are the package-scoped ones
+    the generated @font-face rules use, never the upstream (possibly reserved) name.
+    """
+    package = Path(package)
+    if package.is_dir():
+        manifest = json.loads((package / "theme.json").read_text(encoding="utf-8"))
+    else:
+        with zipfile.ZipFile(package) as archive:
+            name = next(n for n in archive.namelist() if n.endswith("/theme.json") or n == "theme.json")
+            manifest = json.loads(archive.read(name).decode("utf-8"))
+    expectations: List[dict] = []
+    for role in ("body", "heading", "mono"):
+        role_obj = (manifest.get("fonts") or {}).get(role)
+        if not role_obj:
+            continue
+        for face in role_obj.get("faces", []):
+            expectations.append({
+                "role": role,
+                "family": f"ThemeFactory-{theme}-{role}",
+                "weight": face["weight"],
+                "style": face["style"],
+                "file": face["file"],
+            })
+    return expectations
+
+
+def evaluate_fonts(page: dict, baseline: dict, theme: str, expected: List[dict]) -> Tuple[bool, List[dict]]:
+    """Decide fontsVerified, and return schema-shaped evidence for every declared face.
+
+    A face counts only when the browser reports it usable *and* the resource was
+    actually requested - `document.fonts.check` alone would pass on a fallback.
+    """
+    results = {(r.get("family"), r.get("weight"), r.get("style")): r for r in page.get("faceResults", [])}
+    entries: List[dict] = []
+    all_loaded = True
+    for face in expected:
+        result = results.get((face["family"], face["weight"], face["style"]), {})
+        check = bool(result.get("check")) and bool(result.get("requestUrl"))
+        all_loaded = all_loaded and check
+        entries.append({
+            "role": face["role"], "family": face["family"], "weight": face["weight"],
+            "style": face["style"], "check": check,
+            "requestUrl": str(result.get("requestUrl") or ""), "mimeType": "font/woff2",
+        })
+    body_family = page.get("bodyFontFamily") or ""
+    body_ok = body_family == baseline.get("body") or f"ThemeFactory-{theme}-body" in body_family
+    icon_ok = bool(page.get("fontApexLoaded")) and "Font APEX" in (page.get("fontApexFamilyAfter") or "")
+    return (icon_ok and body_ok and all_loaded), entries
+
+
 def _contrast_function() -> str:
     text = CONTRAST_SNIPPET.read_text(encoding="utf-8")
     match = re.search(r"```js\n(async \(\) => \{\n  await new Promise\(r => setTimeout\(r, 1500\)\);[\s\S]*?\n\}\n)```", text)
@@ -237,7 +299,8 @@ def _json_result(result: dict):
 
 
 class LiveBrowserMatrix:
-    def __init__(self, client: ChromeDevToolsClient, page_id: int):
+    def __init__(self, client: ChromeDevToolsClient, page_id: int, package: Optional[Path] = None):
+        self.package = package
         self.client = client
         self.page_id = page_id
 
@@ -279,7 +342,8 @@ class LiveBrowserMatrix:
         if not selected.get("api"):
             notes.append("ApexThemeFactory runtime not present (switcher disabled?)")
         time.sleep(2.0)
-        page = self.evaluate(PAGE_SNIPPET)
+        expected_faces = font_expectations(self.package, theme) if self.package else []
+        page = self.evaluate(PAGE_SNIPPET_TEMPLATE.replace("__EXPECTED_FACES__", json.dumps(expected_faces)))
         persistence = page.get("activeTheme") == theme and page.get("storedSelection") == theme
         if not persistence:
             notes.append(f"persistence: active={page.get('activeTheme')!r} stored={page.get('storedSelection')!r}")
@@ -290,12 +354,11 @@ class LiveBrowserMatrix:
             persistence = False
             notes.append(f"selection lost on reload: {after_reload}")
         body_family = page.get("bodyFontFamily") or ""
-        fonts_ok = any(f.get("family") == "Font APEX" and f.get("loaded") for f in page.get("fonts", [])) \
-            and "Font APEX" in (page.get("fontApexFamilyAfter") or "") \
-            and (body_family == baseline.get("body") or f"ThemeFactory-{theme}-body" in body_family)
+        fonts_ok, page["fonts"] = evaluate_fonts(page, baseline, theme, expected_faces)
         page["bodyFontFamilyBareIris"] = baseline.get("body")
         if not fonts_ok:
-            notes.append(f"fonts: {page.get('fonts')} icon={page.get('fontApexFamilyAfter')!r} body={body_family!r} iris={baseline.get('body')!r}")
+            notes.append(f"fonts: declared={len(expected_faces)} evidence={page['fonts']} "
+                         f"icon={page.get('fontApexFamilyAfter')!r} body={body_family!r} iris={baseline.get('body')!r}")
         contrast = self.evaluate(_contrast_function())
         keyboard = self.evaluate(KEYBOARD_SNIPPET)
         accessibility = contrast.get("failures") == 0 and bool(keyboard.get("ok"))
@@ -320,11 +383,18 @@ def main() -> None:
     args = parser.parse_args()
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    from lib.theme_factory.gitstate import last_source_commit, package_source_commit, package_matches_source
+    _source_commit = last_source_commit()
+    if not package_matches_source(args.package, _source_commit):
+        print(f"Refusing: package {args.package} was built at {package_source_commit(args.package)!r}, "
+              f"but the current source is {_source_commit!r}; rebuild it before capturing evidence",
+              file=sys.stderr)
+        raise SystemExit(2)
     package_sha = _sha256(args.package)
     client = ChromeDevToolsClient()
     opened = client.call_tool("new_page", {"url": args.minimal_url, "background": True})
     page_id = int(re.findall(r"^(\d+): .*\[selected\]", _text(opened), re.MULTILINE)[0])
-    matrix = LiveBrowserMatrix(client, page_id)
+    matrix = LiveBrowserMatrix(client, page_id, package=args.package)
     rows: List[RowCapture] = []
     try:
         widths = [int(w) for w in args.widths.split(",")]

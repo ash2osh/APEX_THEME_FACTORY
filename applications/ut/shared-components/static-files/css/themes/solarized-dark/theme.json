@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "solarized-dark",
   "title": "Solarized Dark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "tagline": "Precision terminal cyan and deep solarized blues.",
   "class": "app-theme-solarized-dark",
   "compatibility": {
@@ -13,6 +13,63 @@
   },
   "templateOptions": {
     "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "fonts": {
+    "body": {
+      "family": "IBM Plex Sans",
+      "fallback": [
+        "system-ui",
+        "sans-serif"
+      ],
+      "license": "licenses/ibm-plex-OFL.txt",
+      "faces": [
+        {
+          "file": "fonts/ibm-plex-sans-regular.woff2",
+          "weight": 400,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/ibm-plex-sans-semibold.woff2",
+          "weight": 600,
+          "style": "normal"
+        }
+      ]
+    },
+    "heading": {
+      "family": "Space Grotesk",
+      "fallback": [
+        "system-ui",
+        "sans-serif"
+      ],
+      "license": "licenses/space-grotesk-OFL.txt",
+      "faces": [
+        {
+          "file": "fonts/space-grotesk-medium.woff2",
+          "weight": 500,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/space-grotesk-bold.woff2",
+          "weight": 700,
+          "style": "normal"
+        }
+      ]
+    },
+    "mono": {
+      "family": "IBM Plex Mono",
+      "fallback": [
+        "ui-monospace",
+        "monospace"
+      ],
+      "license": "licenses/ibm-plex-OFL.txt",
+      "faces": [
+        {
+          "file": "fonts/ibm-plex-mono-regular.woff2",
+          "weight": 400,
+          "style": "normal"
+        }
+      ]
+    }
   },
   "assets": {
     "stylesheet": "theme.css",

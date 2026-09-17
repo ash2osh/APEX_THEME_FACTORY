@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+import zipfile
 
 from lib.theme_factory.release import _valid_browser_runtime_artifact, load_evidence
 from tools.browser_matrix import RowCapture, build_runtime_artifact, write_layer_d_evidence
@@ -79,3 +80,77 @@ class ContrastInstrumentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+class FontExpectationTests(unittest.TestCase):
+    """The capture must derive what SHOULD load from the package, then prove it did.
+
+    Until 2026-09-17 the page snippet probed a hard-coded ['Font APEX', 'Oracle Sans']
+    and emitted {family, loaded}, so a font-bearing package was stamped fontsVerified
+    without any evidence its own WOFF2 files were ever requested.
+    """
+
+    def _package(self, fonts):
+        root = self.tmp / "pkg"
+        (root / "fonts").mkdir(parents=True, exist_ok=True)
+        (root / "licenses").mkdir(parents=True, exist_ok=True)
+        manifest = {"schemaVersion": 1, "name": "linen", "title": "Linen", "version": "1.0.0",
+                    "tagline": "t", "class": "app-theme-linen",
+                    "compatibility": {"apex": ">=26.1.0 <26.2.0", "themeNumber": 42,
+                                      "baseTheme": "ut-26.1", "themeStyle": "Iris"},
+                    "assets": {"stylesheet": "theme.css"}}
+        if fonts:
+            manifest["fonts"] = fonts
+        (root / "theme.json").write_text(json.dumps(manifest), encoding="utf-8")
+        archive = self.tmp / "linen-1.0.0.zip"
+        with zipfile.ZipFile(archive, "w") as zf:
+            zf.write(root / "theme.json", "linen-1.0.0/theme.json")
+        return archive
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+
+    def test_expectations_are_read_from_the_package_manifest(self):
+        from tools.browser_matrix import font_expectations
+        archive = self._package({"body": {"family": "IBM Plex Sans", "fallback": ["sans-serif"],
+                                          "license": "licenses/x.txt",
+                                          "faces": [{"file": "fonts/a.woff2", "weight": 400, "style": "normal"},
+                                                    {"file": "fonts/b.woff2", "weight": 600, "style": "normal"}]}})
+        expected = font_expectations(archive, "linen")
+        self.assertEqual(len(expected), 2)
+        self.assertEqual(expected[0]["role"], "body")
+        self.assertEqual(expected[0]["family"], "ThemeFactory-linen-body")
+        self.assertEqual({e["weight"] for e in expected}, {400, 600})
+        self.assertEqual(expected[0]["file"], "fonts/a.woff2")
+
+    def test_fontless_package_expects_nothing(self):
+        from tools.browser_matrix import font_expectations
+        self.assertEqual(font_expectations(self._package(None), "linen"), [])
+
+    def test_a_declared_face_that_never_loaded_fails_the_check(self):
+        from tools.browser_matrix import evaluate_fonts
+        expected = [{"role": "body", "family": "ThemeFactory-linen-body", "weight": 400,
+                     "style": "normal", "file": "fonts/a.woff2"}]
+        page = {"fontApexFamilyAfter": '"Font APEX"', "fontApexLoaded": True,
+                "bodyFontFamily": '"ThemeFactory-linen-body", sans-serif',
+                "faceResults": [{"family": "ThemeFactory-linen-body", "weight": 400, "style": "normal",
+                                 "check": False, "requestUrl": ""}]}
+        ok, entries = evaluate_fonts(page, {"body": "system-ui"}, "linen", expected)
+        self.assertFalse(ok, "a declared face that did not load must not pass")
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(set(entries[0]),
+                         {"role", "family", "weight", "style", "check", "requestUrl", "mimeType"})
+
+    def test_all_faces_loaded_passes_and_matches_the_schema(self):
+        from tools.browser_matrix import evaluate_fonts
+        expected = [{"role": "body", "family": "ThemeFactory-linen-body", "weight": 400,
+                     "style": "normal", "file": "fonts/a.woff2"}]
+        page = {"fontApexFamilyAfter": '"Font APEX"', "fontApexLoaded": True,
+                "bodyFontFamily": '"ThemeFactory-linen-body", sans-serif',
+                "faceResults": [{"family": "ThemeFactory-linen-body", "weight": 400, "style": "normal",
+                                 "check": True, "requestUrl": "http://h/fonts/a.woff2"}]}
+        ok, entries = evaluate_fonts(page, {"body": "system-ui"}, "linen", expected)
+        self.assertTrue(ok)
+        self.assertEqual(entries[0]["mimeType"], "font/woff2")

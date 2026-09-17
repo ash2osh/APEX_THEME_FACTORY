@@ -13,7 +13,7 @@ Do not guess UT DOM. Inspect it (spec §4), then record verified structure as kn
 
 ## Confirmed hooks (26.1.4 / Iris)
 - `html.page-<N>.app-<ALIAS>`; `body.t-PageBody.apex-theme-iris` (+ `.t-PageBody--leftNav`, `.js-navExpanded`).
-- Theme JS `theme42.min.js`; icons Font APEX 2.5.1; font Oracle Sans.
+- Theme JS `theme42.min.js`; icons Font APEX 2.5.1; body font is the system UI stack (`oraclesans-apex.min.css` is linked but Oracle Sans never loads - docs/PROJECT.md).
 - CSS cascade: UT `Core.min.css` → `Iris.min.css` → app files. App CSS loads last.
 - Token namespaces: `--ut-*` (theme), `--a-*` (component atoms, mostly element-scoped), `--u-*` (utilities). Reserved (spec §20).
 

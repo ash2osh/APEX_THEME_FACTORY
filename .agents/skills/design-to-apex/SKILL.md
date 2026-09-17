@@ -39,7 +39,8 @@ run them **through** this router, on the CSS/Alpine layers, in refinement mode o
 
 **`impeccable`** — evaluate/refine passes. Use it as a design lead reviewing our work, not as a page builder.
 - Mode is always **Operate** (app UI). The brief is `AGENTS.md` + `docs/DESIGN_SYSTEM.md`: Iris palette,
-  Oracle Sans, Iris radius/shadows, UT components. Impeccable's own "the brief wins" rule applies.
+  the system UI stack Iris actually renders (not Oracle Sans - it is linked but never loads, docs/PROJECT.md),
+  Iris radius/shadows, UT components. Impeccable's own "the brief wins" rule applies.
 - Allowed sub-commands: `critique`, `audit`, `polish`, `layout`, `typeset`, `adapt`, `harden`, `onboard`,
   `clarify`, `quieter`, `distill`. Target = a running page URL (inspect via `chrome-devtools-mcp`) or
   files under `static-files/` (components, pages) or the theme package `sample-themes/<name>/css/` (app-wide look).

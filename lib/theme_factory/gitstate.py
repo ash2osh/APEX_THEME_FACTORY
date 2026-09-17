@@ -53,6 +53,39 @@ def source_equivalent(commit_a: str, commit_b: str, cwd: Union[str, Path, None] 
     return result.returncode == 0
 
 
+def assert_clean_source(cwd: Union[str, Path, None] = None) -> None:
+    """Raise RuntimeError, naming the dirty paths, if the tree has any change outside the
+    evidence root.
+
+    Call this before *each* unit of live capture work (each consumer's lifecycle, each Layer D
+    row) - not once at the start. A single startup check lets a tree that goes dirty mid-run pass
+    the theme in flight and only fail the next one, which is exactly what happened 2026-09-17 when
+    re-running the agent smokes mid-pipeline wrote tests/agent-smoke/runs/*.json between two
+    themes' captures (plan Task 4).
+    """
+    try:
+        result = subprocess.run(
+            # --untracked-files=all: name the actual new file, not the collapsed directory line
+            # git's default gives for a wholly-untracked directory - the failure must be
+            # diagnosable without re-running (plan Task 4).
+            ["git", "status", "--porcelain", "--untracked-files=all", "--", *NON_SOURCE_PATHSPECS],
+            cwd=cwd, capture_output=True, text=True, check=True,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError(f"could not check working tree cleanliness: {exc}") from exc
+    # Porcelain lines carry a fixed 2-character status code before the path; stripping the whole
+    # blob (rather than just checking it's non-empty) would eat that leading status character off
+    # the first line and misalign every path.
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    if not lines:
+        return
+    paths = [line[3:].strip() if len(line) > 3 else line.strip() for line in lines]
+    raise RuntimeError(
+        "working tree is dirty outside the evidence root; live evidence must be bound to a "
+        f"committed source state. Dirty path(s): {', '.join(paths)}"
+    )
+
+
 def last_instruction_commit(cwd: Union[str, Path, None] = None) -> Optional[str]:
     """SHA of the most recent commit touching instruction Markdown Layer E depends on, or None."""
     try:

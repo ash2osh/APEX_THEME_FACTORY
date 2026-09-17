@@ -412,6 +412,14 @@ def main() -> None:
     args = parser.parse_args()
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    # Re-checked before each row below, not only here - a tree that goes dirty mid-run must abort
+    # within that operation, not silently pass it and only fail the next capture (plan Task 4).
+    from lib.theme_factory.gitstate import assert_clean_source
+    try:
+        assert_clean_source()
+    except RuntimeError as exc:
+        print(f"Refusing: {exc}", file=sys.stderr)
+        raise SystemExit(2)
     from lib.theme_factory.gitstate import last_source_commit, package_source_commit, package_matches_source
     _source_commit = last_source_commit()
     if not package_matches_source(args.package, _source_commit):
@@ -432,6 +440,11 @@ def main() -> None:
         plan += [("business", url.strip(), outer) for url in args.business_extra_urls.split(",") if url.strip()]
         for consumer, url, plan_widths in plan:
             for width in plan_widths:
+                try:
+                    assert_clean_source()
+                except RuntimeError as exc:
+                    print(f"Refusing: {exc}", file=sys.stderr)
+                    raise SystemExit(2)
                 row = matrix.capture_row(consumer, url, args.theme, width)
                 status = "ok" if (row.fonts_verified and row.accessibility_verified and row.persistence_verified and not row.console_errors and not row.failed_requests) else "issues"
                 print(f"{consumer} page {row.page.get('pageId')}@{width}: {status} {'; '.join(row.notes)}")

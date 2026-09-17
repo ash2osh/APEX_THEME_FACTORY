@@ -353,12 +353,14 @@ def main() -> None:
     args = parser.parse_args()
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-    # evidence artifacts are outputs of this tool; anything else uncommitted invalidates the binding
-    from lib.theme_factory.gitstate import NON_SOURCE_PATHSPECS
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", *NON_SOURCE_PATHSPECS],
-                           capture_output=True, text=True, check=True).stdout.strip()
-    if dirty:
-        print("Refusing: working tree is dirty outside the evidence root; live evidence must be bound to a committed source state", file=sys.stderr)
+    # evidence artifacts are outputs of this tool; anything else uncommitted invalidates the binding.
+    # Re-checked before each consumer's lifecycle below, not only here - a tree that goes dirty
+    # mid-run must abort within that operation, not silently pass it and only fail the next (Task 4).
+    from lib.theme_factory.gitstate import assert_clean_source
+    try:
+        assert_clean_source()
+    except RuntimeError as exc:
+        print(f"Refusing: {exc}", file=sys.stderr)
         sys.exit(2)
     # The package must be what this source builds: theme.css carries a `Source commit:` banner, and a
     # package built before the final commit (or from a dirty tree) is bound to bytes the source no longer
@@ -387,6 +389,11 @@ def main() -> None:
     work_dir = args.work_dir or Path(tempfile.mkdtemp(prefix="apex-theme-factory-live-matrix-"))
     combined: Dict[str, OperationResult] = {}
     for target in targets:
+        try:
+            assert_clean_source()
+        except RuntimeError as exc:
+            print(f"Refusing: {exc}", file=sys.stderr)
+            sys.exit(2)
         results = run_lifecycle(args.connection, args.workspace, target, primary.zip_path, secondary.zip_path,
                                 work_dir / target.consumer, with_switcher=True)
         for name, result in results.items():

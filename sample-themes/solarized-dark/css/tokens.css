@@ -86,8 +86,10 @@ html.app-theme-solarized-dark {
        declared) and has to be present at page load: measured 2026-09-17 on p1902, chart axis / group / legend
        labels were painted rgba(0,0,0,.65) = --oj-core-text-color-secondary's :root value (1.46:1 on the card)
        and series labels rgb(0,0,0) = --oj-core-text-color-primary's (1.62:1).
-       NOT RUNTIME-VERIFIED: because JET caches those values at bootstrap, this fix cannot be observed without
-       an import + reload — see README.md, "JET (--oj-*)". */
+       RUNTIME-VERIFIED 2026-09-17, after the import that made these bytes reachable: p1902 now measures 25 of
+       25 SVG text nodes passing AA — fills rgb(238,232,213) (base2, 5 nodes) and rgb(147,161,161) (base1,
+       20 nodes), worst ratio 4.86:1 against the card. JET still resolves these once at bootstrap, which is
+       why an import + reload is the only way to observe a change here. */
     --oj-core-text-color-primary: var(--app-text-primary);
     --oj-core-text-color-secondary: var(--app-text-secondary);
     --oj-heading-text-color: var(--app-text-emphasized);

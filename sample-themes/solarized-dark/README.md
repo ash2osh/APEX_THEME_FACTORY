@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | 2026-09-17: live Chrome pass over 24 pages — four package-caused defects found, measured and fixed here. **Not release-verified**: the fixes are source-only, nothing has been imported or re-measured as shipped (see *Status* below) |
+| Status | 2026-09-17: live Chrome pass over 24 pages found four package-caused defects; all four are fixed here, imported, and **re-measured as shipped** — 0 package-caused AA failures on the swept surfaces (see *Status* below). Coverage is still 24 of 122 pages and two widths, so this is verified-for-what-was-measured, not exhaustively |
 
 ## Preview
 
@@ -99,16 +99,20 @@ evidence this package has, and it changes the picture in both directions: the 20
 reproduced, *and* the pass found four real package-caused defects that no resting-state sweep could ever see —
 one of them (Interactive Grid row selection at **1.06:1**) severe.
 
-Three things keep "Verified" out of reach:
+Two of the three blockers recorded here are now closed (2026-09-17, after the import; full log in
+`.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md`):
 
-1. **The fixes in this worktree have never been rendered.** The pass measured app 102 as installed, i.e. the
-   previous commit; the four fixes were validated by injecting the candidate CSS into the live page and
-   re-measuring (A/B, numbers below), which proves the rule works but not that the shipped bundle contains it.
-   Nothing has been imported. A shipped build must be re-measured before any release claim.
-2. **The JET chart fix cannot be validated that way at all** — Oracle JET reads its colours once at bootstrap
-   and bakes them into SVG `fill` attributes, so it only responds to CSS that is present at page load. See
-   *JET (`--oj-*`)* below: the defect is measured and confirmed, the fix is reasoned but **unverified**.
-3. **Coverage is 24 of 122 pages**, one desktop width plus four pages at 375. See *Still required*.
+1. ~~The fixes have never been rendered.~~ **Closed.** They were built, imported and re-swept as shipped:
+   24 pages at 1440 and 4 at 375 report 7 failures, **0 package-caused** — the remaining two groups (p1304
+   badges, p1800 `apex-cal-green`) measure byte-identical with and without `html.app-theme-solarized-dark`, so
+   they are Universal Theme / APEX literals. The four fixed defects re-measured *as rendered*: IG row selection
+   **8.17:1**, faceted search 0 failures, MapLibre **12.25:1**, date picker current day **10.61:1**.
+2. ~~The JET chart fix cannot be validated at all.~~ **Closed by the import.** p1902 now measures **25 of 25
+   SVG text nodes passing**, worst 4.86:1, fills `rgb(238,232,213)` (base2, 5 nodes) and `rgb(147,161,161)`
+   (base1, 20) — previously 24 of 25 failed at 1.46–1.62:1. The audit itself was extended to score SVG `fill`,
+   which is why the page no longer reads as falsely clean.
+3. **Coverage is still 24 of 122 pages**, one desktop width plus four pages at 375 — unchanged, and the reason
+   this package is called verified-for-what-was-measured rather than simply Verified. See *Still required*.
 
 ### 2026-09-17 live Chrome pass (APEX 26.1.4 / Iris, app 102) — what was actually measured
 
@@ -141,8 +145,8 @@ surface.
 | Where | State | Measured | After the fix |
 |---|---|---|---|
 | p1410 Interactive Grid | select a row | cells paint Iris' `#e4f1f7` under base2 text: **1.06:1** — the row becomes unreadable | 8.17:1 (cells take the package's cyan wash) |
-| p1601 date picker | open the picker | current day is a light `#e4f1f7` chip (5.43:1, so *AA-passing and still wrong*) in a dark calendar | 9.28:1 on the dark wash |
-| p1902 JET charts | at rest, but SVG-rendered | axis/group/legend labels `rgba(0,0,0,.65)` = **1.46:1**, series labels `#000` = 1.62:1; **24 of 25 chart text nodes fail** | unverified (see below) |
+| p1601 date picker | open the picker | current day is a light `#e4f1f7` chip (5.43:1, so *AA-passing and still wrong*) in a dark calendar | **10.61:1** — post-import the chip is gone entirely; no day cell measures below that |
+| p1902 JET charts | at rest, but SVG-rendered | axis/group/legend labels `rgba(0,0,0,.65)` = **1.46:1**, series labels `#000` = 1.62:1; **24 of 25 chart text nodes fail** | **25 of 25 pass**, worst 4.86:1 — measured post-import 2026-09-17 |
 
 The chart failures are invisible to the documented audit because it reads CSS `color`; SVG text takes its
 colour from `fill`. Any future "verified" claim for a package that ships charts has to measure `fill`.
@@ -181,23 +185,24 @@ horizontal overflow on each.
   values. `css/tokens.css` now restates the text/divider/heading/link members on the **html** scope (JET reads
   them off the document element). It could not be validated in-session: setting the properties live, clearing
   `oj.ThemeUtils`' cache and refreshing the regions re-rendered the SVG (verified: a marked node was replaced)
-  but the new text still came out `rgb(0,0,0)` — JET resolves its style defaults once at bootstrap. **This one
-  needs an import and a reload to confirm, and it is the single biggest open item.** The rest of the `--oj-*`
+  but the new text still came out `rgb(0,0,0)` — JET resolves its style defaults once at bootstrap. **Confirmed
+  after the 2026-09-17 import: 25 of 25 chart text nodes pass, worst 4.86:1, fills base2 / base1.** The rest of the `--oj-*`
   family (JET text fields, collections, popups, semantic danger/warning/success text) is deliberately left
   alone: no consuming component of that kind was found in app 102, and guessing values that cannot be seen is
   what got this package into trouble before.
 
 #### Still required before "Verified"
 
-1. Import this worktree and re-run the sweep above against the shipped CSS — in particular p1902, whose fix is
-   unverifiable any other way, and a re-measure of the four fixed defects as rendered rather than as injected.
+1. ~~Import and re-run the sweep against the shipped CSS.~~ **Done 2026-09-17** — including p1902 and all four
+   fixed defects re-measured as rendered rather than injected.
 2. Pages: 98 of app 102's 122 are still unopened under this package. Widths: 1024 and 768 were not exercised at
    all (spec §45 wants ≥ 3), and 375 covered only four pages.
 3. States: only IG row selection, the date picker, two hovers, one dialog and the side nav were driven. IR row
    selection, Card View / Icon List / Media List / Timeline / Comments selection, the report-controls error
    state, chips, drag-and-drop and keyboard focus rings are untested — and every defect found this pass lived
    in a state, not at rest.
-4. An SVG-`fill`-aware contrast audit, and the light-surface sweep, should be folded into the documented audit
+4. ~~An SVG-`fill`-aware contrast audit~~ **done** (`docs/CHROME_DEVTOOLS_MCP.md` + `tools/browser_matrix.py`,
+   with a regression test); the light-surface sweep should still be folded into the documented audit
    snippet; the current one would have reported this package clean on the chart page.
 
 ### 2026-09-14 contrast-audit baseline (APEX 26.1.4 / Iris) — reproduced 2026-09-17 for resting state only

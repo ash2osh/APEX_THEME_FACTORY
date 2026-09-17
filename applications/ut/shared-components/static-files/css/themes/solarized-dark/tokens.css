@@ -78,6 +78,25 @@ html.app-theme-solarized-dark {
     --app-badge-danger-text: #ffffff;
 
     --app-font-weight-semibold: 600;
+
+    /* Oracle JET (charts, p1902). Iris maps JET's own token family onto --ut-* atoms *on :root*, so the chain
+       freezes to the light literals before this package's body-level --ut-* overrides can reach it
+       (pitfalls.md §1.2). JET's DVT layer reads the resolved value once, off the document element, and bakes
+       it into the SVG as a `fill` attribute, so the override has to sit on the html scope (where --app-* is
+       declared) and has to be present at page load: measured 2026-09-17 on p1902, chart axis / group / legend
+       labels were painted rgba(0,0,0,.65) = --oj-core-text-color-secondary's :root value (1.46:1 on the card)
+       and series labels rgb(0,0,0) = --oj-core-text-color-primary's (1.62:1).
+       RUNTIME-VERIFIED 2026-09-17, after the import that made these bytes reachable: p1902 now measures 25 of
+       25 SVG text nodes passing AA — fills rgb(238,232,213) (base2, 5 nodes) and rgb(147,161,161) (base1,
+       20 nodes), worst ratio 4.86:1 against the card. JET still resolves these once at bootstrap, which is
+       why an import + reload is the only way to observe a change here. */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--sol-cyan);
 }
 
 /* Universal Theme / Iris tokens, overridden on the theme-style scope (body.apex-theme-iris, never :root) so
@@ -126,6 +145,36 @@ html.app-theme-solarized-dark {
     --ut-palette-warning-text: var(--sol-yellow);
     --ut-palette-danger-text: var(--sol-red-text);
     --ut-palette-info-text: var(--sol-cyan);
+
+    /* Core.min.css declares the whole --a-palette-* atom family as var(--ut-palette-*) *on :root*, so it
+       freezes to Iris' light literals (#00688c / #e4f1f7 / #fff) before the overrides above reach it
+       (pitfalls.md §1.2). Every consumer is an element-scoped rule, so restating the chain here is enough.
+       Measured 2026-09-17 on p1410: selecting an Interactive Grid row painted its cells #e4f1f7 under base2
+       text — 1.06:1; with these fifteen lines the same cells take the package's shade and measure 8.17:1.
+       Also feeds IRR/IG/Card View/Media List/Timeline/Comments selection, subtle badges, the date picker's
+       current day and the report-controls error state. */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    /* Same mechanism: Core.min.css declares --a-base-link-text-color: var(--ut-link-text-color) on :root.
+       The faceted-search text buttons (.a-FS-toggleOverflow / .a-FS-clearAll / .a-FS-clearButton) set
+       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: measured 2.39:1 on the card
+       (p1411, 2026-09-17); restated it measures 4.50:1. Hover/active fall back to this token in UT's own
+       declarations, so one line covers all three states. */
+    --a-base-link-text-color: var(--ut-link-text-color);
 
     /* Iris declares these with literal colours on :root (they do not follow the component tokens) */
     --ut-region-background-color: var(--app-surface-card);
@@ -189,6 +238,10 @@ html.app-theme-solarized-dark {
     --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
     --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
     --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+    --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);   /* the current day's cell
+                            takes --a-palette-primary-shade as its background and --a-palette-primary as its
+                            text: with the restatement above that pair is #4b9fda on the cyan wash = 3.47:1
+                            (measured p1601, 2026-09-17), so the day's own text token is set explicitly */
     --a-datepicker-footer-background-color: var(--app-surface-card);
     --jui-datepicker-background-color: var(--app-surface-card);
     --jui-datepicker-border-color: var(--app-border-color);

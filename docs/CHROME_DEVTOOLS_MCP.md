@@ -140,11 +140,33 @@ async () => {
     if (ratio < need) { const k = el.className + '|' + cs.color + '|' + t.slice(0, 20); if (seen.has(k)) continue; seen.add(k);
       bad.push({ text: t.slice(0, 40), sel: el.tagName.toLowerCase() + '.' + String(el.className).trim().split(/\s+/).slice(0, 3).join('.'), fg: cs.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`, ratio: +ratio.toFixed(2), size }); }
   }
+  // SVG text (Oracle JET charts, sparklines) is painted with `fill`, not CSS `color`, and its nodes are not
+  // reached by a body text-node walk in a useful way — score them explicitly or a whole chart reads as clean.
+  for (const t of document.querySelectorAll('svg text, svg tspan')) {
+    const label = t.textContent.trim(); if (label.length < 1) continue;
+    if (t.closest('[aria-hidden="true"], .u-VisuallyHidden')) continue;
+    let box; try { box = t.getBoundingClientRect(); } catch (e) { continue; }
+    if (!box.width || !box.height) continue;
+    const cs = getComputedStyle(t);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
+    const fg = parse(cs.fill || t.getAttribute('fill') || ''); if (!fg) continue;
+    const host = t.ownerSVGElement ? t.ownerSVGElement.parentElement : t.parentElement;
+    const bg = bgOf(host || document.body);
+    const ratio = cr(fg.a < 1 ? over(fg, bg) : fg, bg);
+    const size = parseFloat(cs.fontSize) || 12, weight = parseInt(cs.fontWeight) || 400;
+    const need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
+    if (ratio < need) { const k = 'svg|' + cs.fill + '|' + label.slice(0, 20); if (seen.has(k)) continue; seen.add(k);
+      bad.push({ text: label.slice(0, 40), sel: 'svg ' + t.tagName.toLowerCase(), fg: cs.fill, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`, ratio: +ratio.toFixed(2), size }); }
+  }
   return { page: apex.env.APP_PAGE_ID, html: document.documentElement.className, failures: bad.length, sample: bad.slice(0, 25) };
 }
 ```
 
 Offline, the same maths for a palette (pick tints that pass): `.agents/knowledge/pitfalls.md` §1.7.
+
+The sweep scores CSS `color` for HTML text **and** `fill` for `svg text`/`tspan` — added 2026-09-17 after an
+evaluation run found Oracle JET chart labels failing at 1.46:1 while this snippet reported the page clean
+(`tests/live/RELEASE-MATRIX.md`; `tools/browser_matrix.py` extracts this exact block, so the two cannot drift).
 
 ### Working in the user's browser (etiquette)
 

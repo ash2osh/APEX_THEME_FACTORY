@@ -11,6 +11,19 @@ Measured by: this session (grader). Not a fresh evaluee run — the evaluee half
 about the evaluee**, which is why re-running the sweep is what changes it.
 Date: 2026-09-17
 
+## Whose measurement this is
+
+Stated because it matters to how much this run is worth: **the same session that applied the fixes measured
+them.** The CSS came from the 2026-09-16 evaluee's own A/B-measured patch (quoted in its run log; its worktree
+could not commit), was re-applied here on 2026-09-17, and is graded here. That is not the evaluee/grader
+separation the 2026-09-16 round had.
+
+What limits the damage: every number below is a mechanical measurement anyone can re-take with the snippet in
+`docs/CHROME_DEVTOOLS_MCP.md` against the running app, the bare-Iris A/B in §4 is a falsifiable control that
+would expose a package regression being mis-attributed to Universal Theme, and the instrument's own blind spot
+(SVG `fill`) was fixed *before* this sweep, which is why p1902 could fail here rather than read as clean. What
+it does not substitute for: an independent agent re-running the scenario end to end.
+
 ## Why this run exists
 
 The 2026-09-16 verdict was FAIL, on the package: four package-caused defects, worst **1.06:1** on Interactive

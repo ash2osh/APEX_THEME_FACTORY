@@ -48,7 +48,10 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   search's text buttons keep Iris' link blue (2.39:1, p1411), and JET chart axis/legend text is painted `#000`
   / `rgba(0,0,0,.65)` (1.46–1.62:1, p1902). Restate `--a-palette-*` and `--a-base-link-text-color` on the body
   scope; `--oj-*` has to go on the **html** scope — JET reads it off the document element, once, at bootstrap,
-  and bakes the result into SVG `fill`, so it only responds to CSS present at page load (clearing
+  and bakes the result into SVG `fill`, so it only responds to CSS present at page load — **confirmed by
+  measurement 2026-09-17**, after an import made those bytes reachable: p1902 went from 24 of 25 chart text
+  nodes at 1.46–1.62:1 to **25 of 25 passing**, worst 4.86:1, fills exactly the package's base1/base2. Until
+  the import there was no way to observe it at all, so "reasoned but unverified" was the honest label (clearing
   `oj.ThemeUtils`' cache and refreshing the region is not enough). Consequence for auditing: an AA sweep that
   reads CSS `color` scores SVG text by the wrong property and will report a chart page clean.
 - **Counter-example — not every library family is frozen:** UT declares FullCalendar's `--fc-*` on
@@ -194,6 +197,10 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - Page items placed in the region's `regionBody` slot render as **siblings** of `<a-dynamic-content>`, so a
   refresh does not replace them: client-side item state (and an Alpine component that re-reads it in `init()`)
   survives the swap.
+- **Confirmed on the fixed page 2026-09-17** (page 409 imported): three real clicks give `apexbeforerefresh` 3
+  / `apexafterrefresh` 3, a new root node each time with the old one disconnected, one component instance and
+  one click handler after every swap, and the envelope carrying the markup inside `"result"`. The `return`
+  form is the whole fix — no JavaScript change was needed.
 
 ## 3. APEXLang / Builder
 
@@ -296,6 +303,23 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   script: 50% red / 50% blue / white → `rgb(191,64,128)`; lone 50% black on `<body>` over an unstyled canvas →
   `rgb(128,128,128)`.
 
+### 4.3d "0 failures" is not evidence unless the scan says how many nodes it scanned
+- **Two ways a contrast sweep reports clean while the page is broken, both met in this project:**
+  1. *The instrument can't see the nodes.* The documented audit walked text nodes and read CSS `color`. Oracle
+     JET paints SVG text with `fill`, and `<text>` is not reached usefully by a body text-node walk — so
+     p1902, with **24 of 25** chart labels at 1.46–1.62:1, reported **clean** on every pass before 2026-09-17.
+     Fixed by querying `svg text, svg tspan` explicitly and scoring `fill`
+     (`tools/browser_matrix.py::_contrast_function`, regression test
+     `tests/test_browser_matrix.py::ContrastInstrumentTests`).
+  2. *The scan ran somewhere else.* A probe pointed at the wrong tab/page returns `{svgTextNodes: 0,
+     failures: 0}` — **byte-identical in shape to a genuine pass**. Hit live on 2026-09-17: a chart probe ran
+     against the previous page because the tab had moved on.
+- **Rule:** every audit result must carry the population it examined (`svgTextNodes`, node count, page id,
+  `document.documentElement.className`), and a claim about a component must assert that count is non-zero for
+  *that* component. `failures: 0` alone is not falsifiable and must not be quoted as evidence.
+- Corollary for verdicts: when a scenario's PASS depends on an instrument, the instrument needs its own test.
+  Fixing the blind spot **before** the re-sweep is what let p1902 fail honestly rather than read as clean.
+
 ### 4.3c A second `chrome-devtools-mcp --autoConnect` may never answer
 - When another instance already holds the Chrome connection (or Chrome is showing the consent prompt),
   `tools/call` requests simply never return. The daemon now times out per request
@@ -352,14 +376,39 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   (everything except the evidence root and `**/*.md`). Any other change — even to a tool or test —
   invalidates captured Layer C/D/E evidence and the packages' SHA-256, so finish source work, commit,
   build, capture, then commit evidence and docs.
+- **Don't touch the working tree while a capture is running.** `tools/live_matrix.py` checks
+  `git status --porcelain -- . :(exclude)<evidence root> :(exclude,glob)**/*.md` **at the start of each theme's
+  run**, so a tree that goes dirty mid-pipeline fails the *next* theme and not the one in flight. Met
+  2026-09-17: linen's Layer C captured cleanly, then re-running the three agent smokes wrote
+  `tests/agent-smoke/runs/<date>/*.json` — not Markdown, not under the evidence root — and solarized-dark's
+  run refused. Markdown edits are safe by construction (excluded); anything else is not. And because those
+  smoke JSONs *are* source by this definition, committing them moves `last_source_commit` and stales any
+  evidence captured just before — so a mid-pipeline smoke re-run costs both remaining captures **and** the one
+  that had already succeeded. Start a capture from a committed tree and leave it alone until `PIPELINE_DONE`.
+- **The `**/*.md` exclusion is wrong for Layer E, and knowingly so.** `last_source_commit()` treats Markdown as
+  non-source, which is right for docs and evidence — but Layer E's *subject* is Markdown: the agent-readiness
+  smokes measure what a runtime does after reading `AGENTS.md` / `.agents/rules/*.md` / the skills. So an edit
+  to those files leaves Layer E's artifacts "bound" to a commit whose instructions have since changed, and
+  nothing in the tooling notices (met 2026-09-17: the daemon rule was added to `AGENTS.md` and the workspace
+  rule after the three smokes were recorded). Until the binding distinguishes instruction Markdown from prose
+  Markdown, treat any edit under `AGENTS.md`, `.agents/rules/`, or `.agents/skills/` as invalidating Layer E by
+  hand and re-run `tools/agent_smoke.py` for all three runtimes. Layers C and D are unaffected — they depend on
+  code and package bytes, not on instructions.
+- **`scripts/sync-static.sh` output is source.** It writes into `applications/ut/shared-components/static-files/`,
+  which is not excluded, so the ordinary import workflow (sync → validate → import) *always* produces a source
+  change. Run it, commit it, and only then capture Layer C/D — capturing first and syncing afterwards costs a
+  full re-record of both layers (paid on 2026-09-17). The same applies to any package-source edit: the theme
+  ZIP's SHA-256 changes, so evidence bound to the old SHA is correctly rejected, even when the edit was only a
+  comment.
 
-## 6. Evaluation protocol (spec §58/§62) — traps from the 2026-09-14 run
+## 6. Evaluation protocol (spec §58/§62) — traps from the evaluation rounds
 
 The first full run of the evaluation matrix (19 evaluee runs) needed **seven separate PR-review correction
 rounds** before its conclusions held up (see `evaluations/README.md`'s correction log for the blow-by-blow).
 Every round was a different flavour of the same underlying problem: something about how the scenario was run
 made a PASS verdict claim more than the run actually demonstrated. None of it was about the skills under test —
-all of it was about the evaluation harness itself. Six reusable traps:
+all of it was about the evaluation harness itself. Six reusable traps, plus §6.7 from the 2026-09-17
+post-import round:
 
 ### 6.1 A baseline commit must predate the *code/instruction under test*, not just the finding
 - **Symptom:** compared scenario 13 (Cards render event) against baseline commit `9276369` because it predates
@@ -421,3 +470,23 @@ all of it was about the evaluation harness itself. Six reusable traps:
   worktree yourself — either paste the diff into the run log or save it as a sibling `.patch` file. A run log
   that can't be independently re-diffed isn't the "session/transcript" evidence spec §58 asks for, it's a
   summary of one.
+- **What it cost, concretely (2026-09-17):** scenario 05's evaluee had moved a hero-card rule into
+  `sample-themes/linen/css/apex/shell.css` exactly as the scenario asks, but its worktree was reset and the
+  rule was never committed. When the import that would have closed the scenario's remaining clauses finally
+  happened, *that CSS did not exist anywhere* — so the clauses had to be closed on substituted CSS from the
+  same pipeline, with the substitution written into the run log. A scenario can be blocked by its own lost
+  artifact long after the run that produced it.
+
+### 6.7 The author of a fix should not be its only grader
+- **What happened (2026-09-17):** scenarios 04, 05 and 11 were re-measured by the same session that had applied
+  the fixes under test, because their blocker (an APEX import) cleared long after the evaluee round ended and
+  re-dispatching three fresh evaluees was out of scope. That is not the evaluee/grader separation §6.1–6.6
+  exist to protect.
+- **When it is unavoidable, do all three:** say so in the run log's header (not a footnote); prefer
+  measurements anyone can re-take from a documented snippet over narrative claims; and include at least one
+  *falsifiable control* — scenario 11's bare-Iris A/B (measure the same nodes with the package class removed,
+  then restored) is one, because a package regression mis-attributed to Universal Theme would show up as a
+  difference and it did not.
+- **What it still doesn't buy you:** an independent agent re-running the scenario end to end. Record the
+  verdict as resting on the measurement, and keep the residual coverage list intact rather than letting a PASS
+  imply the scenario was re-run cleanly.

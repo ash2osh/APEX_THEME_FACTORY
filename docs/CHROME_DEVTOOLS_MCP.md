@@ -168,6 +168,22 @@ The sweep scores CSS `color` for HTML text **and** `fill` for `svg text`/`tspan`
 evaluation run found Oracle JET chart labels failing at 1.46:1 while this snippet reported the page clean
 (`tests/live/RELEASE-MATRIX.md`; `tools/browser_matrix.py` extracts this exact block, so the two cannot drift).
 
+**`failures: 0` on its own is not evidence.** A clean result and a scan that never reached the nodes look
+identical, and both have happened here: the pre-2026-09-17 snippet could not see SVG text at all, and a probe
+left pointing at the previous page returns `{svgTextNodes: 0, failures: 0}`. The return value carries `page`
+and `html` for exactly this reason — quote them, and when the claim is about a specific component (charts, a
+grid, a dialog) also report how many of *its* nodes were scanned and check that the number is non-zero. Same
+rule for the dialog case: run the audit **inside** the iframe document, or it silently scores the parent page.
+See `.agents/knowledge/pitfalls.md` §4.3d.
+
+**Attributing a failure: the bare-Iris A/B.** A ratio below AA does not mean the package caused it — Universal
+Theme and APEX ship their own literal colours. Measure the same nodes three times in one script: with the
+package class on `document.documentElement`, with it removed (~900 ms settle), then restored. Identical
+numbers ⇒ the defect is UT/APEX-owned and no package change can fix it; different numbers ⇒ it is yours. This
+is a DOM-only, tab-local change that a reload undoes, and it is the control that makes a "0 package-caused
+failures" claim falsifiable — scenario 11's Required Artifact Checklist item 4. Worked example with numbers:
+`.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md` §4.
+
 ### Working in the user's browser (etiquette)
 
 - Open **your own tab** (`new_page {url, background:true}`) and close it when done; the user's tabs — and other
@@ -182,6 +198,13 @@ evaluation run found Oracle JET chart labels failing at 1.46:1 while this snippe
 
 ## Rules for this project (spec §13–14, §47, §49)
 
+- **All browser access goes through the daemon**, every session, no exceptions:
+  `python3 tools/chrome_devtools_client.py <tool> '<json-args>'`. Not a convenience — Chrome's remote-debugging
+  consent is per connection, so calling a `chrome-devtools` MCP tool directly (or starting a second daemon)
+  raises a prompt that only the person at the machine can accept, and unattended work stops dead there. A
+  second `--autoConnect` instance can also take the connection and never answer (pitfalls §4.3c). If the
+  daemon is not running, ask the user to start it while they are present rather than falling back to direct
+  calls.
 - DevTools is for **inspect, prototype, verify** — never the place where a change lives.
 - After every significant change: reload → `list_console_messages` → screenshot → compare → fix source.
 - Test refreshable regions after refresh (spec §32) and at ≥ 3 viewport widths (spec §45).

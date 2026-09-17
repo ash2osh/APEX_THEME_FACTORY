@@ -1,0 +1,249 @@
+/* Alerts, badges, tabs, code, demo surfaces.
+   Scoped to .app-theme-estate-slate-dark. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: none;
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+
+    /* Badges */
+    --ut-badge-background-color: var(--est-dark-amber);
+    --ut-badge-text-color: var(--app-text-on-accent);
+    --ut-badge-success-background-color: var(--est-dark-emerald);
+    --ut-badge-success-text-color: var(--app-text-on-accent);
+    --ut-badge-warning-background-color: var(--est-dark-amber);
+    --ut-badge-warning-text-color: var(--app-text-on-accent);
+    --ut-badge-danger-background-color: var(--est-dark-ruby);
+    --ut-badge-danger-text-color: var(--app-badge-danger-text);
+    --ut-badge-info-background-color: var(--est-dark-cyan);
+    --ut-badge-info-text-color: var(--app-text-on-accent);
+    --ut-badge-subtle-background-color: var(--app-surface-hover);
+    --ut-badge-subtle-text-color: var(--app-text-primary);
+    --ut-badge-subtle-success-text-color: var(--app-text-primary);
+    --ut-badge-subtle-warning-text-color: var(--app-text-primary);
+    --ut-badge-subtle-danger-text-color: var(--app-text-primary);
+    --ut-badge-subtle-info-text-color: var(--app-text-primary);
+
+    /* Tabs */
+    --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-item-text-color: var(--app-text-secondary);
+    --ut-tabs-item-active-text-color: var(--app-text-emphasized);
+    --ut-tabs-item-active-highlight-color: var(--est-dark-amber);
+    --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-chart-border-color: var(--app-border-color);
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);
+
+    /* Percent Graph */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--est-dark-amber);
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Dialog */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Tooltips */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);
+}
+
+/* Alerts */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
+    border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--est-dark-amber));
+}
+
+/* Code samples */
+.app-theme-estate-slate-dark pre[class*="language-"],
+.app-theme-estate-slate-dark code[class*="language-"] {
+    color: var(--est-dark-text-body);
+    text-shadow: none;
+}
+
+.app-theme-estate-slate-dark pre[class*="language-"] {
+    background-color: var(--app-surface-page);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--app-radius-sm);
+}
+
+.app-theme-estate-slate-dark :not(pre) > code[class*="language-"] {
+    background-color: var(--app-surface-page);
+}
+
+.app-theme-estate-slate-dark .token.comment,
+.app-theme-estate-slate-dark .token.prolog,
+.app-theme-estate-slate-dark .token.doctype,
+.app-theme-estate-slate-dark .token.cdata {
+    color: var(--est-dark-text-muted);
+    font-style: italic;
+}
+
+.app-theme-estate-slate-dark .token.punctuation,
+.app-theme-estate-slate-dark .token.operator {
+    color: var(--est-dark-text-body);
+}
+
+.app-theme-estate-slate-dark .token.keyword,
+.app-theme-estate-slate-dark .token.atrule,
+.app-theme-estate-slate-dark .token.important {
+    color: var(--est-dark-emerald);
+}
+
+.app-theme-estate-slate-dark .token.string,
+.app-theme-estate-slate-dark .token.char,
+.app-theme-estate-slate-dark .token.attr-value,
+.app-theme-estate-slate-dark .token.inserted {
+    color: var(--est-dark-cyan);
+}
+
+.app-theme-estate-slate-dark .token.function,
+.app-theme-estate-slate-dark .token.class-name,
+.app-theme-estate-slate-dark .token.builtin {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.property,
+.app-theme-estate-slate-dark .token.tag,
+.app-theme-estate-slate-dark .token.selector,
+.app-theme-estate-slate-dark .token.attr-name,
+.app-theme-estate-slate-dark .token.variable {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.number,
+.app-theme-estate-slate-dark .token.boolean,
+.app-theme-estate-slate-dark .token.constant,
+.app-theme-estate-slate-dark .token.symbol,
+.app-theme-estate-slate-dark .token.regex {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.entity,
+.app-theme-estate-slate-dark .token.url,
+.app-theme-estate-slate-dark .token.deleted {
+    color: var(--est-dark-ruby);
+}
+
+/* Reference-app demo surfaces */
+.app-theme-estate-slate-dark input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+
+.app-theme-estate-slate-dark .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+
+.app-theme-estate-slate-dark .dm-Search-result:hover,
+.app-theme-estate-slate-dark .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+
+.app-theme-estate-slate-dark .dm-Search:empty:before {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-preview {
+    background-image: none;
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-code,
+.app-theme-estate-slate-dark .instructions {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+
+.app-theme-estate-slate-dark .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .dm-Report--doc th,
+.app-theme-estate-slate-dark .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class-value,
+.app-theme-estate-slate-dark .apex-theme-iris .class-var {
+    color: var(--est-dark-cyan);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .event-name,
+.app-theme-estate-slate-dark code.event-name {
+    text-shadow: none;
+}
+
+.app-theme-estate-slate-dark .event-name:hover,
+.app-theme-estate-slate-dark code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}
+
+/* Calendar */
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
+    background-color: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default:hover {
+    background-color: var(--app-color-primary);
+    filter: brightness(1.08);
+}
+
+/* Map */
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib {
+    background-color: var(--app-overlay-background);
+}
+
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib,
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib a {
+    color: var(--app-text-primary);
+}

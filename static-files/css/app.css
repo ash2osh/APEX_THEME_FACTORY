@@ -11,6 +11,8 @@
 /* pages/       page-local rules scoped by html.page-<N> */
 @import "pages/themes.css";
 /* @themes:start */
+@import "themes/estate-slate-dark/theme.css";
+@import "themes/estate-slate/theme.css";
 @import "themes/linen/theme.css";
 @import "themes/solarized-dark/theme.css";
 /* @themes:end */

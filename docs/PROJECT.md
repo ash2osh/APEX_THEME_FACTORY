@@ -40,7 +40,7 @@ APEX_THEME_FACTORY/
 ├── sample-themes/<name>/     # theme packages (theme.json, css/, preview/); all loaded, class-switched (default: linen)
 ├── static-files/css/         # app.css entry (+ generated @themes block), foundation/ (shared tokens, reset, …)
 ├── static-files/js/          # app.js (App.theme helper), components/, vendor/ (Alpine.js 3.17.2)
-├── scripts/                  # apex-export / validate / import, apply-theme, sync-static, fetch-vendor
+├── scripts/                  # apex-export / validate / import, apply-theme, sync-static, package-theme, install-all-themes
 └── .agents/                  # skills, knowledge, findings, evaluations (spec §50)
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
     ├── knowledge/            # + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
@@ -54,6 +54,7 @@ APEX_THEME_FACTORY/
 |---|---|---|
 | Chrome DevTools MCP (`--autoConnect` to the user's running Chrome) | runtime truth: DOM, computed CSS, console, network, screenshots | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
+| `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 | External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |

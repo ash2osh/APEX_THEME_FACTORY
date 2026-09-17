@@ -352,3 +352,113 @@ file "js/components/themeFactoryDisclosure.js" (
     mimeType: application/javascript
     charSet: utf-8
 )
+
+file "css/themes/estate-slate-dark/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate-dark/cover.jpg" (
+    mimeType: image/jpeg
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/estate-slate/cover.jpg" (
+    mimeType: image/jpeg
+    charSet: utf-8
+)

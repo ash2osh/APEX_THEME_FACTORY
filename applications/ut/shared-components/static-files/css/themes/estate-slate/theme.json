@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "name": "estate-slate",
+  "title": "Estate Slate",
+  "version": "1.0.0",
+  "tagline": "Precision corporate slate and champagne amber for luxury operations.",
+  "class": "app-theme-estate-slate",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "templateOptions": {
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "fonts": {
+    "body": {
+      "family": "IBMPlexSansArabic",
+      "fallback": [
+        "system-ui",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "sans-serif"
+      ],
+      "license": "licenses/OFL.txt",
+      "faces": [
+        {
+          "file": "fonts/ibm-plex-sans-arabic-regular.woff2",
+          "weight": 400,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/ibm-plex-sans-arabic-medium.woff2",
+          "weight": 500,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/ibm-plex-sans-arabic-semibold.woff2",
+          "weight": 600,
+          "style": "normal"
+        },
+        {
+          "file": "fonts/ibm-plex-sans-arabic-bold.woff2",
+          "weight": 700,
+          "style": "normal"
+        }
+      ]
+    }
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

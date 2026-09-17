@@ -1,0 +1,298 @@
+/* Estate Slate Dark — dark theme tokens over the shared foundation.
+   Scoped to html.app-theme-estate-slate-dark for safe co-existence with other theme packages.
+   Aesthetic: Monolithic deep slate-950 canvas, structured hairline borders,
+   discreet luxury operational cockpit, and luminous champagne amber directives.
+   Custom font: IBM Plex Sans Arabic (Latin + Arabic). */
+
+html.app-theme-estate-slate-dark {
+    color-scheme: dark;
+
+    /* Theme-private dark palette */
+    --est-dark-canvas:   #0a0e17;
+    --est-dark-card:     #181b25;
+    --est-dark-chrome:   #0a0e17;
+    --est-dark-subtle:   #1c1f29;
+    --est-dark-input:    #12151e;
+    --est-dark-hover:    #262a34;
+    --est-dark-selected: #31353f;
+
+    /* Text levels ensuring WCAG AA (≥ 4.5:1) on #181b25 card surface */
+    --est-dark-text-emph:   #f8fafc; /* 16.42:1 on card */
+    --est-dark-text-body:   #dfe2ef; /* 13.30:1 on card */
+    --est-dark-text-muted:  #94a3b8; /*  6.70:1 on card */
+    --est-dark-text-dark:   #0a0e17; /*  6.06:1 on amber fill */
+
+    /* Functional telemetry accents */
+    --est-dark-amber:        #d97706; /* Primary action fill */
+    --est-dark-amber-hover:  #f59e0b;
+    --est-dark-amber-text:   #ffb77d; /* 10.08:1 on card */
+    --est-dark-amber-shade:  rgba(217, 119, 6, 0.18);
+    --est-dark-amber-glow:   rgba(217, 119, 6, 0.35);
+
+    --est-dark-emerald:       #34d399; /* 8.94:1 on card */
+    --est-dark-emerald-shade: rgba(16, 185, 129, 0.18);
+    --est-dark-cyan:          #22d3ee; /* 9.51:1 on card */
+    --est-dark-cyan-shade:    rgba(6, 182, 212, 0.18);
+    --est-dark-ruby:          #f87171; /* 6.21:1 on card */
+    --est-dark-ruby-shade:    rgba(239, 68, 68, 0.18);
+
+    /* Surfaces */
+    --app-surface-page:     var(--est-dark-canvas);
+    --app-surface-card:     var(--est-dark-card);
+    --app-surface-chrome:   var(--est-dark-chrome);
+    --app-surface-subtle:   var(--est-dark-subtle);
+    --app-surface-input:    var(--est-dark-input);
+    --app-surface-hover:    var(--est-dark-hover);
+    --app-surface-selected: var(--est-dark-selected);
+
+    /* Text */
+    --app-text-emphasized: var(--est-dark-text-emph);
+    --app-text-primary:    var(--est-dark-text-body);
+    --app-text-secondary:  var(--est-dark-text-muted);
+    --app-text-on-accent:  var(--est-dark-text-dark);
+
+    /* Colours */
+    --app-color-primary: var(--est-dark-amber-text);
+    --app-color-success: var(--est-dark-emerald);
+    --app-color-warning: var(--est-dark-amber-text);
+    --app-color-danger:  var(--est-dark-ruby);
+    --app-color-info:    var(--est-dark-cyan);
+    --app-accent-shade:  var(--est-dark-amber-shade);
+
+    /* Borders: faint hairlines for division, strong 3.3:1 for control bounds */
+    --app-border-color:    rgba(148, 163, 184, 0.2);
+    --app-border-hairline: 1px solid var(--app-border-color);
+    --app-border-strong:   rgba(148, 163, 184, 0.65);
+
+    /* Radii */
+    --app-radius-sm: 4px;
+    --app-radius-md: 6px;
+    --app-radius-lg: 8px;
+
+    /* Shadows */
+    --app-shadow-sm:       none;
+    --app-shadow-md:       0 4px 12px rgba(0, 0, 0, 0.4);
+    --app-shadow-lg:       0 10px 25px -5px rgba(0, 0, 0, 0.6);
+    --app-shadow-dialog:   0 16px 48px -12px rgba(0, 0, 0, 0.85);
+    --app-overlay-background: rgba(10, 14, 23, 0.8);
+    --app-card-media-overlay: rgba(10, 14, 23, 0.85);
+    --app-focus-halo-color: var(--est-dark-amber-glow);
+    --app-badge-danger-text: #ffffff;
+
+    /* Geometry */
+    --app-control-h: 2.25rem;
+
+    /* Focus ring */
+    --app-focus-ring: 0 0 0 2px var(--est-dark-canvas), 0 0 0 4px var(--est-dark-amber);
+
+    /* Type */
+    --app-font-family-body:    "ThemeFactory-estate-slate-dark-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-estate-slate-dark-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+
+    /* Oracle JET charts — must be declared on html scope */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--est-dark-amber);
+}
+
+/* Universal Theme / Iris overrides on the theme-style scope */
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --ut-color-scheme: dark;
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: rgba(148, 163, 184, 0.12);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-border-radius-sm: var(--app-radius-sm);
+    --ut-border-radius-md: var(--app-radius-md);
+    --ut-border-radius-lg: var(--app-radius-lg);
+
+    --ut-focus-outline-color: var(--est-dark-amber);
+    --ut-link-text-color: var(--app-color-primary);
+
+    --ut-palette-primary: var(--est-dark-amber);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--est-dark-amber-hover);
+    --ut-palette-primary-text: var(--app-color-primary);
+
+    --ut-palette-success: var(--app-color-success);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: var(--est-dark-emerald-shade);
+
+    --ut-palette-warning: var(--app-color-warning);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: var(--est-dark-amber-shade);
+
+    --ut-palette-danger: var(--app-color-danger);
+    --ut-palette-danger-contrast: #ffffff;
+    --ut-palette-danger-shade: var(--est-dark-ruby-shade);
+
+    --ut-palette-info: var(--app-color-info);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: var(--est-dark-cyan-shade);
+
+    --ut-palette-generic: var(--app-surface-chrome);
+    --ut-palette-generic-contrast: var(--app-text-primary);
+    --ut-palette-generic-shade: var(--app-surface-subtle);
+    --ut-palette-generic-text: var(--app-text-primary);
+
+    /* Restate all 15 --a-palette-* atoms to prevent :root light literal freeze (pitfalls §1.2) */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    --a-base-link-text-color: var(--ut-link-text-color);
+
+    /* Remap Iris literal :root tokens (pitfalls §1.1) */
+    --ut-region-background-color: var(--app-surface-card);
+    --ut-region-header-background-color: var(--app-surface-card);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-text-color: var(--app-text-primary);
+    --ut-region-header-text-color: var(--app-text-emphasized);
+    --ut-field-label-text-color: var(--app-text-secondary);
+    --ut-field-input-focus-icon-color: var(--est-dark-amber);
+    --ut-field-fl-input-focus-icon-background-color: var(--est-dark-amber);
+    --ut-field-fl-input-focus-icon-color: var(--app-text-on-accent);
+    --ut-component-badge-background-color: var(--app-surface-hover);
+    --ut-component-toolbar-background-color: var(--app-surface-chrome);
+    --ut-body-sidebar-background-color: var(--app-surface-page);
+    --ut-body-sidebar-text-color: var(--app-text-primary);
+    --ut-body-actions-background-color: var(--app-surface-chrome);
+    --ut-body-actions-text-color: var(--app-text-primary);
+    --ut-body-actionstoggle-background-color: var(--app-surface-chrome);
+    --ut-body-actionstoggle-hover-background-color: var(--app-surface-hover);
+    --ut-footer-background-color: transparent;
+    --ut-footer-border-color: var(--app-border-color);
+    --ut-linkslist-arrow-color: var(--app-text-secondary);
+    --ut-login-page-background-color: var(--app-surface-page);
+    --ut-login-region-background-color: var(--app-surface-card);
+    --ut-navbar-button-badge-background-color: var(--est-dark-amber);
+    --ut-navtabs-background-color: var(--app-surface-chrome);
+    --ut-navtabs-text-color: var(--app-text-primary);
+    --ut-navtabs-item-active-background-color: var(--app-surface-selected);
+    --ut-navtabs-item-border-color: var(--app-border-color);
+    --ut-navtabs-item-highlight-color: var(--est-dark-amber);
+    --ut-resultsregion-background-color: var(--app-surface-card);
+    --ut-resultsregion-search-background-color: var(--app-surface-input);
+    --ut-resultsregion-search-border-color: var(--app-border-strong);
+    --ut-report-cell-alt-background-color: var(--app-surface-subtle);
+    --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
+    --ut-treeview-badge-background-color: var(--est-dark-amber);
+    --ut-treeview-badge-text-color: var(--app-text-on-accent);
+
+    /* Component atoms */
+    --a-checkbox-background-color: var(--app-surface-input);
+    --a-checkbox-border-color: var(--app-border-strong);
+    --a-checkbox-text-color: var(--app-text-on-accent);
+    --a-checkbox-checked-background-color: var(--est-dark-amber);
+    --a-checkbox-checked-text-color: var(--app-text-on-accent);
+    --a-checkbox-hover-background-color: var(--app-surface-hover);
+    --a-chip-hover-background-color: var(--app-surface-hover);
+    --a-chip-active-background-color: var(--app-surface-selected);
+    --a-chip-applied-background-color: var(--app-surface-hover);
+    --a-chip-applied-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-active-background-color: var(--app-surface-selected);
+    --a-cr-checkbox-background-color: var(--app-surface-input);
+    --a-datepicker-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-title-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-background-color: var(--app-surface-card);
+    --a-datepicker-calendar-week-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+    --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);
+    --a-datepicker-footer-background-color: var(--app-surface-card);
+    --jui-datepicker-background-color: var(--app-surface-card);
+    --jui-datepicker-border-color: var(--app-border-color);
+    --a-gv-background-color: var(--app-surface-card);
+    --a-gv-deleted-background-color: var(--app-surface-subtle);
+    --a-gv-grandtotal-background-color: var(--app-surface-chrome);
+    --a-kb-shortcut-background-color: var(--app-surface-hover);
+    --a-kb-shortcut-border-color: var(--app-border-color);
+    --a-popuplov-chip-background-color: var(--app-surface-hover);
+    --a-report-controls-cell-label-text-color: var(--app-text-primary);
+    --a-report-controls-cell-label-background-color: var(--app-surface-card);
+    --a-resultsitem-background-color: var(--app-surface-card);
+    --a-resultsitem-badge-background-color: var(--app-surface-hover);
+    --a-starrating-stars-bg-color: var(--app-border-strong);
+    --a-chat-client-background-color: var(--app-surface-card);
+    --a-chat-user-primary-message-background-color: var(--app-surface-selected);
+    --a-chat-user-secondary-message-background-color: var(--app-surface-hover);
+    --a-chat-input-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-input-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-message-action-button-background-color: var(--app-surface-card);
+    --a-chat-message-action-button-state-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-border-color: var(--app-border-strong);
+    --a-chat-view-more-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-background: var(--app-surface-page);
+    --a-chat-body-background-color: var(--app-surface-page);
+    --a-chat-title-background: var(--app-surface-chrome);
+    --a-chat-title-color: var(--app-text-emphasized);
+    --a-chat-message-border-color: var(--app-border-color);
+    --a-chat-message-error-icon-color: var(--app-color-danger);
+    --a-chat-transcript-outline-color: var(--est-dark-amber);
+    --a-chat-user-primary-text-color: var(--app-text-primary);
+    --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
+    --a-chat-user-primary-icon-background-color: var(--est-dark-amber);
+    --a-chat-user-secondary-text-color: var(--app-text-primary);
+    --a-chat-user-secondary-icon-background-color: var(--app-color-danger);
+    --a-chat-user-secondary-icon-text-color: #ffffff;
+    --a-chat-view-more-button-background-color: var(--app-surface-page);
+    --ut-component-badge-text-color: var(--app-text-primary);
+    --ut-component-icon-background-color: var(--est-dark-amber);
+    --ut-component-icon-color: var(--app-text-on-accent);
+    --ut-header-menubar-item-hover-background-color: var(--app-surface-hover);
+    --ut-header-menubar-item-hover-text-color: var(--app-text-emphasized);
+    --ut-navtabs-item-hover-background-color: var(--app-surface-hover);
+    --ut-navtabs-item-active-highlight-color: var(--est-dark-amber);
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--est-dark-amber);
+
+    /* Wizard */
+    --ut-wizard-header-background-color: var(--app-surface-chrome);
+    --ut-wp-track-color: rgba(148, 163, 184, 0.3);
+    --ut-wp-marker-color: var(--app-border-strong);
+
+    /* Lists */
+    --ut-comment-item-background-color: var(--app-surface-card);
+    --ut-comment-chat-background-color: var(--app-surface-input);
+    --ut-comment-chat-active-background-color: var(--app-surface-hover);
+    --ut-medialist-item-background-color: var(--app-surface-card);
+    --ut-cr-item-background-color: var(--app-surface-card);
+    --ut-cr-border-color: var(--app-border-color);
+    --ut-timeline-type-background-color: var(--app-surface-card);
+}
+

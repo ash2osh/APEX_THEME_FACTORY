@@ -1,0 +1,61 @@
+/* Buttons.
+   Scoped to .app-theme-estate-slate .apex-theme-iris. */
+
+.app-theme-estate-slate .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: white + hairline, tint on hover */
+    --a-button-background-color: var(--ut-component-background-color);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-color);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-active-background-color: var(--app-surface-subtle);
+    --a-button-focus-background-color: var(--ut-component-background-color);
+    --a-button-focus-border-color: var(--app-color-primary);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot button: champagne amber directive action */
+.app-theme-estate-slate .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--est-amber-hover);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--app-color-primary);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--est-amber-hover);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Button group */
+.app-theme-estate-slate .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-estate-slate .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--est-amber-hover);
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--app-color-primary);
+    --a-button-focus-background-color: var(--est-amber-hover);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+}
+
+/* Keyboard focus on buttons */
+.app-theme-estate-slate .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+

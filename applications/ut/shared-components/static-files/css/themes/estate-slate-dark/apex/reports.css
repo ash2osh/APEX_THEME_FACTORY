@@ -1,0 +1,168 @@
+/* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    /* header row: chrome surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-chrome);
+    --a-gv-header-text-color: var(--app-text-emphasized);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: var(--app-space-3);
+
+    /* body: 13px, 40px rows, hairline row separators */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: var(--app-space-3);
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-background-color: var(--app-surface-card);
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+    --a-gv-pagination-button-text-color: var(--app-text-primary);
+    --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
+    --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);
+    --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);
+
+    /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+    --a-report-controls-cell-label-border-color: var(--app-border-color);
+    --a-report-controls-input-border-color: var(--app-border-strong);
+    --a-report-controls-input-focus-border-color: var(--est-dark-amber);
+    --a-gv-nodata-message-text-color: var(--app-text-secondary);
+    --a-resultsitem-border-color: var(--app-border-color);
+    --a-resultsitem-misc-text-color: var(--app-text-secondary);
+    --a-searchresults-pagination-color: var(--app-text-secondary);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-chrome);
+    --ut-report-header-text-color: var(--app-text-emphasized);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Flatten type-specific control items to dark hover surface */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Hairline horizontal borders */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-header,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-hover);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-emphasized);
+}
+
+/* IRR toolbar and search */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-toolbar {
+    background-color: var(--app-surface-card);
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-search-field {
+    background-color: var(--app-surface-input);
+    color: var(--app-text-emphasized);
+    border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables */
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
+}
+
+/* Tabular numeric alignment */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}

@@ -376,6 +376,19 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
   (everything except the evidence root and `**/*.md`). Any other change — even to a tool or test —
   invalidates captured Layer C/D/E evidence and the packages' SHA-256, so finish source work, commit,
   build, capture, then commit evidence and docs.
+- **The release sequence, in order — three of today's failures were this one rule in different clothes.**
+  1. Commit **all** source. "Source" is wider than it looks: `sync-static.sh` output under `applications/ut/`,
+     and `tests/agent-smoke/runs/**/*.json` written by a smoke re-run, both count. Only the evidence root and
+     `**/*.md` do not.
+  2. **Then** build the packages. Each `theme.css` embeds a `Source commit:` banner, so a package built before
+     the final source commit is not what that source builds — and `release-check.sh` rejects the evidence with
+     *"Evidence artifact is for a different package"*, after the capture has already cost you an hour.
+  3. **Then** capture Layers C/D/E, touching nothing in the tree until it finishes.
+  4. **Then** commit evidence and Markdown only — that keeps `last_source_commit` where the evidence expects it.
+  A cheap guard worth adding before the next capture: assert that the `Source commit` banner inside the built
+  ZIP equals `last_source_commit()` before the pipeline starts, so the mismatch fails in two seconds instead of
+  fifty minutes. (Not added during this round on purpose — it is a source change, and making it would have
+  invalidated the evidence it was meant to protect.)
 - **Don't touch the working tree while a capture is running.** `tools/live_matrix.py` checks
   `git status --porcelain -- . :(exclude)<evidence root> :(exclude,glob)**/*.md` **at the start of each theme's
   run**, so a tree that goes dirty mid-pipeline fails the *next* theme and not the one in flight. Met

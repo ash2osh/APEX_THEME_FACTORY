@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | 2026-09-17: live Chrome pass over 24 pages found four package-caused defects; all four are fixed here, imported, and **re-measured as shipped** — 0 package-caused AA failures on the swept surfaces (see *Status* below). Coverage is still 24 of 122 pages and two widths, so this is verified-for-what-was-measured, not exhaustively |
+| Status | 2026-09-17: release verdict **`VERIFIED`** (Layers A–E, `.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`). A live pass over 24 pages found four package-caused defects; all four are fixed, imported and **re-measured as shipped** — 0 package-caused AA failures on the swept surfaces. Coverage is 24 of 122 pages of app 102 and two widths there, so this is verified-for-what-was-measured, not exhaustively |
 
 ## Preview
 
@@ -241,7 +241,7 @@ A third comment on that PR (page-4000 search/category/results near-white-on-whit
 ### 2026-09-14 addendum: two more coverage gaps (agent-evaluation source review)
 
 Two more atoms, found independently by two separate agent-evaluation runs doing an unrelated source review of
-this package (see `.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` for the full,
+this package (see `.agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md` for the full,
 still-open gap list — this PR fixes only the two highest-confidence items from it):
 - `--a-field-input-hover-background-color` was never set, so every text input flashed Iris' literal `#fff` on
   hover, app-wide — fixed in `css/apex/forms.css`.
@@ -259,7 +259,7 @@ every remaining gap with confirmed consumption and a confirmed-present owning pa
 icon/initials avatars, the date picker, popup menus, Comments/chat, File Drop, Markdown Editor, Combo Box, and
 new sections for Faceted Search (p1411), Percent Graph (p423/p1601), Help Text (p1903), and Map legend
 (p1906). Full list, and what was deliberately left out and why, in
-`.agents/findings/pending/2026-09-14-solarized-dark-2page-coverage-gap.md` §6–7.
+`.agents/findings/accepted/2026-09-14-solarized-dark-2page-coverage-gap.md` §6–7.
 
 **Newly-identified pages that need a live check before "Verified"** (beyond the original 14-page list):
 1410, 1411, 1601, 423, 1800, 1902, 1903, 1906, 1405, 3003, 1412. Pages 1800 (Calendar) and 1902 (Charts) also

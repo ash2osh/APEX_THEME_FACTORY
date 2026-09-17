@@ -51,11 +51,24 @@ When a CLI does not expose its internal loader telemetry, the recorded result se
 
 | Runtime | CLI version | Checked at (UTC) | Structural | Behavioral | Evidence |
 |---|---|---|---|---|---|
-| Codex | codex-cli 0.154.0 | 2026-09-16 | PASS | PASS | `tests/agent-smoke/runs/2026-09-16/codex.md` |
-| Claude Code | 2.1.235 | 2026-09-16 | PASS | UNVERIFIED — headless `claude -p` could not authenticate (OAuth session expired); the harness schema defect that previously made this run impossible is fixed | `tests/agent-smoke/runs/2026-09-16/claude.md` |
-| Antigravity | 1.2.4 | 2026-09-16 | PASS | PASS | `tests/agent-smoke/runs/2026-09-16/antigravity.md` |
+| Codex | codex-cli 0.154.0 | 2026-09-17 | PASS | PASS | `tests/agent-smoke/runs/2026-09-17/codex.md` |
+| Claude Code | 2.1.273 | 2026-09-17 | PASS | PASS | `tests/agent-smoke/runs/2026-09-17/claude.md` |
+| Antigravity | 1.2.5 | 2026-09-17 | PASS | PASS | `tests/agent-smoke/runs/2026-09-17/antigravity.md` |
 
-Earlier records (`tests/agent-smoke/runs/2026-09-15/`) are kept for history; the Claude Code "not installed" and Antigravity "timed out" results there were environmental.
+**All three PASS as of 2026-09-17** — the first round in which every runtime was green, which is what let
+Layer E reach PASS in the release reports.
+
+Why they were re-run that day rather than reused from 2026-09-16: these smokes measure what a runtime does
+after reading `AGENTS.md`, `.agents/rules/*.md` and the skills — all Markdown, which `last_source_commit()`
+treats as *non*-source. Adding the Chrome-daemon rule to those files therefore changed the thing under test
+without invalidating any binding automatically, so the re-run was done by hand. Treat any edit under
+`AGENTS.md`, `.agents/rules/` or `.agents/skills/` the same way (`.agents/knowledge/pitfalls.md` §5.x).
+
+Earlier records are kept for history: `tests/agent-smoke/runs/2026-09-16/` (Claude Code `UNVERIFIED` —
+headless `claude -p` could not authenticate, OAuth session expired; Antigravity 1.2.4 `UNVERIFIED` on a later
+attempt — provider returned `503 No capacity`, confirmed environmental by a control run against the previous
+schema) and `tests/agent-smoke/runs/2026-09-15/` (Claude Code "not installed", Antigravity "timed out" — both
+environmental).
 
 ### Harness notes
 

@@ -237,6 +237,25 @@ class ArchiveTests(unittest.TestCase):
                 else:
                     os.environ["THEME_FACTORY_ALLOW_DIRTY"] = old_val
 
+    def test_builder_excludes_source_only_recipe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            theme_root = Path(tmp) / "linen"
+            shutil.copytree(self.repo_root / "sample-themes/linen", theme_root)
+            (theme_root / "theme.recipe.json").write_text('{"sourceOnly": true}\n', encoding="utf-8")
+            old_val = os.environ.get("THEME_FACTORY_ALLOW_DIRTY")
+            os.environ["THEME_FACTORY_ALLOW_DIRTY"] = "1"
+            try:
+                package = build_package_from_root(self.repo_root, theme_root, Path(tmp) / "dist")
+                with zipfile.ZipFile(package) as archive:
+                    self.assertFalse(
+                        any(name.endswith("/theme.recipe.json") for name in archive.namelist())
+                    )
+            finally:
+                if old_val is None:
+                    os.environ.pop("THEME_FACTORY_ALLOW_DIRTY", None)
+                else:
+                    os.environ["THEME_FACTORY_ALLOW_DIRTY"] = old_val
+
 
 if __name__ == "__main__":
     unittest.main()

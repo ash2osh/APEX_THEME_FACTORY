@@ -1,6 +1,7 @@
 """Atomic, recipe-driven generation of neutral theme package sources."""
 
 from dataclasses import asdict, dataclass
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -9,8 +10,14 @@ import tempfile
 
 from lib.theme_factory.css_policy import scan_package
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import load_manifest
-from lib.theme_factory.recipe import ThemeRecipe
+from lib.theme_factory.manifest import ThemeManifest, load_manifest
+from lib.theme_factory.recipe import (
+    FontFaceSpec,
+    FontRoleSpec,
+    ThemeRecipe,
+    render_manifest,
+    render_tokens,
+)
 
 
 GENERATED_MARKER = "/* @theme-factory-generated */"
@@ -29,6 +36,7 @@ PROFILE_OWNERS = {
 class ScaffoldResult:
     created: Path
     written: tuple[Path, ...]
+    preserved_handwritten: tuple[Path, ...] = ()
 
 
 def _recipe_document(recipe: ThemeRecipe) -> dict[str, object]:
@@ -96,26 +104,6 @@ def _replacements(recipe: ThemeRecipe) -> dict[str, str]:
         "layered": "0 10px 30px color-mix(in srgb, var(--theme-page), transparent 30%)",
         "soft": "0 8px 24px color-mix(in srgb, var(--theme-page), transparent 55%)",
     }[geometry.shadow_style]
-    manifest = {
-        "schemaVersion": 1,
-        "name": identity.name,
-        "title": identity.title,
-        "version": "1.0.0",
-        "tagline": identity.tagline,
-        "class": f"app-theme-{identity.name}",
-        "compatibility": {
-            "apex": ">=26.1.0 <26.2.0",
-            "themeNumber": 42,
-            "baseTheme": "ut-26.1",
-            "themeStyle": "Iris",
-        },
-        "templateOptions": {"navigationMenuStyle": "t-TreeNav--styleB"},
-        "assets": {
-            "stylesheet": "theme.css",
-            "runtime": "theme-factory-runtime.js",
-            "cover": "preview/cover.jpg",
-        },
-    }
     return {
         "__NAME__": identity.name,
         "__TITLE__": identity.title,
@@ -144,7 +132,7 @@ def _replacements(recipe: ThemeRecipe) -> dict[str, str]:
         "__BODY_INTERNAL__": body_internal,
         "__HEADING_INTERNAL__": heading_internal,
         "__FALLBACK__": _fallback_stack(recipe),
-        "__MANIFEST_JSON__": json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+        "__MANIFEST_JSON__": render_manifest(recipe, {}),
         "__RECIPE_JSON__": json.dumps(_recipe_document(recipe), indent=2, ensure_ascii=False) + "\n",
     }
 
@@ -170,7 +158,11 @@ def _render_neutral_tree(repo_root: Path, destination: Path, recipe: ThemeRecipe
         relative = source.relative_to(neutral)
         target = destination / relative.with_suffix("")
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(_render(source.read_text(encoding="utf-8"), replacements), encoding="utf-8")
+        if relative.as_posix() == "css/tokens.css.tmpl":
+            content = render_tokens(recipe)
+        else:
+            content = _render(source.read_text(encoding="utf-8"), replacements)
+        target.write_text(content, encoding="utf-8")
 
     for profile_type, owner in PROFILE_OWNERS.items():
         profile = getattr(recipe.components, profile_type)
@@ -215,8 +207,50 @@ def create_theme(repo_root: Path, recipe: ThemeRecipe) -> ScaffoldResult:
     return ScaffoldResult(created=destination, written=written)
 
 
+def _manifest_font_specs(manifest: ThemeManifest) -> dict[str, FontRoleSpec]:
+    return {
+        role_name: FontRoleSpec(
+            family=role.family,
+            fallback=role.fallback,
+            license=role.license.as_posix(),
+            faces=tuple(
+                FontFaceSpec(face.file.as_posix(), face.weight, face.style)
+                for face in role.faces
+            ),
+        )
+        for role_name, role in manifest.fonts.items()
+    }
+
+
+def owned_source_digest(theme_root: Path) -> str:
+    """Hash deterministic generator-owned source without claiming handwritten modules."""
+
+    theme_root = Path(theme_root).resolve()
+    owned: list[Path] = []
+    for relative in ("theme.json", "theme.recipe.json"):
+        candidate = theme_root / relative
+        if candidate.is_file():
+            owned.append(candidate)
+    css_root = theme_root / "css"
+    if css_root.is_dir():
+        for candidate in sorted(css_root.rglob("*.css")):
+            lines = candidate.read_text(encoding="utf-8").splitlines()
+            if lines and lines[0] == GENERATED_MARKER:
+                owned.append(candidate)
+
+    digest = hashlib.sha256()
+    for path in sorted(owned):
+        relative = path.relative_to(theme_root).as_posix().encode("utf-8")
+        data = path.read_bytes()
+        digest.update(len(relative).to_bytes(4, "big"))
+        digest.update(relative)
+        digest.update(len(data).to_bytes(8, "big"))
+        digest.update(data)
+    return digest.hexdigest()
+
+
 def regenerate_owned_files(theme_root: Path, recipe: ThemeRecipe) -> ScaffoldResult:
-    """Regenerate marked CSS sources while refusing to overwrite human-owned files."""
+    """Regenerate owned sources and explicitly preserve handwritten CSS modules."""
 
     theme_root = Path(theme_root).resolve()
     if theme_root.name != recipe.identity.name:
@@ -228,17 +262,34 @@ def regenerate_owned_files(theme_root: Path, recipe: ThemeRecipe) -> ScaffoldRes
     staged_theme = staging_parent / recipe.identity.name
     try:
         _render_neutral_tree(repo_root, staged_theme, recipe)
+        current_manifest = load_manifest(theme_root / "theme.json", theme_root)
+        (staged_theme / "theme.json").write_text(
+            render_manifest(recipe, _manifest_font_specs(current_manifest)),
+            encoding="utf-8",
+        )
         _validate_rendered(repo_root, staged_theme)
         staged_css = tuple(path for path in sorted((staged_theme / "css").rglob("*.css")))
-        targets = tuple(theme_root / path.relative_to(staged_theme) for path in staged_css)
-        for target in targets:
-            if not target.is_file() or target.read_text(encoding="utf-8").splitlines()[0] != GENERATED_MARKER:
-                raise PackageError(f"Refusing to overwrite handwritten file: {target}")
+        css_pairs = tuple((source, theme_root / source.relative_to(staged_theme)) for source in staged_css)
+        replace_pairs: list[tuple[Path, Path]] = []
+        preserved: list[Path] = []
+        for source, target in css_pairs:
+            lines = target.read_text(encoding="utf-8").splitlines() if target.is_file() else []
+            if lines and lines[0] == GENERATED_MARKER:
+                replace_pairs.append((source, target))
+            else:
+                preserved.append(target)
 
-        for source, target in zip(staged_css, targets):
+        for relative in ("theme.json", "theme.recipe.json"):
+            replace_pairs.append((staged_theme / relative, theme_root / relative))
+
+        for source, target in replace_pairs:
             temporary = target.with_name(f".{target.name}.theme-factory-tmp")
             temporary.write_bytes(source.read_bytes())
             os.replace(temporary, target)
     finally:
         shutil.rmtree(staging_parent, ignore_errors=True)
-    return ScaffoldResult(created=theme_root, written=targets)
+    return ScaffoldResult(
+        created=theme_root,
+        written=tuple(target for _, target in replace_pairs),
+        preserved_handwritten=tuple(preserved),
+    )

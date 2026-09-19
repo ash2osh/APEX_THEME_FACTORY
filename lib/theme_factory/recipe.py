@@ -7,7 +7,7 @@ import re
 from typing import Any
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import FONT_NAME_REGEX, NAME_REGEX, VALID_WEIGHTS
+from lib.theme_factory.manifest import APEX_COMPATIBILITY, FONT_NAME_REGEX, NAME_REGEX, VALID_WEIGHTS
 
 
 HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
@@ -24,6 +24,7 @@ PROFILE_VALUES = {
     "reports": {"ruled", "spacious"},
     "dialogs": {"flat", "layered", "offset"},
 }
+GENERATED_CSS_MARKER = "/* @theme-factory-generated */"
 
 
 @dataclass(frozen=True)
@@ -93,6 +94,21 @@ class ThemeRecipe:
     geometry: Geometry
     focus: Focus
     components: ComponentProfiles
+
+
+@dataclass(frozen=True)
+class FontFaceSpec:
+    file: str
+    weight: int
+    style: str = "normal"
+
+
+@dataclass(frozen=True)
+class FontRoleSpec:
+    family: str
+    fallback: tuple[str, ...]
+    license: str
+    faces: tuple[FontFaceSpec, ...]
 
 
 @dataclass(frozen=True)
@@ -311,3 +327,177 @@ def validate_core_contrast(recipe: ThemeRecipe) -> tuple[RecipeIssue, ...]:
         if ratio < minimum:
             issues.append(RecipeIssue(code, "error", foreground, background, ratio, minimum))
     return tuple(issues)
+
+
+def _font_role_document(role: FontRoleSpec) -> dict[str, object]:
+    return {
+        "family": role.family,
+        "fallback": list(role.fallback),
+        "license": role.license,
+        "faces": [
+            {"file": face.file, "weight": face.weight, "style": face.style}
+            for face in role.faces
+        ],
+    }
+
+
+def render_manifest(recipe: ThemeRecipe, font_roles: dict[str, FontRoleSpec]) -> str:
+    """Render a stable package manifest from a validated recipe."""
+
+    identity = recipe.identity
+    document: dict[str, object] = {
+        "schemaVersion": 1,
+        "name": identity.name,
+        "title": identity.title,
+        "version": "1.0.0",
+        "tagline": identity.tagline,
+        "class": f"app-theme-{identity.name}",
+        "compatibility": {
+            "apex": APEX_COMPATIBILITY,
+            "themeNumber": 42,
+            "baseTheme": "ut-26.1",
+            "themeStyle": "Iris",
+        },
+        "templateOptions": {"navigationMenuStyle": "t-TreeNav--styleB"},
+    }
+    if font_roles:
+        document["fonts"] = {
+            role_name: _font_role_document(font_roles[role_name])
+            for role_name in ("body", "heading", "mono")
+            if role_name in font_roles
+        }
+    document["assets"] = {
+        "stylesheet": "theme.css",
+        "runtime": "theme-factory-runtime.js",
+        "cover": "preview/cover.jpg",
+    }
+    return json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+
+
+def _css_font_stack(values: tuple[str, ...]) -> str:
+    generic = {
+        "serif", "sans-serif", "monospace", "system-ui", "ui-serif",
+        "ui-sans-serif", "ui-monospace",
+    }
+    return ", ".join(value if value in generic else json.dumps(value) for value in values)
+
+
+def render_tokens(recipe: ThemeRecipe) -> str:
+    """Compile semantic and Iris token layers in deterministic source order."""
+
+    name = recipe.identity.name
+    palette = recipe.palette
+    geometry = recipe.geometry
+    focus = recipe.focus
+    body_family = f"ThemeFactory-{name}-body"
+    heading_family = body_family if recipe.typography.heading_family == "body" else f"ThemeFactory-{name}-heading"
+    fallback = _css_font_stack(recipe.typography.fallback)
+    border_width = {"technical": "2px", "hairline": "1px", "soft": "1px", "strong": "2px"}[geometry.border_style]
+    shadow = {
+        "none": "none",
+        "offset": "4px 4px 0 var(--app-border-color)",
+        "layered": "0 10px 30px color-mix(in srgb, var(--theme-page), transparent 30%)",
+        "soft": "0 8px 24px color-mix(in srgb, var(--theme-page), transparent 55%)",
+    }[geometry.shadow_style]
+    lines = [
+        GENERATED_CSS_MARKER,
+        f"/* Deterministic recipe tokens for html.app-theme-{name}. */",
+        f"html.app-theme-{name} {{",
+        f"  color-scheme: {recipe.identity.mode};",
+        f"  --theme-page: {palette.page};",
+        f"  --theme-card: {palette.card};",
+        f"  --theme-chrome: {palette.chrome};",
+        f"  --theme-text-primary: {palette.text_primary};",
+        f"  --theme-text-secondary: {palette.text_secondary};",
+        f"  --theme-accent: {palette.accent};",
+        f"  --theme-accent-alt: {palette.accent_alt};",
+        f"  --theme-on-accent: {palette.on_accent};",
+        f"  --theme-danger: {palette.danger};",
+        "  --app-surface-page: var(--theme-page);",
+        "  --app-surface-card: var(--theme-card);",
+        "  --app-surface-chrome: var(--theme-chrome);",
+        "  --app-surface-subtle: color-mix(in srgb, var(--theme-card), var(--theme-accent) 5%);",
+        "  --app-surface-input: color-mix(in srgb, var(--theme-card), var(--theme-text-primary) 4%);",
+        "  --app-surface-hover: color-mix(in srgb, var(--theme-card), var(--theme-accent) 10%);",
+        "  --app-surface-selected: color-mix(in srgb, var(--theme-card), var(--theme-accent) 16%);",
+        "  --app-text-emphasized: var(--theme-text-primary);",
+        "  --app-text-primary: var(--theme-text-primary);",
+        "  --app-text-secondary: var(--theme-text-secondary);",
+        "  --app-text-on-accent: var(--theme-on-accent);",
+        "  --app-accent: var(--theme-accent);",
+        "  --app-accent-alt: var(--theme-accent-alt);",
+        "  --app-on-accent: var(--theme-on-accent);",
+        "  --app-danger: var(--theme-danger);",
+        "  --app-color-primary: var(--theme-accent);",
+        "  --app-color-info: var(--theme-accent-alt);",
+        "  --app-color-danger: var(--theme-danger);",
+        "  --app-border-color: color-mix(in srgb, var(--theme-text-secondary), transparent 45%);",
+        "  --app-border-strong: color-mix(in srgb, var(--theme-accent-alt), transparent 25%);",
+        f"  --app-border-width: {border_width};",
+        f"  --app-radius-sm: {geometry.radius_small};",
+        f"  --app-radius-md: {geometry.radius_medium};",
+        f"  --app-radius-lg: {geometry.radius_large};",
+        f"  --app-control-h: {geometry.control_height};",
+        "  --app-control-height: var(--app-control-h);",
+        f"  --app-shadow-card: {shadow};",
+        f"  --app-focus-color: {focus.color};",
+        f"  --app-focus-width: {focus.width};",
+        f"  --app-focus-offset: {focus.offset};",
+        f'  --app-font-family-body: "{body_family}", {fallback};',
+        f'  --app-font-family-heading: "{heading_family}", {fallback};',
+        "  --app-font-family-mono: ui-monospace, SFMono-Regular, monospace;",
+        "  --oj-core-text-color-primary: var(--app-text-primary);",
+        "  --oj-core-text-color-secondary: var(--app-text-secondary);",
+        "  --oj-heading-text-color: var(--app-text-emphasized);",
+        "  --oj-core-text-color-brand: var(--app-color-primary);",
+        "  --oj-link-text-color: var(--app-color-primary);",
+        "  --oj-core-divider-color: var(--app-border-color);",
+        "  --oj-core-focus-border-color: var(--app-focus-color);",
+        "}",
+        "",
+        f"html.app-theme-{name} .apex-theme-iris {{",
+        "  --ut-body-background-color: var(--app-surface-page);",
+        "  --ut-body-text-color: var(--app-text-primary);",
+        "  --ut-component-background-color: var(--app-surface-card);",
+        "  --ut-component-text-default-color: var(--app-text-primary);",
+        "  --ut-component-text-title-color: var(--app-text-emphasized);",
+        "  --ut-component-text-muted-color: var(--app-text-secondary);",
+        "  --ut-component-border-color: var(--app-border-color);",
+        "  --ut-component-highlight-background-color: var(--app-surface-hover);",
+        "  --ut-focus-outline-color: var(--app-focus-color);",
+        "  --ut-link-text-color: var(--app-color-primary);",
+        "  --ut-palette-primary: var(--app-color-primary);",
+        "  --ut-palette-primary-contrast: var(--app-text-on-accent);",
+        "  --ut-palette-primary-shade: var(--app-surface-selected);",
+        "  --ut-palette-primary-alt: var(--app-accent-alt);",
+        "  --ut-palette-danger: var(--app-color-danger);",
+        "  --ut-palette-danger-contrast: var(--app-text-on-accent);",
+        "  --ut-palette-danger-shade: var(--app-surface-selected);",
+    ]
+    if recipe.identity.mode == "dark":
+        lines.extend([
+            "  --ut-color-scheme: dark;",
+            "  --a-palette-primary: var(--ut-palette-primary);",
+            "  --a-palette-primary-contrast: var(--ut-palette-primary-contrast);",
+            "  --a-palette-primary-shade: var(--ut-palette-primary-shade);",
+            "  --a-palette-danger: var(--ut-palette-danger);",
+            "  --a-palette-danger-contrast: var(--ut-palette-danger-contrast);",
+            "  --a-palette-danger-shade: var(--ut-palette-danger-shade);",
+            "  --a-checkbox-background-color: var(--app-surface-input);",
+            "  --a-checkbox-border-color: var(--app-border-strong);",
+            "  --a-checkbox-checked-background-color: var(--app-accent-alt);",
+            "  --a-menu-background-color: var(--app-surface-chrome);",
+            "  --a-menu-text-color: var(--app-text-primary);",
+            "  --a-gv-background-color: var(--app-surface-card);",
+            "  --a-gv-header-background-color: var(--app-surface-chrome);",
+            "  --a-datepicker-background-color: var(--app-surface-chrome);",
+            "  --a-datepicker-calendar-background-color: var(--app-surface-card);",
+            "  --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);",
+            "  --a-popuplov-chip-background-color: var(--app-surface-hover);",
+            "  --a-popuplov-search-background-color: var(--app-surface-input);",
+            "  --ui-dialog-content-background-color: var(--app-surface-card);",
+            "  --ui-dialog-titlebar-background-color: var(--app-surface-chrome);",
+            "  --ui-dialog-titlebar-text-color: var(--app-text-emphasized);",
+        ])
+    lines.extend(["}", ""])
+    return "\n".join(lines)

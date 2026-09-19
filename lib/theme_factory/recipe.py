@@ -86,6 +86,26 @@ class ComponentProfiles:
 
 
 @dataclass(frozen=True)
+class FontProvenanceFace:
+    file: str
+    weight: int
+    sha256: str
+
+
+@dataclass(frozen=True)
+class FontProvenance:
+    family: str
+    metadata_url: str
+    source_revision: str
+    source_filename: str
+    repository_url: str
+    upstream_commit: str
+    license: str
+    tools: tuple[tuple[str, str], ...]
+    faces: tuple[FontProvenanceFace, ...]
+
+
+@dataclass(frozen=True)
 class ThemeRecipe:
     schema_version: int
     identity: Identity
@@ -94,6 +114,7 @@ class ThemeRecipe:
     geometry: Geometry
     focus: Focus
     components: ComponentProfiles
+    font_provenance: FontProvenance | None = None
 
 
 @dataclass(frozen=True)
@@ -181,9 +202,10 @@ def load_recipe(path: Path) -> ThemeRecipe:
     if not isinstance(raw, dict):
         raise PackageError("Recipe root must be an object")
 
-    root_keys = {"schemaVersion", "identity", "palette", "typography", "geometry", "focus", "components"}
+    required_root_keys = {"schemaVersion", "identity", "palette", "typography", "geometry", "focus", "components"}
+    root_keys = {*required_root_keys, "fontProvenance"}
     _check_allowed_keys(raw, root_keys, "")
-    missing = sorted(root_keys - raw.keys())
+    missing = sorted(required_root_keys - raw.keys())
     if missing:
         raise PackageError(f"Missing required property '{missing[0]}'")
     if raw["schemaVersion"] != 1:
@@ -284,7 +306,54 @@ def load_recipe(path: Path) -> ThemeRecipe:
         dialogs=_choice(component_raw["dialogs"], "components/dialogs", PROFILE_VALUES["dialogs"]),
     )
 
-    return ThemeRecipe(1, identity, palette, typography, geometry, focus, components)
+    font_provenance = None
+    if "fontProvenance" in raw:
+        provenance_raw = _object(
+            raw,
+            "fontProvenance",
+            {
+                "family", "metadataUrl", "sourceRevision", "sourceFilename", "repositoryUrl",
+                "upstreamCommit", "license", "tools", "faces",
+            },
+        )
+        tools_raw = provenance_raw["tools"]
+        if not isinstance(tools_raw, dict) or not tools_raw:
+            raise PackageError("'fontProvenance/tools' must be a non-empty object")
+        for tool_name, version in tools_raw.items():
+            _text(tool_name, "fontProvenance/tools")
+            _text(version, f"fontProvenance/tools/{tool_name}")
+        faces_raw = provenance_raw["faces"]
+        if not isinstance(faces_raw, list) or not faces_raw:
+            raise PackageError("'fontProvenance/faces' must be a non-empty list")
+        provenance_faces = []
+        for index, face_raw in enumerate(faces_raw):
+            path = f"fontProvenance/faces/{index}"
+            if not isinstance(face_raw, dict):
+                raise PackageError(f"'{path}' must be an object")
+            _check_allowed_keys(face_raw, {"file", "weight", "sha256"}, path)
+            if set(face_raw) != {"file", "weight", "sha256"}:
+                raise PackageError(f"'{path}' must contain file, weight, and sha256")
+            file_name = _text(face_raw["file"], f"{path}/file")
+            weight = face_raw["weight"]
+            digest = face_raw["sha256"]
+            if not isinstance(weight, int) or isinstance(weight, bool) or weight not in VALID_WEIGHTS:
+                raise PackageError(f"'{path}/weight' is not a valid font weight")
+            if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                raise PackageError(f"'{path}/sha256' must be a lowercase SHA-256 digest")
+            provenance_faces.append(FontProvenanceFace(file_name, weight, digest))
+        font_provenance = FontProvenance(
+            family=_text(provenance_raw["family"], "fontProvenance/family"),
+            metadata_url=_text(provenance_raw["metadataUrl"], "fontProvenance/metadataUrl"),
+            source_revision=_text(provenance_raw["sourceRevision"], "fontProvenance/sourceRevision"),
+            source_filename=_text(provenance_raw["sourceFilename"], "fontProvenance/sourceFilename"),
+            repository_url=_text(provenance_raw["repositoryUrl"], "fontProvenance/repositoryUrl"),
+            upstream_commit=_text(provenance_raw["upstreamCommit"], "fontProvenance/upstreamCommit"),
+            license=_text(provenance_raw["license"], "fontProvenance/license"),
+            tools=tuple(sorted((str(key), str(value)) for key, value in tools_raw.items())),
+            faces=tuple(provenance_faces),
+        )
+
+    return ThemeRecipe(1, identity, palette, typography, geometry, focus, components, font_provenance)
 
 
 def _linear(channel: int) -> float:

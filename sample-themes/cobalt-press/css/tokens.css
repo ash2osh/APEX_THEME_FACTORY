@@ -1,0 +1,128 @@
+/* Cobalt Press — warm editorial paper, cobalt actions, vermilion annotations and hard offset ink shadows. */
+
+html.app-theme-cobalt-press {
+    color-scheme: light;
+
+    --cp-slate-950: #1A1A26;
+    --cp-slate-900: #1A1A26;
+    --cp-slate-800: #2B2A38;
+    --cp-slate-700: #3D3C4B;
+    --cp-slate-600: #5E5C6D;
+    --cp-slate-400: #9692A0;
+    --cp-slate-200: #D8D0C0;
+    --cp-slate-100: #F3EBD9;
+    --cp-slate-50: #FFF8E8;
+
+    --cp-amber: #2457FF;
+    --cp-amber-hover: #163FD1;
+    --cp-amber-shade: rgba(36, 87, 255, .11);
+    --cp-amber-glow: rgba(36, 87, 255, .24);
+
+    --cp-emerald: #147A55;
+    --cp-emerald-shade: rgba(20, 122, 85, .12);
+    --cp-cyan: #2457FF;
+    --cp-cyan-shade: rgba(36, 87, 255, .11);
+    --cp-ruby: #C53618;
+    --cp-ruby-shade: rgba(197, 54, 24, .11);
+
+    /* Surfaces */
+    --app-surface-page:     var(--cp-slate-50);
+    --app-surface-card:     #ffffff;
+    --app-surface-chrome:   var(--cp-slate-900);
+    --app-surface-chrome-hover: var(--cp-slate-700);
+    --app-surface-subtle:   var(--cp-slate-100);
+    --app-surface-input:    #ffffff;
+    --app-surface-hover:    var(--cp-slate-100);
+    --app-surface-selected: var(--cp-amber-shade);
+
+    /* Text */
+    --app-text-emphasized:   var(--cp-slate-950);
+    --app-text-primary:      var(--cp-slate-800);
+    --app-text-secondary:    var(--cp-slate-600);
+    --app-text-on-accent:    #ffffff;
+    --app-text-chrome:       var(--cp-slate-50);
+    --app-text-chrome-muted: var(--cp-slate-400);
+    --app-border-chrome:     var(--cp-slate-800);
+
+    /* Colours */
+    --app-color-primary: var(--cp-amber);
+    --app-color-success: var(--cp-emerald);
+    --app-color-warning: var(--cp-ruby);
+    --app-color-danger:  var(--cp-ruby);
+    --app-color-info:    var(--cp-cyan);
+    --app-accent-shade:  var(--cp-amber-shade);
+
+    /* Borders */
+    --app-border-color:    var(--cp-slate-200);
+    --app-border-hairline: 1px solid var(--cp-slate-200);
+    --app-border-strong:   var(--cp-slate-400);
+
+    --app-radius-sm: 0px;
+    --app-radius-md: 2px;
+    --app-radius-lg: 4px;
+
+    /* Shadows */
+    --app-shadow-sm: 3px 3px 0 rgba(26, 26, 38, .16);
+    --app-shadow-md: 5px 5px 0 rgba(26, 26, 38, .2);
+    --app-shadow-lg: 8px 8px 0 rgba(26, 26, 38, .24);
+    --app-shadow-dialog: 10px 10px 0 rgba(26, 26, 38, .38);
+    --app-overlay-background: rgba(26, 26, 38, .62);
+    --app-card-media-overlay: rgba(26, 26, 38, .74);
+    --app-focus-halo-color: var(--cp-amber-glow);
+    --app-badge-danger-text: #ffffff;
+
+    /* Geometry */
+    --app-control-h: 2.5rem;
+
+    /* Focus ring */
+    --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cp-amber);
+
+    /* Type */
+    --app-font-family-body:    "ThemeFactory-cobalt-press-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-cobalt-press-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+}
+
+/* Universal Theme / Iris overrides on the theme-style scope */
+.app-theme-cobalt-press .apex-theme-iris {
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: var(--app-border-color);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-border-radius-sm: var(--app-radius-sm);
+    --ut-border-radius-md: var(--app-radius-md);
+    --ut-border-radius-lg: var(--app-radius-lg);
+
+    --ut-focus-outline-color: var(--app-color-primary);
+    --ut-link-text-color: var(--app-color-primary);
+
+    --ut-palette-primary: var(--app-color-primary);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--cp-amber);
+    --ut-palette-primary-text: var(--app-color-primary);
+
+    --ut-palette-success: var(--app-color-success);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: var(--cp-emerald-shade);
+
+    --ut-palette-warning: var(--app-color-warning);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: var(--cp-ruby-shade);
+
+    --ut-palette-danger: var(--app-color-danger);
+    --ut-palette-danger-contrast: var(--app-text-on-accent);
+    --ut-palette-danger-shade: var(--cp-ruby-shade);
+
+    --ut-palette-info: var(--app-color-info);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: var(--cp-cyan-shade);
+}

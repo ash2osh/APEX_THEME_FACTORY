@@ -1,0 +1,184 @@
+/* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
+   IRR and IG cells are painted from the shared --a-gv-* atoms on :root (consumed by /i/app_ui/css/Core);
+   classic reports from --ut-report-*. Header row on the side-bar surface (#00212b), solid hover surface.
+   All rules scoped to .app-theme-carbon-volt. */
+
+.app-theme-carbon-volt .apex-theme-iris {
+    /* header row: chrome surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-chrome);
+    --a-gv-header-text-color: var(--app-text-emphasized);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: .75rem;
+
+    /* body: 13px, 40px rows, hairline row separators, solid hover surface (body text 9.2:1 on it) */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: .75rem;
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-background-color: var(--app-surface-card);          /* widget fallback is #fff */
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+    --a-gv-pagination-button-text-color: var(--app-text-primary);    /* Iris resolves var(--a-button-text-color) at :root → #161513 */
+    --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
+    --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);   /* Theme-Standard falls back to #e0e0e0 */
+    --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
+
+    /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);            /* Iris: var(--ut-region-header-background-color)
+                                                                           at :root — resolves before this package's
+                                                                           body-level override of that token reaches it
+                                                                           (pitfalls.md §1.2); consumed by .a-IG-header,
+                                                                           Markdown Editor toolbar, Popup LOV search bar,
+                                                                           CKEditor panels — anything without its own
+                                                                           direct rule like .a-IRR-toolbar below */
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+    --a-report-controls-cell-label-border-color: var(--app-border-color);
+    --a-report-controls-input-border-color: var(--app-border-strong);
+    --a-report-controls-input-focus-border-color: var(--cv-cyan);
+    --a-gv-nodata-message-text-color: var(--app-text-secondary);
+    --a-resultsitem-border-color: var(--app-border-color);
+    --a-resultsitem-misc-text-color: var(--app-text-secondary);
+    --a-searchresults-pagination-color: var(--app-text-secondary);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-chrome);
+    --ut-report-header-text-color: var(--app-text-emphasized);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Iris/app_ui-Core set --a-report-controls-cell-label-hover-background-color directly on each type-specific
+   .a-IG-controls-item--X / .a-IRR-controls-item--X modifier (pale literals), which outranks the body-level
+   --a-report-controls-cell-label-* mapping above; the label text (--app-text-primary, light-on-dark) then sits
+   on that pale hover background. Re-flatten every type group to one dark hover surface. */
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius: .a-IRR sets --a-gv-border-radius on the element, so scope there */
+.app-theme-carbon-volt .apex-theme-iris .a-IRR,
+.app-theme-carbon-volt .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Horizontal rules only (Core's border-width is one value for all four sides) */
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-table td,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-header,
+.app-theme-carbon-volt .apex-theme-iris .a-GV-cell,
+.app-theme-carbon-volt .apex-theme-iris .a-GV-header,
+.app-theme-carbon-volt .apex-theme-iris .t-Report-cell,
+.app-theme-carbon-volt .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+/* Iris hard-codes the IRR header surface (#fafafa / #f2f2f2); route it through the atom */
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-emphasized);
+}
+
+/* IRR toolbar and search field sit on the card surface */
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-toolbar {
+    background-color: var(--app-surface-card);
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-search-field {
+    background-color: var(--app-surface-input);
+    color: var(--app-text-emphasized);
+    border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables (.u-Report — used by the reference pages' documentation tables): the widget CSS hard-codes
+   #fff / #fafafa cells (`.u-Report td`, `.u-Report--staticBG tr:nth-child(2n) td`) and #404040 text, so the
+   tokens never reach them. */
+.app-theme-carbon-volt .apex-theme-iris .u-Report td,
+.app-theme-carbon-volt .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-carbon-volt .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-carbon-volt .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+.app-theme-carbon-volt .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-carbon-volt .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-carbon-volt .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+.app-theme-carbon-volt .apex-theme-iris .u-Report td,
+.app-theme-carbon-volt .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
+}
+
+/* Numbers line up in columns */
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-table td,
+.app-theme-carbon-volt .apex-theme-iris .a-GV-cell,
+.app-theme-carbon-volt .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}
+
+/* telemetry-rail: data headers read as a compact cyan instrumentation strip. */
+.app-theme-carbon-volt .apex-theme-iris .a-GV-header,
+.app-theme-carbon-volt .apex-theme-iris .a-IRR-header,
+.app-theme-carbon-volt .apex-theme-iris .t-Report-colHead {
+    border-block-start: 2px solid var(--cv-cyan);
+    letter-spacing: .035em;
+}

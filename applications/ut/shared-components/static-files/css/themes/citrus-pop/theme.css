@@ -1,0 +1,50 @@
+/* Citrus Pop — light theme package for Universal Theme / Iris.
+   Entry point; loaded by static-files/css/app.css.
+   All rules are scoped to html.app-theme-citrus-pop. */
+@import "tokens.css";
+@import "apex/shell.css";
+@import "apex/regions.css";
+@import "apex/buttons.css";
+@import "apex/forms.css";
+@import "apex/reports.css";
+@import "apex/dialogs.css";
+@import "apex/misc.css";
+
+
+/* ==========================================================================
+   Theme Custom Fonts (@font-face)
+   ========================================================================== */
+@font-face {
+  font-family: "ThemeFactory-citrus-pop-body";
+  src: url("./fonts/tajawal-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-citrus-pop-body";
+  src: url("./fonts/tajawal-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-citrus-pop-body";
+  src: url("./fonts/tajawal-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThemeFactory-citrus-pop-body";
+  src: url("./fonts/tajawal-extrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Scoped font-family tokens */
+html.app-theme-citrus-pop {
+  --app-font-family-body: "ThemeFactory-citrus-pop-body", system-ui, BlinkMacSystemFont, Segoe UI, sans-serif;
+  --a-base-font-family: var(--app-font-family-body);
+}

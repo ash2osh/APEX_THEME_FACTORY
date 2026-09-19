@@ -1,0 +1,83 @@
+/* Regions, cards, content blocks, breadcrumb title.
+   Scoped to .app-theme-cobalt-press .apex-theme-iris. */
+
+/* ---- Standard region: crisp white card, 6px radius, hairline border ---------------------- */
+.app-theme-cobalt-press .apex-theme-iris .t-Region {
+    --ut-region-border-radius: var(--app-radius-md);
+    --ut-region-box-shadow: var(--app-shadow-sm);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-header-padding-y: var(--app-space-3);
+    --ut-region-header-padding-x: var(--app-space-4);
+    --ut-region-body-padding-x: var(--app-space-4);
+    --ut-region-body-padding-y: var(--app-space-4);
+}
+
+.app-theme-cobalt-press .apex-theme-iris .t-Region-header {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+.app-theme-cobalt-press .apex-theme-iris .t-Region-headerIcon {
+    color: var(--app-color-primary);
+}
+
+/* ---- Cards (list template "Cards") -------------------------------------------------------- */
+.app-theme-cobalt-press .apex-theme-iris .t-Cards {
+    --ut-cardlist-border-radius: var(--app-radius-md);
+    --ut-cardlist-box-shadow: var(--app-shadow-sm);
+}
+
+.app-theme-cobalt-press .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-cobalt-press .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 1px var(--app-color-primary);
+}
+
+.app-theme-cobalt-press .apex-theme-iris .t-Card-title {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    letter-spacing: -0.01em;
+}
+
+/* ---- Content blocks: heading scale -------------------------------------------------------- */
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock {
+    --ut-content-block-header-font-weight: var(--app-font-weight-semibold);
+    --ut-content-block-header-line-height: 1.3;
+    --ut-content-block-border-radius: var(--app-radius-md);
+    --ut-content-block-box-shadow: none;
+}
+
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock--h1 { --ut-content-block-header-font-size: var(--app-text-2xl); }
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
+
+/* Headings: avoid single-word last lines */
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock-title,
+.app-theme-cobalt-press .apex-theme-iris .t-HeroRegion-title,
+.app-theme-cobalt-press .apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+}
+
+/* ---- Breadcrumb in the title bar ---------------------------------------------------------- */
+.app-theme-cobalt-press .apex-theme-iris .t-Body-title {
+    --ut-breadcrumb-title-font-size: var(--app-text-2xl);
+    --ut-breadcrumb-title-line-height: 2rem;
+    --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+}
+
+/* editorial-rule: mastheads and content cards use decisive ink rules, not soft decoration. */
+.app-theme-cobalt-press .apex-theme-iris .t-Region-header,
+.app-theme-cobalt-press .apex-theme-iris .t-ContentBlock-header {
+    border-block-end: 2px solid var(--app-text-emphasized);
+}
+
+/* offset-shadow: print-like registration gives white cards a tactile edge on warm paper. */
+.app-theme-cobalt-press .apex-theme-iris .t-Region,
+.app-theme-cobalt-press .apex-theme-iris .t-Cards .t-Card-wrap {
+    border: 1px solid var(--app-text-emphasized);
+    box-shadow: var(--app-shadow-md);
+}

@@ -510,3 +510,283 @@ file "css/themes/solarized-dark/fonts/space-grotesk-medium.woff2" (
 file "css/themes/solarized-dark/cover.jpg" (
     mimeType: image/jpeg
 )
+
+file "css/themes/carbon-volt/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/fonts/noto-kufi-arabic-bold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/carbon-volt/fonts/noto-kufi-arabic-medium.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/carbon-volt/fonts/noto-kufi-arabic-regular.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/carbon-volt/fonts/noto-kufi-arabic-semibold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/carbon-volt/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/carbon-volt/cover.jpg" (
+    mimeType: image/jpeg
+)
+
+file "css/themes/citrus-pop/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/fonts/tajawal-bold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/citrus-pop/fonts/tajawal-extrabold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/citrus-pop/fonts/tajawal-medium.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/citrus-pop/fonts/tajawal-regular.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/citrus-pop/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/citrus-pop/cover.jpg" (
+    mimeType: image/jpeg
+)
+
+file "css/themes/cobalt-press/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/fonts/cairo-bold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/cobalt-press/fonts/cairo-medium.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/cobalt-press/fonts/cairo-regular.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/cobalt-press/fonts/cairo-semibold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/cobalt-press/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/cobalt-press/cover.jpg" (
+    mimeType: image/jpeg
+)
+
+file "css/themes/velvet-signal/apex/buttons.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/dialogs.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/forms.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/misc.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/regions.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/reports.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/apex/shell.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/tokens.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/fonts/alexandria-bold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/velvet-signal/fonts/alexandria-medium.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/velvet-signal/fonts/alexandria-regular.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/velvet-signal/fonts/alexandria-semibold.woff2" (
+    mimeType: font/woff2
+)
+
+file "css/themes/velvet-signal/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/velvet-signal/cover.jpg" (
+    mimeType: image/jpeg
+)

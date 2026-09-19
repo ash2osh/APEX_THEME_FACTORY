@@ -1,0 +1,12 @@
+/* Cobalt Press — light theme package for Universal Theme / Iris.
+   Entry point; loaded by static-files/css/app.css.
+   All rules are scoped to html.app-theme-cobalt-press. */
+@import "tokens.css";
+@import "apex/shell.css";
+@import "apex/regions.css";
+@import "apex/buttons.css";
+@import "apex/forms.css";
+@import "apex/reports.css";
+@import "apex/dialogs.css";
+@import "apex/misc.css";
+

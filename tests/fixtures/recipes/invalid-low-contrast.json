@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "identity": {
+    "name": "low-contrast",
+    "title": "Low Contrast",
+    "tagline": "A deliberately invalid contrast fixture.",
+    "direction": "Exercises every static contrast diagnostic.",
+    "mode": "light",
+    "keywords": ["fixture"]
+  },
+  "palette": {
+    "page": "#ffffff",
+    "card": "#ffffff",
+    "chrome": "#ffffff",
+    "textPrimary": "#aaaaaa",
+    "textSecondary": "#bbbbbb",
+    "accent": "#eeeeee",
+    "accentAlt": "#dddddd",
+    "onAccent": "#ffffff",
+    "danger": "#cccccc"
+  },
+  "typography": {
+    "bodyFamily": "Cairo",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "2px",
+    "radiusMedium": "4px",
+    "radiusLarge": "8px",
+    "controlHeight": "2.5rem",
+    "borderStyle": "hairline",
+    "shadowStyle": "soft"
+  },
+  "focus": {
+    "color": "#dddddd",
+    "width": "2px",
+    "offset": "2px"
+  },
+  "components": {
+    "navigation": "minimal",
+    "cards": "flat",
+    "buttons": "rounded",
+    "forms": "comfortable",
+    "reports": "spacious",
+    "dialogs": "flat"
+  }
+}

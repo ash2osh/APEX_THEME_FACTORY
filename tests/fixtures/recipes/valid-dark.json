@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "identity": {
+    "name": "example-theme",
+    "title": "Example Theme",
+    "tagline": "A concise catalog description.",
+    "direction": "A distinctive technical direction.",
+    "mode": "dark",
+    "keywords": ["technical", "dense"]
+  },
+  "palette": {
+    "page": "#0a0d0b",
+    "card": "#151a16",
+    "chrome": "#0f1310",
+    "textPrimary": "#f2f7f0",
+    "textSecondary": "#a8b5ab",
+    "accent": "#b8ff3d",
+    "accentAlt": "#38e8ff",
+    "onAccent": "#0a0d0b",
+    "danger": "#ff8791"
+  },
+  "typography": {
+    "bodyFamily": "Noto Kufi Arabic",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "0px",
+    "radiusMedium": "2px",
+    "radiusLarge": "4px",
+    "controlHeight": "2.125rem",
+    "borderStyle": "technical",
+    "shadowStyle": "offset"
+  },
+  "focus": {
+    "color": "#38e8ff",
+    "width": "2px",
+    "offset": "2px"
+  },
+  "components": {
+    "navigation": "rail",
+    "cards": "offset",
+    "buttons": "square",
+    "forms": "dense",
+    "reports": "ruled",
+    "dialogs": "offset"
+  }
+}

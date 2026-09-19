@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "001cf226b0b6f14a3c83f3cf236d44f28617eef187d7e184ce4addb02a31ec3c",
+  "capturedAt": "2026-09-19T15:30:28Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "restore",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/backups/DEMO-9000/20260919T151914Z-before-cobalt-press --apply",
+      "appId": 9000,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   cba30c81868611076c2a2cd2e2ccc04ac7a1c5c8defae5c938f86d0510d00b53\n  Backup Digest: b068bbd5deb7f2c1728b181152e9cdb3472b50107dfb47a70b2f44ef6d8a10de\n",
+      "stderrTail": "Error: Application 9000 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/backups/DEMO-9000/20260919T151914Z-before-cobalt-press --discard-later-changes --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   70f787a9700da4452ce8db9262806fcd1996c02f070fa699e8b36f2857bd4d37\n  Backup Digest: b068bbd5deb7f2c1728b181152e9cdb3472b50107dfb47a70b2f44ef6d8a10de\nWARNING: Application 9000 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9000 to restore: \nResult: RESTORED application 9000 from /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/backups/DEMO-9000/20260919T151914Z-before-cobalt-press.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/backups/DEMO-9001/20260919T152618Z-before-cobalt-press --apply",
+      "appId": 9001,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   b58f5320cd183a8d4bdc6fa9f3794d48c70ca64cef11cde6998cbb5a07287840\n  Backup Digest: 0a0e363a5c71aacdcaf8abaddd34da5859141962a9905f2761dd1ec0f98b29d0\n",
+      "stderrTail": "Error: Application 9001 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/backups/DEMO-9001/20260919T152618Z-before-cobalt-press --discard-later-changes --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   8f6fd767a24927b67996e937dd3c90e81e9c8ec645e850897327a935bcc7ef2f\n  Backup Digest: 0a0e363a5c71aacdcaf8abaddd34da5859141962a9905f2761dd1ec0f98b29d0\nWARNING: Application 9001 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9001 to restore: \nResult: RESTORED application 9001 from /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/backups/DEMO-9001/20260919T152618Z-before-cobalt-press.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "09e3c9e9a4e60499e35f8f965528a08b4c46e8c8a0409d25f85b329eb613d776",
+  "capturedAt": "2026-09-19T09:59:22Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --with-switcher --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: c505020b62933b02c996e940dcd482897c2e770475df3746140d3b70c83f6d01\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/backups/DEMO-9000/20260919T094731Z-before-carbon-volt\nType application ID 9000 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --without-switcher --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: c75a2eafc067e286894020819c8574060136de830d6b168a8fdd49cdc23671b7\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/backups/DEMO-9000/20260919T094912Z-before-carbon-volt\nType application ID 9000 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --with-switcher --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: e7ad843d0b85c630a1edbfde7ae60e6320e4be82c20660bde514f4e0de15c4a3\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/backups/DEMO-9001/20260919T095442Z-before-carbon-volt\nType application ID 9001 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --without-switcher --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: da7b34b59f5af9ce575640bf7a0bde6e3362ff6bc7e9587e4ad7e10954bc6805\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/backups/DEMO-9001/20260919T095627Z-before-carbon-volt\nType application ID 9001 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

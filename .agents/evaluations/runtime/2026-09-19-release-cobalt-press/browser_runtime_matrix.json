@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "001cf226b0b6f14a3c83f3cf236d44f28617eef187d7e184ce4addb02a31ec3c",
+  "capturedAt": "2026-09-19T16:13:00Z",
+  "layer": "D",
+  "check": "browser_runtime_matrix",
+  "status": "PASS",
+  "results": {
+    "rows": [
+      {
+        "consumer": "minimal",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1440.json",
+          "sha256": "f92985f901bcff714d9cef2d5d8feeba0da4aa7b908812f6643803c0a4d7cadf"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1024.json",
+          "sha256": "644847bee62a731d5bf9a82bab2ddde45d95a877b5f50bbd94b8e2432a7fae7e"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-768.json",
+          "sha256": "aee17d55ba6972ac4363861f2f79a6db97c8f0f967ed5dfde210fb86117cab5f"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-375.json",
+          "sha256": "89caa8f841223c26534713fc0b0d31a5c8a041dac31748b3aaa43957d976c73f"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page1-1440.json",
+          "sha256": "c1fc4b3094fd4a13d80acb927d360f6ee9245eb64ec0e167c9f84f78b4454261"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-business-page1-1024.json",
+          "sha256": "a553fb78659a0b03f61f7a1c0259e6c2af35f7aa58be8df0586c8555494e4eb5"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-business-page1-768.json",
+          "sha256": "74e10321c86d3b5e9860ecb4329fba9004d841c9a301fc2c41088a789409bcd5"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page1-375.json",
+          "sha256": "4876de214414aac37ed4247846de9bacc8dcc8b770edb21f7abc4e3772c52e34"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page2-1440.json",
+          "sha256": "fe34e725ffa4e5a7672506aa846503865ba41c94b317965980d37ac673954611"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page2-375.json",
+          "sha256": "104cdfbd1ffa568ff0dead91aec2a74804c34ee24f44e0d0c81ee99742677912"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page3-1440.json",
+          "sha256": "8d9fe66eab82a913cdf83d48e7ad67d71c87c12646ed8d0504606c098c83792e"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page3-375.json",
+          "sha256": "c18fea125fe1f6ff1fda43d25f2609e865b75116eaa621d73eb8f3fe324347a4"
+        }
+      }
+    ],
+    "failures": []
+  }
+}

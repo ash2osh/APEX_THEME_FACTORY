@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "001cf226b0b6f14a3c83f3cf236d44f28617eef187d7e184ce4addb02a31ec3c",
+  "capturedAt": "2026-09-19T15:30:28Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "reinstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/packages/cobalt-press-1.0.0/cobalt-press-1.0.0 --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         cobalt-press v1.0.0\n  Staged Digest: e9ed5758baf535c4cfd5bb4e4d26afe006a150087039be0eaea1015850311ad5\n  Backup:        /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/backups/DEMO-9000/20260919T152040Z-before-cobalt-press\nType application ID 9000 to import: \nResult: IMPORTED theme 'cobalt-press' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/packages/cobalt-press-1.0.0/cobalt-press-1.0.0 --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         cobalt-press v1.0.0\n  Staged Digest: 5bd34b3e00a32c06625c96ebdac4a3db3604322d8f8c0f9a2bd2ba93c827b338\n  Backup:        /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/backups/DEMO-9001/20260919T152712Z-before-cobalt-press\nType application ID 9001 to import: \nResult: IMPORTED theme 'cobalt-press' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

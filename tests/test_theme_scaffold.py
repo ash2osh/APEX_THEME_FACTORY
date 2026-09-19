@@ -125,17 +125,17 @@ class ThemeScaffoldTests(unittest.TestCase):
 
         self.assertEqual(self.snapshot(existing), before)
 
-    def test_regeneration_refuses_handwritten_file_without_changing_anything(self):
+    def test_regeneration_preserves_handwritten_file(self):
         recipe = self.recipe("aurora-grid")
         theme_root = create_theme(self.repo, recipe).created
         buttons = theme_root / "css/apex/buttons.css"
         buttons.write_text("/* human edit */\n" + buttons.read_text(encoding="utf-8"), encoding="utf-8")
-        before = self.snapshot(theme_root)
+        before = buttons.read_bytes()
 
-        with self.assertRaisesRegex(PackageError, "Refusing to overwrite handwritten file"):
-            regenerate_owned_files(theme_root, recipe)
+        result = regenerate_owned_files(theme_root, recipe)
 
-        self.assertEqual(self.snapshot(theme_root), before)
+        self.assertEqual(buttons.read_bytes(), before)
+        self.assertEqual(result.preserved_handwritten, (buttons,))
 
     def test_regeneration_updates_all_owned_files_atomically(self):
         recipe = self.recipe("aurora-grid")

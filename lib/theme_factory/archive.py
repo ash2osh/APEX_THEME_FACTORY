@@ -23,6 +23,7 @@ REQUIRED_PACKAGE_FILES = frozenset({
     "README.md", "MANUAL-INSTALL.md", "preview/cover.jpg", "licenses/THIRD_PARTY.md",
     "lib/theme_factory/__init__.py",
 })
+SOURCE_ONLY_THEME_FILES = frozenset({"theme.recipe.json"})
 
 
 def get_source_commit(repo_root: Path) -> str:
@@ -185,6 +186,10 @@ def build_package_from_root(repo_root: Path, theme_root: Path, output_dir: Path)
         manual_tmpl = repo_root / "installer/templates/MANUAL-INSTALL.md.tmpl"
         if manual_tmpl.exists():
             (staging / "MANUAL-INSTALL.md").write_text(render_template(manual_tmpl, replacements), encoding="utf-8")
+
+        leaked_source = sorted(path for path in SOURCE_ONLY_THEME_FILES if (staging / path).exists())
+        if leaked_source:
+            raise PackageError(f"Source-only theme file leaked into package: {leaked_source[0]}")
 
         # 9. Write checksums.sha256
         checksum_lines = []

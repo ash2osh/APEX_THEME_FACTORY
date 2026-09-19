@@ -6,7 +6,7 @@
 
 /* ---- Header: title-bar surface, hairline bottom, muted controls, no accent strip ----------- */
 .app-theme-velvet-signal .apex-theme-iris .t-Header {
-    --ut-header-strip-size: 0px;                        /* .t-Header:before accent strip */
+    --ut-header-strip-size: 3px;
     --ut-header-background-color: var(--app-surface-subtle);
     --ut-header-text-color: var(--app-text-emphasized);
     --ut-header-border-color: var(--app-border-color);

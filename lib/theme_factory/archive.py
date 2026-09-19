@@ -64,7 +64,12 @@ def calculate_sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def build_package_from_root(repo_root: Path, theme_root: Path, output_dir: Path) -> Path:
+def build_package_from_root(
+    repo_root: Path,
+    theme_root: Path,
+    output_dir: Path,
+    source_identity: str | None = None,
+) -> Path:
     """Build deterministic ZIP package from theme directory."""
     repo_root = repo_root.resolve()
     theme_root = theme_root.resolve()
@@ -72,7 +77,7 @@ def build_package_from_root(repo_root: Path, theme_root: Path, output_dir: Path)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     manifest = load_manifest(theme_root / "theme.json", theme_root)
-    source_commit = get_source_commit(repo_root)
+    source_commit = source_identity or get_source_commit(repo_root)
 
     required_sources = (
         theme_root / manifest.cover,

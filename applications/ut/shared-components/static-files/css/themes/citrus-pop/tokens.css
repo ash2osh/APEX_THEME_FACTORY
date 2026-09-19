@@ -15,6 +15,7 @@ html.app-theme-citrus-pop {
 
     --cit-amber: #007F78;
     --cit-amber-hover: #00635E;
+    --cit-teal-text: #00645F;
     --cit-amber-shade: rgba(0, 127, 120, .11);
     --cit-amber-glow: rgba(0, 127, 120, .24);
 
@@ -104,13 +105,13 @@ html.app-theme-citrus-pop {
     --ut-border-radius-lg: var(--app-radius-lg);
 
     --ut-focus-outline-color: var(--app-color-primary);
-    --ut-link-text-color: var(--app-color-primary);
+    --ut-link-text-color: var(--cit-teal-text);
 
     --ut-palette-primary: var(--app-color-primary);
     --ut-palette-primary-contrast: var(--app-text-on-accent);
     --ut-palette-primary-shade: var(--app-accent-shade);
     --ut-palette-primary-alt: var(--cit-amber);
-    --ut-palette-primary-text: var(--app-color-primary);
+    --ut-palette-primary-text: var(--cit-teal-text);
 
     --ut-palette-success: var(--app-color-success);
     --ut-palette-success-contrast: var(--app-text-on-accent);

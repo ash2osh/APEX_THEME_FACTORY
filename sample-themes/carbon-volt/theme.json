@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "name": "carbon-volt",
+  "title": "Carbon Volt",
+  "version": "1.0.0",
+  "tagline": "Graphite control surfaces charged with acid lime and cyan telemetry.",
+  "class": "app-theme-carbon-volt",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "templateOptions": {
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "fonts": {
+    "body": {
+      "family": "Noto Kufi Arabic",
+      "fallback": ["system-ui", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+      "license": "licenses/OFL.txt",
+      "faces": [
+        {"file": "fonts/noto-kufi-arabic-regular.woff2", "weight": 400, "style": "normal"},
+        {"file": "fonts/noto-kufi-arabic-medium.woff2", "weight": 500, "style": "normal"},
+        {"file": "fonts/noto-kufi-arabic-semibold.woff2", "weight": 600, "style": "normal"},
+        {"file": "fonts/noto-kufi-arabic-bold.woff2", "weight": 700, "style": "normal"}
+      ]
+    }
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

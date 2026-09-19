@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "name": "velvet-signal",
+  "title": "Velvet Signal",
+  "version": "1.0.0",
+  "tagline": "Aubergine depth, electric fuchsia signals, and generous sculpted surfaces.",
+  "class": "app-theme-velvet-signal",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.2.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "templateOptions": {
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "fonts": {
+    "body": {
+      "family": "Alexandria",
+      "fallback": ["system-ui", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+      "license": "licenses/OFL.txt",
+      "faces": [
+        {"file": "fonts/alexandria-regular.woff2", "weight": 400, "style": "normal"},
+        {"file": "fonts/alexandria-medium.woff2", "weight": 500, "style": "normal"},
+        {"file": "fonts/alexandria-semibold.woff2", "weight": 600, "style": "normal"},
+        {"file": "fonts/alexandria-bold.woff2", "weight": 700, "style": "normal"}
+      ]
+    }
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

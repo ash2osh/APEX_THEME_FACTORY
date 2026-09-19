@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "09e3c9e9a4e60499e35f8f965528a08b4c46e8c8a0409d25f85b329eb613d776",
+  "capturedAt": "2026-09-19T09:59:22Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "reinstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: 81511b12c99bd529225555764c061a8f275414503fb8f3b64ba2399e87530d1f\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/minimal/backups/DEMO-9000/20260919T094642Z-before-carbon-volt\nType application ID 9000 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: d453e4bb3d450a2a887dd95ebb54d085ed0825e66312cf9be961527297c76df6\n  Backup:        /tmp/apex-theme-factory-live-matrix-nsv64mpi/business/backups/DEMO-9001/20260919T095350Z-before-carbon-volt\nType application ID 9001 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

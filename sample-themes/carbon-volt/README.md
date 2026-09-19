@@ -14,4 +14,6 @@ square geometry, compact controls, and visible grid structure.
 
 ## Verification
 
-**UNVERIFIED** — source package under implementation. Do not treat this as release evidence.
+**UNVERIFIED** — Layers A–D PASS at source commit `4495d5b70d0ba6d58ed973bd45790a6b67091c6b`
+(2026-09-19), including the two-consumer SQLcl lifecycle and 12-row browser matrix. Layer E agent
+behavior evidence is still pending, so this package is not yet a verified release.

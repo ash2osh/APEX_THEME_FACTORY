@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "6f0278fccee872c82ddc564735e2779a80ec5756d6debbeb1b67d3d81d9fc15d",
+  "capturedAt": "2026-09-19T15:18:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "reinstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-838251l_/minimal/packages/velvet-signal-1.0.0/velvet-signal-1.0.0 --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         velvet-signal v1.0.0\n  Staged Digest: a09c7691b78337ce653d9beb3b5fb94abb03ceb25de6a912239eb2434182b699\n  Backup:        /tmp/apex-theme-factory-live-matrix-838251l_/minimal/backups/DEMO-9000/20260919T150509Z-before-velvet-signal\nType application ID 9000 to import: \nResult: IMPORTED theme 'velvet-signal' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-838251l_/business/packages/velvet-signal-1.0.0/velvet-signal-1.0.0 --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         velvet-signal v1.0.0\n  Staged Digest: 1eff2e471b5c1f1b457d8f57705334ff120f3d48c70dbff0bc45de153a2493b1\n  Backup:        /tmp/apex-theme-factory-live-matrix-838251l_/business/backups/DEMO-9001/20260919T151246Z-before-velvet-signal\nType application ID 9001 to import: \nResult: IMPORTED theme 'velvet-signal' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

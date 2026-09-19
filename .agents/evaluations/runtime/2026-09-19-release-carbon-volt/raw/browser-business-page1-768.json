@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "evidenceType": "browser-runtime",
+  "theme": "carbon-volt",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "09e3c9e9a4e60499e35f8f965528a08b4c46e8c8a0409d25f85b329eb613d776",
+  "capturedAt": "2026-09-19T16:08:22Z",
+  "consumer": "business",
+  "viewportWidth": 768,
+  "url": "http://localhost:8181/ords/r/demo/tf-consumer-business-9001/home",
+  "appId": "9001",
+  "appAlias": "",
+  "pageId": "1",
+  "apexVersion": "26.1.4",
+  "bodyClasses": [
+    "t-PageBody",
+    "t-PageBody--hideLeft",
+    "t-PageBody--hideActions",
+    "t-PageTemplate--standard",
+    "apex-side-nav",
+    "apex-icons-fontapex",
+    "apex-theme-iris",
+    "js-ready",
+    "js-navCollapsed--hidden",
+    "js-navCollapsed",
+    "t-PageBody--leftNav"
+  ],
+  "htmlClasses": [
+    "page-1",
+    "app-TF-CONSUMER-BUSINESS-9001",
+    "app-theme-carbon-volt"
+  ],
+  "cssUrls": [
+    "/i/app_ui/css/Core.min.css?v=26.1.4",
+    "/i/app_ui/css/Theme-Standard.min.css?v=26.1.4",
+    "/i/libraries/font-apex/2.5.1/css/font-apex.min.css?v=26.1.4",
+    "/i/themes/theme_42/26.1/css/Core.min.css?v=26.1.4",
+    "/i/libraries/oracle-fonts/oraclesans-apex.min.css?v=26.1.4",
+    "/i/themes/theme_42/26.1/css/Iris.min.css?v=26.1.4",
+    "r/demo/9001/files/static/v2461303154002/css/business-brand.css",
+    "r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/theme.css",
+    "r/demo/9001/files/static/v2461303154002/theme-factory/packages/velvet-signal/1.0.0/theme.css",
+    "r/demo/9001/files/static/v2461303154002/theme-factory/packages/cobalt-press/1.0.0/theme.css",
+    "r/demo/9001/files/static/v2461303154002/theme-factory/packages/citrus-pop/1.0.0/theme.css"
+  ],
+  "javascriptUrls": [
+    "/i/libraries/apex/minified/desktop_all.min.js?v=26.1.4",
+    "wwv_flow.js_messages?p_app_id=9001&p_lang=en&p_version=26.1.4-7058922&p_nls_settings=eyJudW1lcmljQ2hhcmFjdGVycyI6Ii4sIiwiY3VycmVuY3kiOiIkIiwiaXNvQ3VycmVuY3kiOiJBTUVSSUNBIiwiZHVhbEN1cnJlbmN5IjoiJCJ9&p_builder=Y",
+    "wwv_flow.js_dialogs?p_app_id=9001&p_version=26.1.4-7058922",
+    "/i/libraries/apex/minified/widget.stickyWidget.min.js?v=26.1.4",
+    "/i/themes/theme_42/26.1/js/theme42.min.js?v=26.1.4",
+    "r/demo/9001/files/static/v2461303154002/js/business-util.js",
+    "r/demo/9001/files/static/v2461303154002/theme-factory/runtime/theme-factory-runtime.js",
+    "/i/libraries/apex/minified/widget.treeView.min.js?v=26.1.4",
+    "/i/libraries/apex/minified/modelViewBase.min.js?v=26.1.4",
+    "/i/libraries/apex/minified/widget.templateReport.min.js?v=26.1.4",
+    "/i/apex_ui/js/minified/devToolbar.min.js?v=26.1.4"
+  ],
+  "loadedUrls": [
+    "http://localhost:8181/i/app_ui/css/Core.min.css?v=26.1.4",
+    "http://localhost:8181/i/app_ui/css/Theme-Standard.min.css?v=26.1.4",
+    "http://localhost:8181/i/libraries/font-apex/2.5.1/css/font-apex.min.css?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/css/Core.min.css?v=26.1.4",
+    "http://localhost:8181/i/libraries/oracle-fonts/oraclesans-apex.min.css?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/css/Iris.min.css?v=26.1.4",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/css/business-brand.css",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/theme.css",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/velvet-signal/1.0.0/theme.css",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/cobalt-press/1.0.0/theme.css",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/citrus-pop/1.0.0/theme.css",
+    "http://localhost:8181/i/libraries/apex/minified/desktop_all.min.js?v=26.1.4",
+    "http://localhost:8181/ords/wwv_flow.js_messages?p_app_id=9001&p_lang=en&p_version=26.1.4-7058922&p_nls_settings=eyJudW1lcmljQ2hhcmFjdGVycyI6Ii4sIiwiY3VycmVuY3kiOiIkIiwiaXNvQ3VycmVuY3kiOiJBTUVSSUNBIiwiZHVhbEN1cnJlbmN5IjoiJCJ9&p_builder=Y",
+    "http://localhost:8181/ords/wwv_flow.js_dialogs?p_app_id=9001&p_version=26.1.4-7058922",
+    "http://localhost:8181/i/libraries/apex/minified/widget.stickyWidget.min.js?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/js/theme42.min.js?v=26.1.4",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/js/business-util.js",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/runtime/theme-factory-runtime.js",
+    "http://localhost:8181/i/libraries/apex/minified/widget.treeView.min.js?v=26.1.4",
+    "http://localhost:8181/i/libraries/apex/minified/modelViewBase.min.js?v=26.1.4",
+    "http://localhost:8181/i/libraries/apex/minified/widget.templateReport.min.js?v=26.1.4",
+    "http://localhost:8181/i/apex_ui/js/minified/devToolbar.min.js?v=26.1.4",
+    "http://localhost:8181/i/app_ui/font/apex-core-font.woff2",
+    "http://localhost:8181/i/libraries/font-apex/2.5.1/fonts/Font-APEX-Small.woff2?",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-regular.woff2",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-medium.woff2",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-semibold.woff2",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-bold.woff2",
+    "http://localhost:8181/i/libraries/oraclejet/20.0.5/js/libs/oj/20.0.5/resources/nls/localeElements.js",
+    "http://localhost:8181/i/libraries/oraclejet/20.0.5/js/libs/oj/20.0.5/resources/nls/en/localeElements.js",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/icons/app-icon-32.png",
+    "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/runtime/registry.json"
+  ],
+  "windowApp": null,
+  "windowAlpine": null,
+  "activeTheme": "carbon-volt",
+  "registry": {
+    "defaultTheme": "citrus-pop",
+    "switcherEnabled": true,
+    "runtimeFiles": {
+      "theme-factory-runtime.js": "112dbaaf8f4583e6e525c242066f7b80dc812a3ab2de4303891effca73aae9dd"
+    },
+    "themes": [
+      {
+        "name": "carbon-volt",
+        "title": "Carbon Volt",
+        "version": "1.0.0",
+        "className": "app-theme-carbon-volt",
+        "stylesheetUrl": "#APP_FILES#theme-factory/packages/carbon-volt/1.0.0/theme.css",
+        "files": {
+          "theme-factory/packages/carbon-volt/1.0.0/theme.json": "483b31c11be8a738a13aec1fcde6f9292e48a221946d19b4ddfcb256eca21d8f",
+          "theme-factory/packages/carbon-volt/1.0.0/theme.css": "3d9954a28f43db9a336087c482b2dc88fc904afe5a590787c52a9cfd517fdbe6",
+          "theme-factory/packages/carbon-volt/1.0.0/cover.jpg": "b139fbc9125fb7b3dd7c31f7bbbe03ce77548f87b561377ba36d95fadff03f71",
+          "theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-bold.woff2": "797736e43318cddabd85566dea14a08ba5f3f82da0806efa27f9eb964cbbce0f",
+          "theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-medium.woff2": "870d583c8b5f71878d2cd1e6e97b5aaaafe32e15495061da2d2ac37674a5dc71",
+          "theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-regular.woff2": "9585f839e88d6c0af6ed215192b0dba4e2b1fa660931756bd84f117fb88b10d9",
+          "theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-semibold.woff2": "79f3de947d664d6ad3920934d9d2f835bf764e9d3daa3e506fa1b99e93389a30",
+          "theme-factory/packages/carbon-volt/1.0.0/licenses/OFL.txt": "07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96"
+        }
+      },
+      {
+        "name": "citrus-pop",
+        "title": "Citrus Pop",
+        "version": "1.0.0",
+        "className": "app-theme-citrus-pop",
+        "stylesheetUrl": "#APP_FILES#theme-factory/packages/citrus-pop/1.0.0/theme.css",
+        "files": {
+          "theme-factory/packages/citrus-pop/1.0.0/theme.json": "85efa8bf26b81f03b46792250cf6f926ae9b78ec1b2b4b63be8aa7e28b812841",
+          "theme-factory/packages/citrus-pop/1.0.0/theme.css": "cd4993df626008e92e1eb362dc2dfda72233baccc0cef5e29fbadd303ab39f03",
+          "theme-factory/packages/citrus-pop/1.0.0/cover.jpg": "06bff9e747de38f7fa2e1546cb006533040a67bdf406712ad4b9b9674c875f5e",
+          "theme-factory/packages/citrus-pop/1.0.0/fonts/tajawal-bold.woff2": "ad836d90b6627b6a061001e147999784b6d2c51ab8d747906ee5386719e9e0bf",
+          "theme-factory/packages/citrus-pop/1.0.0/fonts/tajawal-extrabold.woff2": "abc42fcb2256cee2933a9b4daadf64b91ff3c7a722d930a3d849809b262ef14a",
+          "theme-factory/packages/citrus-pop/1.0.0/fonts/tajawal-medium.woff2": "7a9cfd50c09599631f8ff03c8e21e41b191e023129bbb46b00e60f390252adaf",
+          "theme-factory/packages/citrus-pop/1.0.0/fonts/tajawal-regular.woff2": "33a48a59935e6b2f0327f4eca3b6dd813d4cd3fa20d8816b61a50a8367bc2ac0",
+          "theme-factory/packages/citrus-pop/1.0.0/licenses/OFL.txt": "9b584984f9db0ee30347391a76eff9c0a6b03dc450c3c6afe3757a2cb3a4db87"
+        }
+      },
+      {
+        "name": "cobalt-press",
+        "title": "Cobalt Press",
+        "version": "1.0.0",
+        "className": "app-theme-cobalt-press",
+        "stylesheetUrl": "#APP_FILES#theme-factory/packages/cobalt-press/1.0.0/theme.css",
+        "files": {
+          "theme-factory/packages/cobalt-press/1.0.0/theme.json": "a015ff86ed061ba73e37ee186123b9dc1310f4333b4324b0a02cd7880b2bec56",
+          "theme-factory/packages/cobalt-press/1.0.0/theme.css": "02588517c2144e249067ae07bb42dfcffbe2536e1fc1fc033aaa4f3127c4cdec",
+          "theme-factory/packages/cobalt-press/1.0.0/cover.jpg": "84d13d16e3986182f400d754c7c0df071060b0022ad1ded6636d2fa7ace73868",
+          "theme-factory/packages/cobalt-press/1.0.0/fonts/cairo-bold.woff2": "cf78266be36d13a02f970c5e3d4383a2c2ea98d4b5f7852c4519bb28cab029ef",
+          "theme-factory/packages/cobalt-press/1.0.0/fonts/cairo-medium.woff2": "d6451516643f5ece151fc2548fe44d7c32e593b8a9ab42951b33ce11c4bfbf69",
+          "theme-factory/packages/cobalt-press/1.0.0/fonts/cairo-regular.woff2": "f249889b4f3d72b51b30c17de444625b20370893493f6e71e0a27f82d6a3a7c0",
+          "theme-factory/packages/cobalt-press/1.0.0/fonts/cairo-semibold.woff2": "0d45ec81de6bb31ee9c8e6936e6fc12e55ffd1b5113072ddcff6fd3d3040a5b5",
+          "theme-factory/packages/cobalt-press/1.0.0/licenses/OFL.txt": "a4554e1799d42e1405924b61eb0e0722ae1623b1f1f07f995348f96c496362a9"
+        }
+      },
+      {
+        "name": "velvet-signal",
+        "title": "Velvet Signal",
+        "version": "1.0.0",
+        "className": "app-theme-velvet-signal",
+        "stylesheetUrl": "#APP_FILES#theme-factory/packages/velvet-signal/1.0.0/theme.css",
+        "files": {
+          "theme-factory/packages/velvet-signal/1.0.0/theme.json": "8b1e7d9b15676899b9665bfa972eb5414a1b229f80275875ae51eba5db97021b",
+          "theme-factory/packages/velvet-signal/1.0.0/theme.css": "0682d35db90f66f12c5e5c257eeeeda7dba24607685ddd2426627e3abe50501d",
+          "theme-factory/packages/velvet-signal/1.0.0/cover.jpg": "c707ea7c9a0793f9ee0d87c2cfec2e40fae4948fa13f4a368d77764c3866ae73",
+          "theme-factory/packages/velvet-signal/1.0.0/fonts/alexandria-bold.woff2": "c4f24052fad83dafc38910ca1cb5d5095a1dabe6dc1d82ce7a5fb58b05fc9b1c",
+          "theme-factory/packages/velvet-signal/1.0.0/fonts/alexandria-medium.woff2": "6530293848bcb0ac28b24dc5c9fe3c452f32d1acdf2f345dff5212f837199ef6",
+          "theme-factory/packages/velvet-signal/1.0.0/fonts/alexandria-regular.woff2": "88abd2f94925adf9016abfa2496b6a7f0ec18d2dad89b8db42a2adee30879aaf",
+          "theme-factory/packages/velvet-signal/1.0.0/fonts/alexandria-semibold.woff2": "8dca4fcbff6af6c8af3e72aff79a8164eb886e08f399168cdd4917d172d3816d",
+          "theme-factory/packages/velvet-signal/1.0.0/licenses/OFL.txt": "56372aed19c2701f50e6e784110af55bf8796ed51648805324ad1adb0a3860bb"
+        }
+      }
+    ]
+  },
+  "switcherAvailable": true,
+  "consoleErrors": [],
+  "failedRequests": [],
+  "fonts": [
+    {
+      "role": "body",
+      "family": "ThemeFactory-carbon-volt-body",
+      "weight": 400,
+      "style": "normal",
+      "check": true,
+      "requestUrl": "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-regular.woff2",
+      "mimeType": "font/woff2"
+    },
+    {
+      "role": "body",
+      "family": "ThemeFactory-carbon-volt-body",
+      "weight": 500,
+      "style": "normal",
+      "check": true,
+      "requestUrl": "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-medium.woff2",
+      "mimeType": "font/woff2"
+    },
+    {
+      "role": "body",
+      "family": "ThemeFactory-carbon-volt-body",
+      "weight": 600,
+      "style": "normal",
+      "check": true,
+      "requestUrl": "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-semibold.woff2",
+      "mimeType": "font/woff2"
+    },
+    {
+      "role": "body",
+      "family": "ThemeFactory-carbon-volt-body",
+      "weight": 700,
+      "style": "normal",
+      "check": true,
+      "requestUrl": "http://localhost:8181/ords/r/demo/9001/files/static/v2461303154002/theme-factory/packages/carbon-volt/1.0.0/fonts/noto-kufi-arabic-bold.woff2",
+      "mimeType": "font/woff2"
+    }
+  ],
+  "declaredFaceCount": 4,
+  "fontApexFamilyBefore": "\"Font APEX Small\"",
+  "fontApexFamilyAfter": "\"Font APEX Small\"",
+  "fontsVerified": true,
+  "accessibilityVerified": true,
+  "persistenceVerified": true,
+  "notes": []
+}

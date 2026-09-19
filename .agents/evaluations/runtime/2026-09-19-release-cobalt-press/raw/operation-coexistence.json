@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "001cf226b0b6f14a3c83f3cf236d44f28617eef187d7e184ce4addb02a31ec3c",
+  "capturedAt": "2026-09-19T15:30:28Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/packages/citrus-pop-1.0.0/citrus-pop-1.0.0 --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         citrus-pop v1.0.0\n  Staged Digest: 6ade7078d142430bf912309aa3553ddb53baafd73369514971490b791e96f7d0\n  Backup:        /tmp/apex-theme-factory-live-matrix-v9e0hvgo/minimal/backups/DEMO-9000/20260919T152219Z-before-citrus-pop\nType application ID 9000 to import: \nResult: IMPORTED theme 'citrus-pop' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/packages/citrus-pop-1.0.0/citrus-pop-1.0.0 --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         citrus-pop v1.0.0\n  Staged Digest: 6c28bd916580c1ca6cce3d7764baf7f21d826eb1bf7ac8abbaaa901d94543181\n  Backup:        /tmp/apex-theme-factory-live-matrix-v9e0hvgo/business/backups/DEMO-9001/20260919T152814Z-before-citrus-pop\nType application ID 9001 to import: \nResult: IMPORTED theme 'citrus-pop' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

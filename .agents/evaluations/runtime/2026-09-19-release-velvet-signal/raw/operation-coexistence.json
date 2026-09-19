@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "4495d5b70d0ba6d58ed973bd45790a6b67091c6b",
+  "packageSha256": "6f0278fccee872c82ddc564735e2779a80ec5756d6debbeb1b67d3d81d9fc15d",
+  "capturedAt": "2026-09-19T15:18:43Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-838251l_/minimal/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --apply",
+      "appId": 9000,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9000 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9000\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: 4dd01b443b9d15b50881d694cf729808807891913d5b37a8f912aca4060d2838\n  Backup:        /tmp/apex-theme-factory-live-matrix-838251l_/minimal/backups/DEMO-9000/20260919T150657Z-before-carbon-volt\nType application ID 9000 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9000.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/apex-theme-factory-live-matrix-838251l_/business/packages/carbon-volt-1.0.0/carbon-volt-1.0.0 --apply",
+      "appId": 9001,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9001 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9001\n  Theme:         carbon-volt v1.0.0\n  Staged Digest: f48a084ddc7a5cda666542bb3699d95e874abff8f41f4e031c6ca8615eb28e41\n  Backup:        /tmp/apex-theme-factory-live-matrix-838251l_/business/backups/DEMO-9001/20260919T151442Z-before-carbon-volt\nType application ID 9001 to import: \nResult: IMPORTED theme 'carbon-volt' v1.0.0 into application 9001.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

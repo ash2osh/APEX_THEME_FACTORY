@@ -1,0 +1,47 @@
+/* @theme-factory-generated */
+/* Recipe values for html.app-theme-__NAME__; component modules consume only tokens. */
+html.app-theme-__NAME__ {
+  color-scheme: __MODE__;
+  --theme-page: __PAGE__;
+  --theme-card: __CARD__;
+  --theme-chrome: __CHROME__;
+  --theme-text-primary: __TEXT_PRIMARY__;
+  --theme-text-secondary: __TEXT_SECONDARY__;
+  --theme-accent: __ACCENT__;
+  --theme-accent-alt: __ACCENT_ALT__;
+  --theme-on-accent: __ON_ACCENT__;
+  --theme-danger: __DANGER__;
+  --app-surface-page: var(--theme-page);
+  --app-surface-card: var(--theme-card);
+  --app-surface-chrome: var(--theme-chrome);
+  --app-surface-subtle: color-mix(in srgb, var(--theme-card), var(--theme-accent) 5%);
+  --app-surface-hover: color-mix(in srgb, var(--theme-card), var(--theme-accent) 10%);
+  --app-surface-selected: color-mix(in srgb, var(--theme-card), var(--theme-accent) 16%);
+  --app-text-primary: var(--theme-text-primary);
+  --app-text-secondary: var(--theme-text-secondary);
+  --app-accent: var(--theme-accent);
+  --app-accent-alt: var(--theme-accent-alt);
+  --app-on-accent: var(--theme-on-accent);
+  --app-danger: var(--theme-danger);
+  --app-border-color: color-mix(in srgb, var(--theme-text-secondary), transparent 45%);
+  --app-border-width: __BORDER_WIDTH__;
+  --app-radius-sm: __RADIUS_SMALL__;
+  --app-radius-md: __RADIUS_MEDIUM__;
+  --app-radius-lg: __RADIUS_LARGE__;
+  --app-control-height: __CONTROL_HEIGHT__;
+  --app-shadow-card: __SHADOW__;
+  --app-focus-color: __FOCUS_COLOR__;
+  --app-focus-width: __FOCUS_WIDTH__;
+  --app-focus-offset: __FOCUS_OFFSET__;
+  --app-font-family-body: "__BODY_INTERNAL__", __FALLBACK__;
+  --app-font-family-heading: "__HEADING_INTERNAL__", __FALLBACK__;
+}
+
+html.app-theme-__NAME__ .apex-theme-iris {
+  --ut-body-background-color: var(--app-surface-page);
+  --ut-body-text-color: var(--app-text-primary);
+  --ut-component-background-color: var(--app-surface-card);
+  --ut-component-text-color: var(--app-text-primary);
+  --ut-palette-primary: var(--app-accent);
+  --ut-palette-danger: var(--app-danger);
+}

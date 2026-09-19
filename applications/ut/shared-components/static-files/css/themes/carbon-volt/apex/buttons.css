@@ -1,0 +1,69 @@
+/* Buttons.
+   Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header, --hot,
+   --danger …) on the element, so overriding the base atoms on body.apex-theme-iris restyles all buttons while
+   every modifier keeps precedence. Default = card surface + 3:1 border; hot = cyan with dark text (4.75:1);
+   primary = text-safe blue with dark text (5.2:1). All rules scoped to .app-theme-carbon-volt. */
+
+.app-theme-carbon-volt .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: card surface; the border identifies it on a same-coloured region (WCAG 1.4.11) */
+    --a-button-background-color: var(--app-surface-card);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-strong);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-active-background-color: var(--app-surface-selected);
+    --a-button-focus-background-color: var(--app-surface-hover);
+    --a-button-focus-border-color: var(--cv-cyan);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot = the cyan action (card actions and checked button-group segments share it; Iris lists them together) */
+.app-theme-carbon-volt .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary),
+.app-theme-carbon-volt .apex-theme-iris .a-CardView-button--hot,
+.app-theme-carbon-volt .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-carbon-volt .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--cv-cyan);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--cv-cyan-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--cv-cyan);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--cv-cyan-bright);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Primary palette button: blue is 3.7:1 under white text, so use the text-safe tint with dark text */
+.app-theme-carbon-volt .apex-theme-iris .t-Button--primary {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--cv-blue-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+}
+
+/* Visible keyboard focus on every button, consistent with fields */
+.app-theme-carbon-volt .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+
+.app-theme-carbon-volt .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-hover-background-color: var(--cv-blue-bright);
+}

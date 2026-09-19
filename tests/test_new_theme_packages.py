@@ -11,6 +11,9 @@ THEMES = {
         "font": "Noto Kufi Arabic",
         "mode": "dark",
         "weights": {400, 500, 600, 700},
+        "anchors": {"#0a0d0b", "#151a16", "#b8ff3d", "#38e8ff", "#f2f7f0"},
+        "radius": "0px",
+        "control": "2.125rem",
     },
     "velvet-signal": {
         "title": "Velvet Signal",
@@ -18,6 +21,9 @@ THEMES = {
         "font": "Alexandria",
         "mode": "dark",
         "weights": {400, 500, 600, 700},
+        "anchors": {"#140b1b", "#24132f", "#ff4fb3", "#9c6cff", "#fff4fc"},
+        "radius": "10px",
+        "control": "2.75rem",
     },
     "cobalt-press": {
         "title": "Cobalt Press",
@@ -25,6 +31,9 @@ THEMES = {
         "font": "Cairo",
         "mode": "light",
         "weights": {400, 500, 600, 700},
+        "anchors": {"#fff8e8", "#ffffff", "#1a1a26", "#2457ff", "#c53618"},
+        "radius": "0px",
+        "control": "2.5rem",
     },
     "citrus-pop": {
         "title": "Citrus Pop",
@@ -32,6 +41,9 @@ THEMES = {
         "font": "Tajawal",
         "mode": "light",
         "weights": {400, 500, 700, 800},
+        "anchors": {"#ecfaf6", "#ffffff", "#073b3a", "#007f78", "#ff6b35"},
+        "radius": "8px",
+        "control": "2.625rem",
     },
 }
 
@@ -110,6 +122,51 @@ class NewThemePackageTests(unittest.TestCase):
                 tokens = (root / "css/tokens.css").read_text(encoding="utf-8")
                 self.assertIn(f"html.{expected['class']}", tokens)
                 self.assertIn(f"color-scheme: {expected['mode']}", tokens)
+
+                normalized = tokens.lower()
+                for anchor in expected["anchors"]:
+                    self.assertIn(anchor, normalized)
+                self.assertIn(f"--app-radius-sm: {expected['radius']}", tokens)
+                self.assertIn(f"--app-control-h: {expected['control']}", tokens)
+                self.assertIn(f'"ThemeFactory-{name}-body"', tokens)
+
+                if expected["mode"] == "dark":
+                    for required_atom in (
+                        "--ut-color-scheme: dark",
+                        "--a-palette-primary:",
+                        "--a-checkbox-background-color:",
+                        "--a-datepicker-background-color:",
+                        "--a-gv-background-color:",
+                        "--a-menu-background-color:",
+                        "--oj-core-text-color-primary:",
+                    ):
+                        self.assertIn(required_atom, tokens)
+
+    def test_themes_are_component_systems_not_duplicate_recolors(self):
+        bundles = {}
+        for name in THEMES:
+            apex = Path("sample-themes") / name / "css/apex"
+            bundles[name] = "\n".join(
+                (apex / module).read_text(encoding="utf-8") for module in sorted(CSS_MODULES)
+            )
+
+        for left_index, left in enumerate(THEMES):
+            for right in list(THEMES)[left_index + 1 :]:
+                with self.subTest(left=left, right=right):
+                    left_shape = bundles[left].replace(left, "THEME")
+                    right_shape = bundles[right].replace(right, "THEME")
+                    self.assertNotEqual(left_shape, right_shape)
+
+        signatures = {
+            "carbon-volt": ("technical-grid", "telemetry-rail"),
+            "velvet-signal": ("signal-glow", "layered-surface"),
+            "cobalt-press": ("editorial-rule", "offset-shadow"),
+            "citrus-pop": ("buoyant-card", "pill-control"),
+        }
+        for name, markers in signatures.items():
+            with self.subTest(theme=name):
+                for marker in markers:
+                    self.assertIn(marker, bundles[name])
 
     def test_theme_catalog_reports_every_new_package(self):
         catalog = Path("sample-themes/README.md").read_text(encoding="utf-8")

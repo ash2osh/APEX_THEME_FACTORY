@@ -1,0 +1,21 @@
+/* Modal dialogs and popup menus.
+   Scoped to .app-theme-cobalt-press .apex-theme-iris. */
+
+.app-theme-cobalt-press .apex-theme-iris {
+    --jui-dialog-border-radius: var(--app-radius-lg);
+    --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
+    --jui-dialog-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-padding-x: 1.25rem;
+    --jui-dialog-title-font-weight: var(--app-font-weight-semibold);
+    --jui-dialog-title-close-border-radius: var(--app-radius-sm);
+    --jui-dialog-title-close-border-color: transparent;
+    --jui-dialog-buttonpane-background-color: var(--app-surface-subtle);
+    --jui-dialog-buttonpane-border-color: var(--app-border-color);
+    --jui-overlay-background-color: var(--app-overlay-background);
+
+    --a-menu-shadow: var(--app-shadow-dialog);
+    --a-menu-border-radius: var(--app-radius-md);
+    --a-menu-border-color: var(--app-border-color);
+}
+

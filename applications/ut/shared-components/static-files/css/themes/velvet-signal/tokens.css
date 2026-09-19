@@ -1,0 +1,292 @@
+/* Velvet Signal — layered aubergine surfaces, fuchsia actions and violet focus signals.
+   Spacious proportions and deep soft shadows distinguish it from the technical dark package. */
+html.app-theme-velvet-signal {
+    color-scheme: dark;
+
+    --vs-base03: #140B1B;
+    --vs-base02: #24132F;
+    --vs-base01: #8E7099;
+    --vs-base0: #AA8CB5;
+    --vs-base1: #CDB6D5;
+    --vs-base2: #F0DBEA;
+    --vs-base3: #FFF4FC;
+    --vs-yellow: #FFD36C;
+    --vs-orange: #FF9A6C;
+    --vs-red: #FF668A;
+    --vs-magenta: #FF4FB3;
+    --vs-violet: #9C6CFF;
+    --vs-blue: #9C6CFF;
+    --vs-cyan: #B89AFF;
+    --vs-green: #62D7A2;
+    --vs-blue-text: #FF73C1;
+    --vs-cyan-text: #C4AEFF;
+    --vs-red-text: #FF8BA6;
+    --vs-magenta-text: #FF73C1;
+    --vs-orange-text: #FFAD87;
+    --vs-cyan-bright: #CBB8FF;
+    --vs-blue-bright: #FF86C9;
+
+    --app-surface-page: var(--vs-base03);
+    --app-surface-card: var(--vs-base02);
+    --app-surface-chrome: #1B0F24;
+    --app-surface-subtle: #2D183A;
+    --app-surface-input: #2C1838;
+    --app-surface-hover: #352044;
+    --app-surface-selected: #48245F;
+
+    --app-text-emphasized: var(--vs-base3);
+    --app-text-primary: var(--vs-base2);
+    --app-text-secondary: var(--vs-base1);
+    --app-text-on-accent: #200D1A;
+
+    --app-color-primary: var(--vs-magenta);
+    --app-color-success: var(--vs-green);
+    --app-color-warning: var(--vs-yellow);
+    --app-color-danger: var(--vs-red-text);
+    --app-color-info: var(--vs-violet);
+    --app-accent-shade: rgba(255, 79, 179, .16);
+
+    --app-border-color: rgba(205, 182, 213, .2);
+    --app-border-hairline:  1px solid var(--app-border-color);
+    --app-border-strong: rgba(196, 174, 255, .58);
+
+    --app-radius-sm: 10px;
+    --app-radius-md: 16px;
+    --app-radius-lg: 24px;
+    --app-shadow-sm: 0 8px 24px rgba(7, 2, 12, .24);
+    --app-shadow-md: 0 16px 42px rgba(7, 2, 12, .38);
+    --app-shadow-dialog: 0 28px 72px rgba(7, 2, 12, .68), 0 0 32px rgba(156, 108, 255, .16);
+    --app-control-h: 2.75rem;
+
+    --app-focus-ring: 0 0 0 2px var(--vs-base03), 0 0 0 5px var(--vs-violet);
+    --app-focus-halo-color: rgba(156, 108, 255, .36);
+    --app-overlay-background: rgba(20, 11, 27, .78);
+    --app-card-media-overlay: rgba(20, 11, 27, .82);
+    --app-badge-danger-text: #200D1A;
+
+    --app-font-family-body: "ThemeFactory-velvet-signal-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-velvet-signal-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+
+    /* JET reads these once from html and paints them into chart SVG attributes. */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--vs-cyan);
+}
+
+/* Universal Theme / Iris tokens, overridden on the theme-style scope (body.apex-theme-iris, never :root) so
+   every component modifier keeps precedence — see docs/DESIGN_SYSTEM.md §1. */
+.app-theme-velvet-signal .apex-theme-iris {
+    --ut-color-scheme: dark;
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: rgba(205, 182, 213, .12);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-focus-outline-color: var(--vs-cyan);
+    --ut-link-text-color: var(--app-color-primary);
+
+    /* palette: fills keep the Solarized accents; contrast text is dark except on red */
+    --ut-palette-primary: var(--app-color-primary);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--vs-cyan);
+    --ut-palette-primary-text: var(--app-color-primary);
+    --ut-palette-success: var(--vs-green);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: rgba(98, 215, 162, .16);
+    --ut-palette-warning: var(--vs-yellow);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: rgba(255, 211, 108, .16);
+    --ut-palette-danger: var(--vs-red-text);            /* also colours validation messages → tinted */
+    --ut-palette-danger-contrast: var(--app-text-on-accent);
+    --ut-palette-danger-shade: rgba(255, 102, 138, .16);
+    --ut-palette-info: var(--vs-cyan);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: rgba(156, 108, 255, .16);
+    --ut-palette-generic: var(--app-surface-chrome);
+    --ut-palette-generic-contrast: var(--app-text-primary);
+    --ut-palette-generic-shade: var(--app-surface-subtle);
+    --ut-palette-generic-text: var(--app-text-primary);
+    --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-alt-text: var(--vs-cyan-text);
+    --ut-palette-success-text: var(--vs-green);          /* 4.1:1 on cards: icons and large text only */
+    --ut-palette-warning-text: var(--vs-yellow);
+    --ut-palette-danger-text: var(--vs-red-text);
+    --ut-palette-info-text: var(--vs-cyan);
+
+    /* Core.min.css declares the whole --a-palette-* atom family as var(--ut-palette-*) *on :root*, so it
+       freezes to Iris' light literals (#00688c / #e4f1f7 / #fff) before the overrides above reach it
+       (pitfalls.md §1.2). Every consumer is an element-scoped rule, so restating the chain here is enough.
+       Measured 2026-09-17 on p1410: selecting an Interactive Grid row painted its cells #e4f1f7 under base2
+       text — 1.06:1; with these fifteen lines the same cells take the package's shade and measure 8.17:1.
+       Also feeds IRR/IG/Card View/Media List/Timeline/Comments selection, subtle badges, the date picker's
+       current day and the report-controls error state. */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    /* Same mechanism: Core.min.css declares --a-base-link-text-color: var(--ut-link-text-color) on :root.
+       The faceted-search text buttons (.a-FS-toggleOverflow / .a-FS-clearAll / .a-FS-clearButton) set
+       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: measured 2.39:1 on the card
+       (p1411, 2026-09-17); restated it measures 4.50:1. Hover/active fall back to this token in UT's own
+       declarations, so one line covers all three states. */
+    --a-base-link-text-color: var(--ut-link-text-color);
+
+    /* Iris declares these with literal colours on :root (they do not follow the component tokens) */
+    --ut-region-background-color: var(--app-surface-card);
+    --ut-region-header-background-color: var(--app-surface-card);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-text-color: var(--app-text-primary);
+    --ut-region-header-text-color: var(--app-text-emphasized);
+    --ut-field-label-text-color: var(--app-text-secondary);
+    --ut-field-input-focus-icon-color: var(--vs-cyan);
+    --ut-field-fl-input-focus-icon-background-color: var(--vs-cyan);
+    --ut-field-fl-input-focus-icon-color: var(--app-text-on-accent);
+    --ut-component-badge-background-color: var(--app-surface-hover);
+    --ut-component-toolbar-background-color: var(--app-surface-chrome);
+    --ut-body-sidebar-background-color: var(--app-surface-page);
+    --ut-body-sidebar-text-color: var(--app-text-primary);
+    --ut-body-actions-background-color: var(--app-surface-chrome);
+    --ut-body-actions-text-color: var(--app-text-primary);
+    --ut-body-actionstoggle-background-color: var(--app-surface-chrome);
+    --ut-body-actionstoggle-hover-background-color: var(--app-surface-hover);
+    --ut-footer-background-color: transparent;
+    --ut-footer-border-color: var(--app-border-color);
+    --ut-linkslist-arrow-color: var(--app-text-secondary);
+    --ut-login-page-background-color: var(--app-surface-page);
+    --ut-login-region-background-color: var(--app-surface-card);
+    --ut-navbar-button-badge-background-color: var(--vs-cyan);
+    --ut-navtabs-background-color: var(--app-surface-chrome);
+    --ut-navtabs-text-color: var(--app-text-primary);
+    --ut-navtabs-item-active-background-color: var(--app-surface-selected);
+    --ut-navtabs-item-border-color: var(--app-border-color);
+    --ut-navtabs-item-highlight-color: var(--vs-cyan);
+    --ut-resultsregion-background-color: var(--app-surface-card);
+    --ut-resultsregion-search-background-color: var(--app-surface-input);
+    --ut-resultsregion-search-border-color: var(--app-border-strong);
+    --ut-report-cell-alt-background-color: var(--app-surface-subtle);
+    --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
+    --ut-treeview-badge-background-color: var(--vs-cyan);
+    --ut-treeview-badge-text-color: var(--app-text-on-accent);
+
+    /* component atoms Iris declares with literal light colours on :root (checkbox/radio, chips, date picker,
+       grid states, keyboard hints, popup LOV chips, report controls, search results, star rating, chat) */
+    --a-checkbox-background-color: var(--app-surface-input);
+    --a-checkbox-border-color: var(--app-border-strong);
+    --a-checkbox-text-color: var(--app-text-on-accent);
+    --a-checkbox-checked-background-color: var(--vs-cyan);
+    --a-checkbox-checked-text-color: var(--app-text-on-accent);
+    --a-checkbox-hover-background-color: var(--app-surface-hover);
+    --a-chip-hover-background-color: var(--app-surface-hover);
+    --a-chip-active-background-color: var(--app-surface-selected);
+    --a-chip-applied-background-color: var(--app-surface-hover);
+    --a-chip-applied-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-active-background-color: var(--app-surface-selected);
+    --a-cr-checkbox-background-color: var(--app-surface-input);
+    --a-datepicker-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-title-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-background-color: var(--app-surface-chrome);
+    --a-menu-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-background-color: var(--app-surface-card);
+    --a-datepicker-calendar-week-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+    --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);   /* the current day's cell
+                            takes --a-palette-primary-shade as its background and --a-palette-primary as its
+                            text: with the restatement above that pair is #4b9fda on the cyan wash = 3.47:1
+                            (measured p1601, 2026-09-17), so the day's own text token is set explicitly */
+    --a-datepicker-footer-background-color: var(--app-surface-card);
+    --jui-datepicker-background-color: var(--app-surface-card);
+    --jui-datepicker-border-color: var(--app-border-color);
+    --a-gv-background-color: var(--app-surface-card);
+    --a-gv-deleted-background-color: var(--app-surface-subtle);
+    --a-gv-grandtotal-background-color: var(--app-surface-chrome);
+    --a-kb-shortcut-background-color: var(--app-surface-hover);
+    --a-kb-shortcut-border-color: var(--app-border-color);
+    --a-popuplov-chip-background-color: var(--app-surface-hover);
+    --a-report-controls-cell-label-text-color: var(--app-text-primary);
+    --a-report-controls-cell-label-background-color: var(--app-surface-card);
+    --a-resultsitem-background-color: var(--app-surface-card);
+    --a-resultsitem-badge-background-color: var(--app-surface-hover);
+    --a-starrating-stars-bg-color: var(--app-border-strong);
+    --a-chat-client-background-color: var(--app-surface-card);
+    --a-chat-user-primary-message-background-color: var(--app-surface-selected);
+    --a-chat-user-secondary-message-background-color: var(--app-surface-hover);
+    --a-chat-input-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-input-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-message-action-button-background-color: var(--app-surface-card);
+    --a-chat-message-action-button-state-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-border-color: var(--app-border-strong);
+    --a-chat-view-more-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-background: var(--app-surface-page);
+    --a-chat-body-background-color: var(--app-surface-page);
+    --a-chat-title-background: var(--app-surface-chrome);
+    --a-chat-title-color: var(--app-text-emphasized);
+    --a-chat-message-border-color: var(--app-border-color);
+    --a-chat-message-error-icon-color: var(--vs-red-text);
+    --a-chat-transcript-outline-color: var(--vs-cyan);
+    --a-chat-user-primary-text-color: var(--app-text-primary);
+    --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
+    --a-chat-user-primary-icon-background-color: var(--vs-cyan);   /* paired with the dark icon text above;
+                                                                        was still Iris' :root-resolved #00688c
+                                                                        (4.75:1 dark-on-cyan vs. 2.4:1 before) */
+    --a-chat-user-secondary-text-color: var(--app-text-primary);
+    --a-chat-user-secondary-icon-background-color: var(--vs-red);
+    --a-chat-user-secondary-icon-text-color: #ffffff;
+    --a-chat-view-more-button-background-color: var(--app-surface-page);
+    --ut-component-badge-text-color: var(--app-text-primary);
+    --ut-component-icon-background-color: var(--vs-cyan);         /* paired with the dark icon text below */
+    --ut-component-icon-color: var(--app-text-on-accent);
+    --ut-header-menubar-item-hover-background-color: var(--app-surface-hover);
+    --ut-header-menubar-item-hover-text-color: var(--app-text-emphasized);
+    --ut-navtabs-item-hover-background-color: var(--app-surface-hover);
+    --ut-navtabs-item-active-highlight-color: var(--vs-cyan);
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--vs-cyan);
+
+    /* wizard progress */
+    --ut-wizard-header-background-color: var(--app-surface-chrome);
+    --ut-wp-track-color: rgba(205, 182, 213, .3);
+    --ut-wp-marker-color: var(--vs-base01);
+
+    /* list components that Core paints from their own tokens */
+    --ut-comment-item-background-color: var(--app-surface-card);
+    --ut-comment-chat-background-color: var(--app-surface-input);
+    --ut-comment-chat-active-background-color: var(--app-surface-hover);
+    --ut-medialist-item-background-color: var(--app-surface-card);
+    --ut-cr-item-background-color: var(--app-surface-card);
+    --ut-cr-border-color: var(--app-border-color);
+    --ut-timeline-type-background-color: var(--app-surface-card);
+}

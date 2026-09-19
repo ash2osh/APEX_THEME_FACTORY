@@ -3,6 +3,9 @@ import struct
 import unittest
 from pathlib import Path
 
+from lib.theme_factory.discovery import discover_themes
+from lib.theme_factory.fingerprint import check_uniqueness
+
 
 THEMES = {
     "carbon-volt": {
@@ -80,6 +83,16 @@ def jpeg_dimensions(path: Path) -> tuple[int, int]:
 
 
 class NewThemePackageTests(unittest.TestCase):
+    def test_all_current_themes_avoid_error_level_uniqueness_findings(self):
+        roots = tuple(theme.root for theme in discover_themes(Path.cwd()))
+        for candidate in roots:
+            with self.subTest(theme=candidate.name):
+                issues = check_uniqueness(candidate, roots)
+                self.assertEqual(
+                    [issue.message for issue in issues if issue.severity == "error"],
+                    [],
+                )
+
     def test_manifests_fonts_and_docs_match_the_approved_contract(self):
         families = set()
         for name, expected in THEMES.items():

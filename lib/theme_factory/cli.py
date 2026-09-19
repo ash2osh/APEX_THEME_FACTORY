@@ -1,6 +1,7 @@
 """Command line interface for Theme Factory tools."""
 
 import argparse
+import json
 import os
 from pathlib import Path
 import sys
@@ -9,7 +10,7 @@ from lib.theme_factory.archive import build_package, build_package_from_root, ve
 from lib.theme_factory.errors import PackageError
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="APEX Theme Factory CLI")
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
 
@@ -70,7 +71,20 @@ def main() -> None:
         help="Restore even though the application changed after the backed-up operation completed",
     )
 
-    args = parser.parse_args()
+    # font add
+    font_p = subparsers.add_parser("font", help="Manage vendored theme fonts")
+    font_subparsers = font_p.add_subparsers(dest="font_command", required=True)
+    font_add = font_subparsers.add_parser("add", help="Install static WOFF2 faces from a pinned variable font")
+    font_add.add_argument("name", help="Theme name in sample-themes/")
+    font_add.add_argument("--repo-root", type=Path, default=Path.cwd(), help="Repository root")
+    font_add.add_argument("--family", required=True, help="Expected upstream family name")
+    font_add.add_argument("--metadata-url", required=True, help="Official upstream METADATA.pb URL")
+    font_add.add_argument("--source-revision", required=True, help="Pinned 40-character source commit SHA")
+    font_add.add_argument("--weights", required=True, help="Comma-separated static weights")
+    font_add.add_argument("--dry-run", action="store_true", help="Resolve metadata without writing assets")
+    font_add.add_argument("--json", action="store_true", help="Emit a machine-readable result")
+
+    args = parser.parse_args(argv)
 
     try:
         if args.subcommand == "package":
@@ -92,6 +106,39 @@ def main() -> None:
         elif args.subcommand == "restore":
             from lib.theme_factory.uninstall import run_restore_cli
             run_restore_cli(args)
+        elif args.subcommand == "font" and args.font_command == "add":
+            from lib.theme_factory.font_pipeline import FontRequest, install_font
+            try:
+                weights = tuple(int(value.strip()) for value in args.weights.split(",") if value.strip())
+            except ValueError as exc:
+                raise PackageError("--weights must be a comma-separated integer list") from exc
+            request = FontRequest(
+                family=args.family,
+                metadata_url=args.metadata_url,
+                source_revision=args.source_revision,
+                weights=weights,
+            )
+            result = install_font(
+                args.repo_root,
+                args.repo_root / "sample-themes" / args.name,
+                request,
+                dry_run=args.dry_run,
+            )
+            payload = {
+                "status": "PASS",
+                "family": result.family,
+                "sourceFilename": result.source_filename,
+                "dryRun": result.dry_run,
+                "faces": [
+                    {"file": face.file, "weight": face.weight, "sha256": face.sha256}
+                    for face in result.faces
+                ],
+            }
+            if args.json:
+                print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
+            else:
+                action = "Resolved" if result.dry_run else "Installed"
+                print(f"{action} {len(result.faces)} faces for {result.family}.")
     except PackageError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(e.exit_code)

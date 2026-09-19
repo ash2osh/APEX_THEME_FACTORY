@@ -41,7 +41,7 @@ class ScaffoldResult:
 
 def _recipe_document(recipe: ThemeRecipe) -> dict[str, object]:
     raw = asdict(recipe)
-    return {
+    document = {
         "schemaVersion": raw["schema_version"],
         "identity": {
             "name": raw["identity"]["name"],
@@ -83,6 +83,23 @@ def _recipe_document(recipe: ThemeRecipe) -> dict[str, object]:
         },
         "components": raw["components"],
     }
+    if recipe.font_provenance is not None:
+        provenance = recipe.font_provenance
+        document["fontProvenance"] = {
+            "family": provenance.family,
+            "metadataUrl": provenance.metadata_url,
+            "sourceRevision": provenance.source_revision,
+            "sourceFilename": provenance.source_filename,
+            "repositoryUrl": provenance.repository_url,
+            "upstreamCommit": provenance.upstream_commit,
+            "license": provenance.license,
+            "tools": dict(provenance.tools),
+            "faces": [
+                {"file": face.file, "weight": face.weight, "sha256": face.sha256}
+                for face in provenance.faces
+            ],
+        }
+    return document
 
 
 def _fallback_stack(recipe: ThemeRecipe) -> str:

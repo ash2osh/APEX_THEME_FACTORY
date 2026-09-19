@@ -24,9 +24,8 @@ from lib.theme_factory.apexlang import (
     read_install_state,
 )
 from lib.theme_factory.errors import PackageError
+from lib.theme_factory.discovery import theme_names
 from lib.theme_factory.sqlcl import SqlclClient
-
-DEFAULT_THEMES = ["linen", "solarized-dark", "estate-slate", "estate-slate-dark"]
 
 STATIC_NAV_BAR_FALLBACK = """list navigation-bar (
     name: Navigation Bar
@@ -86,7 +85,8 @@ STATIC_NAV_BAR_FALLBACK = """list navigation-bar (
 """
 
 
-def parse_args():
+def parse_args(argv=None):
+    default_themes = theme_names(repo_root)
     parser = argparse.ArgumentParser(
         description="Install Theme Factory packages into an APEX application with switcher support."
     )
@@ -108,8 +108,8 @@ def parse_args():
     )
     parser.add_argument(
         "--themes",
-        default=",".join(DEFAULT_THEMES),
-        help=f"Comma-separated list of theme names to install (default: {','.join(DEFAULT_THEMES)})",
+        default=",".join(default_themes),
+        help=f"Comma-separated list of theme names to install (default: {','.join(default_themes)})",
     )
     switcher_group = parser.add_mutually_exclusive_group()
     switcher_group.add_argument(
@@ -135,7 +135,7 @@ def parse_args():
         action="store_true",
         help="Skip confirmation prompt when running with --apply",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def resolve_package_zip(theme_name: str) -> Path:
@@ -283,4 +283,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

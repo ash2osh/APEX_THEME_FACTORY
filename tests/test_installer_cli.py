@@ -6,8 +6,10 @@ import subprocess
 import tempfile
 import unittest
 import zipfile
+from unittest import mock
 
 from lib.theme_factory.archive import build_package_from_root, render_template
+from scripts import install_all_themes
 
 
 class InstallerCliTests(unittest.TestCase):
@@ -290,6 +292,40 @@ class InstallerCliTests(unittest.TestCase):
         ]
         for h in manual_expected_headings:
             self.assertIn(h, rendered_manual)
+
+    def test_default_theme_list_is_discovered_from_manifests(self):
+        repo = self.tmp / "repo"
+        shutil.copytree(self.repo_root / "sample-themes", repo / "sample-themes")
+        ninth = repo / "sample-themes" / "ninth-theme"
+        ninth.mkdir()
+        manifest = {
+            "schemaVersion": 1,
+            "name": "ninth-theme",
+            "title": "Ninth Theme",
+            "version": "1.0.0",
+            "tagline": "A dynamically discovered test package.",
+            "class": "app-theme-ninth-theme",
+            "compatibility": {
+                "apex": ">=26.1.0 <26.2.0",
+                "themeNumber": 42,
+                "baseTheme": "ut-26.1",
+                "themeStyle": "Iris",
+            },
+            "assets": {
+                "stylesheet": "theme.css",
+                "runtime": "theme-factory-runtime.js",
+                "cover": "preview/cover.jpg",
+            },
+        }
+        (ninth / "theme.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+        with mock.patch.object(install_all_themes, "repo_root", repo):
+            args = install_all_themes.parse_args(["--app-id", "102"])
+
+        names = args.themes.split(",")
+        self.assertEqual(names, sorted(names))
+        self.assertIn("ninth-theme", names)
+        self.assertEqual(len(names), 9)
 
     def test_dry_run_and_apply_remove_staging_directories(self):
         """Temporary staging exports must not accumulate in the system temp directory."""

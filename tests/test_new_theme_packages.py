@@ -153,6 +153,16 @@ class NewThemePackageTests(unittest.TestCase):
         self.assertIn("--a-button-text-color: var(--cit-hot-button-text)", buttons)
         self.assertIn("--a-button-hover-text-color: var(--cit-hot-button-text)", buttons)
 
+    def test_solarized_transparent_primary_button_uses_text_safe_link_color(self):
+        buttons = (Path("sample-themes/solarized-dark/css/apex/buttons.css")).read_text(encoding="utf-8")
+        primary_rule = re.search(
+            r"\.app-theme-solarized-dark \.apex-theme-iris \.t-Button--primary\s*\{(?P<body>[^}]*)\}",
+            buttons,
+        )
+        self.assertIsNotNone(primary_rule, "Solarized primary button rule must remain explicit")
+        body = primary_rule.group("body")
+        self.assertIn("color: var(--app-color-primary)", body)
+
     def test_all_current_themes_avoid_error_level_uniqueness_findings(self):
         roots = tuple(theme.root for theme in discover_themes(Path.cwd()))
         for candidate in roots:

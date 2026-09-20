@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "cobalt-press",
+    "title": "Cobalt Press",
+    "tagline": "Warm editorial paper with cobalt rules, vermilion marks, and offset shadows.",
+    "direction": "Warm editorial paper with cobalt rules, vermilion marks, and offset shadows.",
+    "mode": "light",
+    "keywords": ["editorial", "paper", "annotation"]
+  },
+  "palette": {
+    "page": "#FFF8E8",
+    "card": "#FFFFFF",
+    "chrome": "#1A1A26",
+    "textPrimary": "#2B2A38",
+    "textSecondary": "#5E5C6D",
+    "accent": "#2457FF",
+    "accentAlt": "#147A55",
+    "onAccent": "#FFFFFF",
+    "danger": "#C53618"
+  },
+  "typography": {
+    "bodyFamily": "Cairo",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "0px",
+    "radiusMedium": "2px",
+    "radiusLarge": "4px",
+    "controlHeight": "2.5rem",
+    "borderStyle": "strong",
+    "shadowStyle": "offset"
+  },
+  "focus": {"color": "#2457FF", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "editorial",
+    "cards": "offset",
+    "buttons": "underline",
+    "forms": "outlined",
+    "reports": "ruled",
+    "dialogs": "offset"
+  },
+  "rhythm": {"density": "balanced", "spacing": "editorial", "typeScale": "editorial"},
+  "interaction": {"hover": "shift", "selected": "underline", "motion": "precise"},
+  "responsive": {"strategy": "reflow", "compactControlsAt": 768}
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "linen",
+    "title": "Linen",
+    "tagline": "Quiet product surfaces with white chrome, hairline seams, and teal actions.",
+    "direction": "Quiet product surfaces with white chrome, hairline seams, and teal actions.",
+    "mode": "light",
+    "keywords": ["quiet", "editorial", "default"]
+  },
+  "palette": {
+    "page": "#FBF9F8",
+    "card": "#FFFFFF",
+    "chrome": "#FFFFFF",
+    "textPrimary": "#161513",
+    "textSecondary": "#4A4743",
+    "accent": "#00688C",
+    "accentAlt": "#227E9E",
+    "onAccent": "#FFFFFF",
+    "danger": "#B3311F"
+  },
+  "typography": {
+    "bodyFamily": "system-ui",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "-apple-system", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "6px",
+    "radiusMedium": "8px",
+    "radiusLarge": "12px",
+    "controlHeight": "2.25rem",
+    "borderStyle": "hairline",
+    "shadowStyle": "none"
+  },
+  "focus": {"color": "#00688C", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "minimal",
+    "cards": "flat",
+    "buttons": "rounded",
+    "forms": "comfortable",
+    "reports": "spacious",
+    "dialogs": "flat"
+  },
+  "rhythm": {"density": "balanced", "spacing": "editorial", "typeScale": "editorial"},
+  "interaction": {"hover": "none", "selected": "underline", "motion": "precise"},
+  "responsive": {"strategy": "reflow", "compactControlsAt": 768}
+}

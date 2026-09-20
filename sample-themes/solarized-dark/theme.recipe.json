@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "solarized-dark",
+    "title": "Solarized Dark",
+    "tagline": "Terminal-inspired Solarized depth with cyan-blue accents and compact geometry.",
+    "direction": "Terminal-inspired Solarized depth with cyan-blue accents and compact geometry.",
+    "mode": "dark",
+    "keywords": ["terminal", "documentation", "solarized"]
+  },
+  "palette": {
+    "page": "#002B36",
+    "card": "#073642",
+    "chrome": "#00212B",
+    "textPrimary": "#EEE8D5",
+    "textSecondary": "#93A1A1",
+    "accent": "#4B9FDA",
+    "accentAlt": "#39A89F",
+    "onAccent": "#002B36",
+    "danger": "#E87674"
+  },
+  "typography": {
+    "bodyFamily": "IBM Plex Sans",
+    "headingFamily": "Space Grotesk",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "4px",
+    "radiusMedium": "6px",
+    "radiusLarge": "8px",
+    "controlHeight": "2.25rem",
+    "borderStyle": "technical",
+    "shadowStyle": "none"
+  },
+  "focus": {"color": "#39A89F", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "minimal",
+    "cards": "flat",
+    "buttons": "underline",
+    "forms": "dense",
+    "reports": "ruled",
+    "dialogs": "flat"
+  },
+  "rhythm": {"density": "compact", "spacing": "technical", "typeScale": "compact"},
+  "interaction": {"hover": "none", "selected": "underline", "motion": "none"},
+  "responsive": {"strategy": "compress", "compactControlsAt": 768}
+}

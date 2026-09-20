@@ -121,6 +121,35 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     cover.add_argument("--json", action="store_true")
     cover.set_defaults(handler=_handle_cover)
 
+    release_batch = subparsers.add_parser("release-batch", help="Batch digest-bound release evidence")
+    release_batch.add_argument("--themes", required=True)
+    release_batch.add_argument("--secondary", required=True, type=Path)
+    release_batch.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
+    release_batch.add_argument("--repo-root", type=Path, default=Path.cwd())
+    release_batch.add_argument("--connection")
+    release_batch.add_argument("--workspace")
+    release_batch.add_argument("--minimal-id", type=int)
+    release_batch.add_argument("--business-id", type=int)
+    release_batch.add_argument("--minimal-url")
+    release_batch.add_argument("--business-url")
+    release_batch.add_argument("--business-extra-urls", default="")
+    release_batch.add_argument("--widths", default="1440,1024,768,375")
+    release_batch.add_argument("--date")
+    release_batch.add_argument("--work-dir", type=Path)
+    release_batch.add_argument("--common-check-artifact", type=Path)
+    release_batch.add_argument("--resume", action="store_true")
+    release_batch.add_argument("--report-obsolete", action="store_true")
+    release_batch.add_argument("--apply", action="store_true")
+    release_batch.set_defaults(handler=_handle_release_batch)
+
+    evidence = subparsers.add_parser("evidence", help="Manage runtime evidence")
+    evidence_commands = evidence.add_subparsers(dest="evidence_command", required=True)
+    prune = evidence_commands.add_parser("prune", help="Prune old release evidence safely")
+    prune.add_argument("--repo-root", type=Path, default=Path.cwd())
+    prune.add_argument("--keep-latest", type=int, required=True)
+    prune.add_argument("--apply", action="store_true")
+    prune.set_defaults(handler=_handle_evidence_prune)
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="APEX Theme Factory CLI")
@@ -272,6 +301,63 @@ def _handle_cover(args: argparse.Namespace) -> int:
         client = ChromeDevToolsClient()
     result = capture_cover(client, args.name, args.output, args.apply, args.overwrite)
     print(result.to_json() if args.json else result.to_human())
+    return 0
+
+
+def _handle_release_batch(args: argparse.Namespace) -> int:
+    from tools.release_batch import (
+        current_package_shas, evidence_directory_current, execute_live_batch,
+        find_obsolete_evidence,
+    )
+
+    themes = [name.strip() for name in args.themes.split(",") if name.strip()]
+    if not themes:
+        raise PackageError("release-batch --themes must name at least one theme")
+    if args.apply:
+        required = {
+            "--connection": args.connection,
+            "--workspace": args.workspace,
+            "--minimal-id": args.minimal_id,
+            "--business-id": args.business_id,
+            "--minimal-url": args.minimal_url,
+            "--business-url": args.business_url,
+        }
+        missing = [name for name, value in required.items() if value is None]
+        if missing:
+            raise PackageError("release-batch --apply requires " + ", ".join(missing))
+    payload = {
+        "status": "READY" if args.apply else "DRY_RUN",
+        "themes": themes,
+        "secondary": str(args.secondary),
+        "resume": bool(args.resume),
+        "evidenceRoot": str(args.evidence_root),
+    }
+    if args.report_obsolete:
+        package_shas = current_package_shas(args.repo_root.resolve(), themes)
+        payload["obsolete"] = [
+            str(path) for path in find_obsolete_evidence(
+                args.evidence_root,
+                lambda path: evidence_directory_current(path, args.repo_root.resolve(), package_shas),
+            )
+        ]
+    if not args.apply:
+        print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
+        return 0
+    return execute_live_batch(args, tuple(themes))
+
+
+def _handle_evidence_prune(args: argparse.Namespace) -> int:
+    from tools.release_batch import prune_evidence
+
+    root = args.repo_root.resolve() / ".agents/evaluations/runtime"
+    paths = prune_evidence(root, keep_latest=args.keep_latest, apply=args.apply)
+    payload = {
+        "status": "APPLIED" if args.apply else "DRY_RUN",
+        "root": str(root),
+        "keepLatest": args.keep_latest,
+        "targets": [str(path) for path in paths],
+    }
+    print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
     return 0
 
 

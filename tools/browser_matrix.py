@@ -36,6 +36,10 @@ from typing import Dict, List, Optional, Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.chrome_devtools_client import ChromeDevToolsClient  # noqa: E402
+from lib.theme_factory.evidence_cache import (  # noqa: E402
+    EVIDENCE_CONTRACT_VERSION, EvidenceIdentity, write_checkpoint,
+)
+from lib.theme_factory.gitstate import assert_clean_source  # noqa: E402
 
 REQUIRED_WIDTHS = (1440, 1024, 768, 375)
 CONSUMERS = ("minimal", "business")
@@ -74,6 +78,7 @@ def build_runtime_artifact(theme: str, git_commit: str, package_sha256: str, row
         window_app = {"keys": window_app}
     return {
         "schemaVersion": 1,
+        "evidenceContractVersion": EVIDENCE_CONTRACT_VERSION,
         "evidenceType": "browser-runtime",
         "theme": theme,
         "gitCommit": git_commit,
@@ -86,6 +91,7 @@ def build_runtime_artifact(theme: str, git_commit: str, package_sha256: str, row
         "appAlias": str(page.get("appAlias", "")),
         "pageId": str(page.get("pageId", "")),
         "apexVersion": str(page.get("apexVersion", "")),
+        "browserVersion": str(page.get("browserVersion", "")),
         "bodyClasses": list(page.get("bodyClasses", [])),
         "htmlClasses": list(page.get("htmlClasses", [])),
         "cssUrls": list(page.get("cssUrls", [])),
@@ -172,7 +178,7 @@ def write_layer_d_evidence(evidence_dir: Path, theme: str, git_commit: str, pack
 
 # ---------------------------------------------------------------- live capture
 
-PAGE_SNIPPET_TEMPLATE = """async () => {
+PAGE_SNIPPET_TEMPLATE = r"""async () => {
   const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href') || l.href);
   const scripts = Array.from(document.querySelectorAll('script[src]')).map(s => s.getAttribute('src') || s.src);
   const html = document.documentElement;
@@ -210,6 +216,10 @@ PAGE_SNIPPET_TEMPLATE = """async () => {
   return {
     url: location.href, appId: String(apex.env.APP_ID), appAlias: String(apex.env.APP_ALIAS || ''),
     pageId: String(apex.env.APP_PAGE_ID), apexVersion: String(apex.env.APEX_VERSION),
+    browserVersion: (() => {
+      const match = navigator.userAgent.match(/(?:Chrome|Chromium)\/[^ ]+/);
+      return match ? match[0] : navigator.userAgent;
+    })(),
     bodyClasses: Array.from(document.body.classList), htmlClasses: Array.from(html.classList),
     cssUrls: links, javascriptUrls: scripts, loadedUrls: perf.map(r => r.name),
     windowApp: window.App ? { keys: Object.keys(window.App) } : null,
@@ -356,7 +366,7 @@ class LiveBrowserMatrix:
 
     def capture_row(self, consumer: str, url: str, theme: str, width: int) -> RowCapture:
         notes: List[str] = []
-        self.call("resize_page", width=width, height=900)
+        self.call("emulate", viewport=f"{width}x900x1")
         self.navigate(url)
         # baseline: bare Iris body font on this very page, for the fonts check below
         self.evaluate("() => { const api = window.ApexThemeFactory; return api ? api.use('iris') : false; }")
@@ -399,6 +409,37 @@ class LiveBrowserMatrix:
                           notes=notes, declared_face_count=len(expected_faces))
 
 
+def run_layer_d_row(
+    matrix: LiveBrowserMatrix,
+    consumer: str,
+    url: str,
+    theme: str,
+    width: int,
+    git_commit: str,
+    package_sha256: str,
+    checkpoint_path: Path,
+    identity: EvidenceIdentity,
+    *,
+    clean_checker=assert_clean_source,
+) -> RowCapture:
+    """Capture one browser row and checkpoint it only while source remains clean."""
+
+    clean_checker()
+    row = matrix.capture_row(consumer, url, theme, width)
+    artifact = build_runtime_artifact(theme, git_commit, package_sha256, row)
+    if (
+        artifact.get("apexVersion") != identity.apex_version
+        or artifact.get("browserVersion") != identity.browser_version
+        or artifact.get("consumer") != identity.consumer
+        or artifact.get("pageId") != identity.page
+        or artifact.get("viewportWidth") != identity.viewport
+    ):
+        raise RuntimeError("captured browser row does not match its checkpoint identity")
+    clean_checker()
+    write_checkpoint(checkpoint_path, identity, artifact)
+    return row
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Capture the Layer D browser matrix through the Chrome MCP daemon")
     parser.add_argument("--theme", required=True)
@@ -414,7 +455,6 @@ def main() -> None:
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     # Re-checked before each row below, not only here - a tree that goes dirty mid-run must abort
     # within that operation, not silently pass it and only fail the next capture (plan Task 4).
-    from lib.theme_factory.gitstate import assert_clean_source
     try:
         assert_clean_source()
     except RuntimeError as exc:

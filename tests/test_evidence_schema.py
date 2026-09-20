@@ -17,6 +17,7 @@ SCHEMA_PATH = Path(__file__).resolve().parent / "live" / "runtime-evidence.schem
 def _good_artifact() -> dict:
     return {
         "schemaVersion": 1,
+        "evidenceContractVersion": 2,
         "evidenceType": "browser-runtime",
         "theme": "solarized-dark",
         "gitCommit": "c" * 40,
@@ -29,6 +30,7 @@ def _good_artifact() -> dict:
         "appAlias": "TF-CONSUMER-BUSINESS-9011",
         "pageId": "1",
         "apexVersion": "26.1.4",
+        "browserVersion": "Chrome/140.0.7339.81",
         "bodyClasses": ["t-PageBody"],
         "htmlClasses": ["app-theme-solarized-dark"],
         "cssUrls": ["theme.css"],
@@ -129,15 +131,24 @@ class EvidenceSchemaTests(unittest.TestCase):
             validate({"x": 1}, None, schema={"type": "object", "propertyNames": {"minLength": 1}})
 
     def test_every_committed_layer_d_artifact_validates(self):
-        """The property test that would have caught the original {family, loaded} drift."""
+        """Current-contract committed artifacts validate; obsolete rows are intentionally misses."""
         from lib.theme_factory.evidence_schema import validate
         root = Path(__file__).resolve().parent.parent / ".agents" / "evaluations" / "runtime"
         artifacts = sorted(root.glob("*/raw/browser-*.json"))
         self.assertTrue(artifacts, "expected at least one committed Layer D artifact to check")
+        current = 0
+        obsolete = 0
         for path in artifacts:
             document = json.loads(path.read_text(encoding="utf-8"))
+            if document.get("evidenceContractVersion") != 2:
+                obsolete += 1
+                errors = validate(document, SCHEMA_PATH)
+                self.assertTrue(any("evidenceContractVersion" in error for error in errors), errors)
+                continue
+            current += 1
             errors = validate(document, SCHEMA_PATH)
             self.assertEqual(errors, [], f"{path} does not satisfy the runtime-evidence schema: {errors}")
+        self.assertGreater(obsolete + current, 0)
 
 
 if __name__ == "__main__":

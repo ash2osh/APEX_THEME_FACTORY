@@ -4,6 +4,7 @@
   "additionalProperties": false,
   "required": [
     "schemaVersion",
+    "evidenceContractVersion",
     "evidenceType",
     "theme",
     "gitCommit",
@@ -16,6 +17,7 @@
     "appAlias",
     "pageId",
     "apexVersion",
+    "browserVersion",
     "bodyClasses",
     "htmlClasses",
     "cssUrls",
@@ -39,6 +41,7 @@
   ],
   "properties": {
     "schemaVersion": { "const": 1 },
+    "evidenceContractVersion": { "const": 2 },
     "evidenceType": { "const": "browser-runtime" },
     "theme": { "type": "string", "minLength": 1 },
     "gitCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
@@ -51,6 +54,7 @@
     "appAlias": { "type": "string" },
     "pageId": { "type": "string" },
     "apexVersion": { "type": "string" },
+    "browserVersion": { "type": "string", "minLength": 1 },
     "bodyClasses": { "type": "array", "items": { "type": "string" } },
     "htmlClasses": { "type": "array", "items": { "type": "string" } },
     "cssUrls": { "type": "array", "items": { "type": "string" } },

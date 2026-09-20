@@ -8,7 +8,17 @@ import unittest
 import zipfile
 
 from lib.theme_factory.release import _valid_browser_runtime_artifact, load_evidence
-from tools.browser_matrix import RowCapture, build_runtime_artifact, write_layer_d_evidence
+from tools.browser_matrix import (
+    RowCapture,
+    build_runtime_artifact,
+    run_layer_d_row,
+    write_layer_d_evidence,
+)
+from lib.theme_factory.evidence_cache import (
+    EVIDENCE_CONTRACT_VERSION,
+    EvidenceIdentity,
+    checkpoint_valid,
+)
 
 COMMIT = "c" * 40
 SHA = "d" * 64
@@ -18,6 +28,7 @@ def capture(consumer: str, width: int, **overrides) -> RowCapture:
     page = {
         "url": "http://localhost:8181/ords/r/demo/tf-consumer-business-9011/home",
         "appId": "9011", "appAlias": "TF-CONSUMER-BUSINESS-9011", "pageId": "1", "apexVersion": "26.1.4",
+        "browserVersion": "Chrome/140.0.7339.81",
         "bodyClasses": ["t-PageBody", "apex-theme-iris"], "htmlClasses": ["app-theme-linen"],
         "cssUrls": ["x.css"], "javascriptUrls": ["y.js"], "loadedUrls": ["x.css", "y.js"],
         "windowApp": None, "windowAlpine": None, "activeTheme": "linen",
@@ -40,6 +51,8 @@ class BrowserMatrixEvidenceTests(unittest.TestCase):
         artifact = build_runtime_artifact("linen", COMMIT, SHA, capture("business", 1440), captured_at="2026-09-16T00:00:00Z")
         self.assertTrue(_valid_browser_runtime_artifact(artifact, "linen", "business", 1440))
         self.assertEqual(artifact["evidenceType"], "browser-runtime")
+        self.assertEqual(artifact["evidenceContractVersion"], EVIDENCE_CONTRACT_VERSION)
+        self.assertEqual(artifact["browserVersion"], "Chrome/140.0.7339.81")
 
     def test_unverified_flags_and_errors_are_never_upgraded(self):
         artifact = build_runtime_artifact("linen", COMMIT, SHA, capture("business", 1440, console_errors=["boom"], persistence_verified=False))
@@ -76,6 +89,43 @@ class ContrastInstrumentTests(unittest.TestCase):
         self.assertIn("fill", snippet)
         # a tree walker over text nodes alone cannot reach SVG <text>; the snippet must query them
         self.assertRegex(snippet, r"querySelectorAll\(\s*['\"][^'\"]*svg[^'\"]*text")
+
+
+class ResumableBrowserRowTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+
+    def test_single_row_checks_cleanliness_before_capture_and_checkpoint_write(self):
+        row = capture("business", 1440)
+
+        class Matrix:
+            def capture_row(self, consumer, url, theme, width):
+                self.args = (consumer, url, theme, width)
+                return row
+
+        matrix = Matrix()
+        checks = []
+        identity = EvidenceIdentity(
+            COMMIT, SHA, "26.1.4", "Chrome/140.0.7339.81",
+            "business", "1", 1440, "browser-runtime",
+        )
+        checkpoint = self.tmp / "row.json"
+        result = run_layer_d_row(
+            matrix, "business", "http://local/page1", "linen", 1440,
+            COMMIT, SHA, checkpoint, identity,
+            clean_checker=lambda: checks.append("clean"),
+        )
+        self.assertIs(result, row)
+        self.assertEqual(checks, ["clean", "clean"])
+        self.assertTrue(checkpoint_valid(checkpoint, identity))
+
+    def test_live_capture_uses_per_tab_emulation_not_shared_window_resize(self):
+        import inspect
+        from tools.browser_matrix import LiveBrowserMatrix
+        source = inspect.getsource(LiveBrowserMatrix.capture_row)
+        self.assertIn('"emulate"', source)
+        self.assertNotIn('"resize_page"', source)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ from typing import Any
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.evidence_schema import validate as validate_evidence_schema
+from lib.theme_factory.evidence_cache import EVIDENCE_CONTRACT_VERSION
 
 LAYER_DESCRIPTIONS = {
     "A": "Repository source",
@@ -187,6 +188,7 @@ def _load_bound_raw_artifact(
     context: str,
     schema_path: Path | None = None,
     commit_equivalence=source_equivalent,
+    instruction_bound: bool = False,
 ) -> dict[str, Any]:
     if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
         raise PackageError(f"{context} must be a path/SHA-256 evidence reference")
@@ -194,7 +196,13 @@ def _load_bound_raw_artifact(
     digest = reference.get("sha256")
     if not isinstance(relative, str) or not isinstance(digest, str) or not re_full_sha256(digest):
         raise PackageError(f"{context} has an invalid path or SHA-256")
-    path = _artifact_path(evidence_dir, relative)
+    if instruction_bound and relative.startswith("shared/"):
+        shared_root = evidence_dir.resolve().parent
+        path = (shared_root / relative).resolve()
+        if not path.is_relative_to(shared_root):
+            raise PackageError(f"{context} shared evidence escapes runtime root: {relative}")
+    else:
+        path = _artifact_path(evidence_dir, relative)
     if path.suffix.lower() != ".json" or not path.is_file():
         raise PackageError(f"{context} does not reference an evidence JSON file: {relative}")
     if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
@@ -209,18 +217,23 @@ def _load_bound_raw_artifact(
     package_sha256 = document.get("packageSha256")
     identity_valid = (
         document.get("schemaVersion") == 1
-        and document.get("theme") == theme_name
+        and (
+            (isinstance(document.get("theme"), str) and bool(document.get("theme")))
+            if instruction_bound else document.get("theme") == theme_name
+        )
         and isinstance(document.get("capturedAt"), str)
         and isinstance(git_commit, str)
         and re.fullmatch(r"[0-9a-f]{40}", git_commit) is not None
-        and isinstance(package_sha256, str)
-        and re_full_sha256(package_sha256)
+        and (
+            instruction_bound
+            or (isinstance(package_sha256, str) and re_full_sha256(package_sha256))
+        )
     )
     if not identity_valid:
         raise PackageError(f"{context} raw evidence identity/schema mismatch: {relative}")
     if not commit_matches(expected_git_commit, git_commit, equivalence=commit_equivalence):
         raise PackageError(f"{context} raw evidence is for Git commit {git_commit}, whose source differs from {expected_git_commit}")
-    if expected_package_sha256 is not None and package_sha256 != expected_package_sha256:
+    if not instruction_bound and expected_package_sha256 is not None and package_sha256 != expected_package_sha256:
         raise PackageError(f"{context} raw evidence is for a different package: {relative}")
     if schema_path is not None:
         schema_errors = validate_evidence_schema(document, schema_path)
@@ -256,10 +269,13 @@ def _valid_browser_runtime_artifact(
     )
     return (
         artifact.get("evidenceType") == "browser-runtime"
+        and artifact.get("evidenceContractVersion") == EVIDENCE_CONTRACT_VERSION
         and artifact.get("consumer") == consumer
         and artifact.get("viewportWidth") == width
         and artifact.get("activeTheme") == theme_name
         and str(artifact.get("apexVersion", "")).startswith("26.1.")
+        and isinstance(artifact.get("browserVersion"), str)
+        and bool(artifact.get("browserVersion"))
         and required_fields.issubset(artifact)
         and isinstance(artifact.get("bodyClasses"), list)
         and isinstance(artifact.get("htmlClasses"), list)
@@ -421,6 +437,7 @@ def _validate_evidence_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E runtime {runtime}",
                     commit_equivalence=instruction_equivalent,
+                    instruction_bound=True,
                 )
                 if not (
                     raw.get("evidenceType") == "agent-runtime"
@@ -431,10 +448,12 @@ def _validate_evidence_artifact(
                     break
         if valid:
             for scenario, reference in scenarios.items():
+                instruction_only = scenario in {"04", "05", "09", "14"}
                 raw = _load_bound_raw_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E scenario {scenario}",
-                    commit_equivalence=instruction_equivalent,
+                    commit_equivalence=instruction_equivalent if instruction_only else source_equivalent,
+                    instruction_bound=instruction_only,
                 )
                 if not (
                     raw.get("evidenceType") == "agent-scenario"
@@ -450,6 +469,7 @@ def _validate_evidence_artifact(
                     evidence_dir, reference, theme_name, expected_git_commit,
                     expected_package_sha256, f"Layer E finding {index + 1}",
                     commit_equivalence=instruction_equivalent,
+                    instruction_bound=True,
                 )
                 finding = raw.get("finding")
                 if not (

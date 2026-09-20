@@ -19,6 +19,7 @@ from tools.live_matrix import (
     ApplicationTarget,
     OperationResult,
     PackageRef,
+    run_layer_c_theme,
     run_lifecycle,
     write_layer_c_evidence,
 )
@@ -68,6 +69,37 @@ class LiveMatrixEvidenceTests(unittest.TestCase):
         self.assertEqual(by_check["database_installation"]["status"], "FAIL")
         summary = json.loads((evidence_dir / "database_installation.json").read_text(encoding="utf-8"))
         self.assertIn("uninstall", " ".join(summary["results"]["failures"]))
+
+    def test_single_theme_runner_checks_cleanliness_before_work_and_evidence_write(self):
+        apps = [
+            ApplicationTarget("minimal", 9010, "MIN", "26.1.4"),
+            ApplicationTarget("business", 9011, "BUS", "26.1.4"),
+        ]
+        package = PackageRef("linen", "1.0.0", self.tmp / "linen.zip", "b" * 64)
+        secondary = PackageRef("solarized-dark", "1.0.0", self.tmp / "secondary.zip", "c" * 64)
+        checks = []
+        calls = []
+
+        def lifecycle(connection, workspace, target, primary, secondary_path, work_dir, **kwargs):
+            calls.append(target.consumer)
+            return self.synthetic_operations()
+
+        written = []
+
+        def writer(evidence_dir, package_ref, commit, targets, operations):
+            written.append((evidence_dir, package_ref, commit, targets, operations))
+            return evidence_dir / "database_installation.json"
+
+        result = run_layer_c_theme(
+            "demo", "DEMO", apps, package, secondary, self.tmp / "work",
+            self.tmp / "evidence", COMMIT,
+            lifecycle_runner=lifecycle, evidence_writer=writer,
+            clean_checker=lambda: checks.append("clean"),
+        )
+        self.assertEqual(calls, ["minimal", "business"])
+        self.assertGreaterEqual(len(checks), 3)
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(len(written), 1)
 
 
 class LiveMatrixLifecycleAgainstFakeSqlTests(unittest.TestCase):

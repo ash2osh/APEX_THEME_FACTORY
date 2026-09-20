@@ -17,9 +17,9 @@ page paints. Remove it and you are back to stock Iris, byte for byte.
 | Understand how it's verified before release | [Verification](#verification) |
 | Work on the factory itself (agents, skills, specs) | [docs/AGENT_SPEC.md](docs/AGENT_SPEC.md) |
 
-Two themes ship as examples: **[linen](sample-themes/linen/)** (quiet product — white chrome, hairlines, teal
-for actions) and **[solarized-dark](sample-themes/solarized-dark/)** (VS Code Solarized Dark, tuned to pass
-WCAG AA on a dark canvas).
+<!-- @generated:theme-catalog:start -->
+**8 themes ship with the factory:** [Carbon Volt](sample-themes/carbon-volt/), [Citrus Pop](sample-themes/citrus-pop/), [Cobalt Press](sample-themes/cobalt-press/), [Estate Slate](sample-themes/estate-slate/), [Estate Slate Dark](sample-themes/estate-slate-dark/), [Linen](sample-themes/linen/), [Solarized Dark](sample-themes/solarized-dark/), [Velvet Signal](sample-themes/velvet-signal/).
+<!-- @generated:theme-catalog:end -->
 
 ---
 
@@ -90,7 +90,7 @@ theme — so a re-install never silently takes the menu away.
 
 ### Install all themes at once (with switcher)
 
-To install all built Theme Factory packages (`linen`, `solarized-dark`, `estate-slate`, `estate-slate-dark`) into any APEX application with the switcher in a single command:
+To install every discovered Theme Factory package into any APEX application with the switcher in a single command:
 
 ```bash
 # Dry-run first (exports, stages, and validates via SQLcl without writing to DB):

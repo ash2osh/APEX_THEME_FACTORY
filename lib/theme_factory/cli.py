@@ -104,6 +104,14 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     dev.add_argument("--json", action="store_true")
     dev.set_defaults(handler=_handle_dev)
 
+    catalog = subparsers.add_parser("catalog", help="Check or update generated theme catalogs")
+    catalog.add_argument("--repo-root", type=Path, default=Path.cwd())
+    catalog.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
+    action = catalog.add_mutually_exclusive_group(required=True)
+    action.add_argument("--check", action="store_true", help="Report generated documentation drift")
+    action.add_argument("--write", action="store_true", help="Update generated documentation atomically")
+    catalog.set_defaults(handler=_handle_catalog)
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="APEX Theme Factory CLI")
@@ -222,6 +230,21 @@ def _handle_dev(args: argparse.Namespace) -> int:
                                 args.import_app, args.apply, args.open_browser))
     print(report.to_json() if args.json else report.to_human())
     return 0 if report.status == "PASS" else 2
+
+
+def _handle_catalog(args: argparse.Namespace) -> int:
+    from lib.theme_factory.catalog import update_catalog
+    evidence_root = args.evidence_root
+    if not evidence_root.is_absolute():
+        evidence_root = args.repo_root / evidence_root
+    changed = update_catalog(args.repo_root, evidence_root, check=args.check)
+    if args.check and changed:
+        for path in changed:
+            print(f"DRIFT {path.relative_to(args.repo_root.resolve())}")
+        return 2
+    action = "updated" if changed else "current"
+    print(f"THEME_CATALOG status=PASS files={len(changed)} action={action}")
+    return 0
 
 
 def run_cli(argv: list[str] | None = None) -> int:

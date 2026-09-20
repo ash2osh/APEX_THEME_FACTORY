@@ -420,6 +420,7 @@ def render_manifest(recipe: ThemeRecipe, font_roles: dict[str, FontRoleSpec]) ->
         "title": identity.title,
         "version": "1.0.0",
         "tagline": identity.tagline,
+        "direction": identity.direction,
         "class": f"app-theme-{identity.name}",
         "compatibility": {
             "apex": APEX_COMPATIBILITY,

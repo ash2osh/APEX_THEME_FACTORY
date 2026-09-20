@@ -81,11 +81,22 @@ class ChromeMcpDaemonTests(unittest.TestCase):
             listener.bind(str(target))
             listener.listen(2)
             accepted = []
-            threading.Thread(target=lambda: accepted.append(listener.accept()[0]) or accepted.append(listener.accept()[0]), daemon=True).start()
-            client = ChromeDevToolsClient(socket_path=target, response_timeout=0.3)
-            with self.assertRaises(RuntimeError) as context:
-                client.call_tool("list_pages")
-            self.assertIn("timed out", str(context.exception))
+            def accept_connections():
+                for _ in range(2):
+                    connection, _address = listener.accept()
+                    accepted.append(connection)
+
+            thread = threading.Thread(target=accept_connections, daemon=True)
+            thread.start()
+            try:
+                client = ChromeDevToolsClient(socket_path=target, response_timeout=0.3)
+                with self.assertRaises(RuntimeError) as context:
+                    client.call_tool("list_pages")
+                self.assertIn("timed out", str(context.exception))
+            finally:
+                for connection in accepted:
+                    connection.close()
+                thread.join(timeout=1)
 
     def test_missing_daemon_fails_loudly_when_autostart_disabled(self):
         with tempfile.TemporaryDirectory() as temp:

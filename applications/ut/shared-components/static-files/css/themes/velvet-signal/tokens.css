@@ -57,6 +57,13 @@ html.app-theme-velvet-signal {
     --app-shadow-md: 0 16px 42px rgba(7, 2, 12, .38);
     --app-shadow-dialog: 0 28px 72px rgba(7, 2, 12, .68), 0 0 32px rgba(156, 108, 255, .16);
     --app-control-h: 2.75rem;
+    --app-density-scale: 1.125;
+    --app-space-unit: .625rem;
+    --app-heading-scale: 1.5;
+    --app-hover-transform: translateY(-2px);
+    --app-motion-duration: 180ms;
+    --app-selected-treatment: fill;
+    --app-responsive-strategy: stack;
 
     --app-focus-ring: 0 0 0 2px var(--vs-base03), 0 0 0 5px var(--vs-violet);
     --app-focus-halo-color: rgba(156, 108, 255, .36);
@@ -97,7 +104,7 @@ html.app-theme-velvet-signal {
     --ut-focus-outline-color: var(--vs-cyan);
     --ut-link-text-color: var(--app-color-primary);
 
-    /* palette: fills keep the Solarized accents; contrast text is dark except on red */
+    /* palette: aubergine fills carry fuchsia/violet signals; contrast text stays dark on signal fills */
     --ut-palette-primary: var(--app-color-primary);
     --ut-palette-primary-contrast: var(--app-text-on-accent);
     --ut-palette-primary-shade: var(--app-accent-shade);

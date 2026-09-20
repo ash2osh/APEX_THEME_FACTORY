@@ -61,3 +61,11 @@
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
+
+/* identity: hairline flat region shadows */
+.app-theme-linen .apex-theme-iris .t-Region,
+.app-theme-linen .apex-theme-iris .t-CardsRegion {
+    box-shadow: none;
+    border-width: 1px;
+    border-radius: var(--app-radius-md);
+}

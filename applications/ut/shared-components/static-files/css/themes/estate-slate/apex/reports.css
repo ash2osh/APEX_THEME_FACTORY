@@ -68,3 +68,6 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* identity: ruled data rows */
+.app-theme-estate-slate .apex-theme-iris .a-IRR-table tr,
+.app-theme-estate-slate .apex-theme-iris .a-GV-table tr { border-block-end: 1px solid var(--app-border-color); }

@@ -57,6 +57,13 @@ html.app-theme-carbon-volt {
     --app-shadow-md: 4px 4px 0 rgba(0, 0, 0, .55);
     --app-shadow-dialog: 8px 8px 0 rgba(0, 0, 0, .72);
     --app-control-h: 2.125rem;
+    --app-density-scale: .875;
+    --app-space-unit: .375rem;
+    --app-heading-scale: 1.5;
+    --app-hover-transform: translateX(2px);
+    --app-motion-duration: 120ms;
+    --app-selected-treatment: outline;
+    --app-responsive-strategy: compress;
 
     --app-focus-ring: 0 0 0 1px var(--cv-base03), 0 0 0 3px var(--cv-cyan);
     --app-focus-halo-color: rgba(56, 232, 255, .3);
@@ -97,7 +104,7 @@ html.app-theme-carbon-volt {
     --ut-focus-outline-color: var(--cv-cyan);
     --ut-link-text-color: var(--app-color-primary);
 
-    /* palette: fills keep the Solarized accents; contrast text is dark except on red */
+    /* palette: hard graphite fills carry lime/cyan telemetry; contrast text stays dark on signal fills */
     --ut-palette-primary: var(--app-color-primary);
     --ut-palette-primary-contrast: var(--app-text-on-accent);
     --ut-palette-primary-shade: var(--app-accent-shade);

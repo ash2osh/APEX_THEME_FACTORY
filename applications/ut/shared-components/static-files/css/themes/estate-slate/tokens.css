@@ -81,6 +81,13 @@ html.app-theme-estate-slate {
 
     /* Geometry */
     --app-control-h: 2.25rem;
+    --app-density-scale: 1;
+    --app-space-unit: .375rem;
+    --app-heading-scale: 1.25;
+    --app-hover-transform: translateX(2px);
+    --app-motion-duration: 120ms;
+    --app-selected-treatment: rail;
+    --app-responsive-strategy: reflow;
 
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--est-amber);

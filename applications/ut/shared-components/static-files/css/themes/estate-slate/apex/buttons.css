@@ -59,3 +59,9 @@
     outline: none;
 }
 
+/* identity: crisp outlined operations */
+.app-theme-estate-slate .apex-theme-iris .t-Button--primary {
+    border: 2px solid var(--app-color-primary);
+    background: transparent;
+    color: var(--app-color-primary);
+}

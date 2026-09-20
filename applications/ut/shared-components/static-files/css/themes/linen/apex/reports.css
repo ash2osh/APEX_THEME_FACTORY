@@ -67,3 +67,7 @@
 .app-theme-linen .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+
+/* identity: spacious reports with paper-white rows and hairline rules */
+.app-theme-linen .apex-theme-iris .a-IRR-table td,
+.app-theme-linen .apex-theme-iris .a-GV-table td { padding-block: var(--app-space-4); }

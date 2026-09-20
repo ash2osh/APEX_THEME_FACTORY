@@ -1,3 +1,6 @@
+/* identity: minimal command nav and terminal-rule chrome */
+.app-theme-solarized-dark .apex-theme-iris .t-Header { --ut-header-strip-size: 0px; }
+.app-theme-solarized-dark .apex-theme-iris .t-Body-title { border-block-end: 1px solid var(--app-border-color); }
 /* Page shell — header, side navigation, title bar, footer.
    VS Code Solarized Dark chrome: title bar (#002c39), side bar (#00212b), editor canvas (#002b36).
    Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on

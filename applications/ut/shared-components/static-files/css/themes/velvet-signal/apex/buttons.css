@@ -1,3 +1,6 @@
+/* identity: smooth lift controls with fuchsia signal fills */
+.app-theme-velvet-signal .apex-theme-iris .t-Button { transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease; border-radius: var(--app-radius-lg); }
+.app-theme-velvet-signal .apex-theme-iris .t-Button:hover { transform: var(--app-hover-transform); box-shadow: var(--app-shadow-sm); }
 /* Buttons.
    Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header, --hot,
    --danger …) on the element, so overriding the base atoms on body.apex-theme-iris restyles all buttons while

@@ -1,3 +1,4 @@
+/* identity: cobalt underline tabs and vermilion marks */
 /* Alerts, badges, tabs — status pills and indicator badges.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -10,4 +11,3 @@
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
-

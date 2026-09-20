@@ -6,7 +6,6 @@ import argparse
 from dataclasses import dataclass
 import math
 from pathlib import Path
-import subprocess
 
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.fingerprint import (
@@ -15,6 +14,7 @@ from lib.theme_factory.fingerprint import (
     compare_fingerprints,
     fingerprint_theme,
 )
+from lib.theme_factory.gitstate import last_source_commit
 
 
 @dataclass(frozen=True)
@@ -79,17 +79,10 @@ def render_uniqueness_report(rows: tuple[PairwiseUniquenessRow, ...], *, source_
 
 
 def _source_commit(repo_root: Path) -> str:
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-    except (OSError, subprocess.SubprocessError):
-        return "unknown"
-    return result.stdout.strip() or "unknown"
+    # Generated Markdown is intentionally excluded from source identity. This lets a
+    # report-only follow-up commit keep the report stable while still binding it to the
+    # latest commit that changed packages, CSS, recipes, or build code.
+    return last_source_commit(repo_root) or "unknown"
 
 
 def main(argv: list[str] | None = None) -> int:

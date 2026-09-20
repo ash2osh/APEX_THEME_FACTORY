@@ -1,3 +1,6 @@
+/* identity: hard module boundaries and offset telemetry panels */
+.app-theme-carbon-volt .apex-theme-iris .t-Region,
+.app-theme-carbon-volt .apex-theme-iris .t-CardsRegion { border-radius: 0; box-shadow: var(--app-shadow-md); }
 /* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
    Surfaces and text come from the --ut-component-* / palette tokens in tokens.css (Core paints .t-Wizard,
    .t-MetricCard, .t-MediaList, .t-ContentRow, .t-Timeline, .t-Comments from them); this file only sets

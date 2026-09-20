@@ -1,3 +1,6 @@
+/* identity: pill navigation, pale aqua canvas, and teal structure */
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
+.app-theme-citrus-pop .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
 /* Page shell — header, side navigation, title bar, footer.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 

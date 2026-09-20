@@ -111,3 +111,14 @@
     line-height: 3rem;
     font-size: 1.5rem;
 }
+
+/* identity: no header accent strip; minimal text-led navigation; editorial title tracking */
+.app-theme-linen .apex-theme-iris .t-Header { --ut-header-strip-size: 0px; }
+.app-theme-linen .apex-theme-iris .t-Body-title {
+    letter-spacing: .04em;
+    border-block-end: 1px solid var(--app-border-color);
+}
+.app-theme-linen .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top {
+    background: transparent;
+    border-block-end: 2px solid var(--app-color-primary);
+}

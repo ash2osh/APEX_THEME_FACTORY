@@ -6,7 +6,7 @@ from pathlib import Path
 
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.fingerprint import check_uniqueness
-from lib.theme_factory.recipe import contrast_ratio
+from lib.theme_factory.recipe import contrast_ratio, load_recipe
 
 
 THEMES = {
@@ -85,6 +85,30 @@ def jpeg_dimensions(path: Path) -> tuple[int, int]:
 
 
 class NewThemePackageTests(unittest.TestCase):
+    def test_every_theme_has_an_explicit_version_two_identity_recipe(self):
+        vectors = {}
+        for discovered in discover_themes(Path.cwd()):
+            with self.subTest(theme=discovered.name):
+                recipe_path = discovered.root / "theme.recipe.json"
+                self.assertTrue(recipe_path.is_file(), f"missing {recipe_path}")
+                recipe = load_recipe(recipe_path)
+                self.assertEqual(recipe.schema_version, 2)
+                self.assertEqual(recipe.identity.name, discovered.name)
+                vector = (
+                    recipe.components.navigation,
+                    recipe.components.cards,
+                    recipe.components.buttons,
+                    recipe.components.forms,
+                    recipe.components.reports,
+                    recipe.components.dialogs,
+                    recipe.rhythm,
+                    recipe.interaction,
+                    recipe.responsive,
+                )
+                self.assertNotIn(vector, vectors, f"identity vector collides with {vectors.get(vector)}")
+                vectors[vector] = discovered.name
+        self.assertEqual(len(vectors), 8)
+
     def test_citrus_hot_button_text_meets_wcag_aa_on_tangerine(self):
         root = Path("sample-themes/citrus-pop/css")
         tokens = (root / "tokens.css").read_text(encoding="utf-8")

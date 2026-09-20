@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "citrus-pop",
+    "title": "Citrus Pop",
+    "tagline": "Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards.",
+    "direction": "Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards.",
+    "mode": "light",
+    "keywords": ["playful", "buoyant", "pills"]
+  },
+  "palette": {
+    "page": "#ECFAF6",
+    "card": "#FFFFFF",
+    "chrome": "#073B3A",
+    "textPrimary": "#164E4B",
+    "textSecondary": "#49726F",
+    "accent": "#007F78",
+    "accentAlt": "#17734E",
+    "onAccent": "#FFFFFF",
+    "danger": "#C74320"
+  },
+  "typography": {
+    "bodyFamily": "Tajawal",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 700, 800]
+  },
+  "geometry": {
+    "radiusSmall": "8px",
+    "radiusMedium": "16px",
+    "radiusLarge": "24px",
+    "controlHeight": "2.625rem",
+    "borderStyle": "soft",
+    "shadowStyle": "soft"
+  },
+  "focus": {"color": "#007F78", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "pill",
+    "cards": "buoyant",
+    "buttons": "pill",
+    "forms": "soft",
+    "reports": "spacious",
+    "dialogs": "layered"
+  },
+  "rhythm": {"density": "spacious", "spacing": "playful", "typeScale": "display"},
+  "interaction": {"hover": "lift", "selected": "fill", "motion": "buoyant"},
+  "responsive": {"strategy": "stack", "compactControlsAt": 768}
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "estate-slate",
+    "title": "Estate Slate",
+    "tagline": "Precision corporate slate, white cards, and restrained champagne-amber actions.",
+    "direction": "Precision corporate slate, white cards, and restrained champagne-amber actions.",
+    "mode": "light",
+    "keywords": ["property", "precision", "formal"]
+  },
+  "palette": {
+    "page": "#F8FAFC",
+    "card": "#FFFFFF",
+    "chrome": "#0F172A",
+    "textPrimary": "#1E293B",
+    "textSecondary": "#475569",
+    "accent": "#B45309",
+    "accentAlt": "#0E7490",
+    "onAccent": "#FFFFFF",
+    "danger": "#B91C1C"
+  },
+  "typography": {
+    "bodyFamily": "IBMPlexSansArabic",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "4px",
+    "radiusMedium": "6px",
+    "radiusLarge": "8px",
+    "controlHeight": "2.25rem",
+    "borderStyle": "technical",
+    "shadowStyle": "layered"
+  },
+  "focus": {"color": "#B45309", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "editorial",
+    "cards": "flat",
+    "buttons": "rounded",
+    "forms": "outlined",
+    "reports": "ruled",
+    "dialogs": "layered"
+  },
+  "rhythm": {"density": "balanced", "spacing": "technical", "typeScale": "balanced"},
+  "interaction": {"hover": "shift", "selected": "rail", "motion": "precise"},
+  "responsive": {"strategy": "reflow", "compactControlsAt": 768}
+}

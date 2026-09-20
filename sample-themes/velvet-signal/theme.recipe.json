@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "velvet-signal",
+    "title": "Velvet Signal",
+    "tagline": "Spacious aubergine layers with rounded surfaces and fuchsia-violet signals.",
+    "direction": "Spacious aubergine layers with rounded surfaces and fuchsia-violet signals.",
+    "mode": "dark",
+    "keywords": ["signal", "sculpted", "spacious"]
+  },
+  "palette": {
+    "page": "#140B1B",
+    "card": "#24132F",
+    "chrome": "#1B0F24",
+    "textPrimary": "#F0DBEA",
+    "textSecondary": "#CDB6D5",
+    "accent": "#FF4FB3",
+    "accentAlt": "#9C6CFF",
+    "onAccent": "#200D1A",
+    "danger": "#FF8BA6"
+  },
+  "typography": {
+    "bodyFamily": "Alexandria",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "10px",
+    "radiusMedium": "16px",
+    "radiusLarge": "24px",
+    "controlHeight": "2.75rem",
+    "borderStyle": "soft",
+    "shadowStyle": "soft"
+  },
+  "focus": {"color": "#9C6CFF", "width": "2px", "offset": "3px"},
+  "components": {
+    "navigation": "pill",
+    "cards": "layered",
+    "buttons": "rounded",
+    "forms": "soft",
+    "reports": "spacious",
+    "dialogs": "layered"
+  },
+  "rhythm": {"density": "spacious", "spacing": "soft", "typeScale": "display"},
+  "interaction": {"hover": "lift", "selected": "fill", "motion": "smooth"},
+  "responsive": {"strategy": "stack", "compactControlsAt": 768}
+}

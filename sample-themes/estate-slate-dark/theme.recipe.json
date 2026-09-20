@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "estate-slate-dark",
+    "title": "Estate Slate Dark",
+    "tagline": "Monolithic dark corporate slate with luminous amber directives and emerald telemetry.",
+    "direction": "Monolithic dark corporate slate with luminous amber directives and emerald telemetry.",
+    "mode": "dark",
+    "keywords": ["geospatial", "monitoring", "cockpit"]
+  },
+  "palette": {
+    "page": "#0A0E17",
+    "card": "#181B25",
+    "chrome": "#0A0E17",
+    "textPrimary": "#DFE2EF",
+    "textSecondary": "#94A3B8",
+    "accent": "#FFB77D",
+    "accentAlt": "#22D3EE",
+    "onAccent": "#0A0E17",
+    "danger": "#F87171"
+  },
+  "typography": {
+    "bodyFamily": "IBMPlexSansArabic",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "4px",
+    "radiusMedium": "6px",
+    "radiusLarge": "8px",
+    "controlHeight": "2.25rem",
+    "borderStyle": "technical",
+    "shadowStyle": "offset"
+  },
+  "focus": {"color": "#22D3EE", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "rail",
+    "cards": "layered",
+    "buttons": "square",
+    "forms": "dense",
+    "reports": "spacious",
+    "dialogs": "offset"
+  },
+  "rhythm": {"density": "compact", "spacing": "technical", "typeScale": "compact"},
+  "interaction": {"hover": "glow", "selected": "rail", "motion": "precise"},
+  "responsive": {"strategy": "compress", "compactControlsAt": 768}
+}

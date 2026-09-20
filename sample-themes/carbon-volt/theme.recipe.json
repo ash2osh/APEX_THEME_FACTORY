@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "carbon-volt",
+    "title": "Carbon Volt",
+    "tagline": "Square technical graphite with acid-lime actions and cyan telemetry.",
+    "direction": "Square technical graphite with acid-lime actions and cyan telemetry.",
+    "mode": "dark",
+    "keywords": ["telemetry", "segmented", "technical"]
+  },
+  "palette": {
+    "page": "#0A0D0B",
+    "card": "#151A16",
+    "chrome": "#0F1310",
+    "textPrimary": "#F2F7F0",
+    "textSecondary": "#A8B5AB",
+    "accent": "#B8FF3D",
+    "accentAlt": "#38E8FF",
+    "onAccent": "#0A0D0B",
+    "danger": "#FF8791"
+  },
+  "typography": {
+    "bodyFamily": "Noto Kufi Arabic",
+    "headingFamily": "body",
+    "fallback": ["system-ui", "sans-serif"],
+    "weights": [400, 500, 600, 700]
+  },
+  "geometry": {
+    "radiusSmall": "0px",
+    "radiusMedium": "2px",
+    "radiusLarge": "4px",
+    "controlHeight": "2.125rem",
+    "borderStyle": "technical",
+    "shadowStyle": "offset"
+  },
+  "focus": {"color": "#38E8FF", "width": "2px", "offset": "2px"},
+  "components": {
+    "navigation": "rail",
+    "cards": "offset",
+    "buttons": "square",
+    "forms": "dense",
+    "reports": "ruled",
+    "dialogs": "offset"
+  },
+  "rhythm": {"density": "compact", "spacing": "technical", "typeScale": "display"},
+  "interaction": {"hover": "shift", "selected": "outline", "motion": "precise"},
+  "responsive": {"strategy": "compress", "compactControlsAt": 768}
+}

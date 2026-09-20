@@ -9,6 +9,14 @@
       "artifact": "database_installation.json",
       "artifactSha256": "e4d6f4a5afb29337476e2d066a74a6995beda4afc402db04ecb564d7f54917ec",
       "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 2a4ba357d308"
+    },
+    {
+      "layer": "D",
+      "check": "browser_runtime_matrix",
+      "status": "PASS",
+      "artifact": "browser_runtime_matrix.json",
+      "artifactSha256": "750a90b62fd27052d1be2771b95413ceb6eca275417c777507e77a6dc67fe61a",
+      "details": "8/8 consumer/width rows verified live at commit 3b7cdf628631"
     }
   ]
 }

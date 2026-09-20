@@ -1,0 +1,8 @@
+.a-Menu {
+  --a-menu-item-text-color: var(--a-base-text-color, #161513);
+  --a-menu-item-background-color: #ffffff;
+}
+
+html .oj-component {
+  --oj-core-bg-color-content: var(--ut-body-background-color, #ffffff);
+}

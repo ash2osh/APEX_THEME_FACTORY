@@ -2,8 +2,10 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 
 from lib.theme_factory.archive import build_package, build_package_from_root, verify_package
 from lib.theme_factory.checks import run_theme_checks
@@ -63,6 +65,18 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
 
 
 def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
+    inspector = subparsers.add_parser("inspect-iris", help="Check or update the Iris token inventory")
+    inspector.add_argument("--reference-root", type=Path,
+                           default=Path(".agents/knowledge/reference/ut-26.1"))
+    inspector.add_argument("--inventory", type=Path,
+                           default=Path(".agents/knowledge/reference/ut-26.1/iris-token-inventory.json"))
+    inspector.add_argument("--report", type=Path,
+                           default=Path("docs/generated/iris-26.1-token-report.md"))
+    action = inspector.add_mutually_exclusive_group(required=True)
+    action.add_argument("--check", action="store_true")
+    action.add_argument("--write", action="store_true")
+    inspector.set_defaults(handler=_handle_inspect_iris)
+
     new = subparsers.add_parser("new", help="Scaffold a theme from a recipe or neutral defaults")
     new.add_argument("name")
     new.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -358,6 +372,57 @@ def _handle_evidence_prune(args: argparse.Namespace) -> int:
         "targets": [str(path) for path in paths],
     }
     print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
+    return 0
+
+
+def _atomic_write(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    except Exception:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def _handle_inspect_iris(args: argparse.Namespace) -> int:
+    from lib.theme_factory.iris_inspector import (
+        inspect_iris, inventory_from_json, render_drift_report, render_inventory_json,
+    )
+
+    current = inspect_iris(args.reference_root)
+    rendered_inventory = render_inventory_json(current)
+    if args.write:
+        rendered_report = render_drift_report(current, current)
+        _atomic_write(args.inventory, rendered_inventory)
+        _atomic_write(args.report, rendered_report)
+        print(f"IRIS_INSPECT status=PASS action=updated tokens={len(current.declarations)}")
+        return 0
+    if not args.inventory.is_file():
+        raise PackageError(f"Missing committed Iris token inventory: {args.inventory}")
+    baseline_text = args.inventory.read_text(encoding="utf-8")
+    baseline = inventory_from_json(baseline_text)
+    rendered_report = render_drift_report(current, baseline)
+    expected_report = render_drift_report(baseline, baseline)
+    drift = []
+    if rendered_inventory != baseline_text:
+        drift.append(str(args.inventory))
+    if not args.report.is_file() or args.report.read_text(encoding="utf-8") != expected_report:
+        drift.append(str(args.report))
+    if drift:
+        for path in drift:
+            print(f"DRIFT {path}")
+        if rendered_inventory != baseline_text:
+            print(rendered_report, end="")
+        return 2
+    print(f"IRIS_INSPECT status=PASS action=current tokens={len(current.declarations)}")
     return 0
 
 

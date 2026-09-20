@@ -1,0 +1,8 @@
+.a-GV {
+  --a-gv-cell-text-color: var(--a-base-text-color, #161513);
+  --a-gv-cell-background-color: var(--a-base-background-color, rgba(255, 255, 255, 1));
+}
+
+.a-DatePicker {
+  --a-datepicker-selected-background-color: var(--a-palette-primary, #00688c);
+}

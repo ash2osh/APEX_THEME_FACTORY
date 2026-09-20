@@ -1,0 +1,9 @@
+:root {
+  --ut-body-text-color: var(--ut-palette-neutral-190, var(--ut-palette-neutral-180, #161513));
+  --ut-body-background-color: #ffffff;
+  --ut-link-text-color: hsl(196 100% 28%);
+}
+
+.t-Button {
+  --ut-button-border-color: color-mix(in srgb, #05668d 70%, white);
+}

@@ -1,3 +1,4 @@
+/* identity: terminal-rule tabs, code specimens, and restrained status accents */
 /* Alerts, badges, tabs — Solarized semantic mapping on dark surfaces.
    Media list, content rows, timeline, comments and links list need nothing here: Core paints them from the
    --ut-component-* / --ut-*-item-background-color tokens set in tokens.css. Scoped to .app-theme-solarized-dark. */

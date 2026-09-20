@@ -1,3 +1,4 @@
+/* identity: amber/emerald telemetry rails and map-frame utility states */
 /* Alerts, badges, tabs, code, demo surfaces.
    Scoped to .app-theme-estate-slate-dark. */
 
@@ -247,4 +248,3 @@
 .app-theme-estate-slate-dark .maplibregl-ctrl-attrib a {
     color: var(--app-text-primary);
 }
-

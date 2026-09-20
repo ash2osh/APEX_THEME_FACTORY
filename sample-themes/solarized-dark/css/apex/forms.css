@@ -1,3 +1,5 @@
+/* identity: dense terminal inputs and compact labels */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-label { letter-spacing: .02em; }
 /* Form items. Base --a-field-* atoms live on :root (Core/Iris) → override on body; floating-label containers
    set their own padding on the element, so body-level overrides only touch what they should.
    Input surface #003847 (VS Code input.background), 3.3:1 border, cyan focus. Scoped to .app-theme-solarized-dark. */

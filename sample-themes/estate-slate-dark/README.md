@@ -121,6 +121,12 @@ Audited live via Chrome DevTools MCP daemon against Oracle APEX 26.1.4 (Universa
 - **Interactive Grid Pagination Selector (Page 1410)**: Selected page item `.a-GV-pageSelector-item.is-selected` renders with `#dfe2ef` text on slate chrome, measuring **13.30:1** (Pass).
 
 
+## Identity
+
+Estate Slate Dark is a compact geospatial intelligence cockpit: a dense vertical rail, layered monitor panels,
+inset map frames, luminous state rails, square controls, and offset detail dialogs. Its complete dark Iris token
+coverage remains intact while its geometry is independent from both light Estate Slate and the terminal package.
+
 ## Release evidence
 
 **Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-estate-slate-dark/`, verdict

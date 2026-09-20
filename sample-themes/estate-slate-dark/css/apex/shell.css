@@ -1,3 +1,6 @@
+/* identity: dense rail navigation and map-frame monitoring cockpit */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-nav { --ut-nav-width: 13rem; }
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-inline-start: 3px solid var(--app-color-primary); }
 /* Page shell — header, side navigation, title bar, footer.
    Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
 
@@ -127,4 +130,3 @@
     border-top-color: var(--app-border-color);
     color: var(--app-text-secondary);
 }
-

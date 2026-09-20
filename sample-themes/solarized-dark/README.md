@@ -302,6 +302,12 @@ failures, and 1410 carried the worst one found so far. The source-review pass th
 therefore necessary but not sufficient: it never reached `--a-palette-*`, `--a-base-link-text-color` or the
 `--oj-*` family, all of which are the same `:root`-freeze mechanism it set out to close.
 
+## Identity
+
+Solarized Dark is a flat terminal/documentation workspace: minimal command navigation, low-radius panes, dense
+terminal rules, underline actions, and flat dialogs. The full dark Iris/frozen-palette/JET coverage described
+above is retained; this identity is not a recolored Estate or Carbon cockpit.
+
 **Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`, verdict
 `VERIFIED`, commit `7ac2e0204ca0`): Layer C exercised install, stale-restore guard, reinstall, switcher on/off,
 coexistence with `linen`, uninstall ×2, unrelated-file preservation and restore — 7/7 on a minimal consumer app

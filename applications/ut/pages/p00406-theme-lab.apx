@@ -1,0 +1,1048 @@
+page 406 (
+    name: Theme Lab
+    alias: THEME-LAB
+    title: Theme Lab
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+        cssClasses: theme-lab-page
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @universal-theme-breadcrumb
+        }
+        layout {
+            sequence: 1
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--showBreadcrumb
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region theme-lab-typography (
+        name: Bilingual Typography
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <div class="theme-lab-specimen-grid">
+                  <section class="theme-lab-specimen" aria-labelledby="theme-lab-latin-heading">
+                    <h3 id="theme-lab-latin-heading">Latin specimen</h3>
+                    <p class="theme-lab-type-row"><span class="theme-lab-type-sample">400 Regular</span><span class="theme-lab-type-sample theme-lab-type-sample--500">500 Medium</span><span class="theme-lab-type-sample theme-lab-type-sample--600">600 Semibold</span><span class="theme-lab-type-sample theme-lab-type-sample--700">700 Bold</span></p>
+                    <p>Pack my box with five dozen liquor jugs. 0123456789</p>
+                  </section>
+                  <section class="theme-lab-specimen" dir="rtl" lang="ar" aria-labelledby="theme-lab-arabic-heading">
+                    <h3 id="theme-lab-arabic-heading">العربية</h3>
+                    <p class="theme-lab-type-row"><span class="theme-lab-type-sample">العربية 400</span><span class="theme-lab-type-sample theme-lab-type-sample--500">العربية 500</span><span class="theme-lab-type-sample theme-lab-type-sample--600">العربية 600</span><span class="theme-lab-type-sample theme-lab-type-sample--700">العربية 700</span></p>
+                    <p>واجهة واضحة وسريعة تدعم القراءة من اليمين إلى اليسار.</p>
+                  </section>
+                </div>
+                <p><strong>Declared weights:</strong> 400 500 600 700</p>
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_typography
+        }
+    )
+
+    region theme-lab-surfaces (
+        name: Semantic Surfaces
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <div class="theme-lab-specimen-grid">
+                  <div class="theme-lab-surface theme-lab-surface--page">Page surface</div>
+                  <div class="theme-lab-surface theme-lab-surface--card">Card surface</div>
+                  <div class="theme-lab-surface theme-lab-surface--subtle">Subtle surface</div>
+                  <div class="theme-lab-surface theme-lab-surface--selected">Selected surface</div>
+                </div>
+                ```
+        }
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_surfaces
+        }
+    )
+
+    region theme-lab-buttons (
+        name: Buttons and States
+        type: staticContent
+        source {
+            htmlCode: <p>Use Tab to inspect the native focus treatment. The submit action below also reproduces the native required-item error state.</p>
+        }
+        layout {
+            sequence: 30
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+            cssClasses: theme-lab-actions
+        }
+        advanced {
+            htmlDomId: theme_lab_buttons
+        }
+    )
+
+    region theme-lab-forms (
+        name: Native Forms and Validation
+        type: staticContent
+        layout {
+            sequence: 40
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_forms
+        }
+    )
+
+    region theme-lab-cards (
+        name: Cards
+        type: cards
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select level id,
+                       case when mod(level, 2) = 0 then 'موضوع عربي ' || level else 'Theme card ' || level end title,
+                       case when mod(level, 2) = 0 then 'وصف موجز للبطاقة' else 'Native Cards specimen' end subtitle,
+                       case mod(level, 3) when 0 then 'Ready' when 1 then 'Review' else 'Draft' end badge,
+                       'fa-paint-brush' icon_class
+                  from dual
+                connect by level <= 6
+                ```
+        }
+        layout {
+            sequence: 50
+            slot: body
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: #DEFAULT#
+        }
+        componentAppearance {
+            gridColumns: 3
+        }
+        advanced {
+            htmlDomId: theme_lab_cards
+        }
+        card {
+            primaryKeyColumn1: ID
+        }
+        title {
+            column: TITLE
+        }
+        subtitle {
+            column: SUBTITLE
+        }
+        iconAndBadge {
+            iconSource: iconClassColumn
+            iconColumn: ICON_CLASS
+            iconCssClasses: fa
+            badgeColumn: BADGE
+        }
+    )
+
+    region theme-lab-ir (
+        name: Interactive Report
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select level id,
+                       case when mod(level, 2) = 0 then 'موضوع عربي ' || level else 'Report row ' || level end label,
+                       case mod(level, 3) when 0 then 'Ready' when 1 then 'Review' else 'Draft' end status,
+                       trunc(sysdate) - level sample_date
+                  from dual
+                connect by level <= 6
+                ```
+        }
+        layout {
+            sequence: 60
+            slot: body
+            columnSpan: 6
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: #DEFAULT#
+            cssClasses: theme-lab-data-region
+        }
+        componentAppearance {
+            showNullValuesAs: -
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        performance {
+            maxRowsToProcess: 1000
+        }
+        heading {
+            fixedTo: none
+        }
+        componentAdvanced {
+            maxRowsPerPageInSelector: 6
+        }
+        advanced {
+            htmlDomId: theme_lab_ir
+            savedReportMappingIdentifier: 406100001
+        }
+
+        column ID (
+            type: plainText
+            heading {
+                heading: ID
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column LABEL (
+            type: plainText
+            heading {
+                heading: Label
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        column STATUS (
+            type: plainText
+            heading {
+                heading: Status
+            }
+            layout {
+                sequence: 30
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column SAMPLE_DATE (
+            type: plainText
+            heading {
+                heading: Sample date
+            }
+            layout {
+                sequence: 40
+            }
+            source {
+                dataType: DATE
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        savedReport 406100002 (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 6
+            }
+
+            displayColumn ID (
+                sequence: 1
+            )
+
+            displayColumn LABEL (
+                sequence: 2
+            )
+
+            displayColumn STATUS (
+                sequence: 3
+            )
+
+            displayColumn SAMPLE_DATE (
+                sequence: 4
+            )
+        )
+    )
+
+    region theme-lab-ig (
+        name: Interactive Grid (Read Only)
+        type: interactiveGrid
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select level id,
+                       case when mod(level, 2) = 0 then 'موضوع عربي ' || level else 'Grid row ' || level end label,
+                       case mod(level, 3) when 0 then 'Ready' when 1 then 'Review' else 'Draft' end status,
+                       level * 125 amount
+                  from dual
+                connect by level <= 6
+                ```
+        }
+        layout {
+            sequence: 70
+            slot: body
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: #DEFAULT#
+            cssClasses: theme-lab-data-region
+        }
+        componentAppearance {
+            showNullValuesAs: -
+        }
+        pagination {
+            type: page
+        }
+        toolbar {
+            controls: [
+                searchCol
+                searchField
+                actionsMenu
+                resetButton
+            ]
+        }
+        download {
+            formats: [
+                csv
+                html
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_ig
+            savedReportMappingIdentifier: 406200001
+        }
+
+        savedReport 406200002 (
+            visibility: primary
+            view {
+                default: grid
+            }
+            singleRowView {
+                displayedColumns: true
+            }
+
+            displayColumn (
+                column: @ID
+                layout {
+                    sequence: 1
+                }
+            )
+
+            displayColumn (
+                column: @LABEL
+                layout {
+                    sequence: 2
+                }
+            )
+
+            displayColumn (
+                column: @STATUS
+                layout {
+                    sequence: 3
+                }
+            )
+
+            displayColumn (
+                column: @AMOUNT
+                layout {
+                    sequence: 4
+                }
+            )
+        )
+
+        column ID (
+            type: numberField
+            heading {
+                heading: ID
+                alignment: end
+            }
+            settings {
+                numberAlignment: end
+                virtualKeyboard: text
+            }
+            layout {
+                sequence: 10
+                columnAlignment: end
+            }
+            source {
+                databaseColumn: ID
+                dataType: number
+            }
+            columnFilter {
+                lovType: none
+            }
+        )
+
+        column LABEL (
+            type: textField
+            heading {
+                heading: Label
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                databaseColumn: LABEL
+                dataType: varchar2
+            }
+        )
+
+        column STATUS (
+            type: textField
+            heading {
+                heading: Status
+            }
+            layout {
+                sequence: 30
+            }
+            source {
+                databaseColumn: STATUS
+                dataType: varchar2
+            }
+        )
+
+        column AMOUNT (
+            type: numberField
+            heading {
+                heading: Amount
+                alignment: end
+            }
+            settings {
+                numberAlignment: end
+                virtualKeyboard: text
+            }
+            layout {
+                sequence: 40
+                columnAlignment: end
+            }
+            source {
+                databaseColumn: AMOUNT
+                dataType: number
+            }
+            columnFilter {
+                lovType: none
+            }
+        )
+    )
+
+    region theme-lab-calendar (
+        name: Calendar
+        type: calendar
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select case when mod(level, 2) = 0 then 'موضوع عربي ' || level else 'Calendar item ' || level end title,
+                       trunc(sysdate) + level start_date,
+                       trunc(sysdate) + level + 1 end_date,
+                       case mod(level, 3) when 0 then 'apex-cal-green' when 1 then 'apex-cal-blue' else 'apex-cal-yellow' end css_class
+                  from dual
+                connect by level <= 6
+                ```
+        }
+        layout {
+            sequence: 80
+            slot: body
+            columnSpan: 6
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_calendar
+        }
+        settings {
+            displayColumn: TITLE
+            startDateColumn: START_DATE
+            showTime: true
+            calendarViewsAndNavigation: [
+                month
+                week
+                day
+                list
+                navigation
+            ]
+            cssClass: CSS_CLASS
+        }
+        performance {
+            lazyLoading: false
+        }
+    )
+
+    region theme-lab-chart (
+        name: JET Chart
+        type: chart
+        layout {
+            sequence: 90
+            slot: body
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+        }
+        advanced {
+            htmlDomId: theme_lab_chart
+        }
+        chartLayout {
+            height: 280
+        }
+        dataCursor {
+            dimOnHover: false
+        }
+        animation {
+            onDisplay: none
+            onDataChange: none
+        }
+        legend {
+            hideAndShowBehavior: none
+        }
+
+        series bilingual-series (
+            name: Bilingual sample
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    select level * 10 value,
+                           case when mod(level, 2) = 0 then 'موضوع عربي ' || level else 'Series ' || level end label
+                      from dual
+                    connect by level <= 6
+                    ```
+            }
+            columnMapping {
+                label: LABEL
+                value: VALUE
+            }
+        )
+
+        axis x (
+            name: x
+            minorTicks {
+                show: false
+            }
+        )
+
+        axis y (
+            name: y
+            minorTicks {
+                show: false
+            }
+        )
+    )
+
+    region theme-lab-overlays (
+        name: Overlays, Pickers, Menus, and Full References
+        type: staticContent
+        source {
+            htmlCode: <p>Open the native modal, drawer, picker, Popup LOV, and reference pages to inspect transient component states.</p>
+        }
+        layout {
+            sequence: 100
+            slot: body
+        }
+        appearance {
+            template: @/content-block
+            templateOptions: [
+                #DEFAULT#
+                t-ContentBlock--h2
+            ]
+            cssClasses: theme-lab-actions
+        }
+        advanced {
+            htmlDomId: theme_lab_overlays
+        }
+    )
+
+    pageItem P406_REQUIRED (
+        type: textField
+        label {
+            label: Required error specimen
+            alignment: left
+        }
+        layout {
+            sequence: 10
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            columnSpan: 6
+        }
+        appearance {
+            template: @/required
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+        validation {
+            valueRequired: true
+        }
+    )
+
+    pageItem P406_TEXT (
+        type: textField
+        label {
+            label: Text field
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+    )
+
+    pageItem P406_SELECT (
+        type: selectList
+        label {
+            label: Select list
+            alignment: left
+        }
+        lov {
+            type: staticValues
+            staticValues: STATIC2:Ready;READY,Review;REVIEW,مسودة;DRAFT
+            displayExtraValues: false
+            displayNullValue: true
+        }
+        layout {
+            sequence: 30
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            height: 1
+        }
+    )
+
+    pageItem P406_DATE (
+        type: datePicker
+        label {
+            label: Date picker
+            alignment: left
+        }
+        layout {
+            sequence: 40
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+    )
+
+    pageItem P406_POPUP_LOV (
+        type: popupLov
+        label {
+            label: Popup LOV
+            alignment: left
+        }
+        lov {
+            type: staticValues
+            staticValues: STATIC2:Carbon Volt;CARBON,Velvet Signal;VELVET,Cobalt Press;COBALT,Citrus Pop;CITRUS
+            displayExtraValues: false
+            displayNullValue: true
+        }
+        layout {
+            sequence: 50
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+    )
+
+    pageItem P406_RADIO (
+        type: radioGroup
+        label {
+            label: Density
+            alignment: left
+        }
+        lov {
+            type: staticValues
+            staticValues: STATIC2:Comfortable;COMFORTABLE,Compact;COMPACT
+            displayExtraValues: false
+            displayNullValue: false
+        }
+        layout {
+            sequence: 60
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        default {
+            type: static
+            staticValue: COMFORTABLE
+        }
+    )
+
+    pageItem P406_CHECKBOX (
+        type: checkbox
+        label {
+            label: Include archived rows
+            alignment: left
+        }
+        layout {
+            sequence: 70
+            region: @theme-lab-forms
+            slot: regionBody
+            alignment: left
+            columnSpan: 6
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    button default-button (
+        buttonName: DEFAULT_BUTTON
+        label: Default
+        layout {
+            sequence: 10
+            region: @theme-lab-buttons
+            slot: regionBody
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+            executeValidations: false
+        }
+    )
+
+    button hot-button (
+        buttonName: HOT_BUTTON
+        label: Hot action
+        layout {
+            sequence: 20
+            region: @theme-lab-buttons
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+            executeValidations: false
+        }
+    )
+
+    button icon-button (
+        buttonName: ICON_BUTTON
+        label: Icon action
+        layout {
+            sequence: 30
+            region: @theme-lab-buttons
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            templateOptions: [
+                #DEFAULT#
+                t-Button--iconLeft
+            ]
+            icon: fa-check
+        }
+        behavior {
+            action: definedByDynamicAction
+            executeValidations: false
+        }
+    )
+
+    button submit-error (
+        buttonName: SUBMIT_ERROR
+        label: Show validation error
+        layout {
+            sequence: 40
+            region: @theme-lab-buttons
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: submitPage
+        }
+    )
+
+    button open-modal (
+        buttonName: OPEN_MODAL
+        label: Open modal
+        layout {
+            sequence: 10
+            region: @theme-lab-overlays
+            slot: regionBody
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1913
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button open-drawer (
+        buttonName: OPEN_DRAWER
+        label: Open drawer
+        layout {
+            sequence: 20
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1919
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button menu-reference (
+        buttonName: MENU_REFERENCE
+        label: Menu reference
+        layout {
+            sequence: 30
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 421
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button ir-reference (
+        buttonName: IR_REFERENCE
+        label: Full IR reference
+        layout {
+            sequence: 40
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1402
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button ig-reference (
+        buttonName: IG_REFERENCE
+        label: Full IG reference
+        layout {
+            sequence: 50
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1410
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button calendar-reference (
+        buttonName: CALENDAR_REFERENCE
+        label: Full calendar reference
+        layout {
+            sequence: 60
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1800
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button chart-reference (
+        buttonName: CHART_REFERENCE
+        label: Full chart reference
+        layout {
+            sequence: 70
+            region: @theme-lab-overlays
+            slot: regionBody
+            startNewRow: false
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1902
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+)

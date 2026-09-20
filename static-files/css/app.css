@@ -10,6 +10,7 @@
 /* components/  reusable .app-* components — one file per component, paired with js/components */
 /* pages/       page-local rules scoped by html.page-<N> */
 @import "pages/themes.css";
+@import "pages/theme-lab.css";
 /* @themes:start */
 @import "themes/carbon-volt/theme.css";
 @import "themes/citrus-pop/theme.css";

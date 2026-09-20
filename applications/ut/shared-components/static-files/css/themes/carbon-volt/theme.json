@@ -4,6 +4,7 @@
   "title": "Carbon Volt",
   "version": "1.0.0",
   "tagline": "Graphite control surfaces charged with acid lime and cyan telemetry.",
+  "direction": "Square technical graphite with acid-lime actions and cyan telemetry.",
   "class": "app-theme-carbon-volt",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

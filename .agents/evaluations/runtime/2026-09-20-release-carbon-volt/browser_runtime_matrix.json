@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "carbon-volt",
-  "gitCommit": "0bccad8fd0542b039f13ea12208c98555bc6c9cf",
-  "packageSha256": "fc03ce666448f6584dbf7277ff7e15d85855813fa4097e3e309b98e0446de5d1",
-  "capturedAt": "2026-09-20T18:56:34Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "c9cb07cd84b9355dad46f7bb39d2a8bb4276bb4e1dbdb66b5ff05c3438b90949",
+  "capturedAt": "2026-09-20T21:06:17Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "663a850354a943092636cb4f93b2359d0043dfb373ddbab60f032c0146eb4e22"
+          "sha256": "12a7b8c8ebd1c55de12e28183597acf6ce14bfbc8a10899955a80fcf6c4aa0b1"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "09ae0de46127e35b6d1d8a2c31658a42528cba300b9a59e748124e7e4cab15d3"
+          "sha256": "583a1ffeaf2d3d3f2ceb475c6f703f6523fc65b859c0738402327f3e99e65247"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "4f4d023de0316c8af3b5288db696b75ea982194beda4628d9a346ebef6bdbc7a"
+          "sha256": "6388c55ea4dd15c0777755828c36d54b44a05c8b9860c6bb0ac41f97b975e3fd"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "704708789752fe99c0d3b97d03773bb51f5a651b9ef69c663f1b8cad1de1514c"
+          "sha256": "b79f1b0af1c68052810e37a16bad3fd191d566888a11c9f4128541722aca0981"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "a256eb135ec9d21e87c340fe162808e16f1008487b9b7f2e325a0c40fd9bb84d"
+          "sha256": "0198c9b205ac369aa1075bca57c1bdd29f5589dfdbb4ca465f95ff71a4bdebfe"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "53b5c87f020a0145c65aa4420eded0cc4f2cbb92cc4a8d64f11e8c0431e4e835"
+          "sha256": "288d0c566d3e31c5e9db608951ef22acaaed5218152d31c297da4a4647ba7ad8"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "2a17c9d630abfa95f1ba05b496d9c2e426564a049e042e3f186531f25892b8b4"
+          "sha256": "49519c03ad4a474ec4c5810d467603fa8ff2aa0c3f8d615321e575c7fbf3c916"
         }
       },
       {
@@ -70,39 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "6c3aeb3037005a903930c7992fdbc14b1121b059ea89be40f76decd07bde4370"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page2-1440.json",
-          "sha256": "f9922348e2336ad26c5b7ff8b3c7bfe9b31356162c66ae73b7da90a19b3d3933"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page2-375.json",
-          "sha256": "a5072293301a026d502bba5274c210536b7a7cd5d7b7f12828914e984045d7c6"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page3-1440.json",
-          "sha256": "6f7805eb18668f8f3676496d1fae31b3648336f45627548432594b1074d917fa"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page3-375.json",
-          "sha256": "66ece64a8ed39e7daa5978c6c22594643f9aa6fb4e3d2da8e0b6328a6dbb0341"
+          "sha256": "b4c538e1f6c86c238b992e1bcbc8f3adc1bbbe56e748dfc24cfc193a9d555eb7"
         }
       }
     ],

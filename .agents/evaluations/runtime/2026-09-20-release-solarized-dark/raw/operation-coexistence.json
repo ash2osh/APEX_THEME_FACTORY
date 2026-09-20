@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
-  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
-  "capturedAt": "2026-09-20T17:06:53Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "290b0999aa516808289264826090ec2068978b53aed585c9b038458a7028c3ff",
+  "capturedAt": "2026-09-20T20:20:28Z",
   "evidenceType": "sqlcl-operation",
   "operation": "coexistence",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/solarized-dark/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: aa5636ce9de99e4ccdf724ab1c76ca0434e8493e6f0f09994f931286e6818237\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T170012Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 4bdbf01a1ef130754bf10137ef434087525c1a5bddbccee9cea6e2e5124bec4b\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T201346Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/solarized-dark/business/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: e30994fbf9ad8c4d9e2b4851e230f7ceb2ea12aee3586b16b569d31f82694648\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170441Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 8cac6606d66a5145bbdcec26e4e93f2964a1ddfc0a878ec8b118cbd197290e8f\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T201813Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

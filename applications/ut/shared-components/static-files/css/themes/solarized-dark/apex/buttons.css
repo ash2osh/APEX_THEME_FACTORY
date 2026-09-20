@@ -1,5 +1,9 @@
-/* identity: underline directives instead of filled controls */
-.app-theme-solarized-dark .apex-theme-iris .t-Button--primary { background: transparent; border-block-end: 2px solid var(--app-color-primary); }
+/* identity: underline directives instead of filled controls; the text must stay on the card surface */
+.app-theme-solarized-dark .apex-theme-iris .t-Button--primary {
+    background: transparent;
+    color: var(--app-color-primary);
+    border-block-end: 2px solid var(--app-color-primary);
+}
 /* Buttons.
    Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header, --hot,
    --danger …) on the element, so overriding the base atoms on body.apex-theme-iris restyles all buttons while

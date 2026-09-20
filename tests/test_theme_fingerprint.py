@@ -85,6 +85,29 @@ class ThemeFingerprintTests(unittest.TestCase):
             (apex / f"{module}.css").write_text(rendered, encoding="utf-8")
         return root
 
+    def recipe_theme(self, name: str, colors: tuple[str, str], *, axes: dict | None = None, component_css: str = BASE_CSS) -> Path:
+        root = self.theme(name, colors, component_css)
+        recipe = json.loads((Path("tests/fixtures/recipes/valid-dark.json")).read_text(encoding="utf-8"))
+        recipe["identity"]["name"] = name
+        recipe["palette"]["page"] = colors[0]
+        recipe["palette"]["card"] = colors[1]
+        recipe["palette"]["chrome"] = colors[0]
+        recipe["palette"]["textPrimary"] = colors[1]
+        recipe["palette"]["textSecondary"] = colors[1]
+        recipe["palette"]["accent"] = colors[0]
+        recipe["palette"]["accentAlt"] = colors[0]
+        recipe["palette"]["onAccent"] = colors[1]
+        recipe["palette"]["danger"] = colors[0]
+        recipe["schemaVersion"] = 2
+        recipe["rhythm"] = {"density": "balanced", "spacing": "technical", "typeScale": "balanced"}
+        recipe["interaction"] = {"hover": "none", "selected": "fill", "motion": "precise"}
+        recipe["responsive"] = {"strategy": "reflow", "compactControlsAt": 768}
+        if axes:
+            for section, values in axes.items():
+                recipe[section].update(values)
+        (root / "theme.recipe.json").write_text(json.dumps(recipe), encoding="utf-8")
+        return root
+
     def test_color_only_copy_is_rejected(self):
         left = self.theme("left", ("#101820", "#F2F2F2"))
         right = self.theme("right", ("#301040", "#FFF0FA"))
@@ -103,6 +126,46 @@ class ThemeFingerprintTests(unittest.TestCase):
         )
         issues = check_uniqueness(right, (left, right))
         self.assertFalse(any(issue.severity == "error" for issue in issues))
+
+    def test_profile_collision_uses_the_lower_structural_threshold(self):
+        left = self.recipe_theme("left", ("#101820", "#F2F2F2"))
+        right = self.recipe_theme("right", ("#301040", "#FFF0FA"))
+        for module in ("shell",):
+            path = right / "css/apex" / f"{module}.css"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    "border-radius: var(--app-radius-md);",
+                    "border-radius: var(--app-radius-md); gap: 1px;",
+                ),
+                encoding="utf-8",
+            )
+        issues = check_uniqueness(right, (left, right))
+        self.assertIn("PROFILE_COLLISION", {issue.code for issue in issues if issue.severity == "error"})
+
+    def test_identity_collision_requires_all_explicit_identity_axes(self):
+        left = self.recipe_theme("left", ("#101820", "#F2F2F2"))
+        right = self.recipe_theme(
+            "right",
+            ("#111921", "#F5F5F5"),
+            component_css=".app-theme-NAME .t-Widget { display: grid; grid-template-columns: repeat(7, 1fr); align-items: stretch; gap: 1.25rem; }",
+        )
+        issues = check_uniqueness(right, (left, right))
+        self.assertIn("IDENTITY_COLLISION", {issue.code for issue in issues if issue.severity == "error"})
+
+    def test_distinct_explicit_axes_avoid_identity_collision_even_with_same_font(self):
+        left = self.recipe_theme("left", ("#101820", "#F2F2F2"))
+        right = self.recipe_theme(
+            "right",
+            ("#111921", "#F5F5F5"),
+            axes={
+                "rhythm": {"density": "spacious", "spacing": "playful", "typeScale": "display"},
+                "interaction": {"hover": "lift", "selected": "outline", "motion": "buoyant"},
+                "responsive": {"strategy": "stack", "compactControlsAt": 375},
+            },
+            component_css=".app-theme-NAME .t-Widget { display: flex; flex-direction: column; min-block-size: 12rem; }",
+        )
+        issues = check_uniqueness(right, (left, right))
+        self.assertFalse(any(issue.code == "IDENTITY_COLLISION" for issue in issues))
 
     def test_legacy_theme_without_recipe_has_a_fingerprint(self):
         fingerprint = fingerprint_theme(Path("sample-themes/linen"))

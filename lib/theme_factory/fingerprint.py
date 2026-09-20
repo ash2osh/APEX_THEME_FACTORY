@@ -43,6 +43,10 @@ class ThemeFingerprint:
     font_family: str
     geometry: tuple[tuple[str, str], ...]
     profiles: tuple[tuple[str, str], ...]
+    rhythm: tuple[tuple[str, str], ...]
+    typography: tuple[tuple[str, str], ...]
+    interaction: tuple[tuple[str, str], ...]
+    responsive: tuple[tuple[str, str], ...]
     component_hashes: tuple[tuple[str, str], ...]
     component_shingles: tuple[tuple[str, frozenset[tuple[str, ...]]], ...]
 
@@ -56,6 +60,10 @@ class SimilarityReport:
     matching_profiles: tuple[str, ...]
     font_match: bool
     geometry_match: bool
+    rhythm_match: bool
+    typography_match: bool
+    interaction_match: bool
+    responsive_match: bool
 
 
 @dataclass(frozen=True)
@@ -240,11 +248,37 @@ def fingerprint_theme(theme_root: Path) -> ThemeFingerprint:
             ("dialogs", f"dialogs-{recipe.components.dialogs}"),
             ("misc", f"mode-{recipe.identity.mode}"),
         )
+        rhythm = (
+            ("density", recipe.rhythm.density),
+            ("spacing", recipe.rhythm.spacing),
+            ("typeScale", recipe.rhythm.type_scale),
+        )
+        typography = (
+            ("bodyFamily", recipe.typography.body_family.casefold()),
+            ("headingFamily", recipe.typography.heading_family.casefold()),
+            ("typeScale", recipe.rhythm.type_scale),
+        )
+        interaction = (
+            ("hover", recipe.interaction.hover),
+            ("selected", recipe.interaction.selected),
+            ("motion", recipe.interaction.motion),
+        )
+        responsive = (
+            ("strategy", recipe.responsive.strategy),
+            ("compactControlsAt", str(recipe.responsive.compact_controls_at)),
+        )
     else:
         palette = _legacy_palette(declarations)
         font_family = manifest.fonts.get("body").family.casefold() if "body" in manifest.fonts else "system"
         geometry = _geometry_from_declarations(declarations)
         profiles = tuple(extracted_profiles)
+        # Legacy packages predate explicit identity axes. Treat all of them as
+        # the same conservative unknown rather than inferring uniqueness from
+        # handwritten CSS that was never authored as a recipe.
+        rhythm = (("density", "legacy"), ("spacing", "legacy"), ("typeScale", "legacy"))
+        typography = (("bodyFamily", font_family), ("headingFamily", "legacy"), ("typeScale", "legacy"))
+        interaction = (("hover", "legacy"), ("selected", "legacy"), ("motion", "legacy"))
+        responsive = (("strategy", "legacy"), ("compactControlsAt", "legacy"))
 
     return ThemeFingerprint(
         name=manifest.name,
@@ -252,6 +286,10 @@ def fingerprint_theme(theme_root: Path) -> ThemeFingerprint:
         font_family=font_family,
         geometry=geometry,
         profiles=profiles,
+        rhythm=rhythm,
+        typography=typography,
+        interaction=interaction,
+        responsive=responsive,
         component_hashes=tuple(hashes),
         component_shingles=tuple(shingles),
     )
@@ -327,6 +365,10 @@ def compare_fingerprints(candidate: ThemeFingerprint, existing: ThemeFingerprint
         matching_profiles=matching_profiles,
         font_match=candidate.font_family == existing.font_family,
         geometry_match=candidate.geometry == existing.geometry,
+        rhythm_match=candidate.rhythm == existing.rhythm,
+        typography_match=candidate.typography == existing.typography,
+        interaction_match=candidate.interaction == existing.interaction,
+        responsive_match=candidate.responsive == existing.responsive,
     )
 
 
@@ -336,9 +378,39 @@ def _issue(code: str, severity: str, report: SimilarityReport) -> UniquenessIssu
         f"{code}: nearest theme {report.nearest_theme}; CSS similarity "
         f"{report.css_similarity:.3f}; palette Delta E {delta}; matching profiles "
         f"{len(report.matching_profiles)}/7; font match {str(report.font_match).lower()}; "
-        f"geometry match {str(report.geometry_match).lower()}"
+        f"geometry match {str(report.geometry_match).lower()}; rhythm match {str(report.rhythm_match).lower()}; "
+        f"typography match {str(report.typography_match).lower()}; interaction match "
+        f"{str(report.interaction_match).lower()}; responsive match {str(report.responsive_match).lower()}"
     )
     return UniquenessIssue(code, severity, report.nearest_theme, message, report)
+
+
+def classify_similarity(report: SimilarityReport) -> tuple[str, str]:
+    """Return the highest-priority finding for a pair."""
+
+    profile_count = len(report.matching_profiles)
+    if report.css_similarity >= 0.98 and profile_count >= 5:
+        return "error", "STRUCTURAL_RECOLOR"
+    if report.css_similarity >= 0.92 and profile_count >= 5:
+        return "error", "PROFILE_COLLISION"
+    if (
+        report.font_match
+        and report.geometry_match
+        and profile_count == 7
+        and report.rhythm_match
+        and report.typography_match
+        and report.interaction_match
+        and report.responsive_match
+        and report.palette_delta_e < 20.0
+    ):
+        return "error", "IDENTITY_COLLISION"
+    if report.css_similarity >= 0.85:
+        return "warning", "STRUCTURAL_SIMILARITY"
+    if profile_count >= 5:
+        return "warning", "PROFILE_SIMILARITY"
+    if report.font_match and report.geometry_match and report.palette_delta_e < 20.0:
+        return "warning", "IDENTITY_SIMILARITY"
+    return "PASS", "PASS"
 
 
 def check_uniqueness(
@@ -355,22 +427,7 @@ def check_uniqueness(
         if root == candidate_root:
             continue
         report = compare_fingerprints(candidate, fingerprint_theme(root))
-        profile_count = len(report.matching_profiles)
-        if report.css_similarity >= 0.98 and profile_count >= 5:
-            issues.append(_issue("STRUCTURAL_RECOLOR", "error", report))
-            continue
-        if (
-            report.font_match
-            and report.geometry_match
-            and profile_count == 7
-            and report.palette_delta_e < 12.0
-        ):
-            issues.append(_issue("IDENTITY_COLLISION", "error", report))
-            continue
-        if report.css_similarity >= 0.85:
-            issues.append(_issue("STRUCTURAL_SIMILARITY", "warning", report))
-        elif profile_count >= 5:
-            issues.append(_issue("PROFILE_SIMILARITY", "warning", report))
-        elif report.font_match and report.geometry_match and report.palette_delta_e < 20.0:
-            issues.append(_issue("IDENTITY_SIMILARITY", "warning", report))
+        severity, code = classify_similarity(report)
+        if severity != "PASS":
+            issues.append(_issue(code, severity, report))
     return tuple(sorted(issues, key=lambda issue: (issue.severity != "error", issue.nearest_theme, issue.code)))

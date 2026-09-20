@@ -11,6 +11,7 @@ import subprocess
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.fingerprint import (
     SimilarityReport,
+    classify_similarity,
     compare_fingerprints,
     fingerprint_theme,
 )
@@ -29,24 +30,7 @@ class PairwiseUniquenessRow:
 
 def _classify(report: SimilarityReport) -> tuple[str, str]:
     """Classify a pair using the current author-lane thresholds."""
-
-    profile_count = len(report.matching_profiles)
-    if report.css_similarity >= 0.98 and profile_count >= 5:
-        return "error", "STRUCTURAL_RECOLOR"
-    if (
-        report.font_match
-        and report.geometry_match
-        and profile_count == 7
-        and report.palette_delta_e < 12.0
-    ):
-        return "error", "IDENTITY_COLLISION"
-    if report.css_similarity >= 0.85:
-        return "warning", "STRUCTURAL_SIMILARITY"
-    if profile_count >= 5:
-        return "warning", "PROFILE_SIMILARITY"
-    if report.font_match and report.geometry_match and report.palette_delta_e < 20.0:
-        return "warning", "IDENTITY_SIMILARITY"
-    return "PASS", "PASS"
+    return classify_similarity(report)
 
 
 def build_uniqueness_rows(repo_root: Path) -> tuple[PairwiseUniquenessRow, ...]:
@@ -79,15 +63,17 @@ def render_uniqueness_report(rows: tuple[PairwiseUniquenessRow, ...], *, source_
         "- Error thresholds: structural recolor ≥ 0.98 with ≥ 5 matching profiles; identity collision requires all seven profiles, matching geometry/font, and palette Delta E < 12.",
         "- Warning threshold: CSS similarity ≥ 0.85 when no error rule applies.",
         "",
-        "| Theme A | Theme B | CSS similarity | Average palette Delta E | Matching profiles | Font match | Geometry match | Severity | Issue |",
-        "|---|---|---:|---:|---:|---|---|---|---|",
+        "| Theme A | Theme B | CSS similarity | Average palette Delta E | Matching profiles | Font match | Geometry match | Rhythm match | Typography match | Interaction match | Responsive match | Severity | Issue |",
+        "|---|---|---:|---:|---:|---|---|---|---|---|---|---|---|",
     ]
     for row in rows:
         report = row.report
         lines.append(
             f"| `{row.left}` | `{row.right}` | {report.css_similarity:.3f} | {_fmt_delta(report.palette_delta_e)} | "
             f"{len(report.matching_profiles)}/7 | {'yes' if report.font_match else 'no'} | "
-            f"{'yes' if report.geometry_match else 'no'} | {row.severity} | `{row.issue_code}` |"
+            f"{'yes' if report.geometry_match else 'no'} | {'yes' if report.rhythm_match else 'no'} | "
+            f"{'yes' if report.typography_match else 'no'} | {'yes' if report.interaction_match else 'no'} | "
+            f"{'yes' if report.responsive_match else 'no'} | {row.severity} | `{row.issue_code}` |"
         )
     return "\n".join(lines) + "\n"
 

@@ -15,8 +15,8 @@
       "check": "browser_runtime_matrix",
       "status": "PASS",
       "artifact": "browser_runtime_matrix.json",
-      "artifactSha256": "1116c96774d75a3860f0d3f68c79e850ca5f778316480b90aab97d1dd3bc7056",
-      "details": "8/8 consumer/width rows verified live at commit 3b7cdf628631"
+      "artifactSha256": "0ff6b69fc33a6b1c293e77963688fdedc1960081ab7c18050b4418e0a7aba555",
+      "details": "8/8 consumer/width rows verified live at commit 0bccad8fd054"
     }
   ]
 }

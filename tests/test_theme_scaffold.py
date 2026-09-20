@@ -51,6 +51,21 @@ class ThemeScaffoldTests(unittest.TestCase):
         recipe_path.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
         return load_recipe(recipe_path)
 
+    def compact_recipe(self, name: str):
+        raw = json.loads(
+            (Path(__file__).parent / "fixtures/recipes/valid-dark.json").read_text(encoding="utf-8")
+        )
+        raw["identity"].update({"name": name, "title": "Compact Technical", "tagline": "Recipe axes."})
+        raw["schemaVersion"] = 2
+        raw["rhythm"] = {"density": "compact", "spacing": "technical", "typeScale": "display"}
+        raw["interaction"] = {"hover": "shift", "selected": "outline", "motion": "precise"}
+        raw["responsive"] = {"strategy": "compress", "compactControlsAt": 768}
+        recipe_root = self.repo / "recipes" / name
+        recipe_root.mkdir(parents=True, exist_ok=True)
+        recipe_path = recipe_root / "theme.recipe.json"
+        recipe_path.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
+        return load_recipe(recipe_path)
+
     @staticmethod
     def snapshot(root: Path) -> dict[str, bytes]:
         return {
@@ -115,6 +130,25 @@ class ThemeScaffoldTests(unittest.TestCase):
                 marker,
                 (theme_root / "css/apex" / filename).read_text(encoding="utf-8"),
             )
+
+    def test_neutral_scaffold_has_provenance_and_recipe_axes(self):
+        theme_root = create_theme(self.repo, self.compact_recipe("test-neutral")).created
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in (theme_root / "css").rglob("*.css"))
+        self.assertNotIn("linen", combined.casefold())
+        self.assertNotIn("app-theme-linen", combined)
+        self.assertNotIn("#fffaf0", combined.casefold())
+        self.assertIn("/* generated-from: theme-templates/neutral */", combined)
+        tokens = (theme_root / "css/tokens.css").read_text(encoding="utf-8")
+        self.assertIn("--app-density-scale: 0.875", tokens)
+        self.assertIn("--app-space-unit: 0.375rem", tokens)
+        self.assertIn("--app-heading-scale: 1.5", tokens)
+        self.assertIn("--app-hover-transform: translateX(2px)", tokens)
+        self.assertIn("--app-motion-duration: 120ms", tokens)
+        self.assertIn("--app-selected-treatment: outline", tokens)
+        misc = (theme_root / "css/apex/misc.css").read_text(encoding="utf-8")
+        self.assertIn("@media (max-width: 768px)", misc)
+        self.assertIn("--app-responsive-strategy: compress", tokens)
+        self.assertIn("prefers-reduced-motion: reduce", misc)
 
     def test_collision_leaves_existing_directory_byte_identical(self):
         existing = create_theme(self.repo, self.recipe("aurora-grid")).created

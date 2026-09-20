@@ -15,6 +15,23 @@ from unittest.mock import patch
 
 
 class ReleaseVerdictTests(unittest.TestCase):
+    def test_release_verdict_requires_only_a_through_d(self):
+        self.assertEqual(
+            release_verdict({name: "PASS" for name in "ABCD"}),
+            "VERIFIED",
+        )
+
+    def test_legacy_layer_e_failure_does_not_change_theme_verdict(self):
+        layers = {name: "PASS" for name in "ABCD"}
+        layers["E"] = "FAIL"
+        self.assertEqual(release_verdict(layers), "VERIFIED")
+
+    def test_missing_layer_d_is_unverified_even_when_legacy_e_passes(self):
+        self.assertEqual(
+            release_verdict({"A": "PASS", "B": "PASS", "C": "PASS", "E": "PASS"}),
+            "UNVERIFIED",
+        )
+
     def test_git_command_failure_is_unverified(self):
         from lib.theme_factory.release import read_git_state
 

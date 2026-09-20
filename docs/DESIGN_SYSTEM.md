@@ -210,7 +210,16 @@ Universal Theme breakpoints are the reference; check every change at 1440, 1024,
 
 ## 7. Registry of reusable visual patterns
 
-None yet. Add a row per pattern once promoted (spec §38) and cross-link to [COMPONENTS.md](COMPONENTS.md).
+Recipe profiles are template-time visual patterns. They are copied into each package at generation time, not
+loaded from a shared runtime stylesheet. This keeps portable ZIPs independent and lets a theme customize its
+rendered profile without changing other packages. Native specimen coverage is registered in
+[COMPONENTS.md](COMPONENTS.md#theme-lab-specimen-registry).
 
 | Pattern | Class | Since | Used on |
 |---|---|---|---|
+| Navigation profile | scoped UT navigation selectors | 2026-09-20 | `shell.css` generated from rail/pill/editorial/minimal |
+| Card profile | scoped Cards/region atoms | 2026-09-20 | `regions.css` generated from flat/layered/offset/buoyant |
+| Button profile | scoped `.t-Button` atoms/states | 2026-09-20 | `buttons.css` generated from square/rounded/underline/pill |
+| Form profile | scoped form atoms/states | 2026-09-20 | `forms.css` generated from dense/comfortable/outlined/soft |
+| Report profile | scoped IR/IG/report atoms | 2026-09-20 | `reports.css` generated from ruled/spacious |
+| Dialog profile | scoped dialog atoms | 2026-09-20 | `dialogs.css` generated from flat/layered/offset |

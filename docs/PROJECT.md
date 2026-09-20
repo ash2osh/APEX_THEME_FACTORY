@@ -20,7 +20,7 @@ Governing spec: [AGENT_SPEC.md](AGENT_SPEC.md). Read it before any design work.
 | URL | http://localhost:8181/ords/r/demo/ut/getting-started |
 | Workspace | `DEMO` |
 | Application | `102` — *Universal Theme 26.1 Reference*, alias `UT` |
-| Landing page | 500 (Getting Started); 122 pages total |
+| Landing page | 500 (Getting Started); Theme catalog 405; consolidated Theme Lab 406 |
 | Schema / DB user | `DEMO` |
 | SQLcl saved connection | `docker-demo` (`sql -name docker-demo`) |
 | Static files prefix | `#APP_FILES#` → `r/demo/102/files/static/v…/` |
@@ -55,12 +55,18 @@ APEX_THEME_FACTORY/
 | Chrome DevTools MCP (`--autoConnect` to the user's running Chrome) | runtime truth: DOM, computed CSS, console, network, screenshots | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
+| `scripts/theme.sh` | Unified recipe scaffold, font, cached author checks, candidate lane, cover, catalog, evidence and Iris-inspection CLI | [README.md](../README.md#building-a-theme) |
+| `tools/theme_benchmark.py` | Records exact wall time/file-touch/harness-token measurements and reports the fixed workflow targets | [THEME_WORKFLOW_BENCHMARK.md](THEME_WORKFLOW_BENCHMARK.md) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 | External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
 | Codex PR review bot (`chatgpt-codex-connector`) | comments P-level findings on every pull request (verify each at runtime before acting); `@codex review` re-runs it | GitHub repo settings |
 | Contrast audit (`evaluate_script` snippet) | AA text-contrast sweep of a page — required before a theme package is called verified | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | Pitfalls record | every trap met in this project, by layer, with the fix | [`.agents/knowledge/pitfalls.md`](../.agents/knowledge/pitfalls.md) |
+
+Hosted CI runs changed-theme fast checks on pull requests and the complete offline/package suite nightly. It
+does not have the local database, approved Chrome session, disposable consumers, or agent runtimes required for
+Layers C–E; therefore CI and candidate-lane PASS never imply `VERIFIED`.
 
 ## Not yet decided / open
 

@@ -47,9 +47,20 @@ package appears in both as soon as it is imported — nothing to register by han
 | [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | **UNVERIFIED — release evidence is bound to a different source identity** |
 <!-- @generated:theme-catalog:end -->
 
-Adding a theme: copy `linen/` → `<name>/`, rename the class in `theme.json`/`css`, add `preview/cover.jpg`
-(960 px, page 500 at 1280×700 with the side navigation open), run `sync-static.sh`, import — it shows up in the
-Theme menu and on page 405. The theme style stays **Iris** for every package.
+Adding a theme: define a strict `theme.recipe.json`, run `scripts/theme.sh new <name> --recipe <file>`, customize
+only the generated package, then run `scripts/theme.sh check <name>`. The recipe chooses identity, palette,
+typography, geometry, focus, and component profiles. Files marked `/* @theme-factory-generated */` are generator
+owned; unmarked handwritten CSS survives regeneration. Existing recipe-less packages remain valid maintenance
+targets. After an explicitly authorized sync/import, discovery is automatic on page 405 and in the Theme menu;
+page 406 Theme Lab is the candidate test surface. The theme style stays **Iris** for every package.
+
+Custom fonts are installed with `scripts/theme.sh font add`: pin the official metadata URL and upstream source
+revision, declare exact weights, and commit only WOFF2 faces, the OFL license, and recorded SHA-256 provenance.
+The tool verifies Basic Latin plus Arabic coverage and never creates a runtime network font dependency.
+
+For a curated cover, use `scripts/theme.sh cover <name> --output sample-themes/<name>/preview/cover.jpg` first as
+a dry run, then add `--apply --overwrite`. The capture owns a background tab, uses per-tab emulation, preserves
+the user's active tab and `localStorage`, and rejects console/network failures.
 
 Conventions
 - Roles are `--app-*` (declared with Iris defaults in `static-files/css/foundation/tokens.css` — add a default
@@ -60,3 +71,5 @@ Conventions
 - Custom fonts: optional self-hosted WOFF2 assets (`wOF2` signature) under `fonts/` with licenses under `licenses/`. External font URLs and data URLs are forbidden. Manifest declares `body` (required if fonts used), optional `heading` and `mono`. Family identifiers are package-prefixed (`ThemeFactory-<name>-<role>`) and Font APEX icons remain untouched.
 - `preview/` holds `cover.jpg` plus a few curated `.jpg` captures; iteration PNGs never get committed
   (`.gitignore`). Every package README ends with a *Verified* section (pages, widths, contrast, console).
+- `scripts/theme.sh check` caches only successful content-addressed results. Any consumed local/shared source or
+  validator change invalidates the key. A candidate-lane PASS is not release evidence.

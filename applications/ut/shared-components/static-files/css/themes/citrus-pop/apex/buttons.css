@@ -66,7 +66,7 @@
 
 .app-theme-citrus-pop .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--cit-tangerine);
-    --a-button-text-color: var(--app-text-emphasized);
+    --a-button-text-color: var(--cit-hot-button-text);
     --a-button-hover-background-color: var(--cit-tangerine);
-    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-hover-text-color: var(--cit-hot-button-text);
 }

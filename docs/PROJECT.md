@@ -65,8 +65,10 @@ APEX_THEME_FACTORY/
 | Pitfalls record | every trap met in this project, by layer, with the fix | [`.agents/knowledge/pitfalls.md`](../.agents/knowledge/pitfalls.md) |
 
 Hosted CI runs changed-theme fast checks on pull requests and the complete offline/package suite nightly. It
-does not have the local database, approved Chrome session, disposable consumers, or agent runtimes required for
-Layers C–E; therefore CI and candidate-lane PASS never imply `VERIFIED`.
+does not have the local database or approved Chrome session required for Layers C–D; therefore CI and
+candidate-lane PASS never imply `VERIFIED`. Project-level agent compatibility is instruction-bound and reported
+separately in [AGENT_COMPATIBILITY.md](AGENT_COMPATIBILITY.md); theme/package/font/preview changes do not trigger
+those smokes.
 
 ## Not yet decided / open
 

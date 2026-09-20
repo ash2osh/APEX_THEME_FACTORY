@@ -235,6 +235,19 @@ class ReleaseBatchCliTests(unittest.TestCase):
             self.assertEqual(applied[0], 0)
             self.assertEqual(len(list(root.iterdir())), 2)
 
+    def test_release_orchestration_is_theme_a_through_d_and_agent_checks_are_separate(self):
+        repo = Path(__file__).resolve().parent.parent
+        orchestration = (
+            (repo / "scripts/release-check.sh").read_text(encoding="utf-8")
+            + (repo / "tools/release_batch.py").read_text(encoding="utf-8")
+        )
+        self.assertNotIn("agent_behavior_matrix", orchestration)
+        self.assertNotIn("tests/agent-smoke", orchestration)
+        self.assertNotRegex(orchestration, r"\b(?:codex|claude|antigravity)\b")
+        readme = (repo / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Layers A–D", readme)
+        self.assertIn("docs/AGENT_COMPATIBILITY.md", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

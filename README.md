@@ -193,10 +193,11 @@ The workflow has three deliberately different lanes:
 |---|---|---|
 | Author | `scripts/theme.sh new NAME --recipe FILE`, then `scripts/theme.sh check NAME` | Generate source and run fast cached offline policy, contrast, font, package, and uniqueness checks. |
 | Candidate | `scripts/theme.sh dev NAME --sync --validate [--import --apply] [--open]` | Exercise app 102 and Theme Lab during iteration. Import remains explicit. |
-| Release | `scripts/theme.sh release-batch … --apply`, then `scripts/release-check.sh NAME` | Bind clean packages to consumer, browser, accessibility, and agent evidence. |
+| Release | `scripts/theme.sh release-batch … --apply`, then `scripts/release-check.sh NAME` | Bind clean packages to database/browser/accessibility evidence; run the separate compatibility check when instruction files change. |
 
-Candidate `PASS` is an iteration result, never a release verdict. Only current Layers A–E evidence can mark a
-theme `VERIFIED`; hosted CI intentionally proves only the offline source/package layers.
+Candidate `PASS` is an iteration result, never a release verdict. Only current Layers A–D evidence can mark a
+theme `VERIFIED`; hosted CI intentionally proves only the offline source/package layers. Agent compatibility is a
+separate instruction-bound project signal; theme CSS, package, font, and preview changes do not trigger it.
 
 ```text
 sample-themes/<name>/
@@ -378,13 +379,14 @@ Release verification is deliberately layered, and a layer only passes with a ret
 | **B** Package artifact | deterministic ZIP, manifest, CSS policy | offline / CI |
 | **C** Database install | install → reinstall → coexistence → switcher → uninstall ×2 → restore, on disposable consumer apps | local, live DB |
 | **D** Browser runtime | both consumers at 1440/1024/768/375: console, network, contrast, fonts, keyboard switcher, persistence | local, live Chrome |
-| **E** Agent behaviour | three agent runtimes + the evaluation scenarios | local |
 
 > **CI proves A and B only.** A green CI badge says nothing about whether the theme installs, renders, or is
-> accessible. C, D and E need local evidence — see [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
+> accessible. C and D need local evidence — see [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
+> Project-level agent compatibility is validated separately in [docs/AGENT_COMPATIBILITY.md](docs/AGENT_COMPATIBILITY.md)
+> and never changes a theme verdict.
 
 ```bash
-scripts/release-check.sh linen      # → dist/linen/RELEASE-REPORT.md; exit 0 only when every layer PASSes
+scripts/release-check.sh linen      # → dist/linen/RELEASE-REPORT.md; exit 0 only when current Layers A–D PASS
 ```
 
 Evidence is bound to the package SHA-256 and the last **source** commit, so a report cannot outlive the code it

@@ -13,6 +13,11 @@
     --ut-region-body-padding-y: var(--app-space-4);
 }
 
+/* identity: metric-strip regions create a formal property-operation hierarchy */
+.app-theme-estate-slate .apex-theme-iris .t-MetricCard,
+.app-theme-estate-slate .apex-theme-iris .t-ContentBlock--region { border-inline-start: 3px solid var(--app-color-primary); }
+.app-theme-estate-slate .apex-theme-iris .t-MetricCard .t-MetricCard-value { letter-spacing: -.02em; }
+
 .app-theme-estate-slate .apex-theme-iris .t-Region-header {
     font-size: var(--app-text-md);
     font-weight: var(--app-font-weight-semibold);
@@ -68,4 +73,3 @@
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
-

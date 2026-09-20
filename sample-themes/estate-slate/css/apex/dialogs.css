@@ -19,3 +19,5 @@
     --a-menu-border-color: var(--app-border-color);
 }
 
+/* identity: layered dialogs separate formal decision surfaces */
+.app-theme-estate-slate .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }

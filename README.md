@@ -184,6 +184,8 @@ matching uninstall steps.
 ## Building a theme
 
 Work in this repository. A theme lives in one folder and nothing outside it is theme-specific.
+The recipe-driven workshop is the supported fast path; its speed and token-efficiency claims are measured by
+the repeatable [workflow benchmark](docs/THEME_WORKFLOW_BENCHMARK.md), never estimated from character counts.
 
 ```text
 sample-themes/<name>/

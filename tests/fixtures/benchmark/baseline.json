@@ -1,0 +1,24 @@
+{
+  "browserRows": 0,
+  "commands": [
+    "legacy four-theme implementation"
+  ],
+  "filesRead": [],
+  "filesWritten": [],
+  "finishedAt": "2026-09-19T19:18:53+03:00",
+  "inputTokens": null,
+  "outputTokens": null,
+  "recipeSha256": "1ea2fbf9b393a5f7e09a25aca0609e29c5190f3b6a310046fa9cd5b3b69ffe0e",
+  "result": "UNVERIFIED",
+  "schemaVersion": 1,
+  "sourceCommit": "54375b86410346a0b7f6a50124090936df828bec",
+  "startedAt": "2026-09-19T19:18:53+03:00",
+  "theme": "four-theme-2026-09-19",
+  "validationReruns": 0,
+  "wallSeconds": {
+    "check": 0.0,
+    "dev": 0.0,
+    "firstPreview": 0.0,
+    "scaffold": 0.0
+  }
+}

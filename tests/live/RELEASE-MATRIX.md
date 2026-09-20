@@ -9,14 +9,14 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 <!-- @generated:theme-status:start -->
 | Theme | A | B | C | D | Verdict |
 |---|---:|---:|---:|---:|---|
-| carbon-volt | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| citrus-pop | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| cobalt-press | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| estate-slate | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| estate-slate-dark | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| linen | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| solarized-dark | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
-| velvet-signal | PASS | PASS | PASS | UNVERIFIED | UNVERIFIED — layers not current: D |
+| carbon-volt | PASS | PASS | PASS | PASS | VERIFIED |
+| citrus-pop | PASS | PASS | PASS | PASS | VERIFIED |
+| cobalt-press | PASS | PASS | PASS | PASS | VERIFIED |
+| estate-slate | PASS | PASS | PASS | PASS | VERIFIED |
+| estate-slate-dark | PASS | PASS | PASS | PASS | VERIFIED |
+| linen | PASS | PASS | PASS | PASS | VERIFIED |
+| solarized-dark | PASS | PASS | PASS | PASS | VERIFIED |
+| velvet-signal | PASS | PASS | PASS | PASS | VERIFIED |
 <!-- @generated:theme-status:end -->
 
 ## Current evidence status (2026-09-17, commit `7ac2e0204ca0`, APEX 26.1.4)

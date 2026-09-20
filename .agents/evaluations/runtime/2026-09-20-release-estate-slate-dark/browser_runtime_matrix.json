@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "estate-slate-dark",
-  "gitCommit": "0bccad8fd0542b039f13ea12208c98555bc6c9cf",
-  "packageSha256": "b984ff712c348a28745c6888ccac4d89dce5fa1e06631f80fdd664ea15b50245",
-  "capturedAt": "2026-09-20T19:06:02Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "424fabbfe0bf53f3b49af4ae22cc135c6d263b91525a1b561210b8bd47780b99",
+  "capturedAt": "2026-09-20T21:06:17Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "d3ccff8a3c00494eb6c12c8b5a0cd472f2622d1072178f99e3db556eb0d945f5"
+          "sha256": "9dbed01185b48759f71074da7d654ead958095ce5b8f16322754274cc7c92d51"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "83f7158423617e61ae5c8e67e78f0cae7de933eed6257547b1cbca7299ad962f"
+          "sha256": "f0a64be680774706b2e122ff1543cce340f64f67ca19cf9ba7d0c17b36dee5fc"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "a40facec3155391fb58d4a97445c745d7975d8e9a813f70d5847cdce5c3bf3b6"
+          "sha256": "3cd36a9de7c8272e5236cb165cd4781ca925e3c4950d62f37125f85de2c4511a"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "a7d8f7d9fff0aad837f88ad8b676b7307c4d3d8463c4b0e93d8690883bf0154e"
+          "sha256": "eb580cac96652bf8e948282259dbf16619cf5d6940f972ff3995c44b9f0bd861"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "fb22e73843581c7e0e131e50f675427324845d34bbfdcda9e2e123947089f149"
+          "sha256": "6a4833d751af1148d8cdced38cd33bd8dec60f9a2c8577eb49f7865753b23727"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "4f7b9fa2378660ba4b56dbe8d3a7988a6a4f9e1e9ab9eb49d747694076f5d978"
+          "sha256": "2a3b9358fe732d5c77b4a01a571d1d388715a5e2778d6afeab1229fe70392c37"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "aff58824a0ddea70cbf6a77ca64ef514e2b9bd4b0b8e47413278b4b1d9d9f6f4"
+          "sha256": "11811e4f2d61d5521cdd34bcf6e81d376862ff369a68d2705f9481798d437312"
         }
       },
       {
@@ -70,39 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "06b8b1c2a1982e7cd412d2cfd76cf206a64ec10406ef45ab51fbb4c0ffa668b6"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page2-1440.json",
-          "sha256": "4617544cee0362e645341af891fda82c54f8267481c071e1309efc3041f11a9d"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page2-375.json",
-          "sha256": "f37ed1d4c15faec4c16204766d574bc9301ef0c7cb5d87fa676b2556f87a3e03"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page3-1440.json",
-          "sha256": "06880beaf8dae431384e50f78db1fe66ef374cf98dc2d28ba42b71f9780111f9"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page3-375.json",
-          "sha256": "c37f4a029cc8adfb41940dc5d3f12c068f75712c68e03fb256fa203ece384e41"
+          "sha256": "37655e9e0834332ee17dc88117825d7e9a8fafe12be7e724f11e9e944ce8a6c6"
         }
       }
     ],

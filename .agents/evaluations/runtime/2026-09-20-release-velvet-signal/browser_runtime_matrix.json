@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "velvet-signal",
-  "gitCommit": "0bccad8fd0542b039f13ea12208c98555bc6c9cf",
-  "packageSha256": "7ae42451303450540bdf3514f0942d0f3266e672017ab8bc2724dae8204b2884",
-  "capturedAt": "2026-09-20T19:10:46Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "4189fb0a9f1ec32189bc36e7f826f688ac8223726fdef944fd4050c96d62931a",
+  "capturedAt": "2026-09-20T21:06:17Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "ae844cf0adcc187cccb563a9ca980b766d919816ef08ce9b958abee54598bc2b"
+          "sha256": "5a26604f181bd151a01e4bc881e1996fa5ebfee38922e27e2ac2414874b11b0a"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "262956ee2950a1c4b7ac0300fa2ad9c8478193f0cdb3ba7483c5abe9bd2b6d20"
+          "sha256": "5f25745bf06c04cbf43adf139c80c4af40fa7809f9f4041a55c7d7e481777a64"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "c6a727f2fee48a71571dd65d5d41d827fcb17906f1ab54adf1421ff297e4792d"
+          "sha256": "b6127c404be122aa67b44b7d84c25cc32807def3ee4cf1deb7300afb448ed3d5"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "2f14b0e104a6454513736d54af3acc7b90f0c098faeb584d67a923b00c119fbd"
+          "sha256": "e6aa9f7683750a4b5b8db9ab7ec005a97897f0f5a0410a76243cdb305f559c64"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "53cd9dcfd478d75b5c7ec4ef92bd9f1dae9e9d83937443bcf282303711bd4089"
+          "sha256": "c9ba6f50b4e24f465a8e4dcc56687b5360a6a11d31eb6b921cedb9ea83293526"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "155287b193cf9cd7c8f3edb8f7eb1421ce2c6e21d98da1472f147376e151c852"
+          "sha256": "fb0f82e5c2bc1760d39f99beef55c9205e4bc2b80cc6e1d9866fce940e284c6e"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "62bed18e835c9b2f5e27752838ec56bd800d9972719bbe2e12308bef693bb34b"
+          "sha256": "eb545bd1d1343697cd2bcebfeadc431eb1e8964a28ed23e60bcc6b07e198dfac"
         }
       },
       {
@@ -70,39 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "ce3d98ebcf1c5cb68ec926f116368cc651c383560768e9bb1039f58d97ae4579"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page2-1440.json",
-          "sha256": "78eb4e9a30512208fad40e722e3c31126ac4ef499ab1141f26fed0ccdc594607"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page2-375.json",
-          "sha256": "b5023317e7d76702b38880bcc5c2b11fe983301d7e92fda52914e7d5d69a7d7c"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page3-1440.json",
-          "sha256": "19704d1f66cd8948be92fd7478f1044ee5817d55ad6b9be6a9b7383dea355fab"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page3-375.json",
-          "sha256": "3b2f0589b5fc32374dfbeaf8193d68362db958c3da918534799b1bc55514afb7"
+          "sha256": "9cdd7079063e296c2ceab5f32f7719079763ee6706cf76075845a2add31f9bb9"
         }
       }
     ],

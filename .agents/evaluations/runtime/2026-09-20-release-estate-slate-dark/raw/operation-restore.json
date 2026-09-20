@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "estate-slate-dark",
-  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
-  "packageSha256": "b0aef39fd9a3d7907405db3483cbf29a23894d107193e21bac80007568bb0a5f",
-  "capturedAt": "2026-09-20T16:57:48Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "424fabbfe0bf53f3b49af4ae22cc135c6d263b91525a1b561210b8bd47780b99",
+  "capturedAt": "2026-09-20T20:11:12Z",
   "evidenceType": "sqlcl-operation",
   "operation": "restore",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T164935Z-before-estate-slate-dark --apply",
+      "command": "restore --backup /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T200235Z-before-estate-slate-dark --apply",
       "appId": 9010,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   5b26347128389b6a92d09a73e42a86a4fd1d4a7a3ee8d8fb5a1573e432e9ce87\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   41bfecea8d5e6f2fd8bc08f582ad704c3ba7a4234cef7b4a32373db7d19d3bc1\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
       "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T164935Z-before-estate-slate-dark --discard-later-changes --apply",
+      "command": "restore --backup /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T200235Z-before-estate-slate-dark --discard-later-changes --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T164935Z-before-estate-slate-dark.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260920T200235Z-before-estate-slate-dark.\nStatus: RESTORED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T165345Z-before-estate-slate-dark --apply",
+      "command": "restore --backup /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T200649Z-before-estate-slate-dark --apply",
       "appId": 9011,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   4370ed1f4f0f67dfb17d6dcf2fb050d2dc9add91e7b62fa088d9c21ba85a051c\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   12fb79635440f62a5e6699356ce13060d0fa0d46468ffadda6640f3b396e065d\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
       "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T165345Z-before-estate-slate-dark --discard-later-changes --apply",
+      "command": "restore --backup /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T200649Z-before-estate-slate-dark --discard-later-changes --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T165345Z-before-estate-slate-dark.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/theme-release-batch-ewm4ouoz/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260920T200649Z-before-estate-slate-dark.\nStatus: RESTORED\n",
       "stderrTail": ""
     }
   ],

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "estate-slate-dark",
-  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
-  "packageSha256": "b0aef39fd9a3d7907405db3483cbf29a23894d107193e21bac80007568bb0a5f",
-  "capturedAt": "2026-09-20T16:57:48Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "424fabbfe0bf53f3b49af4ae22cc135c6d263b91525a1b561210b8bd47780b99",
+  "capturedAt": "2026-09-20T20:11:12Z",
   "evidenceType": "sqlcl-operation",
   "operation": "uninstall",
   "status": "PASS",

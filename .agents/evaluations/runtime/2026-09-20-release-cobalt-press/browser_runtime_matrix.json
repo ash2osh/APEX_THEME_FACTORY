@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "cobalt-press",
-  "gitCommit": "0bccad8fd0542b039f13ea12208c98555bc6c9cf",
-  "packageSha256": "d724853dafae90e87a5225f213c144f415141d56dd901ff582160c9e196b877d",
-  "capturedAt": "2026-09-20T19:01:19Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "1e14b8f8dfb877e02013d9566171635359bd586c5e651d7e29ddf1729ebaf86a",
+  "capturedAt": "2026-09-20T21:06:17Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "7f8b8f91fb35c1560cd0e37a00b856cb38484e0f6a9cf065b380f8151de26775"
+          "sha256": "9e1729514702551bf04528010aaea54c60e2cf39e7ed77b609ed0f5df1874efb"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "8b0a9022aa85bff89ef21cb93b30ac57d919597942b7958e4174001d24b99b03"
+          "sha256": "2ad70d28d5857a5c0fd3cfe5a318ecb09cd7c887bc5c89ad331d74659e01bc2f"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "8371cc6e1a0eb36973efecbba159d344e722f7b4ab83ce04487ca1059c2aed03"
+          "sha256": "8770e628a62c54e2b230e0c5e7946d7b9634062cc9aa07f222a2526f29450629"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "9a4d28aa5c49827a69192328a760e27db5cf63a82cf6d281d3194e04a8632d07"
+          "sha256": "8def4dedf2a09a159e994e22ea9956df2ff52f83280616ad7e4738ac2ef622c0"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "e850c718f2a9e2dc328c8c5be41809d11c04fd3b2028e6b69aaf56565043dd49"
+          "sha256": "30e60ab7f7b8b7e6ca6d2c9b9ec8e1cc94992a97d8eebf030cb02d1bad70436c"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "69a2272f3b833bc8f88d05f0ae26df2fae7a9daef9da915bfd11cfdf01a48d71"
+          "sha256": "53ba583906608f4efaea64724bd1ef882c22cdd8135ba88ffac5dd07b231112a"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "f42e18c5fc9ee26118887088ffb258dc062ae3e20f4baca30a5ceecc521d80f6"
+          "sha256": "df9fca43019fbb5d9469b09845c4f2dbc9ba61c3fcff88838940d90e2f63cab8"
         }
       },
       {
@@ -70,39 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "af6ec1b4035a9267e0517c81a932c8abe8579055c3a5eaf7ef51a170307e749c"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page2-1440.json",
-          "sha256": "e280c50b9dc0b949b51002bef571ee430b7481f0f644356b470a1f4f5fb8caee"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page2-375.json",
-          "sha256": "40c48f0aba4d407ce77d4fc6f424d716864672cfedf725cd726140c164e8ca6b"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 1440,
-        "evidence": {
-          "path": "raw/browser-business-page3-1440.json",
-          "sha256": "4ac36fc2c350aff12c01f560759fb89b1ad9b9f42789b4ca885ab6a6edaf0e90"
-        }
-      },
-      {
-        "consumer": "business",
-        "width": 375,
-        "evidence": {
-          "path": "raw/browser-business-page3-375.json",
-          "sha256": "64948e083219cc2d8800c89fcb6928eaf2cc9fe576022c1aaefaee05298d3e74"
+          "sha256": "d1a9ee430a23e6622f5cf9313842cee2436a5903cc7a79fd4c12590d15453942"
         }
       }
     ],

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "citrus-pop",
-  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
-  "packageSha256": "21731f03c197edd2abb830f55a441662d103221f57e53b5b6fd067a26c20031f",
-  "capturedAt": "2026-09-20T17:41:42Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "05258aa62fa8bfa9e5ba66705b85936eaf657daedac38aff3f3012f5f88ce864",
+  "capturedAt": "2026-09-20T20:55:33Z",
   "evidenceType": "sqlcl-application",
   "consumer": "minimal",
   "appId": "9010",

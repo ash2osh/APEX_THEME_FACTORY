@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "citrus-pop",
-  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
-  "packageSha256": "21731f03c197edd2abb830f55a441662d103221f57e53b5b6fd067a26c20031f",
-  "capturedAt": "2026-09-20T17:41:42Z",
+  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
+  "packageSha256": "05258aa62fa8bfa9e5ba66705b85936eaf657daedac38aff3f3012f5f88ce864",
+  "capturedAt": "2026-09-20T20:55:33Z",
   "evidenceType": "sqlcl-operation",
   "operation": "reinstall",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/citrus-pop/minimal/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/citrus-pop/minimal/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         citrus-pop v1.1.0\n  Staged Digest: 48e24b41709eaeda8bde26446e62fcbc4ae1ef8792b27e348e31c31c69b639be\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/citrus-pop/minimal/backups/DEMO-9010/20260920T173427Z-before-citrus-pop\nType application ID 9010 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         citrus-pop v1.1.0\n  Staged Digest: 4e8ff6fbc68478f725351d4e4bee41523a65321d9afb95e6caae57a665b64942\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/citrus-pop/minimal/backups/DEMO-9010/20260920T204817Z-before-citrus-pop\nType application ID 9010 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/citrus-pop/business/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/citrus-pop/business/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         citrus-pop v1.1.0\n  Staged Digest: 924babed201b22e5767a4bc029a094d320aabff462d0df887ec35fdfe573083f\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/citrus-pop/business/backups/DEMO-9011/20260920T173834Z-before-citrus-pop\nType application ID 9011 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         citrus-pop v1.1.0\n  Staged Digest: 4fa14a38bb8a2c49dd4fd5ac18608561eac1ede1fc62844965828bb76b696a75\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/citrus-pop/business/backups/DEMO-9011/20260920T205224Z-before-citrus-pop\nType application ID 9011 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

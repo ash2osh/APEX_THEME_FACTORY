@@ -20,3 +20,7 @@
     --a-menu-border-radius: var(--app-radius-md);
     --a-menu-border-color: var(--ut-component-border-color);
 }
+
+/* identity: flat dialogs keep the editorial paper plane */
+.app-theme-linen .apex-theme-iris .ui-dialog,
+.app-theme-linen .apex-theme-iris .t-DialogRegion { box-shadow: none; }

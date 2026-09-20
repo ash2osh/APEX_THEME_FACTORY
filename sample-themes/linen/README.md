@@ -67,6 +67,12 @@ scripts/apex-import.sh            # validate + import
 Live, per browser: open any page with `#theme=linen` (or `App.theme.use('linen')` in the console);
 `#theme=none` shows bare Iris, `#theme=default` returns to the app default.
 
+## Identity
+
+Linen is the quiet application default: minimal text-led navigation, editorial title tracking, hairline
+separators, flat paper regions, and underline-selected actions. It is a standalone Iris package, not a parent
+theme or scaffold source for the other packages.
+
 ## Verified
 
 Pages 500, 1201, 1402, 1410, 1500, 1600, 1910 · widths 1440 / 1024 / 768 / 375 · console clean ·

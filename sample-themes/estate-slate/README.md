@@ -98,6 +98,12 @@ Audited live via Chrome DevTools MCP daemon against Oracle APEX 26.1.4 (Universa
 | **Total** | | **769** | **0** | **0 failures** |
 
 
+## Identity
+
+Estate Slate is the formal property-operations light system: champagne section markers, metric-strip regions,
+outlined form borders, ruled data rows, rail selection, and layered decision dialogs. It shares only the Iris
+adapter contract with Linen; its composition and interaction profile are independent.
+
 ## Release evidence
 
 **Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-estate-slate/`, verdict

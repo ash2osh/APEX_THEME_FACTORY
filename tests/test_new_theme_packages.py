@@ -85,6 +85,33 @@ def jpeg_dimensions(path: Path) -> tuple[int, int]:
 
 
 class NewThemePackageTests(unittest.TestCase):
+    def test_every_theme_has_a_distinct_structural_identity_marker_set(self):
+        markers = {
+            "linen": ("no accent strip", "editorial title tracking", "underline selected navigation"),
+            "estate-slate": ("section markers", "metric-strip", "outlined form borders", "ruled data rows", "rail selection"),
+            "estate-slate-dark": ("dense rail", "layered monitor panels", "map-frame"),
+            "solarized-dark": ("minimal command nav", "flat pane", "terminal rule"),
+            "carbon-volt": ("segmented rail", "hard module", "outline-state"),
+            "velvet-signal": ("pill navigation", "sculpted layered surface", "smooth lift"),
+            "cobalt-press": ("editorial rules", "offset sheet", "cobalt underline", "vermilion mark"),
+            "citrus-pop": ("pill navigation", "buoyant card lift", "teal structure", "tangerine action"),
+        }
+        for name, expected in markers.items():
+            content = "\n".join(
+                (Path("sample-themes") / name / "css/apex" / module).read_text(encoding="utf-8").casefold()
+                for module in CSS_MODULES
+            )
+            with self.subTest(theme=name):
+                for marker in expected:
+                    self.assertIn(marker.casefold(), content)
+        for name in ("carbon-volt", "velvet-signal"):
+            content = "\n".join(
+                (Path("sample-themes") / name / "css/apex" / module).read_text(encoding="utf-8")
+                for module in CSS_MODULES
+            ).casefold()
+            self.assertNotIn("vs code", content)
+            self.assertNotIn("solarized", content)
+
     def test_every_theme_has_an_explicit_version_two_identity_recipe(self):
         vectors = {}
         for discovered in discover_themes(Path.cwd()):
@@ -146,7 +173,8 @@ class NewThemePackageTests(unittest.TestCase):
                 self.assertEqual(manifest["name"], name)
                 self.assertEqual(manifest["title"], expected["title"])
                 self.assertEqual(manifest["class"], expected["class"])
-                self.assertEqual(manifest["version"], "1.0.0")
+                expected_version = "1.1.0" if name in THEMES else "1.0.0"
+                self.assertEqual(manifest["version"], expected_version)
                 self.assertEqual(manifest["compatibility"]["themeStyle"], "Iris")
                 self.assertEqual(manifest["compatibility"]["themeNumber"], 42)
 

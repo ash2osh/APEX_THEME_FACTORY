@@ -4,6 +4,7 @@
   "title": "Cobalt Press",
   "version": "1.0.0",
   "tagline": "Warm editorial paper, cobalt directives, and decisive vermilion marks.",
+  "direction": "Warm editorial paper with cobalt rules, vermilion marks, and offset shadows.",
   "class": "app-theme-cobalt-press",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

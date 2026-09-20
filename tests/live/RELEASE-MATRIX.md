@@ -4,6 +4,21 @@ A row may become `PASS` only when its referenced JSON artifact exists, validates
 contract, and is bound (SHA-256) to the theme package and the source commit. The tables below are generated
 from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>/`.
 
+## Current source/package-bound status
+
+<!-- @generated:theme-status:start -->
+| Theme | A | B | C | D | E | Verdict |
+|---|---:|---:|---:|---:|---:|---|
+| carbon-volt | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| citrus-pop | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| cobalt-press | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate-dark | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| linen | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| solarized-dark | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| velvet-signal | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+<!-- @generated:theme-status:end -->
+
 ## Current evidence status (2026-09-17, commit `7ac2e0204ca0`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |

@@ -143,6 +143,21 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 
 ### 3.2 Theme deltas
 
+<!-- @generated:theme-deltas:start -->
+| Theme | Direction | Typography | Release verdict |
+|---|---|---|---|
+| `carbon-volt` | Square technical graphite with acid-lime actions and cyan telemetry. | Noto Kufi Arabic | `UNVERIFIED` |
+| `citrus-pop` | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | Tajawal | `UNVERIFIED` |
+| `cobalt-press` | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | Cairo | `UNVERIFIED` |
+| `estate-slate` | Precision corporate slate, white cards, and restrained champagne-amber actions. | IBMPlexSansArabic | `UNVERIFIED` |
+| `estate-slate-dark` | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | IBMPlexSansArabic | `UNVERIFIED` |
+| `linen` | Quiet product surfaces with white chrome, hairline seams, and teal actions. | Iris / system | `UNVERIFIED` |
+| `solarized-dark` | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | IBM Plex Sans, Space Grotesk, IBM Plex Mono | `UNVERIFIED` |
+| `velvet-signal` | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | Alexandria | `UNVERIFIED` |
+<!-- @generated:theme-deltas:end -->
+
+#### Detailed Linen / Solarized reference
+
 | Token | **linen** (app default) | **solarized-dark** |
 |---|---|---|
 | `--app-surface-*` | chrome → white (`--ut-component-background-color`) | page `#002b36`, card `#073642`, chrome `#00212b`, subtle `#002c39`, input `#003847`, hover `#004052`, selected `#005a6f` |
@@ -155,12 +170,12 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 | `--app-font-weight-semibold` | 600 | 600 |
 | `--app-focus-ring` | Iris | `0 0 0 2px #002b36, 0 0 0 4px rgba(42,161,152,.6)` |
 
-Both packages then remap the Universal Theme tokens on `body.apex-theme-iris` (§1). Solarized Dark additionally
+Each package remaps the Universal Theme tokens on `body.apex-theme-iris` (§1). Solarized Dark additionally
 remaps every Iris token that is declared with a *literal* colour on `:root` (`--ut-region-*`, `--ut-body-nav-*`,
 `--ut-field-label-text-color`, `--a-checkbox-*`, `--a-gv-*`, …) because those do not follow the component
 tokens — the list is in `sample-themes/solarized-dark/css/tokens.css`.
 
-### 3.3 Package file map (both themes)
+### 3.3 Package file map (all themes)
 
 | File | Owns |
 |---|---|

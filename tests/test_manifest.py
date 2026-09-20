@@ -29,6 +29,23 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(manifest.class_name, "app-theme-valid-basic")
         self.assertEqual(manifest.font_asset_files(), ())
 
+    def test_optional_direction_is_preserved_and_must_be_non_empty(self):
+        fixture = Path("tests/fixtures/packages/valid-basic/theme.json")
+        raw = json.loads(fixture.read_text(encoding="utf-8"))
+        root = self.write_package(raw)
+        manifest_path = root / "theme.json"
+        raw["direction"] = "Editorial rules with offset geometry."
+        manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+        self.assertEqual(
+            load_manifest(manifest_path, root).direction,
+            "Editorial rules with offset geometry.",
+        )
+
+        raw["direction"] = "   "
+        manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+        with self.assertRaisesRegex(PackageError, "direction"):
+            load_manifest(manifest_path, root)
+
     def test_rejects_external_font_path(self):
         root = Path("tests/fixtures/packages/invalid/external-font")
         with self.assertRaises(PackageError) as ctx:

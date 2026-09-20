@@ -34,16 +34,18 @@ package appears in both as soon as it is imported — nothing to register by han
   which also applies the theme's `templateOptions` (e.g. nav Style B) to `application.apx`. Declarative
   options are per-default-theme only; the live switch changes CSS alone.
 
+<!-- @generated:theme-catalog:start -->
 | Theme | Direction | Status |
 |---|---|---|
-| [linen](linen/) | quiet product — white chrome, hairlines, flat 8px surfaces, teal for actions only | default in app 102 (2026-09-13); release verdict **`VERIFIED`** 2026-09-17 (Layers A–E) |
-| [solarized-dark](solarized-dark/) **1.1.0** | VS Code Solarized Dark: `#002b36` canvas, `#073642` surfaces, cyan/blue accents; text levels base3/base2/base1 for AA; custom fonts (Space Grotesk / IBM Plex Sans / IBM Plex Mono) | release verdict **`VERIFIED`** 2026-09-17 (Layers A–E). Four defects found by a live 24-page pass, fixed, imported and re-measured as shipped: **0 package-caused AA failures** (IG selection 8.17:1, JET charts 25/25). Coverage is 24 of 122 pages and two widths, so it is verified-for-what-was-measured — see solarized-dark/README.md |
-| [estate-slate](estate-slate/) | corporate slate — `#f8fafc` canvas, white cards, champagne amber actions; custom font (IBM Plex Sans Arabic, 4 weights) | release verdict **`VERIFIED`** 2026-09-17 (Layers A–E). Committed 2026-09-17 with no release evidence at all; captured this same day (verification-integrity-defects plan, Task 6) — see estate-slate/README.md |
-| [estate-slate-dark](estate-slate-dark/) | corporate slate, dark — `#0a0e17` canvas, `#181b25` cards, luminous amber directives; custom font (IBM Plex Sans Arabic, 4 weights) | release verdict **`VERIFIED`** 2026-09-17 (Layers A–E). Committed 2026-09-17 with no release evidence at all; captured this same day (verification-integrity-defects plan, Task 6) — see estate-slate-dark/README.md |
-| [carbon-volt](carbon-volt/) | dark technical graphite, acid lime and cyan; Noto Kufi Arabic (4 weights) | **UNVERIFIED** — Layers A–D PASS at `4495d5b` (2026-09-19); Layer E agent evidence pending |
-| [velvet-signal](velvet-signal/) | dark aubergine, fuchsia and violet; Alexandria (4 weights) | **UNVERIFIED** — Layers A–D PASS at `4495d5b` (2026-09-19); Layer E agent evidence pending |
-| [cobalt-press](cobalt-press/) | light editorial paper, cobalt and vermilion; Cairo (4 weights) | **UNVERIFIED** — Layers A–D PASS at `4495d5b` (2026-09-19); Layer E agent evidence pending |
-| [citrus-pop](citrus-pop/) | light aqua, teal and tangerine; Tajawal (4 real upstream weights) | **UNVERIFIED** — Layers A–D PASS at `4495d5b` (2026-09-19); Layer E agent evidence pending |
+| [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [solarized-dark](solarized-dark/) | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | **UNVERIFIED — release evidence is bound to a different source identity** |
+<!-- @generated:theme-catalog:end -->
 
 Adding a theme: copy `linen/` → `<name>/`, rename the class in `theme.json`/`css`, add `preview/cover.jpg`
 (960 px, page 500 at 1280×700 with the side navigation open), run `sync-static.sh`, import — it shows up in the

@@ -50,6 +50,7 @@ class ThemeManifest:
     stylesheet: Path
     runtime: Path
     cover: Path
+    direction: str | None = None
 
     def font_asset_files(self) -> tuple[Path, ...]:
         font_files = {face.file for role in self.fonts.values() for face in role.faces}
@@ -80,7 +81,7 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     if not isinstance(raw, dict):
         raise PackageError("Manifest root must be an object")
 
-    root_keys = {"schemaVersion", "name", "title", "version", "tagline", "class", "compatibility", "templateOptions", "fonts", "assets"}
+    root_keys = {"schemaVersion", "name", "title", "version", "tagline", "direction", "class", "compatibility", "templateOptions", "fonts", "assets"}
     _check_allowed_keys(raw, root_keys, "")
 
     for req in ("schemaVersion", "name", "title", "version", "tagline", "class", "compatibility", "assets"):
@@ -108,6 +109,10 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     tagline = raw["tagline"]
     if not isinstance(tagline, str) or not tagline.strip():
         raise PackageError("tagline must be a non-empty string")
+
+    direction = raw.get("direction")
+    if direction is not None and (not isinstance(direction, str) or not direction.strip()):
+        raise PackageError("direction must be a non-empty string when provided")
 
     class_name = raw["class"]
     expected_class = f"app-theme-{name}"
@@ -304,4 +309,5 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
         stylesheet=Path(assets["stylesheet"]),
         runtime=Path(assets["runtime"]),
         cover=Path(assets["cover"]),
+        direction=direction.strip() if direction is not None else None,
     )

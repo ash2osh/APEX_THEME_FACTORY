@@ -4,6 +4,7 @@
   "title": "Estate Slate",
   "version": "1.0.0",
   "tagline": "Precision corporate slate and champagne amber for luxury operations.",
+  "direction": "Precision corporate slate, white cards, and restrained champagne-amber actions.",
   "class": "app-theme-estate-slate",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

@@ -4,6 +4,7 @@
   "title": "Citrus Pop",
   "version": "1.0.0",
   "tagline": "Fresh aqua canvas, deep teal structure, and buoyant tangerine energy.",
+  "direction": "Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards.",
   "class": "app-theme-citrus-pop",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

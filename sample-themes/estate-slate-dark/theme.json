@@ -4,6 +4,7 @@
   "title": "Estate Slate Dark",
   "version": "1.0.0",
   "tagline": "Deep monolithic slate-950 telemetry cockpit with luminous amber and emerald indicators.",
+  "direction": "Monolithic dark corporate slate with luminous amber directives and emerald telemetry.",
   "class": "app-theme-estate-slate-dark",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

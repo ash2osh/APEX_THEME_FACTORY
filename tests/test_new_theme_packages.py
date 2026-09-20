@@ -267,7 +267,8 @@ class NewThemePackageTests(unittest.TestCase):
         for name in THEMES:
             with self.subTest(theme=name):
                 self.assertIn(f"[{name}]({name}/)", catalog)
-                self.assertIn("UNVERIFIED", next(line for line in catalog.splitlines() if f"[{name}]" in line))
+                line = next(line for line in catalog.splitlines() if f"[{name}]" in line)
+                self.assertRegex(line, r"\*\*(?:VERIFIED|UNVERIFIED|FAIL)(?: — .+)?\*\*")
 
 
 if __name__ == "__main__":

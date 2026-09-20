@@ -20,6 +20,6 @@ hard edges and compact cockpit density while retaining its own bilingual Alexand
 
 ## Verification
 
-**VERIFIED** — Layers A–D PASS at source commit `0d08cb36412f355067e8fb54cafc5b5a386849d3`
+**VERIFIED** — Layers A–D PASS at source commit `1db3f70a6e7543cb9f878394a9099cca5ced7956`
 (2026-09-21), including the two-consumer SQLcl lifecycle and 8-row browser matrix. Agent compatibility
 is a standalone project signal and is not a theme release gate.

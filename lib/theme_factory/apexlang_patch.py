@@ -54,7 +54,7 @@ def plan_install(
     prior_package = next((package for package in installed_pkgs if package.name == manifest.name), None)
     if prior_package:
         verify_package_ownership(export_dir, prior_package)
-    
+
     # Determine switcher enabled state
     if mode == "enable":
         switcher_enabled = True
@@ -107,7 +107,7 @@ def plan_install(
 
     # 1. Plan files to copy into shared-components/static-files/theme-factory/packages/<name>/<version>/
     pkg_static_dir = export_dir / f"shared-components/static-files/theme-factory/packages/{manifest.name}/{manifest.version}"
-    
+
     # Add manifest, theme.css, cover.jpg
     theme_css_path = package_root / "theme.css"
     if not theme_css_path.exists():
@@ -116,7 +116,7 @@ def plan_install(
         theme_css_content = build_theme_css(export_dir.parent.parent if (export_dir.parent.parent / "static-files").exists() else export_dir, package_root, manifest, "source")
         temp_css = package_root / "theme.css"
         temp_css.write_text(theme_css_content, encoding="utf-8")
-    
+
     staged_copies.append((package_root / "theme.json", pkg_static_dir / "theme.json"))
     staged_copies.append((package_root / "theme.css", pkg_static_dir / "theme.css"))
     if (package_root / "preview/cover.jpg").exists():
@@ -406,4 +406,3 @@ def apply_patch(patch: InstallPatch) -> None:
             shutil.rmtree(target, ignore_errors=True)
         elif target.exists():
             target.unlink()
-

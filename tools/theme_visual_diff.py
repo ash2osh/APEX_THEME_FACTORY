@@ -134,4 +134,3 @@ def compare_images(
         mean_delta,
         heatmap_path,
     )
-

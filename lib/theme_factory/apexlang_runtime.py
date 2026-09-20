@@ -137,6 +137,3 @@ def build_switcher_entries(themes: list) -> str:
         sequence += 10
     chunks.append(entry(f"{SWITCHER_ENTRY_PREFIX}choice-iris", "Iris", sequence, SWITCHER_PARENT_ID))
     return "\n".join(chunks)
-
-
-

@@ -1,16 +1,8 @@
-"""Tests for lib/theme_factory/gitstate.py's instruction-Markdown binding (plan Task 3).
+"""Tests for instruction-surface commit equivalence in ``gitstate.py``.
 
-`source_equivalent`/`last_source_commit` treat all Markdown as non-source, which is right for
-prose and evidence but wrong for Layer E: the agent smokes measure what a runtime does after
-reading AGENTS.md, .agents/rules/*.md and .agents/skills/**. Editing those leaves Layer E's
-artifacts claiming a binding they no longer have.
-
-Choice recorded here (plan Task 3's "cost to know before starting"): a *separate* Layer-E-only
-binding, not a change to the shared source_equivalent. Coupling C/D to instruction edits would be
-over-strict - those layers depend on code and package bytes, not on what an agent reads - and
-would force a full live re-capture (an hour, per pitfalls.md 5.x) for a wording change in a skill
-file. The extra code here is `last_instruction_commit`/`instruction_equivalent`, used only for
-Layer E's raw-artifact binding in release.py.
+Instruction equivalence is deliberately separate from source equivalence: agent compatibility
+evidence is bound to AGENTS.md and the instruction directories, while theme A-D evidence remains
+bound to package/source bytes.
 """
 
 import os
@@ -101,11 +93,8 @@ class InstructionCommitBindingTests(unittest.TestCase):
         self.assertEqual(last_instruction_commit(root), agents_commit)
 
 
-class LayerEBindingUsesInstructionEquivalenceTests(unittest.TestCase):
-    """Proves the wiring in release.py, not just instruction_equivalent() in isolation:
-    _load_bound_raw_artifact's Layer E call sites pass commit_equivalence=instruction_equivalent,
-    so a raw Layer E artifact captured before an AGENTS.md edit is rejected at the new commit, while
-    the same artifact captured before a README-only edit still binds."""
+class LegacyRawEvidenceBindingTests(unittest.TestCase):
+    """Keep the reusable raw-artifact guard instruction-aware for legacy evidence migration."""
 
     def _write_raw_artifact(self, root, git_commit):
         import hashlib
@@ -272,4 +261,3 @@ class AssertCleanSourceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -187,6 +187,17 @@ Work in this repository. A theme lives in one folder and nothing outside it is t
 The recipe-driven workshop is the supported fast path; its speed and token-efficiency claims are measured by
 the repeatable [workflow benchmark](docs/THEME_WORKFLOW_BENCHMARK.md), never estimated from character counts.
 
+The workflow has three deliberately different lanes:
+
+| Lane | Command | Purpose |
+|---|---|---|
+| Author | `scripts/theme.sh new NAME --recipe FILE`, then `scripts/theme.sh check NAME` | Generate source and run fast cached offline policy, contrast, font, package, and uniqueness checks. |
+| Candidate | `scripts/theme.sh dev NAME --sync --validate [--import --apply] [--open]` | Exercise app 102 and Theme Lab during iteration. Import remains explicit. |
+| Release | `scripts/theme.sh release-batch … --apply`, then `scripts/release-check.sh NAME` | Bind clean packages to consumer, browser, accessibility, and agent evidence. |
+
+Candidate `PASS` is an iteration result, never a release verdict. Only current Layers A–E evidence can mark a
+theme `VERIFIED`; hosted CI intentionally proves only the offline source/package layers.
+
 ```text
 sample-themes/<name>/
 ├── theme.json        name, title, tagline, direction, class (app-theme-<name>), template options
@@ -197,17 +208,26 @@ sample-themes/<name>/
 └── preview/cover.jpg 960 px gallery image
 ```
 
-### 1. Copy a starting point
+### 1. Create from a recipe
 
 ```bash
-cp -r sample-themes/linen sample-themes/midnight
+scripts/theme.sh new midnight \
+  --title "Midnight" --tagline "Compact nocturnal operations." --mode dark
+
+# Or use a fully specified, versioned recipe:
+scripts/theme.sh new midnight --recipe /path/to/midnight/theme.recipe.json
 ```
 
-Rename the class everywhere: `theme.json` (`"class": "app-theme-midnight"`) and every selector prefix in
-`css/`. `linen` is the better base for a light theme, `solarized-dark` for a dark one — a dark theme has extra
-work to do (see [the dark-theme trap](#the-one-trap-that-will-bite-you)).
+Recipe schema version 1 owns identity, light/dark mode, nine semantic palette anchors, body/heading typography,
+four weights, geometry, focus, and six component profiles. Unknown or missing fields fail closed, core contrast
+is checked before generation, and the directory name must match `identity.name`. The short command creates a
+neutral recipe that is ready for deliberate customization.
 
-### 2. Set your tokens
+Generated CSS begins with `/* @theme-factory-generated */`. Regeneration may replace only those marked files;
+unmarked modules are the handwritten escape hatch and are preserved. Existing recipe-less packages remain
+supported for maintenance, but copying and global renaming is no longer the creation workflow.
+
+### 2. Customize the generated tokens and profiles
 
 `css/tokens.css` is where a theme actually lives. Assign the `--app-*` roles — surfaces, text levels, accents,
 borders, radii, shadows — and let the component rules inherit from them:
@@ -243,13 +263,16 @@ working. [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) §1 explains why.
 ### 5. See it in the reference app
 
 ```bash
-scripts/sync-static.sh          # assemble the CSS into the APEXLang export
-scripts/apex-validate.sh        # compile-check (expect: Validation successful.)
-scripts/apex-import.sh          # import — asks first; full replace of what's on disk
+scripts/theme.sh check midnight
+scripts/theme.sh dev midnight --sync --validate
+scripts/theme.sh dev midnight --sync --validate --import --apply --open  # explicit live mutation
 ```
 
-Your theme now appears in the navigation-bar **Theme** menu and on page 405 of app 102. Nothing to register by
-hand: `sync-static.sh` ships `theme.json` and `cover.jpg` alongside the CSS, and both surfaces read them.
+The check cache is keyed by the complete consumed-source digest and validator version. A theme file, shared
+foundation/token file, generator, policy, font, or manifest change invalidates it; gallery-only images do not.
+Use `--no-cache` when investigating the checker itself. Theme Lab on page 406 consolidates typography,
+surfaces, buttons, forms/validation, cards, IR, IG, reports, calendar, JET chart, menus, date picker, Popup LOV,
+modal, and drawer specimens. Page 405 remains package discovery/catalog navigation.
 
 To make it the app's default: `scripts/apply-theme.sh midnight` (then sync + import again).
 
@@ -273,6 +296,17 @@ scripts/package-theme.sh midnight          # → dist/midnight/midnight-1.0.0.zi
 Builds are deterministic — same input, same bytes — and the ZIP carries its own installer, uninstaller and
 manual instructions.
 
+Capture a gallery cover only after the candidate checks pass:
+
+```bash
+scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jpg          # dry run
+scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jpg \
+  --apply --overwrite
+```
+
+Capture uses a private background tab and per-tab emulation, never writes `localStorage`, and refuses console
+or network errors. Keep only the curated 960 px JPEG; iteration screenshots belong under ignored `scratch/`.
+
 ### The one trap that will bite you
 
 Iris declares many of its colour atoms **on `:root`** as `var(--ut-*)` chains. A `var()` chain resolves where
@@ -292,7 +326,9 @@ before starting a dark theme will save you a day.
 
 - **Fonts are optional.** A theme with no font assets uses APEX's own stack and ships zero font files. Custom
   fonts must be package-local licensed **WOFF2** files under `fonts/` with licences under `licenses/` —
-  external font URLs and `data:` URLs are rejected by the packager.
+  external font URLs and `data:` URLs are rejected by the packager. Use `scripts/theme.sh font add` with an
+  official metadata URL and pinned upstream revision; it converts in a temporary pinned fontTools environment,
+  verifies Arabic/Latin coverage, and writes face SHA-256 values plus provenance into the recipe.
 - **One theme per ZIP.** Multi-theme bundles are refused by design.
 - **All installed packages load; only one is active** — each is inert unless `<html>` carries its class, which
   is what makes live switching instant and removal clean.
@@ -322,6 +358,7 @@ docs/                   spec, design system, components, tooling guides
 | `scripts/apply-theme.sh <name>` | Set the app's default theme |
 | `scripts/package-theme.sh <name> [out]` | Build the distributable ZIP |
 | `scripts/release-check.sh <name>` | Build + verify + write the release report |
+| `scripts/theme.sh …` | Recipe scaffold, pinned fonts, cached checks, candidate lane, covers, catalog, evidence, and Iris drift inspection |
 
 ---
 

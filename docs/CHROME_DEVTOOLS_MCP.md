@@ -195,6 +195,13 @@ failures" claim falsifiable — scenario 11's Required Artifact Checklist item 4
 - Navigating to the current URL plus a hash is a same-document navigation — nothing reloads.
 - For captures: hide `#apexDevToolbar` with a temporary `<style>`, blur the focused element, open the side nav
   with `t_Button_navControl`.
+- Theme cover automation uses `scripts/theme.sh cover NAME --output PATH`. It runs theme checks before opening
+  Chrome, creates a private background tab, verifies app/page identity, emulates 1280×700 per tab, refuses
+  console/network errors, writes a 960 px JPEG atomically, and closes the tab in a `finally` path. Overwriting a
+  curated cover requires both `--apply` and `--overwrite`; the command never writes `localStorage`.
+- Page 406 Theme Lab is the preferred candidate surface because it contains native typography, forms, reports,
+  IR/IG, calendar, JET chart, menus and overlays together. Validate at 1440, 1024, 768 and 375 px, and treat its
+  PASS as iteration evidence only—not a release verdict.
 
 ## Rules for this project (spec §13–14, §47, §49)
 

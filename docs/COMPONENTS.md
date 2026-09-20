@@ -46,6 +46,36 @@ Drawer, Side Navigation (`t-TreeNav`), Navigation Bar, Breadcrumb, Buttons (`t-B
 Reference pages live in app 102 (e.g. 1201 Regions – Standard, 1202 Region – Alert); use them as
 the visual baseline for Iris.
 
+## Theme Lab specimen registry
+
+Page 406 is a consolidated native-component test surface. These groups are stable capture/audit targets; add a
+native specimen here before expanding one-off browser page lists.
+
+| Static ID | Native specimens covered |
+|---|---|
+| `theme_lab_typography` | Arabic/Latin samples, headings, links, all declared font weights, Font APEX isolation |
+| `theme_lab_surfaces` | page/chrome/card/subtle surfaces, borders, semantic status colours |
+| `theme_lab_buttons` | default, hot, primary, icon, disabled, hover and focus-visible states |
+| `theme_lab_forms` | text/select/date/Popup LOV/radio/checkbox, required validation and error states |
+| `theme_lab_cards` | Cards and content-row density, selection, badges, actions |
+| `theme_lab_ir` / `theme_lab_ig` | IR and IG toolbars, grids, paging, selected/edit/error states |
+| `theme_lab_calendar` / `theme_lab_chart` | calendar states and JET SVG chart text/tokens |
+| `theme_lab_overlays` | menus, date picker, Popup LOV, modal dialog, drawer and focus containment |
+
+## Template-time component profiles
+
+Profiles live in `theme-templates/components/*.css.tmpl` and are copied into a package when it is created or
+regenerated. They are not shared runtime CSS: the package owns the rendered selectors and can diverge afterward.
+
+| Recipe key | Profiles | Rendered owner |
+|---|---|---|
+| `navigation` | rail, pill, editorial, minimal | `css/apex/shell.css` |
+| `cards` | flat, layered, offset, buoyant | `css/apex/regions.css` |
+| `buttons` | square, rounded, underline, pill | `css/apex/buttons.css` |
+| `forms` | dense, comfortable, outlined, soft | `css/apex/forms.css` |
+| `reports` | ruled, spacious | `css/apex/reports.css` |
+| `dialogs` | flat, layered, offset | `css/apex/dialogs.css` |
+
 ## Contract template
 
 ```text

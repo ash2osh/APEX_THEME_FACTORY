@@ -4,6 +4,11 @@
 **Status:** Approved for implementation planning
 **Scope:** Automated tests, CI, runtime parity, design debt, agent evaluations, and consumer-app evidence
 
+> **Migration note (2026-09-20):** This earlier design records the original A–E release contract. The current
+> contract is defined by `docs/superpowers/specs/2026-09-20-release-gates-and-theme-uniqueness-design.md`:
+> theme verdicts use Layers A–D, while agent compatibility is instruction-bound and reported separately in
+> `docs/AGENT_COMPATIBILITY.md`. The historical Layer E requirements below remain useful evaluation history.
+
 ## 1. Purpose
 
 Define the evidence required before the repository, an individual theme ZIP, or an agent workflow can be called verified. The release process must separate source validation, package validation, database installation proof, browser runtime proof, and cross-application portability proof.

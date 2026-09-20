@@ -1,5 +1,10 @@
 # APEX Theme Factory — Implementation Review and Verification Status
 
+> **Migration note (2026-09-20):** The A–E tables and verdict language in this historical report describe
+> the former release contract. Current theme releases use Layers A–D only; project-level agent compatibility
+> is validated once per instruction revision in [docs/AGENT_COMPATIBILITY.md](AGENT_COMPATIBILITY.md). The
+> historical Layer E evidence below remains retained for audit and is not a current theme gate.
+
 **Reviewed:** 2026-09-16 (independent review of `fd8aad4`, fixes applied the same day)
 **Boundary:** APEX 26.1.x, Universal Theme 42, base theme `ut-26.1`, Iris only
 

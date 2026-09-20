@@ -46,6 +46,8 @@ else
   bash tests/run-common-offline.sh
 fi
 scripts/package-theme.sh "$theme_name" "dist/$theme_name"
+# Theme release evidence is deliberately limited to Layers A-D.  Project-level agent
+# compatibility is validated separately by scripts/agent-compatibility-check.sh.
 theme_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["version"])' "sample-themes/$theme_name/theme.json")"
 zip_path="dist/$theme_name/$theme_name-$theme_version.zip"
 python3 -m lib.theme_factory.cli verify-package --package "$zip_path"

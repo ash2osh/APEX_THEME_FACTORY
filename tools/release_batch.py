@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Batch and resume digest-bound Layer C/D theme release evidence."""
+"""Batch and resume digest-bound Layer C/D theme release evidence.
+
+Agent compatibility is a project-level instruction check and is intentionally not run,
+copied, or duplicated by this per-theme batch.
+"""
 
 from __future__ import annotations
 

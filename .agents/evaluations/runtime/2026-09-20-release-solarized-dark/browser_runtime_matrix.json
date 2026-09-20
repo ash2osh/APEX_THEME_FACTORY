@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "3b7cdf62863147be17b6c68ee361a02b06689501",
+  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
+  "capturedAt": "2026-09-20T18:43:23Z",
+  "layer": "D",
+  "check": "browser_runtime_matrix",
+  "status": "FAIL",
+  "results": {
+    "rows": [
+      {
+        "consumer": "minimal",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1440.json",
+          "sha256": "a9c8f02fc57df95f971ad2e937dbfda3407794e6043cb77c9e277b7aa7ab9a88"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1024.json",
+          "sha256": "e0f565c5e53424dffaf93f616bd7068076137224e0e2755cb8d6ffdce8706e80"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-768.json",
+          "sha256": "13396c7aa514f1fbf2a39bd6ca2096a6177820003ba743c1247ca3219132bef6"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-375.json",
+          "sha256": "e2d9d6accb4c2b28d5ee2a83693367548443d0016571d654b6c264c126b11d90"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page1-1440.json",
+          "sha256": "805fd9032b60918df07577f4992811c71a754538d0b7ba4b561756b734c99c80"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-business-page1-1024.json",
+          "sha256": "ac457b42538e6606fa5b7a190583bc964dc2640ac155b6091c47ca010ad519fa"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-business-page1-768.json",
+          "sha256": "246ba4729aa6bd9b4412eec68bad6cd434fcf8d9c5f52933b66a2e471e189277"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page1-375.json",
+          "sha256": "6ed674cd8eb1a4215a1c47f4b684fed658243c80f3c8f4111f5b060c05bee19e"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page2-1440.json",
+          "sha256": "3b5b096b7e755a592f156982df9500b34c27690c0a442d38e160c78d12324c82"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page2-375.json",
+          "sha256": "4359ace91ed26b20fc48f325c35c1901d07f62d08afe0be06cfd43e28e77f688"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page3-1440.json",
+          "sha256": "2652967e843896901c271f85d7e71e34ac9e4e22488c1a9f7ee57d4e22924dd8"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page3-375.json",
+          "sha256": "ef2a24c3c3972f67039b34863ce78522099f0245c17a8f24abfe01ab922feded"
+        }
+      }
+    ],
+    "failures": [
+      "business@1440: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'})",
+      "business@1024: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'})",
+      "business@768: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'})",
+      "business@375: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'})"
+    ]
+  }
+}

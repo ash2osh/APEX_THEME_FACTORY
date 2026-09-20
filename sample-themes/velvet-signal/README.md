@@ -3,6 +3,12 @@
 Dark expressive theme for Universal Theme 42 / Iris: aubergine depth, electric fuchsia and violet signals,
 spacious controls, rounded surfaces, and colored shadow layers.
 
+## Identity
+
+Velvet Signal is the spacious signal system: pill navigation, nested aubergine surfaces, a sculpted radius
+progression, fuchsia/violet layers, soft fields, and smooth lift motion. It deliberately avoids Carbon Volt's
+hard edges and compact cockpit density while retaining its own bilingual Alexandria faces.
+
 ## Typography and provenance
 
 - **Alexandria**, weights 400/500/600/700, is used for body and headings.

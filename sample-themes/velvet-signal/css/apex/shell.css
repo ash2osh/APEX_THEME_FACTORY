@@ -1,5 +1,8 @@
+/* identity: pill navigation and generous rounded shell */
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
+.app-theme-velvet-signal .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
 /* Page shell — header, side navigation, title bar, footer.
-   VS Code Velvet Signal chrome: title bar (#002c39), side bar (#00212b), editor canvas (#002b36).
+   Velvet Signal chrome: pill navigation, sculpted title bar, and spacious signal canvas.
    Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on
    :root) so Core's own state rules (hover, focus, collapsed, RTL) keep working. Hooks as in
    .agents/knowledge/ut-dom-shell.md; all rules scoped to .app-theme-velvet-signal. */

@@ -1,5 +1,8 @@
+/* identity: segmented rail navigation and hard module chrome */
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-inline-start: 3px solid var(--app-color-primary); background: var(--app-surface-selected); }
+.app-theme-carbon-volt .apex-theme-iris .t-Body-nav { border-inline-end: 2px solid var(--app-color-info); }
 /* Page shell — header, side navigation, title bar, footer.
-   VS Code Carbon Volt chrome: title bar (#002c39), side bar (#00212b), editor canvas (#002b36).
+   Carbon Volt chrome: segmented rail, hard title bar, and telemetry canvas.
    Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on
    :root) so Core's own state rules (hover, focus, collapsed, RTL) keep working. Hooks as in
    .agents/knowledge/ut-dom-shell.md; all rules scoped to .app-theme-carbon-volt. */

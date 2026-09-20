@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import tempfile
 
@@ -15,6 +16,7 @@ from lib.theme_factory.recipe import (
     FontFaceSpec,
     FontRoleSpec,
     ThemeRecipe,
+    axis_css_values,
     render_manifest,
     render_tokens,
 )
@@ -128,6 +130,7 @@ def _replacements(recipe: ThemeRecipe) -> dict[str, str]:
     palette = recipe.palette
     geometry = recipe.geometry
     focus = recipe.focus
+    axis = axis_css_values(recipe)
     body_internal = f"ThemeFactory-{identity.name}-body"
     heading_internal = body_internal if recipe.typography.heading_family == "body" else f"ThemeFactory-{identity.name}-heading"
     border_width = {"technical": "2px", "hairline": "1px", "soft": "1px", "strong": "2px"}[geometry.border_style]
@@ -160,6 +163,17 @@ def _replacements(recipe: ThemeRecipe) -> dict[str, str]:
         "__RADIUS_MEDIUM__": geometry.radius_medium,
         "__RADIUS_LARGE__": geometry.radius_large,
         "__CONTROL_HEIGHT__": geometry.control_height,
+        "__DENSITY_SCALE__": axis["density_scale"],
+        "__SPACE_UNIT__": axis["space_unit"],
+        "__HEADING_SCALE__": axis["heading_scale"],
+        "__HOVER_TRANSFORM__": axis["hover_transform"],
+        "__HOVER_SHADOW__": axis["hover_shadow"],
+        "__MOTION_DURATION__": axis["motion_duration"],
+        "__SELECTED_TREATMENT__": axis["selected_treatment"],
+        "__RESPONSIVE_STRATEGY__": axis["responsive_strategy"],
+        "__COMPACT_AT__": axis["compact_at"],
+        "__RESPONSIVE_TOKENS__": axis["responsive_tokens"],
+        "__RESPONSIVE_HOOKS__": axis["responsive_hooks"].replace("__NAME__", identity.name),
         "__BORDER_WIDTH__": border_width,
         "__SHADOW__": shadow,
         "__BODY_INTERNAL__": body_internal,
@@ -208,12 +222,48 @@ def _render_neutral_tree(repo_root: Path, destination: Path, recipe: ThemeRecipe
             stream.write(_render(source.read_text(encoding="utf-8"), replacements))
 
 
-def _validate_rendered(repo_root: Path, theme_root: Path) -> None:
+_THEME_SCOPE_RE = re.compile(r"app-theme-[a-z0-9]+(?:-[a-z0-9]+)*")
+
+
+def _normalized_module(content: str) -> str:
+    """Normalize only package scope names for the non-copying guard."""
+
+    return _THEME_SCOPE_RE.sub("app-theme-THEME", content)
+
+
+def _handwritten_module_digests(repo_root: Path, *, excluded: set[Path] | None = None) -> dict[str, Path]:
+    excluded = excluded or set()
+    found: dict[str, Path] = {}
+    for path in sorted((repo_root / "sample-themes").glob("*/css/apex/*.css")):
+        if path.resolve() in excluded:
+            continue
+        content = path.read_text(encoding="utf-8")
+        if content.splitlines() and content.splitlines()[0].strip() == GENERATED_MARKER:
+            continue
+        digest = hashlib.sha256(_normalized_module(content).encode("utf-8")).hexdigest()
+        found.setdefault(digest, path)
+    return found
+
+
+def _validate_non_copying(repo_root: Path, theme_root: Path, *, excluded: set[Path] | None = None) -> None:
+    handwritten = _handwritten_module_digests(repo_root, excluded=excluded)
+    for path in sorted((theme_root / "css/apex").glob("*.css")):
+        content = path.read_text(encoding="utf-8")
+        digest = hashlib.sha256(_normalized_module(content).encode("utf-8")).hexdigest()
+        source = handwritten.get(digest)
+        if source is not None:
+            raise PackageError(
+                f"Generated module {path.name} is an exact normalized copy of handwritten module {source}"
+            )
+
+
+def _validate_rendered(repo_root: Path, theme_root: Path, *, excluded: set[Path] | None = None) -> None:
     load_manifest(theme_root / "theme.json", theme_root)
     violations = scan_package(theme_root, repo_root)
     if violations:
         first = violations[0]
         raise PackageError(f"Generated CSS failed policy: {first.path}:{first.line} {first.code}: {first.message}")
+    _validate_non_copying(repo_root, theme_root, excluded=excluded)
 
 
 def create_theme(repo_root: Path, recipe: ThemeRecipe) -> ScaffoldResult:
@@ -300,7 +350,11 @@ def regenerate_owned_files(theme_root: Path, recipe: ThemeRecipe) -> ScaffoldRes
             render_manifest(recipe, _manifest_font_specs(current_manifest)),
             encoding="utf-8",
         )
-        _validate_rendered(repo_root, staged_theme)
+        _validate_rendered(
+            repo_root,
+            staged_theme,
+            excluded={theme_root / "css/apex" / path for path in MODULES},
+        )
         staged_css = tuple(path for path in sorted((staged_theme / "css").rglob("*.css")))
         css_pairs = tuple((source, theme_root / source.relative_to(staged_theme)) for source in staged_css)
         replace_pairs: list[tuple[Path, Path]] = []

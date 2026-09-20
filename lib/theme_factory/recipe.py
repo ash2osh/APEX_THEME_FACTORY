@@ -515,6 +515,50 @@ def _css_font_stack(values: tuple[str, ...]) -> str:
     return ", ".join(value if value in generic else json.dumps(value) for value in values)
 
 
+def axis_css_values(recipe: ThemeRecipe) -> dict[str, str]:
+    """Map schema-v2 identity axes to deterministic CSS values."""
+
+    density_scale = {"compact": "0.875", "balanced": "1", "spacious": "1.125"}[recipe.rhythm.density]
+    space_unit = {"technical": "0.375rem", "editorial": "0.5rem", "soft": "0.625rem", "playful": "0.75rem"}[recipe.rhythm.spacing]
+    heading_scale = {"compact": "1.125", "balanced": "1.25", "editorial": "1.375", "display": "1.5"}[recipe.rhythm.type_scale]
+    hover_transform = {"none": "none", "lift": "translateY(-2px)", "shift": "translateX(2px)", "glow": "none"}[recipe.interaction.hover]
+    hover_shadow = (
+        "0 0 0 3px color-mix(in srgb, var(--app-accent), transparent 70%)"
+        if recipe.interaction.hover == "glow" else "none"
+    )
+    motion_duration = {"none": "0ms", "precise": "120ms", "smooth": "180ms", "buoyant": "240ms"}[recipe.interaction.motion]
+    responsive_tokens = ""
+    responsive_hooks = ""
+    if recipe.responsive.strategy == "compress":
+        responsive_tokens = (
+            "--app-control-height: calc(var(--app-control-height) * 0.875);\n"
+            "    --app-space-unit: calc(var(--app-space-unit) * 0.875);"
+        )
+    elif recipe.responsive.strategy == "reflow":
+        responsive_hooks = (
+            "html.app-theme-__NAME__ .t-Header-controls,\n"
+            "html.app-theme-__NAME__ .t-Body-actions { flex-wrap: wrap; }"
+        )
+    else:
+        responsive_hooks = (
+            "html.app-theme-__NAME__ .t-Cards,\n"
+            "html.app-theme-__NAME__ .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }"
+        )
+    return {
+        "density_scale": density_scale,
+        "space_unit": space_unit,
+        "heading_scale": heading_scale,
+        "hover_transform": hover_transform,
+        "hover_shadow": hover_shadow,
+        "motion_duration": motion_duration,
+        "selected_treatment": recipe.interaction.selected,
+        "responsive_strategy": recipe.responsive.strategy,
+        "compact_at": str(recipe.responsive.compact_controls_at),
+        "responsive_tokens": responsive_tokens,
+        "responsive_hooks": responsive_hooks,
+    }
+
+
 def render_tokens(recipe: ThemeRecipe) -> str:
     """Compile semantic and Iris token layers in deterministic source order."""
 
@@ -525,6 +569,7 @@ def render_tokens(recipe: ThemeRecipe) -> str:
     body_family = f"ThemeFactory-{name}-body"
     heading_family = body_family if recipe.typography.heading_family == "body" else f"ThemeFactory-{name}-heading"
     fallback = _css_font_stack(recipe.typography.fallback)
+    axis = axis_css_values(recipe)
     border_width = {"technical": "2px", "hairline": "1px", "soft": "1px", "strong": "2px"}[geometry.border_style]
     shadow = {
         "none": "none",
@@ -534,6 +579,7 @@ def render_tokens(recipe: ThemeRecipe) -> str:
     }[geometry.shadow_style]
     lines = [
         GENERATED_CSS_MARKER,
+        "/* generated-from: theme-templates/neutral */",
         f"/* Deterministic recipe tokens for html.app-theme-{name}. */",
         f"html.app-theme-{name} {{",
         f"  color-scheme: {recipe.identity.mode};",
@@ -571,6 +617,14 @@ def render_tokens(recipe: ThemeRecipe) -> str:
         f"  --app-radius-md: {geometry.radius_medium};",
         f"  --app-radius-lg: {geometry.radius_large};",
         f"  --app-control-h: {geometry.control_height};",
+        f"  --app-density-scale: {axis['density_scale']};",
+        f"  --app-space-unit: {axis['space_unit']};",
+        f"  --app-heading-scale: {axis['heading_scale']};",
+        f"  --app-hover-transform: {axis['hover_transform']};",
+        f"  --app-hover-shadow: {axis['hover_shadow']};",
+        f"  --app-motion-duration: {axis['motion_duration']};",
+        f"  --app-selected-treatment: {axis['selected_treatment']};",
+        f"  --app-responsive-strategy: {axis['responsive_strategy']};",
         "  --app-control-height: var(--app-control-h);",
         f"  --app-shadow-card: {shadow};",
         f"  --app-focus-color: {focus.color};",

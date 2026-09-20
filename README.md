@@ -229,6 +229,10 @@ Generated CSS begins with `/* @theme-factory-generated */`. Regeneration may rep
 unmarked modules are the handwritten escape hatch and are preserved. Existing recipe-less packages remain
 supported for maintenance, but copying and global renaming is no longer the creation workflow.
 
+The neutral templates provide shared Universal Theme adapters only; a recipe chooses the package's composition,
+rhythm, interaction states, and responsive strategy. No theme is a parent of another theme, and Linen remains the
+application default rather than a source template.
+
 ### 2. Customize the generated tokens and profiles
 
 `css/tokens.css` is where a theme actually lives. Assign the `--app-*` roles — surfaces, text levels, accents,

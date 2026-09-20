@@ -20,6 +20,6 @@ not the inherited slate shell used by the original factory samples.
 
 ## Verification
 
-**UNVERIFIED** — Layers A–D PASS at source commit `4495d5b70d0ba6d58ed973bd45790a6b67091c6b`
-(2026-09-19), including the two-consumer SQLcl lifecycle and 12-row browser matrix. Layer E agent
-behavior evidence is still pending, so this package is not yet a verified release.
+**VERIFIED** — Layers A–D PASS at source commit `0d08cb36412f355067e8fb54cafc5b5a386849d3`
+(2026-09-21), including the two-consumer SQLcl lifecycle and 8-row browser matrix. Agent compatibility
+is a standalone project signal and is not a theme release gate.

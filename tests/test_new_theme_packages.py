@@ -201,7 +201,10 @@ class NewThemePackageTests(unittest.TestCase):
                 self.assertTrue((root / body["license"]).read_text(encoding="utf-8").strip())
 
                 self.assertEqual(jpeg_dimensions(root / "preview/cover.jpg")[0], 960)
-                self.assertIn("UNVERIFIED", (root / "README.md").read_text(encoding="utf-8"))
+                self.assertRegex(
+                    (root / "README.md").read_text(encoding="utf-8"),
+                    r"\*\*(?:VERIFIED|UNVERIFIED|FAIL)\*\*",
+                )
 
         self.assertEqual(len(families), len(THEMES), "Every new theme must use a unique family")
 

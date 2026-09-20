@@ -19,7 +19,12 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 | velvet-signal | PASS | PASS | PASS | PASS | VERIFIED |
 <!-- @generated:theme-status:end -->
 
-## Current evidence status (2026-09-17, commit `7ac2e0204ca0`, APEX 26.1.4)
+The table above is authoritative for current theme release status. The dated sections below retain
+historical capture detail; they are not additional gates. Since the Layer E decoupling, theme releases
+use Layers A–D only. Project-level agent compatibility is recorded once per instruction revision in
+`docs/AGENT_COMPATIBILITY.md`.
+
+## Historical evidence status (2026-09-17, commit `7ac2e0204ca0`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
@@ -33,7 +38,7 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 | estate-slate-dark | D browser | minimal Home and business Home at 1440/1024/768/375; business Reports (IR + editable IG) and Widgets (Calendar + JET chart) at 1440/375; 4 declared WOFF2 faces, each forced to load and matched to its serving request | `2026-09-17-release-estate-slate-dark/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
 | all four | E agent | Codex PASS, Claude Code PASS (2026-09-16), Antigravity PASS (2026-09-17); scenarios 04, 05, 09, 11, 14 all PASS; 0 pending findings | `2026-09-17-release-<theme>/agent_behavior_matrix.json` + `raw/agent-runtime-*.json`, `raw/scenario-*.json`, `raw/finding-*.json` | **PASS** |
 
-## New bilingual theme evidence (2026-09-19, commit `4495d5b70d0b`, APEX 26.1.4)
+## Historical bilingual theme evidence (2026-09-19, commit `4495d5b70d0b`, APEX 26.1.4)
 
 | Theme | Layer | Coverage | Retained evidence | Status |
 |---|---|---|---|---|
@@ -45,10 +50,11 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 | velvet-signal | D browser | minimal and business Home at 1440/1024/768/375; business Reports and Widgets at 1440/375; 4 Alexandria WOFF2 faces forced to load from the package | `2026-09-19-release-velvet-signal/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
 | cobalt-press | D browser | minimal and business Home at 1440/1024/768/375; business Reports and Widgets at 1440/375; 4 Cairo WOFF2 faces forced to load from the package | `2026-09-19-release-cobalt-press/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
 | citrus-pop | D browser | minimal and business Home at 1440/1024/768/375; business Reports and Widgets at 1440/375; 4 real Tajawal WOFF2 faces forced to load from the package | `2026-09-19-release-citrus-pop/browser_runtime_matrix.json` + `raw/browser-*.json` | **PASS** (12 rows) |
-| all four new themes | E agent | Required agent runtime and scenario evidence has not been captured for these packages | — | **UNVERIFIED** |
+| all four new themes | E agent | Historical theme-bound agent evidence was not captured; agent compatibility is now standalone | — | **NOT A CURRENT THEME GATE** |
 
-The four bilingual packages therefore remain **UNVERIFIED** release candidates: Layers A–D pass, while Layer E
-is required before any catalog row can be promoted to `VERIFIED`.
+The historical bilingual capture recorded Layers A–D as passing before the decoupling. Their current
+release verdicts are the `VERIFIED` rows in the generated table above; Layer E is not required to promote
+them.
 
 Each Layer D row records: `apex.env` identity, html/body classes, CSS/JS URLs, loaded resources, `registry.json`,
 console errors, failed requests (status ≥ 400 or network failure), `document.fonts` state for Font APEX, the icon

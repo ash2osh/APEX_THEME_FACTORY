@@ -27,4 +27,3 @@ __all__ = [
     "plan_install", "set_file_urls", "apply_navigation_menu_style",
     "theme_factory_projection", "apply_patch",
 ]
-

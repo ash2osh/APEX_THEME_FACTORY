@@ -18,7 +18,7 @@ from lib.theme_factory.apexlang_parser import (
 def inspect_export(export_dir: Path) -> TargetExport:
     """Inspect and validate an APEXLang application export directory."""
     export_dir = export_dir.resolve()
-    
+
     # Locate application.apx
     app_files = list(export_dir.glob("**/application.apx"))
     if not app_files:
@@ -404,6 +404,3 @@ def theme_factory_projection(export_dir: Path) -> dict:
         "switcherEntries": sorted(entries, key=lambda item: item["id"]),
         "pages": pages,
     }
-
-
-

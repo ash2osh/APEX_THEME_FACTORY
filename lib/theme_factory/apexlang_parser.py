@@ -26,7 +26,7 @@ def _find_matching_brace(text: str, open_pos: int) -> int:
     in_str = False
     quote_char = ""
     in_fence = False
-    
+
     while pos < len(text) and depth > 0:
         c = text[pos]
         if in_fence:
@@ -175,6 +175,3 @@ def insert_switcher_entries(lists_text: str, alias: str, entries_code: str) -> s
     last_paren = block.rfind(")")
     new_block = block[:last_paren].rstrip() + "\n\n" + entries_code.rstrip("\n") + "\n\n)"
     return lists_text[:start] + new_block + lists_text[end:]
-
-
-

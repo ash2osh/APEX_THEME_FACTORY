@@ -252,4 +252,3 @@ def capture_cover(client: Any, theme: str, output: Path, apply: bool, overwrite:
                 client.call_tool("close_page", {"pageId": page_id})
             except Exception:
                 pass
-

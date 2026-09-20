@@ -45,5 +45,3 @@ class InstallPatch:
     diff: str
     staged_copies: List[Tuple[Path, Path]]
     staged_deletions: List[Path]
-
-

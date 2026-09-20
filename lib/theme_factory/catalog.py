@@ -11,7 +11,12 @@ from lib.theme_factory.archive import verify_package
 from lib.theme_factory.discovery import DiscoveredTheme, discover_themes
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.gitstate import last_source_commit
-from lib.theme_factory.release import calculate_layer_statuses, load_evidence, release_verdict
+from lib.theme_factory.release import (
+    THEME_RELEASE_LAYERS,
+    calculate_layer_statuses,
+    load_evidence,
+    release_verdict,
+)
 
 
 @dataclass(frozen=True)
@@ -94,7 +99,7 @@ def catalog_themes(repo_root: Path, evidence_root: Path) -> tuple[CatalogTheme, 
         layers = calculate_layer_statuses(evidence)
         verdict = release_verdict(layers)
         if not reason and verdict != "VERIFIED":
-            missing = [layer for layer in "ABCDE" if layers.get(layer) != "PASS"]
+            missing = [layer for layer in THEME_RELEASE_LAYERS if layers.get(layer) != "PASS"]
             reason = "layers not current: " + ", ".join(missing)
         manifest = theme.manifest
         families = tuple(dict.fromkeys(role.family for role in manifest.fonts.values()))
@@ -174,9 +179,12 @@ def render_design_deltas(themes: tuple[CatalogTheme, ...]) -> str:
 
 
 def render_release_status(themes: tuple[CatalogTheme, ...]) -> str:
-    lines = ["| Theme | A | B | C | D | E | Verdict |", "|---|---:|---:|---:|---:|---:|---|"]
+    lines = [
+        "| Theme | " + " | ".join(THEME_RELEASE_LAYERS) + " | Verdict |",
+        "|---|" + "---:|" * len(THEME_RELEASE_LAYERS) + "---|",
+    ]
     for theme in themes:
-        statuses = [theme.layers.get(layer, "UNVERIFIED") for layer in "ABCDE"]
+        statuses = [theme.layers.get(layer, "UNVERIFIED") for layer in THEME_RELEASE_LAYERS]
         lines.append("| " + " | ".join([theme.name, *statuses, _safe(_status(theme))]) + " |")
     return "\n".join(lines) + "\n"
 

@@ -1,3 +1,5 @@
+/* identity: scan-ready monitoring tables */
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-table tr { border-block-end: 1px solid var(--app-border-color); }
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
 
@@ -166,4 +168,3 @@
 .app-theme-estate-slate-dark .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
-

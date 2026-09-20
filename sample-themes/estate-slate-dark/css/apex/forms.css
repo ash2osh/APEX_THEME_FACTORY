@@ -1,3 +1,5 @@
+/* identity: dense form fields with visible operational boundaries */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer { row-gap: var(--app-space-unit); }
 /* Form items.
    Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
 
@@ -58,4 +60,3 @@
     border-color: var(--est-dark-amber);
     outline: none;
 }
-

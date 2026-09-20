@@ -138,6 +138,14 @@ class ThemeCoverTests(unittest.TestCase):
                 self.assertFalse(any(name == "take_screenshot" for name, _ in client.calls))
                 self.assertTrue(any(name == "close_page" for name, _ in client.calls))
 
+    def test_daemon_viewport_annotation_is_not_a_console_error(self):
+        client = FakeClient(
+            console='Emulating viewport: {"width":1280,"height":700}\n'
+                    "## Console messages\n<no console messages found>"
+        )
+        report = capture_cover(client, "carbon-volt", self.output, apply=True, overwrite=False)
+        self.assertEqual(report.status, "CAPTURED")
+
     def test_wrong_width_is_rejected_without_output(self):
         client = FakeClient(screenshot=_jpeg(width=959))
         with self.assertRaisesRegex(PackageError, "960"):

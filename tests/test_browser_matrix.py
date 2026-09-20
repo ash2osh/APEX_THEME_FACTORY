@@ -78,6 +78,21 @@ class BrowserMatrixEvidenceTests(unittest.TestCase):
         evidence = load_evidence(evidence_dir, "linen", expected_git_commit=COMMIT, expected_package_sha256=SHA)
         self.assertEqual({item["check"]: item for item in evidence}["browser_runtime_matrix"]["status"], "FAIL")
 
+    def test_daemon_viewport_annotation_is_not_a_console_error(self):
+        from tools.browser_matrix import LiveBrowserMatrix
+
+        class Client:
+            def call_tool(self, name, arguments):
+                self.name = name
+                return {"content": [{
+                    "type": "text",
+                    "text": 'Emulating viewport: {"width":1280,"height":900}\n'
+                            "## Console messages\n<no console messages found>",
+                }]}
+
+        matrix = LiveBrowserMatrix(Client(), 41)
+        self.assertEqual(matrix.console_errors(), [])
+
 
 class ContrastInstrumentTests(unittest.TestCase):
     """The audit must score SVG text too: JET charts paint their labels with `fill`, not `color`."""

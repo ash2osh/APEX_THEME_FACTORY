@@ -354,7 +354,13 @@ class LiveBrowserMatrix:
 
     def console_errors(self) -> List[str]:
         text = _text(self.call("list_console_messages", types=["error"]))
-        return [line.strip() for line in text.splitlines() if line.strip() and not line.startswith("#") and "no console messages" not in line.lower()]
+        return [
+            line.strip() for line in text.splitlines()
+            if line.strip()
+            and not line.startswith("#")
+            and not line.lstrip().startswith("Emulating viewport:")
+            and "no console messages" not in line.lower()
+        ]
 
     def failed_requests(self) -> List[str]:
         text = _text(self.call("list_network_requests"))

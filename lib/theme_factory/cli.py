@@ -112,6 +112,15 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     action.add_argument("--write", action="store_true", help="Update generated documentation atomically")
     catalog.set_defaults(handler=_handle_catalog)
 
+    cover = subparsers.add_parser("cover", help="Capture a checked theme cover through Chrome")
+    cover.add_argument("name")
+    cover.add_argument("--repo-root", type=Path, default=Path.cwd())
+    cover.add_argument("--output", type=Path, required=True)
+    cover.add_argument("--apply", action="store_true")
+    cover.add_argument("--overwrite", action="store_true")
+    cover.add_argument("--json", action="store_true")
+    cover.set_defaults(handler=_handle_cover)
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="APEX Theme Factory CLI")
@@ -244,6 +253,25 @@ def _handle_catalog(args: argparse.Namespace) -> int:
         return 2
     action = "updated" if changed else "current"
     print(f"THEME_CATALOG status=PASS files={len(changed)} action={action}")
+    return 0
+
+
+def _handle_cover(args: argparse.Namespace) -> int:
+    from tools.theme_cover import capture_cover
+
+    if args.overwrite and not args.apply:
+        raise PackageError("cover --overwrite requires --apply")
+    report = run_theme_checks(args.repo_root, args.name)
+    if report.status != "PASS":
+        raise PackageError(
+            f"Theme '{args.name}' failed theme check; fix it before opening Chrome"
+        )
+    client = None
+    if args.apply:
+        from tools.chrome_devtools_client import ChromeDevToolsClient
+        client = ChromeDevToolsClient()
+    result = capture_cover(client, args.name, args.output, args.apply, args.overwrite)
+    print(result.to_json() if args.json else result.to_human())
     return 0
 
 

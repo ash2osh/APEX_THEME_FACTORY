@@ -1,3 +1,7 @@
+/* identity: outlined inputs read as printed form fields */
+.app-theme-cobalt-press .apex-theme-iris .apex-item-text,
+.app-theme-cobalt-press .apex-theme-iris .apex-item-select,
+.app-theme-cobalt-press .apex-theme-iris .apex-item-textarea { border: 1px solid var(--app-border-strong); }
 /* Form items.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -23,4 +27,3 @@
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
-

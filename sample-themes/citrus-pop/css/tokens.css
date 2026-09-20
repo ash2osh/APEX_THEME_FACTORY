@@ -77,6 +77,13 @@ html.app-theme-citrus-pop {
 
     /* Geometry */
     --app-control-h: 2.625rem;
+    --app-density-scale: 1.125;
+    --app-space-unit: .75rem;
+    --app-heading-scale: 1.5;
+    --app-hover-transform: translateY(-2px);
+    --app-motion-duration: 240ms;
+    --app-selected-treatment: fill;
+    --app-responsive-strategy: stack;
 
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cit-amber);

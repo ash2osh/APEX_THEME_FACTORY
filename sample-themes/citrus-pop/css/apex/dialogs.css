@@ -1,3 +1,5 @@
+/* identity: layered dialogs with buoyant rounded surfaces */
+.app-theme-citrus-pop .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); border-radius: var(--app-radius-lg); }
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -18,4 +20,3 @@
     --a-menu-border-radius: var(--app-radius-md);
     --a-menu-border-color: var(--app-border-color);
 }
-

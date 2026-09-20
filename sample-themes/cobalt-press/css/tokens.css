@@ -73,6 +73,13 @@ html.app-theme-cobalt-press {
 
     /* Geometry */
     --app-control-h: 2.5rem;
+    --app-density-scale: 1;
+    --app-space-unit: .5rem;
+    --app-heading-scale: 1.375;
+    --app-hover-transform: translateX(2px);
+    --app-motion-duration: 120ms;
+    --app-selected-treatment: underline;
+    --app-responsive-strategy: reflow;
 
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cp-amber);

@@ -219,10 +219,11 @@ scripts/theme.sh new midnight \
 scripts/theme.sh new midnight --recipe /path/to/midnight/theme.recipe.json
 ```
 
-Recipe schema version 1 owns identity, light/dark mode, nine semantic palette anchors, body/heading typography,
-four weights, geometry, focus, and six component profiles. Unknown or missing fields fail closed, core contrast
-is checked before generation, and the directory name must match `identity.name`. The short command creates a
-neutral recipe that is ready for deliberate customization.
+Recipe schema version 2 owns identity, light/dark mode, nine semantic palette anchors, body/heading typography,
+four weights, geometry, focus, six component profiles, explicit rhythm, interaction, and responsive strategy.
+Unknown or missing fields fail closed, core contrast is checked before generation, and the directory name must match
+`identity.name`. Version-1 recipes remain readable with deterministic compatibility defaults; newly emitted recipes
+are always version 2. The short command creates a neutral recipe that is ready for deliberate customization.
 
 Generated CSS begins with `/* @theme-factory-generated */`. Regeneration may replace only those marked files;
 unmarked modules are the handwritten escape hatch and are preserved. Existing recipe-less packages remain

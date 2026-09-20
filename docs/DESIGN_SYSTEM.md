@@ -215,6 +215,12 @@ loaded from a shared runtime stylesheet. This keeps portable ZIPs independent an
 rendered profile without changing other packages. Native specimen coverage is registered in
 [COMPONENTS.md](COMPONENTS.md#theme-lab-specimen-registry).
 
+Recipe schema v2 also makes the non-palette identity axes explicit. Every new recipe declares `rhythm` (`density`,
+`spacing`, `typeScale`), `interaction` (`hover`, `selected`, `motion`), and `responsive` (`strategy`,
+`compactControlsAt`, one of `0`, `375`, `768`, or `1024`). Version-1 recipes remain readable and receive the
+deterministic compatibility defaults `balanced/technical/balanced`, `none/fill/precise`, and `reflow/768`; the
+scaffold always emits version 2 so a generated theme never silently inherits Linen's choices.
+
 | Pattern | Class | Since | Used on |
 |---|---|---|---|
 | Navigation profile | scoped UT navigation selectors | 2026-09-20 | `shell.css` generated from rail/pill/editorial/minimal |

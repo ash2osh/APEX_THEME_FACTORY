@@ -3,6 +3,12 @@
 Light editorial theme for Universal Theme 42 / Iris: warm paper, ink structure, cobalt directives,
 vermilion marks, low-radius panels, strong rules, and crisp offset shadows.
 
+## Identity
+
+Cobalt Press is the warm editorial light system: black rules on paper, offset white sheets, cobalt directive
+underlines, vermilion annotations, outlined inputs, and deliberate shift motion. It is a standalone Cairo package,
+not the inherited slate shell used by the original factory samples.
+
 ## Typography and provenance
 
 - **Cairo**, weights 400/500/600/700, is used for body and headings.

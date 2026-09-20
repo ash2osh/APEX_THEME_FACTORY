@@ -1,3 +1,7 @@
+/* identity: buoyant card lift with generous playful spacing */
+.app-theme-citrus-pop .apex-theme-iris .t-Region,
+.app-theme-citrus-pop .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease; }
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover { transform: var(--app-hover-transform); box-shadow: var(--app-shadow-md); }
 /* Regions, cards, content blocks, breadcrumb title.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 

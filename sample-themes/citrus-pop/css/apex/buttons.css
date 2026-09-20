@@ -1,3 +1,5 @@
+/* identity: tangerine action pills with audited dark text */
+.app-theme-citrus-pop .apex-theme-iris .t-Button--hot { background: var(--cit-tangerine); color: var(--cit-hot-button-text); border-radius: var(--app-radius-lg); }
 /* Buttons.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 

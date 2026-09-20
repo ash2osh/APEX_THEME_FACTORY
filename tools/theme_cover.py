@@ -163,6 +163,7 @@ def _console_errors(result: Any) -> list[str]:
         line.strip() for line in _text(result).splitlines()
         if line.strip()
         and not line.lstrip().startswith("#")
+        and not line.lstrip().startswith("Emulating viewport:")
         and "no console messages" not in line.lower()
     ]
 

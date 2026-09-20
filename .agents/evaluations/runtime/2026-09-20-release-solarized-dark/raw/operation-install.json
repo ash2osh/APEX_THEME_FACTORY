@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
+  "capturedAt": "2026-09-20T17:06:53Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-mono-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-sans-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-sans-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/space-grotesk-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/space-grotesk-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/licenses/ibm-plex-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/licenses/space-grotesk-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 3a4a2d111d8cc38738e35730017ff29033b88a323d6d255f988cde8a78eed9df\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T165836Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-mono-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-sans-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/ibm-plex-sans-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/space-grotesk-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/fonts/space-grotesk-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/licenses/ibm-plex-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/solarized-dark/1.2.0/licenses/space-grotesk-OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: beae2a4656a77ee2cb3715abb7f2789a1017b318ed25e82f545cd8d870591111\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170303Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

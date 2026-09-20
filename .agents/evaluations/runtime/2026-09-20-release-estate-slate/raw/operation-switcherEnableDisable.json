@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "079b1d770b8d393959f0adbec7c00d7cd39dc7174362bcc8a0487dd8a560efe6",
+  "capturedAt": "2026-09-20T16:49:03Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/packages/estate-slate-1.1.0/estate-slate-1.1.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         estate-slate v1.1.0\n  Staged Digest: e92014d115b39d03d6ced8cc258ca1a866b1f3593b39c956c7834900d448b784\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/backups/DEMO-9010/20260920T164206Z-before-estate-slate\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/packages/estate-slate-1.1.0/estate-slate-1.1.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         estate-slate v1.1.0\n  Staged Digest: 7d138d2fe7c1f610892e5444602228ccb089476c72f57f683b294c6a861e8eca\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/backups/DEMO-9010/20260920T164307Z-before-estate-slate\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/packages/estate-slate-1.1.0/estate-slate-1.1.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         estate-slate v1.1.0\n  Staged Digest: 7815eb38d3a166ae612927644a145b99e4ec60bbc8805c8aeb0fb1cd95fd1706\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/backups/DEMO-9011/20260920T164620Z-before-estate-slate\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/packages/estate-slate-1.1.0/estate-slate-1.1.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         estate-slate v1.1.0\n  Staged Digest: 78849aa27fb7c3bc744998ff93a8caa208fc2149f8c5ce81e465faaa9da6ba14\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/backups/DEMO-9011/20260920T164722Z-before-estate-slate\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

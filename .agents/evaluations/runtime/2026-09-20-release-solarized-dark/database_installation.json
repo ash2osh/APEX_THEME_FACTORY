@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
+  "capturedAt": "2026-09-20T17:06:53Z",
+  "layer": "C",
+  "check": "database_installation",
+  "status": "PASS",
+  "results": {
+    "applications": [
+      {
+        "appId": "9010",
+        "appAlias": "TF-CONSUMER-MINIMAL-9010",
+        "consumer": "minimal",
+        "evidence": {
+          "path": "raw/application-minimal.json",
+          "sha256": "4221e5a28c9bb6c81bd8f1569939b4ba1c7674ad6365e968e66fe1fee3c4aa0f"
+        }
+      },
+      {
+        "appId": "9011",
+        "appAlias": "TF-CONSUMER-BUSINESS-9011",
+        "consumer": "business",
+        "evidence": {
+          "path": "raw/application-business.json",
+          "sha256": "e982a9f9b0ef160f3537c731cc563db8a5e783cb94205d96a97410f5a7ee7dc3"
+        }
+      }
+    ],
+    "operationEvidence": {
+      "install": {
+        "path": "raw/operation-install.json",
+        "sha256": "9458ad7e41b82456768d0725619709c5b7aca85006f3c275ac454e66243c18a0"
+      },
+      "reinstall": {
+        "path": "raw/operation-reinstall.json",
+        "sha256": "ff8e3e3c0ab8d529f5e686c3703fb89525c7ceb12d44ba5f0fdcd8fb518f92cf"
+      },
+      "coexistence": {
+        "path": "raw/operation-coexistence.json",
+        "sha256": "b8de4822bc527bea0611b316453062138c252a2268259a327663a29a1511bbd9"
+      },
+      "switcherEnableDisable": {
+        "path": "raw/operation-switcherEnableDisable.json",
+        "sha256": "05efb727f9bc93aa494a733ed2af3cd9ec8a94f3739b1b300db401d94db17ed4"
+      },
+      "uninstall": {
+        "path": "raw/operation-uninstall.json",
+        "sha256": "0076d1b1d3ab64d97e49bcd952e2fe5af0729ad83868a84ee59d1b32e4427504"
+      },
+      "restore": {
+        "path": "raw/operation-restore.json",
+        "sha256": "4c16c82b899f315200df9cf6be35218c518e8fb06cbce5ca5a92b9b87bb66cad"
+      },
+      "preserveUnrelated": {
+        "path": "raw/operation-preserveUnrelated.json",
+        "sha256": "297e5798c8f6723e75b1a30524bf18ca3962bf5194b72e7114a0280352302506"
+      }
+    },
+    "failures": []
+  }
+}

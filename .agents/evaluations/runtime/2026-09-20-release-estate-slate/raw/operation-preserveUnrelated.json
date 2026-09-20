@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "079b1d770b8d393959f0adbec7c00d7cd39dc7174362bcc8a0487dd8a560efe6",
+  "capturedAt": "2026-09-20T16:49:03Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "preserveUnrelated",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "compare unrelated static files",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "consumer": "business",
+      "command": "compare unrelated static files",
+      "before": 7,
+      "after": 7
+    }
+  ],
+  "notes": []
+}

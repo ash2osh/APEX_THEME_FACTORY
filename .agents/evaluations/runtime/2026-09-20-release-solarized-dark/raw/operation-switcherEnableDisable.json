@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
+  "capturedAt": "2026-09-20T17:06:53Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 411f3064d81816e60a3755b86480d6a51c6378e525951df5660db1d0b089e22e\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T165942Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 9da506326e9703ba0e1d9cd2b17b58438e09cd7ee11d9dcc20598bb79ac7cd74\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T170046Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 104e252e38c15251a9cfb2fa8a36c9712b17fbc16005c92669c097aa6608792c\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170411Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: b97cfc96eb1e9e0aa48be6d1756fabcd0f928f6caf3d0d33eac972a67d1e7c15\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170512Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

@@ -75,3 +75,28 @@ environmental).
 - `tests/agent-smoke/result.schema.json` must stay free of a `$schema` dialect pointer: `claude --json-schema` rejects `https://json-schema.org/draft/2020-12/schema` outright. A CLI rejecting the schema is classified `FAIL` (harness defect), never `UNVERIFIED`.
 - Absolute paths inside the repository are normalised to repo-relative form before comparison; paths outside the repository fail.
 - The worktree guard compares `git status` before and after the run. Do not edit the repository while a smoke runs — the guard cannot tell a model's edit from yours.
+
+## 5. Trigger semantics
+
+Model-backed smokes run only after changes to `AGENTS.md`, `.agents/rules/**`, or
+`.agents/skills/**`, on a scheduled compatibility run, or by explicit maintainer request.
+Theme CSS, package, font, and preview changes do not trigger them. Theme release verdicts use
+Layers A–D; this compatibility signal is reported once for the project and never as a theme
+release column.
+
+<!-- @generated:agent-compatibility:start -->
+## Current standalone agent compatibility
+
+- Status: `PASS`
+- Instruction commit: `7ac2e0204ca008d82c132dfcd8b3f7e54ec8e995`
+- Evidence: `.agents/evaluations/agent-compatibility/2026-09-17/compatibility.json`
+
+| Runtime | Status |
+|---|---|
+| codex | `PASS` |
+| claude | `PASS` |
+| antigravity | `PASS` |
+
+- Required scenarios: `04, 05, 09, 14`
+- Findings: none
+<!-- @generated:agent-compatibility:end -->

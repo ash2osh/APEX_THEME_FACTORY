@@ -1,10 +1,12 @@
 import json
+import re
 import struct
 import unittest
 from pathlib import Path
 
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.fingerprint import check_uniqueness
+from lib.theme_factory.recipe import contrast_ratio
 
 
 THEMES = {
@@ -83,6 +85,23 @@ def jpeg_dimensions(path: Path) -> tuple[int, int]:
 
 
 class NewThemePackageTests(unittest.TestCase):
+    def test_citrus_hot_button_text_meets_wcag_aa_on_tangerine(self):
+        root = Path("sample-themes/citrus-pop/css")
+        tokens = (root / "tokens.css").read_text(encoding="utf-8")
+        buttons = (root / "apex/buttons.css").read_text(encoding="utf-8")
+
+        def literal(name: str) -> str:
+            match = re.search(rf"{re.escape(name)}:\s*(#[0-9a-fA-F]{{6}})\s*;", tokens)
+            self.assertIsNotNone(match, f"{name} must be a literal audited color")
+            return match.group(1)
+
+        self.assertGreaterEqual(
+            contrast_ratio(literal("--cit-hot-button-text"), literal("--cit-tangerine")),
+            4.5,
+        )
+        self.assertIn("--a-button-text-color: var(--cit-hot-button-text)", buttons)
+        self.assertIn("--a-button-hover-text-color: var(--cit-hot-button-text)", buttons)
+
     def test_all_current_themes_avoid_error_level_uniqueness_findings(self):
         roots = tuple(theme.root for theme in discover_themes(Path.cwd()))
         for candidate in roots:

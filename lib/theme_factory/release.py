@@ -1,6 +1,7 @@
 """Theme Factory Release Report Generator.
 
-Aggregates verification layers A through E without converting unbound claims into proof.
+Aggregates theme verification layers A through D without converting unbound claims into proof.
+Historical Layer E evidence remains readable for compatibility but is not a release gate.
 """
 
 from __future__ import annotations
@@ -19,19 +20,26 @@ from lib.theme_factory.errors import PackageError
 from lib.theme_factory.evidence_schema import validate as validate_evidence_schema
 from lib.theme_factory.evidence_cache import EVIDENCE_CONTRACT_VERSION
 
-LAYER_DESCRIPTIONS = {
+THEME_RELEASE_LAYERS = ("A", "B", "C", "D")
+THEME_LAYER_DESCRIPTIONS = {
     "A": "Repository source",
     "B": "Package artifact",
     "C": "Database installation",
     "D": "Browser runtime",
+}
+LEGACY_EVIDENCE_LAYERS = {"E"}
+THEME_EVIDENCE_CHECKS = {
+    "C": "database_installation",
+    "D": "browser_runtime_matrix",
+}
+# Transitional descriptions keep historical Layer E manifests renderable until their
+# standalone compatibility report is introduced in Task 3.
+LAYER_DESCRIPTIONS = {
+    **THEME_LAYER_DESCRIPTIONS,
     "E": "Agent behavior",
 }
 VALID_STATUSES = {"PASS", "FAIL", "UNVERIFIED", "NOT_APPLICABLE"}
-REQUIRED_EVIDENCE_CHECKS = {
-    "C": "database_installation",
-    "D": "browser_runtime_matrix",
-    "E": "agent_behavior_matrix",
-}
+REQUIRED_EVIDENCE_CHECKS = THEME_EVIDENCE_CHECKS
 # The Layer D artifact contract. Enforced here since 2026-09-17 (verification-integrity-defects
 # Task 1) - before that, the schema documented a shape nothing read, and the emitter drifted
 # from it without either side noticing.
@@ -51,15 +59,16 @@ def commit_matches(expected: str | None, actual: str, *, equivalence=source_equi
 
 def release_verdict(layers: dict[str, str]) -> str:
     """Compute overall release verdict from layer statuses.
-    
-    A-E are strictly required. Any FAIL results in FAIL; any UNVERIFIED results in UNVERIFIED.
+
+    Theme layers A-D are strictly required. Any required FAIL results in FAIL; any
+    missing or non-PASS required layer results in UNVERIFIED. Historical Layer E
+    status is intentionally ignored.
     Returns 'VERIFIED' only when all required layers are PASS.
     """
-    required_names = ("A", "B", "C", "D", "E")
-    if any(name not in layers for name in required_names):
+    if any(name not in layers for name in THEME_RELEASE_LAYERS):
         return "UNVERIFIED"
 
-    statuses = [layers[name] for name in required_names]
+    statuses = [layers[name] for name in THEME_RELEASE_LAYERS]
     if "FAIL" in statuses:
         return "FAIL"
     if any(status != "PASS" for status in statuses):

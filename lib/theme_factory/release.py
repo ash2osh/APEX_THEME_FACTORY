@@ -440,7 +440,10 @@ def _validate_evidence_artifact(
 
 def render_release_markdown(metadata: dict[str, Any], evidence: list[dict[str, Any]], verdict: str) -> str:
     """Render deterministic markdown release report."""
-    ordered = sorted(evidence, key=lambda item: (str(item.get("layer", "")), str(item.get("check", "")), str(item.get("path", ""))))
+    ordered = sorted(
+        (item for item in evidence if str(item.get("layer", "")).upper() in THEME_RELEASE_LAYERS),
+        key=lambda item: (str(item.get("layer", "")), str(item.get("check", "")), str(item.get("path", ""))),
+    )
     
     layer_statuses = calculate_layer_statuses(ordered)
 
@@ -462,7 +465,10 @@ def render_release_markdown(metadata: dict[str, Any], evidence: list[dict[str, A
         "",
         "| Layer | Description | Status |",
         "|---|---|---|",
-        *[f"| Layer {layer} | {description} | `{layer_statuses.get(layer, 'UNVERIFIED')}` |" for layer, description in LAYER_DESCRIPTIONS.items()],
+        *[
+            f"| Layer {layer} | {description} | `{layer_statuses.get(layer, 'UNVERIFIED')}` |"
+            for layer, description in THEME_LAYER_DESCRIPTIONS.items()
+        ],
         "",
         "## Evidence Details",
         "",

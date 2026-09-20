@@ -104,7 +104,7 @@ class ReleaseVerdictTests(unittest.TestCase):
         self.assertIn("# Release Report: linen v1.0.0", report)
         self.assertIn("VERIFIED", report)
         self.assertIn("Layer A", report)
-        self.assertIn("Layer E", report)
+        self.assertNotIn("Layer E", report)
         self.assertIn("Package artifact", report)
         self.assertIn("Database installation", report)
 

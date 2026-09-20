@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from lib.theme_factory.catalog import catalog_themes, update_generated_sections
+from lib.theme_factory.catalog import CatalogTheme, catalog_themes, render_release_status, update_generated_sections
 
 
 class GeneratedSectionTests(unittest.TestCase):
@@ -63,8 +63,9 @@ class CatalogVerdictTests(unittest.TestCase):
         evidence_dir.mkdir()
         (evidence_dir / "evidence.json").write_text("{}", encoding="utf-8")
         incomplete = [
-            {"layer": layer, "status": "PASS", "check": f"layer-{layer}", "path": "x", "details": "ok"}
-            for layer in ("C", "D")
+            {"layer": "C", "status": "PASS", "check": "layer-C", "path": "x", "details": "ok"},
+            {"layer": "D", "status": "UNVERIFIED", "check": "layer-D", "path": "x", "details": "not captured"},
+            {"layer": "E", "status": "FAIL", "check": "agent_behavior_matrix", "path": "legacy", "details": "historical"},
         ]
         with patch("lib.theme_factory.catalog.load_evidence", return_value=incomplete) as loader, \
              patch("lib.theme_factory.catalog._package_identity", return_value=("b" * 64, Path("fixture.zip"))), \
@@ -73,9 +74,20 @@ class CatalogVerdictTests(unittest.TestCase):
         linen = next(theme for theme in themes if theme.name == "linen")
         loader.assert_called_once()
         self.assertEqual(linen.layers["C"], "PASS")
-        self.assertEqual(linen.layers["D"], "PASS")
-        self.assertIsNone(linen.layers.get("E"))
+        self.assertEqual(linen.layers["D"], "UNVERIFIED")
+        self.assertEqual(linen.layers["E"], "FAIL")
         self.assertEqual(linen.verdict, "UNVERIFIED")
+        self.assertEqual(linen.status_detail, "layers not current: D")
+
+    def test_release_status_header_is_a_through_d_only(self):
+        theme = CatalogTheme(
+            name="fixture", title="Fixture", version="1.0.0", tagline="fixture",
+            direction="fixture", font_families=("Fixture",), verdict="VERIFIED",
+            status_detail="", layers={name: "PASS" for name in "ABCDE"},
+        )
+        rendered = render_release_status((theme,))
+        self.assertEqual(rendered.splitlines()[0], "| Theme | A | B | C | D | Verdict |")
+        self.assertNotIn("| E |", rendered.splitlines()[0])
 
 
 if __name__ == "__main__":

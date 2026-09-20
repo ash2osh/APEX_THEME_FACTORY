@@ -7,16 +7,16 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 ## Current source/package-bound status
 
 <!-- @generated:theme-status:start -->
-| Theme | A | B | C | D | E | Verdict |
-|---|---:|---:|---:|---:|---:|---|
-| carbon-volt | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| citrus-pop | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| cobalt-press | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| estate-slate | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| estate-slate-dark | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| linen | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| solarized-dark | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
-| velvet-signal | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| Theme | A | B | C | D | Verdict |
+|---|---:|---:|---:|---:|---|
+| carbon-volt | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| citrus-pop | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| cobalt-press | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate-dark | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| linen | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| solarized-dark | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| velvet-signal | PASS | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
 <!-- @generated:theme-status:end -->
 
 ## Current evidence status (2026-09-17, commit `7ac2e0204ca0`, APEX 26.1.4)

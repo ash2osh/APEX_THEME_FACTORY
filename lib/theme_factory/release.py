@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from lib.theme_factory.archive import verify_package
+from lib.theme_factory.agent_compatibility import validate_legacy_layer_e_artifact
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.evidence_schema import validate as validate_evidence_schema
 from lib.theme_factory.evidence_cache import EVIDENCE_CONTRACT_VERSION
@@ -44,16 +45,11 @@ REQUIRED_EVIDENCE_CHECKS = THEME_EVIDENCE_CHECKS
 # Task 1) - before that, the schema documented a shape nothing read, and the emitter drifted
 # from it without either side noticing.
 RUNTIME_EVIDENCE_SCHEMA = Path(__file__).resolve().parent.parent.parent / "tests" / "live" / "runtime-evidence.schema.json"
-from lib.theme_factory.gitstate import (  # noqa: E402
-    EVIDENCE_ROOT, instruction_equivalent, last_source_commit, source_equivalent,
-)
+from lib.theme_factory.gitstate import EVIDENCE_ROOT, last_source_commit, source_equivalent
 
 
 def commit_matches(expected: str | None, actual: str, *, equivalence=source_equivalent) -> bool:
-    """`equivalence` is pluggable so Layer E can bind on instruction Markdown instead of the
-    general source_equivalent (plan Task 3): the agent smokes' *subject* is AGENTS.md /
-    .agents/rules/ / .agents/skills/, so an edit there must invalidate Layer E even though
-    Markdown is otherwise excluded from what counts as source."""
+    """Compare an evidence commit with the source commit under a caller-selected policy."""
     return expected is None or equivalence(expected, actual)
 
 
@@ -335,10 +331,13 @@ def _validate_evidence_artifact(
     )
     if not required_identity:
         raise PackageError(f"Evidence artifact identity/schema mismatch: {path}")
-    # Layer E binds on instruction Markdown (AGENTS.md, .agents/rules/, .agents/skills/), not the
-    # general notion of source - its smokes measure what a runtime does after reading those files.
-    equivalence = instruction_equivalent if layer == "E" else source_equivalent
-    if not commit_matches(expected_git_commit, artifact["gitCommit"], equivalence=equivalence):
+    if layer == "E":
+        validate_legacy_layer_e_artifact(
+            path, evidence_dir, theme_name, check_name, status,
+            expected_git_commit, expected_package_sha256,
+        )
+        return
+    if not commit_matches(expected_git_commit, artifact["gitCommit"], equivalence=source_equivalent):
         raise PackageError(
             f"Evidence artifact is for Git commit {artifact['gitCommit']}, whose source differs from {expected_git_commit}: {path}"
         )
@@ -433,69 +432,6 @@ def _validate_evidence_artifact(
                 for width in (1440, 1024, 768, 375)
             }
             valid = valid and required_rows.issubset(covered)
-    elif layer == "E":
-        runtimes = results.get("runtimes", {})
-        scenarios = results.get("scenarios", {})
-        finding_evidence = results.get("findingEvidence")
-        valid = (
-            isinstance(runtimes, dict)
-            and set(runtimes) == {"codex", "claude", "antigravity"}
-            and isinstance(scenarios, dict)
-            and set(scenarios) == {"04", "05", "09", "11", "14"}
-            and isinstance(finding_evidence, list) and len(finding_evidence) >= 7
-            and results.get("pendingFindings") == 0
-        )
-        if valid:
-            for runtime, reference in runtimes.items():
-                raw = _load_bound_raw_artifact(
-                    evidence_dir, reference, theme_name, expected_git_commit,
-                    expected_package_sha256, f"Layer E runtime {runtime}",
-                    commit_equivalence=instruction_equivalent,
-                    instruction_bound=True,
-                )
-                if not (
-                    raw.get("evidenceType") == "agent-runtime"
-                    and raw.get("runtime") == runtime
-                    and raw.get("status") == "PASS"
-                ):
-                    valid = False
-                    break
-        if valid:
-            for scenario, reference in scenarios.items():
-                instruction_only = scenario in {"04", "05", "09", "14"}
-                raw = _load_bound_raw_artifact(
-                    evidence_dir, reference, theme_name, expected_git_commit,
-                    expected_package_sha256, f"Layer E scenario {scenario}",
-                    commit_equivalence=instruction_equivalent if instruction_only else source_equivalent,
-                    instruction_bound=instruction_only,
-                )
-                if not (
-                    raw.get("evidenceType") == "agent-scenario"
-                    and str(raw.get("scenario", "")) == scenario
-                    and raw.get("status") == "PASS"
-                ):
-                    valid = False
-                    break
-        if valid:
-            seen_findings: set[str] = set()
-            for index, reference in enumerate(finding_evidence):
-                raw = _load_bound_raw_artifact(
-                    evidence_dir, reference, theme_name, expected_git_commit,
-                    expected_package_sha256, f"Layer E finding {index + 1}",
-                    commit_equivalence=instruction_equivalent,
-                    instruction_bound=True,
-                )
-                finding = raw.get("finding")
-                if not (
-                    raw.get("evidenceType") == "finding-resolution"
-                    and isinstance(finding, str) and finding
-                    and raw.get("status") in {"ACCEPTED", "REJECTED"}
-                ):
-                    valid = False
-                    break
-                seen_findings.add(finding)
-            if len(seen_findings) < 7:
-                valid = False
     else:
         valid = False
     if not valid:

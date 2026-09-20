@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "velvet-signal",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "4189fb0a9f1ec32189bc36e7f826f688ac8223726fdef944fd4050c96d62931a",
-  "capturedAt": "2026-09-20T20:38:13Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "76dbb1150e50b3c75f78e7348fe6fe2f293b98e5f48fc6907e51036e0068696e",
+  "capturedAt": "2026-09-20T22:14:31Z",
   "evidenceType": "sqlcl-operation",
   "operation": "reinstall",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: f66c322e3649b715523f6a7618b8a8839c5012a42c469524cc23af9f5919f5ac\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260920T203052Z-before-velvet-signal\nType application ID 9010 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: b55d362a71ebcf9f7c4feed80741769022f33ed782eff2d5b13346de21746a3f\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260920T220713Z-before-velvet-signal\nType application ID 9010 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: 48c19d28929d436ed92c448bd4ebaaa6c18cf6e06fa6ae781fbb9412b4c98627\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/velvet-signal/business/backups/DEMO-9011/20260920T203502Z-before-velvet-signal\nType application ID 9011 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: 9b6eb8a6818ab2907c423e8724115f19af16766ad3f5385f0898889d40b54ab9\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/velvet-signal/business/backups/DEMO-9011/20260920T221121Z-before-velvet-signal\nType application ID 9011 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

@@ -7,16 +7,16 @@
       "check": "database_installation",
       "status": "PASS",
       "artifact": "database_installation.json",
-      "artifactSha256": "b1ac88b99edcc404b1efad42b4d14f43388bf41f624a22793ddcfa594c43c847",
-      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 2f94aa35b545"
+      "artifactSha256": "b096ade08744dd045bc4c43b3d3fd700f67e133d881ca8f69684c5ca4980a3d1",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 0d08cb36412f"
     },
     {
       "layer": "D",
       "check": "browser_runtime_matrix",
       "status": "PASS",
       "artifact": "browser_runtime_matrix.json",
-      "artifactSha256": "b4b472742bb216208494818b59cde92ad5b3549c5cadaf07b5f6d3fdb97cd673",
-      "details": "8/8 consumer/width rows verified live at commit 2f94aa35b545"
+      "artifactSha256": "dc4857d52686e035330bcfdd57542f8ddf4934631c735a654dc95ec9503ec9e7",
+      "details": "8/8 consumer/width rows verified live at commit 0d08cb36412f"
     }
   ]
 }

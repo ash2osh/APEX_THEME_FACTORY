@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "carbon-volt",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "c9cb07cd84b9355dad46f7bb39d2a8bb4276bb4e1dbdb66b5ff05c3438b90949",
-  "capturedAt": "2026-09-20T20:29:28Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "9904525df07b3ab5ad430f7bf5d5a2a93cc0cbb4a450b275d803491a574c355c",
+  "capturedAt": "2026-09-20T22:05:49Z",
   "evidenceType": "sqlcl-application",
   "consumer": "minimal",
   "appId": "9010",

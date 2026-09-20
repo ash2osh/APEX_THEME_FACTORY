@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "cobalt-press",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "1e14b8f8dfb877e02013d9566171635359bd586c5e651d7e29ddf1729ebaf86a",
-  "capturedAt": "2026-09-20T20:46:54Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "dc35a47f817eb6765c9e7df92c18e148e72dffcc1b00b62988ae5045a9b2ec86",
+  "capturedAt": "2026-09-20T22:23:10Z",
   "evidenceType": "sqlcl-operation",
   "operation": "coexistence",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 61da5212d3e234af1764ac50b7c2fdda479155d60d57c3e4e72dc810b949d594\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260920T204035Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: f236ff471e06fdfb08a4a00cc1db36208e575255e503d5b45698f83a77368462\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260920T221653Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/business/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 0f102ac0f7ba37de57ad3d22373403d648eaf2fecf0c9905bce1fd05cc3bc867\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/business/backups/DEMO-9011/20260920T204445Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 9384ee143e1af210f1e38c2fcdf3bd7cecae1f4e44bc816bf4d4f89db26aee48\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/business/backups/DEMO-9011/20260920T222102Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

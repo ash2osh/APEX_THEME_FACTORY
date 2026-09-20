@@ -130,16 +130,39 @@ def _jpeg_dimensions(data: bytes) -> tuple[int, int] | None:
     return None
 
 
+def _select_theme_script(theme: str) -> str:
+    theme_name = json.dumps(theme)
+    return f"""() => {{
+        let previousStorage = null;
+        try {{
+            previousStorage = localStorage.getItem('app.theme');
+            localStorage.setItem('app.theme', {theme_name});
+        }} catch (error) {{
+            throw new Error('Unable to set the cover theme selection: ' + error.message);
+        }}
+        return {{ previousStorage }};
+    }}"""
+
+
+def _restore_theme_script(previous_storage: str | None) -> str:
+    encoded = json.dumps(previous_storage)
+    return f"""() => {{
+        try {{
+            const restoreStorage = {encoded};
+            if (restoreStorage === null) localStorage.removeItem('app.theme');
+            else localStorage.setItem('app.theme', restoreStorage);
+            return {{ restored: true }};
+        }} catch (error) {{
+            return {{ restored: false, error: String(error) }};
+        }}
+    }}"""
+
+
 def _runtime_script(theme: str) -> str:
     theme_class = json.dumps(f"app-theme-{theme}")
     theme_name = json.dumps(theme)
     return f"""async () => {{
         const root = document.documentElement;
-        [...root.classList]
-          .filter((name) => name.startsWith('app-theme-'))
-          .forEach((name) => root.classList.remove(name));
-        root.classList.add({theme_class});
-        root.dataset.appThemeCurrent = {theme_name};
         let coverStyle = document.getElementById('theme-factory-cover-style');
         if (!coverStyle) {{
           coverStyle = document.createElement('style');
@@ -152,7 +175,7 @@ def _runtime_script(theme: str) -> str:
         return {{
           appId: String(window.apex?.env?.APP_ID ?? ''),
           pageId: String(window.apex?.env?.APP_PAGE_ID ?? ''),
-          theme: root.dataset.appThemeCurrent,
+          theme: root.classList.contains({theme_class}) ? {theme_name} : null,
           fontsStatus: document.fonts?.status ?? 'unsupported'
         }};
     }}"""
@@ -209,10 +232,21 @@ def capture_cover(client: Any, theme: str, output: Path, apply: bool, overwrite:
         raise PackageError("Cover capture requires the project Chrome daemon client")
 
     page_id: int | None = None
+    previous_storage: str | None = None
+    storage_snapshot = False
     try:
         opened = client.call_tool("new_page", {"url": PAGE_500, "background": True})
         page_id = _selected_page_id(opened)
         client.call_tool("emulate", {"pageId": page_id, "viewport": CAPTURE_VIEWPORT})
+        selection = _json_result(client.call_tool(
+            "evaluate_script", {"pageId": page_id, "function": _select_theme_script(theme)}
+        ))
+        if "previousStorage" not in selection:
+            raise PackageError("Chrome did not return the previous theme selection")
+        previous_storage = selection.get("previousStorage")
+        if previous_storage is not None and not isinstance(previous_storage, str):
+            raise PackageError("Chrome returned an invalid previous theme selection")
+        storage_snapshot = True
         client.call_tool("navigate_page", {"pageId": page_id, "url": PAGE_500})
         runtime = _json_result(client.call_tool(
             "evaluate_script", {"pageId": page_id, "function": _runtime_script(theme)}
@@ -249,6 +283,14 @@ def capture_cover(client: Any, theme: str, output: Path, apply: bool, overwrite:
         return CoverReport("CAPTURED", theme, PAGE_500, output, True, width, height)
     finally:
         if page_id is not None:
+            if storage_snapshot:
+                try:
+                    client.call_tool("evaluate_script", {
+                        "pageId": page_id,
+                        "function": _restore_theme_script(previous_storage),
+                    })
+                except Exception:
+                    pass
             try:
                 client.call_tool("close_page", {"pageId": page_id})
             except Exception:

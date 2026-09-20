@@ -310,8 +310,8 @@ scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jp
   --apply --overwrite
 ```
 
-Capture uses a private background tab and per-tab emulation, never writes `localStorage`, and refuses console
-or network errors. Keep only the curated 960 px JPEG; iteration screenshots belong under ignored `scratch/`.
+Capture uses a private background tab and per-tab emulation, snapshots and restores the browser's theme selection,
+and refuses console or network errors. Keep only the curated 960 px JPEG; iteration screenshots belong under ignored `scratch/`.
 
 ### The one trap that will bite you
 

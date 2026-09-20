@@ -1,8 +1,8 @@
 {
-  "capturedAt": "2026-09-20T22:43:42Z",
+  "capturedAt": "2026-09-20T23:08:40Z",
   "evidenceType": "common-offline-check",
   "schemaVersion": 1,
-  "sourceCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
-  "sourceDigest": "6079700ba76a2f08da880164e055f71465a1a4d6",
+  "sourceCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "sourceDigest": "a957f2b8737e3cf58bb8cdc1e1c976839e14495c",
   "status": "PASS"
 }

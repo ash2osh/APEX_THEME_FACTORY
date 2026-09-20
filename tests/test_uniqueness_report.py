@@ -1,0 +1,67 @@
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+from lib.theme_factory.uniqueness_report import (
+    build_uniqueness_rows,
+    render_uniqueness_report,
+)
+
+
+class UniquenessReportTests(unittest.TestCase):
+    def test_current_repository_has_every_unordered_pair(self):
+        rows = build_uniqueness_rows(Path.cwd())
+        self.assertEqual(len(rows), 28)
+        self.assertEqual(
+            {(row.left, row.right) for row in rows},
+            {(left, right) for left in (
+                "carbon-volt", "citrus-pop", "cobalt-press", "estate-slate",
+                "estate-slate-dark", "linen", "solarized-dark", "velvet-signal",
+            ) for right in (
+                "carbon-volt", "citrus-pop", "cobalt-press", "estate-slate",
+                "estate-slate-dark", "linen", "solarized-dark", "velvet-signal",
+            ) if left < right},
+        )
+
+    def test_rows_sort_by_css_similarity_then_theme_names(self):
+        rows = build_uniqueness_rows(Path.cwd())
+        keys = [(-row.report.css_similarity, row.left, row.right) for row in rows]
+        self.assertEqual(keys, sorted(keys))
+
+    def test_markdown_explains_all_similarity_dimensions(self):
+        report = render_uniqueness_report(build_uniqueness_rows(Path.cwd()))
+        self.assertIn("# Theme uniqueness report", report)
+        self.assertIn("CSS similarity", report)
+        self.assertIn("Average palette Delta E", report)
+        self.assertIn("Matching profiles", report)
+        self.assertIn("Font match", report)
+        self.assertIn("Geometry match", report)
+        self.assertIn("Severity", report)
+        self.assertIn("Issue", report)
+        self.assertIn("carbon-volt", report)
+
+    def test_check_detects_drift_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "report.md"
+            command = [
+                sys.executable,
+                "-m",
+                "lib.theme_factory.uniqueness_report",
+                "--repo-root",
+                ".",
+                "--output",
+                str(output),
+            ]
+            self.assertEqual(subprocess.run(command, capture_output=True, text=True).returncode, 0)
+            original = output.read_text(encoding="utf-8")
+            output.write_text(original + "drift\n", encoding="utf-8")
+            check = subprocess.run([*command, "--check"], capture_output=True, text=True)
+            self.assertEqual(check.returncode, 1)
+            self.assertIn("DRIFT", check.stdout + check.stderr)
+            self.assertEqual(output.read_text(encoding="utf-8"), original + "drift\n")
+
+
+if __name__ == "__main__":
+    unittest.main()

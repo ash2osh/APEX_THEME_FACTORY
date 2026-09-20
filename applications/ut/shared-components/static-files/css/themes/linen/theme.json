@@ -4,6 +4,7 @@
   "title": "Linen",
   "version": "1.0.0",
   "tagline": "Light linen canvas, hairline seams, one teal thread.",
+  "direction": "Quiet product surfaces with white chrome, hairline seams, and teal actions.",
   "class": "app-theme-linen",
   "compatibility": {
     "apex": ">=26.1.0 <26.2.0",

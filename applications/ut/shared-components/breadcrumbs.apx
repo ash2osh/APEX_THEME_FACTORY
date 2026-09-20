@@ -1478,6 +1478,22 @@ breadcrumb universal-theme-breadcrumb (
         }
     )
 
+    entry theme-lab (
+        name: Theme Lab
+        pageNumber: 406
+        execution {
+            sequence: 10
+        }
+        appearance {
+            parentEntry: @themes
+        }
+        link {
+            target: {
+                page: 406
+            }
+        }
+    )
+
     entry timeline-component (
         name: Timeline Component
         pageNumber: 3006
@@ -1591,4 +1607,3 @@ breadcrumb universal-theme-breadcrumb (
     )
 
 )
-

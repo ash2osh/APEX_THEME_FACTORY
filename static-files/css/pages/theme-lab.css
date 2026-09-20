@@ -1,0 +1,108 @@
+/* Page 406 Theme Lab: layout only. Theme packages continue to own component appearance. */
+html.page-406 .theme-lab-specimen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--app-space-4);
+}
+
+html.page-406 .theme-lab-specimen {
+    min-block-size: 7rem;
+    padding: var(--app-space-4);
+    border: var(--app-border-hairline);
+    border-radius: var(--app-radius-md);
+    background: var(--app-surface-card);
+}
+
+html.page-406 .theme-lab-specimen > :first-child {
+    margin-block-start: 0;
+}
+
+html.page-406 .theme-lab-specimen > :last-child {
+    margin-block-end: 0;
+}
+
+html.page-406 .theme-lab-type-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--app-space-3);
+    margin-block: var(--app-space-2);
+}
+
+html.page-406 .theme-lab-type-sample {
+    font-family: var(--app-font-family-body);
+    font-weight: var(--theme-lab-weight, 400);
+}
+
+html.page-406 .theme-lab-type-sample--500 {
+    --theme-lab-weight: 500;
+}
+
+html.page-406 .theme-lab-type-sample--600 {
+    --theme-lab-weight: 600;
+}
+
+html.page-406 .theme-lab-type-sample--700 {
+    --theme-lab-weight: 700;
+}
+
+html.page-406 .theme-lab-surface {
+    display: grid;
+    place-items: center;
+    min-block-size: 5rem;
+    padding: var(--app-space-3);
+    border: var(--app-border-hairline);
+    border-radius: var(--app-radius-md);
+}
+
+html.page-406 .theme-lab-surface--page {
+    background: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+
+html.page-406 .theme-lab-surface--card {
+    background: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+
+html.page-406 .theme-lab-surface--subtle {
+    background: var(--app-surface-subtle);
+    color: var(--app-text-primary);
+}
+
+html.page-406 .theme-lab-surface--selected {
+    background: var(--app-surface-selected);
+    color: var(--app-text-primary);
+}
+
+html.page-406 .theme-lab-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--app-space-2);
+}
+
+html.page-406 .theme-lab-data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--app-space-4);
+}
+
+html.page-406 .theme-lab-data-grid > * {
+    min-inline-size: 0;
+}
+
+@media (max-width: 767px) {
+    html.page-406 .theme-lab-data-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    html.page-406 .theme-lab-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    html.page-406 .theme-lab-actions .t-Button {
+        inline-size: 100%;
+        min-block-size: 44px;
+    }
+}

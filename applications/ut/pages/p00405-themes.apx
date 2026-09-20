@@ -177,4 +177,31 @@ page 405 (
 
     )
 
+    button open-theme-lab (
+        buttonName: OPEN_THEME_LAB
+        label: Open Theme Lab
+        layout {
+            sequence: 10
+            region: @overview
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--iconRight
+            ]
+            icon: fa-arrow-right
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 406
+                action: resetPagination
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
 )

@@ -13,10 +13,10 @@
     {
       "layer": "D",
       "check": "browser_runtime_matrix",
-      "status": "FAIL",
+      "status": "PASS",
       "artifact": "browser_runtime_matrix.json",
-      "artifactSha256": "73674747b139ffb3128088d8f823bd1ae32e6df6b6dcef8221a5941bf1fbfbcf",
-      "details": "6/8 consumer/width rows verified live at commit 3b7cdf628631; failures: business@1440: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'}); business@1024: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'}); business@768: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'}); business@375: accessibilityVerified false (contrast failures=1 sample=[{'text': 'Save Order', 'sel': 'span.t-Button-label', 'fg': 'rgb(0, 43, 54)', 'bg': 'rgb(7, 54, 66)', 'ratio': 1.15, 'size': 13}] keyboard={'ok': True, 'visible': True, 'radios': ['Carbon Volt', 'Citrus Pop', 'Cobalt Press', 'Estate Slate', 'Estate Slate Dark', 'Linen', 'Solarized Dark', 'Velvet Signal', 'Iris'], 'checked': ['Solarized Dark'], 'label': 'Theme', 'hasPopup': 'menu'})"
+      "artifactSha256": "513a325e2f1315f08dcdccc1031cf045e9b534db6978191317c8dbcf1d2f8567",
+      "details": "8/8 consumer/width rows verified live at commit 0bccad8fd054"
     }
   ]
 }

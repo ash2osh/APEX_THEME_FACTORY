@@ -327,6 +327,24 @@ class InstallerCliTests(unittest.TestCase):
         self.assertIn("ninth-theme", names)
         self.assertEqual(len(names), 9)
 
+    def test_resolve_package_zip_prefers_manifest_version_over_legacy_archive(self):
+        repo = self.tmp / "versioned-repo"
+        theme = repo / "sample-themes" / "versioned-theme"
+        theme.mkdir(parents=True)
+        (theme / "theme.json").write_text(
+            json.dumps({"name": "versioned-theme", "version": "2.1.0"}),
+            encoding="utf-8",
+        )
+        dist = repo / "dist" / "versioned-theme"
+        dist.mkdir(parents=True)
+        old = dist / "versioned-theme-1.0.0.zip"
+        current = dist / "versioned-theme-2.1.0.zip"
+        old.write_bytes(b"old")
+        current.write_bytes(b"current")
+
+        with mock.patch.object(install_all_themes, "repo_root", repo):
+            self.assertEqual(install_all_themes.resolve_package_zip("versioned-theme"), current)
+
     def test_dry_run_and_apply_remove_staging_directories(self):
         """Temporary staging exports must not accumulate in the system temp directory."""
         tmpdir = self.tmp / "tmpdir"

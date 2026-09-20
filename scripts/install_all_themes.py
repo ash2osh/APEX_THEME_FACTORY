@@ -139,15 +139,23 @@ def parse_args(argv=None):
 
 
 def resolve_package_zip(theme_name: str) -> Path:
-    direct_zip = repo_root / f"dist/{theme_name}/{theme_name}-1.0.0.zip"
-    if direct_zip.is_file():
-        return direct_zip
+    theme_source = repo_root / f"sample-themes/{theme_name}"
     dist_dir = repo_root / f"dist/{theme_name}"
+    manifest_path = theme_source / "theme.json"
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            version = manifest.get("version")
+        except (OSError, json.JSONDecodeError):
+            version = None
+        if isinstance(version, str) and version:
+            direct_zip = dist_dir / f"{theme_name}-{version}.zip"
+            if direct_zip.is_file():
+                return direct_zip
     if dist_dir.is_dir():
         candidates = sorted(dist_dir.glob("*.zip"))
         if candidates:
             return candidates[-1]
-    theme_source = repo_root / f"sample-themes/{theme_name}"
     if theme_source.is_dir():
         print(f"Building package archive for '{theme_name}'...")
         from lib.theme_factory.archive import build_package

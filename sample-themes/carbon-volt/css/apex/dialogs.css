@@ -1,3 +1,5 @@
+/* identity: offset detail dialogs for telemetry drill-down */
+.app-theme-carbon-volt .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); border-radius: 0; }
 /* Modal dialogs (jQuery UI dialog chrome in the parent page), wizard dialog pages and popup menus.
    Atoms --jui-dialog-* / --a-menu-* are declared on :root by Core/Iris → override on body; the dialog chrome
    and menus live directly under body, so no element rules are needed. Scoped to .app-theme-carbon-volt. */

@@ -1,6 +1,8 @@
+/* identity: soft fields with spacious labels */
+.app-theme-velvet-signal .apex-theme-iris .t-Form-fieldContainer { row-gap: var(--app-space-unit); }
 /* Form items. Base --a-field-* atoms live on :root (Core/Iris) → override on body; floating-label containers
    set their own padding on the element, so body-level overrides only touch what they should.
-   Input surface #003847 (VS Code input.background), 3.3:1 border, cyan focus. Scoped to .app-theme-velvet-signal. */
+   Input surface is a soft aubergine well with a 3.3:1 border and violet focus. Scoped to .app-theme-velvet-signal. */
 
 .app-theme-velvet-signal .apex-theme-iris {
     --a-field-input-border-radius: var(--app-radius-sm);

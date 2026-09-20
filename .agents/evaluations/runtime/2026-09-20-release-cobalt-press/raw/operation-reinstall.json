@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "cobalt-press",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "1e14b8f8dfb877e02013d9566171635359bd586c5e651d7e29ddf1729ebaf86a",
-  "capturedAt": "2026-09-20T20:46:54Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "dc35a47f817eb6765c9e7df92c18e148e72dffcc1b00b62988ae5045a9b2ec86",
+  "capturedAt": "2026-09-20T22:23:10Z",
   "evidenceType": "sqlcl-operation",
   "operation": "reinstall",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         cobalt-press v1.1.0\n  Staged Digest: 19a9e3d3a86a08c41427417dc73500519bb6b3a6f2094db61aa3b2fd3b7db7d0\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260920T203936Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         cobalt-press v1.1.0\n  Staged Digest: 2d9031898ffe20d1faf2ba41d1adbcd562a22661ae50537ea2286870e11159f2\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260920T221554Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --apply",
+      "command": "install --package-root /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         cobalt-press v1.1.0\n  Staged Digest: c130f3db6fc81d060b28a323b663d2e983ad454b6a41537141aa3a0daec0b58a\n  Backup:        /tmp/theme-release-batch-ewm4ouoz/layer-c/cobalt-press/business/backups/DEMO-9011/20260920T204345Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         cobalt-press v1.1.0\n  Staged Digest: 9db77e2cbc0b8fd80055d083a6082e9b37af9c85b84cdc037b5290fd5b06136e\n  Backup:        /tmp/theme-release-batch-7yrsb_h0/layer-c/cobalt-press/business/backups/DEMO-9011/20260920T222002Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

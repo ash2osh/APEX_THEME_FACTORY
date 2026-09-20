@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "carbon-volt",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "c9cb07cd84b9355dad46f7bb39d2a8bb4276bb4e1dbdb66b5ff05c3438b90949",
-  "capturedAt": "2026-09-20T20:29:28Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "9904525df07b3ab5ad430f7bf5d5a2a93cc0cbb4a450b275d803491a574c355c",
+  "capturedAt": "2026-09-20T22:05:49Z",
   "layer": "C",
   "check": "database_installation",
   "status": "PASS",
@@ -15,7 +15,7 @@
         "consumer": "minimal",
         "evidence": {
           "path": "raw/application-minimal.json",
-          "sha256": "32cdb66787e823f3a3ef86b0f662c09e35f3c2eb1416a9e14635055fb9457230"
+          "sha256": "945eb0f4c2b4a8a59f544fcd4bddebde5d7813782b484e4fbbc95b738a22c1b5"
         }
       },
       {
@@ -24,38 +24,38 @@
         "consumer": "business",
         "evidence": {
           "path": "raw/application-business.json",
-          "sha256": "bb6da564345cd077db9699a354957ce660c9f632f3fe6a73bf06ed6f8216598e"
+          "sha256": "df918cbd10771c9d27e312b8495d79e1cabcf13a81becac424b6107fb0fc8646"
         }
       }
     ],
     "operationEvidence": {
       "install": {
         "path": "raw/operation-install.json",
-        "sha256": "393a00f2f874bca12a298e81283a0a3bea2648cb6d43a90d4fb040a8ec689253"
+        "sha256": "ab34de6f90dc69dd5bf591c16519a03d67b1b01a0b6b00e7e19eb075021c57ac"
       },
       "reinstall": {
         "path": "raw/operation-reinstall.json",
-        "sha256": "f1e15ca11ac2834e6b40dc4778adf3adaaf26fe727f88a93fea4df8514924d6e"
+        "sha256": "2535893aa4d4e332109516e726a8267f40f6d279f7fefc1840cbaf27b0dbebcc"
       },
       "coexistence": {
         "path": "raw/operation-coexistence.json",
-        "sha256": "d5391b0579c83c1b21518916833fc67c9100217924fd9ad25818b041d96fc459"
+        "sha256": "2abc24b9f2ceae3a38a01bc549f755c20d4c783d9d45d8cd7e41335ee264ac35"
       },
       "switcherEnableDisable": {
         "path": "raw/operation-switcherEnableDisable.json",
-        "sha256": "ba8a916912b03da417002bcb179038aa4230838cbeaa4400c4dc616fd32d8bd8"
+        "sha256": "213b1fb5d0e36f82093a7bb99258f619334b4b546bfac52914e5c09bd5acaa7e"
       },
       "uninstall": {
         "path": "raw/operation-uninstall.json",
-        "sha256": "f8c22d55603abc6afe0a0958c86169218c3c699f45c18746c5e0086cd6efb052"
+        "sha256": "e4be0505d67438bf62a564f88167f9639dc0c771817d96d14e526f94f6e7a6fd"
       },
       "restore": {
         "path": "raw/operation-restore.json",
-        "sha256": "5a62e65a51c4799e4b03031247c46649a8cce01aa9be076abcf665f933e7b222"
+        "sha256": "39ad18c5f5be935f6c8136a1daf0280fa85d4da4a161c3dcf902ac30c02dd196"
       },
       "preserveUnrelated": {
         "path": "raw/operation-preserveUnrelated.json",
-        "sha256": "455794714e6c609b4d37c7d0e2e780207a3fef7b8800c1d5b5d003c23147ee96"
+        "sha256": "4158bda0b3dffdbe9bd6db6005d0ef0637f36c6535c4b703b38713bb6ca88c84"
       }
     },
     "failures": []

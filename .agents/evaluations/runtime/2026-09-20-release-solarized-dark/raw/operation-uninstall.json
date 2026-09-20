@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "290b0999aa516808289264826090ec2068978b53aed585c9b038458a7028c3ff",
-  "capturedAt": "2026-09-20T20:20:28Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "798fc781becc08fe0e8157688129378676685bc978a93b3eeb59b94171d3f9cd",
+  "capturedAt": "2026-09-20T21:57:07Z",
   "evidenceType": "sqlcl-operation",
   "operation": "uninstall",
   "status": "PASS",

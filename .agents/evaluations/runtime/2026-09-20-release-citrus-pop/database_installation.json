@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "citrus-pop",
-  "gitCommit": "2f94aa35b54591fff63a26316c216b9a2df1a5fe",
-  "packageSha256": "05258aa62fa8bfa9e5ba66705b85936eaf657daedac38aff3f3012f5f88ce864",
-  "capturedAt": "2026-09-20T20:55:33Z",
+  "gitCommit": "0d08cb36412f355067e8fb54cafc5b5a386849d3",
+  "packageSha256": "577c2ff71b7b993c9941334f354415d2f6e0276fa7f13a0e4850dab5ec89ecb9",
+  "capturedAt": "2026-09-20T22:31:48Z",
   "layer": "C",
   "check": "database_installation",
   "status": "PASS",
@@ -15,7 +15,7 @@
         "consumer": "minimal",
         "evidence": {
           "path": "raw/application-minimal.json",
-          "sha256": "248a7da5da5869b1dc8df43782af6dade43aaea3fca8a36a62a5f04da04ee725"
+          "sha256": "dee193fb56c4c9767643467e70a3a0c2f5d50d9acb770a89e13443a9c89084b2"
         }
       },
       {
@@ -24,38 +24,38 @@
         "consumer": "business",
         "evidence": {
           "path": "raw/application-business.json",
-          "sha256": "e5fc44ff843dd3111e084c22afb5614a144b8d45793da7c71c6e4d20035d25b0"
+          "sha256": "da3262a712f0ae31d9398154cbe4bfe3f15b57c4722dbafe3da58cebdfeeb9b5"
         }
       }
     ],
     "operationEvidence": {
       "install": {
         "path": "raw/operation-install.json",
-        "sha256": "1e873eb27f35b00daf115ab37cea6181d5e943238014218e0bec887cfd37d437"
+        "sha256": "e0d914185654dcbfe5b1c5de684ffa6901221071a2a1aa21fc4a3a9db310b4c9"
       },
       "reinstall": {
         "path": "raw/operation-reinstall.json",
-        "sha256": "553a62423912fd36e6c573a04eed7430b5eb6ef4c718d8d70e2ac517a07b1dc2"
+        "sha256": "9704506df62081abd1a237b1e34af30279454c040dd1219f1498abb062eab909"
       },
       "coexistence": {
         "path": "raw/operation-coexistence.json",
-        "sha256": "91b40d7b83ac901fb472b4be69bf66a459a7f9e56ecbbca735c7ad2507ce81f7"
+        "sha256": "2bcfbcdb4810c46fe9224914d4ff40e8f78999ef19af22e95d83f88171ff92bd"
       },
       "switcherEnableDisable": {
         "path": "raw/operation-switcherEnableDisable.json",
-        "sha256": "dcfac168cb893ba1cf350ca7ef4bd09e277a42b97725b3320f3adf874f104020"
+        "sha256": "b1d06ea12a623a090a8a909e90f55ac4e1cb1d182a9d22834054d2b3392bc12a"
       },
       "uninstall": {
         "path": "raw/operation-uninstall.json",
-        "sha256": "484cb72d9924ac37f6861232d03f2794b2372809008b0cc60941776cb2b59afb"
+        "sha256": "4d1f60305420073179c0b0260f2f7b91ceda54f2e9ab16b00e99a00336f3bf01"
       },
       "restore": {
         "path": "raw/operation-restore.json",
-        "sha256": "c8068e823bb69efc0c8cdbdb52d3d57abd6481b69f8c69b2b30019ece2f8e391"
+        "sha256": "8059435f6c96eb4651314288bbce8adf38f81d4696827e8963cfe79d2473076d"
       },
       "preserveUnrelated": {
         "path": "raw/operation-preserveUnrelated.json",
-        "sha256": "fa1c72883d9f4ec799128e767119c44e05264980991602e30c9ae7448f53444b"
+        "sha256": "58139d433b32af8f97455fdfadf3dd5ff03382102ffad67758b735ba6388c599"
       }
     },
     "failures": []

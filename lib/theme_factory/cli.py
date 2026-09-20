@@ -205,7 +205,8 @@ def _handle_restore(args: argparse.Namespace) -> int:
 def _inline_recipe(args: argparse.Namespace):
     from lib.theme_factory.manifest import NAME_REGEX
     from lib.theme_factory.recipe import (
-        ComponentProfiles, Focus, Geometry, Identity, Palette, ThemeRecipe, Typography,
+        ComponentProfiles, Focus, Geometry, Identity, Interaction, Palette, Responsive,
+        Rhythm, ThemeRecipe, Typography,
     )
     if not NAME_REGEX.fullmatch(args.name):
         raise PackageError(f"Theme name '{args.name}' must match {NAME_REGEX.pattern}")
@@ -223,12 +224,16 @@ def _inline_recipe(args: argparse.Namespace):
         "#FF7A8A" if dark else "#B42318",
     )
     return ThemeRecipe(
-        1, Identity(args.name, args.title, args.tagline, "Neutral generated starting point.",
+        2, Identity(args.name, args.title, args.tagline, "Neutral generated starting point.",
                     args.mode, ("neutral", args.mode)), palette,
         Typography("system-ui", "body", ("system-ui", "sans-serif"), (400, 500, 600, 700)),
         Geometry("4px", "8px", "12px", "40px", "hairline", "soft"),
         Focus(palette.accent_alt, "2px", "2px"),
         ComponentProfiles("minimal", "flat", "rounded", "comfortable", "spacious", "flat"),
+        None,
+        Rhythm("balanced", "editorial", "balanced"),
+        Interaction("none", "fill", "precise"),
+        Responsive("reflow", 768),
     )
 
 

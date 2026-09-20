@@ -30,6 +30,56 @@ class ThemeRecipeTests(unittest.TestCase):
         raw = json.loads((self.fixtures / name).read_text(encoding="utf-8"))
         return self.load(raw)
 
+    def v2_raw(self) -> dict:
+        raw = self.valid_raw()
+        raw["schemaVersion"] = 2
+        raw["rhythm"] = {"density": "compact", "spacing": "technical", "typeScale": "compact"}
+        raw["interaction"] = {"hover": "shift", "selected": "outline", "motion": "precise"}
+        raw["responsive"] = {"strategy": "compress", "compactControlsAt": 768}
+        return raw
+
+    def test_version_two_axes_are_parsed(self):
+        recipe = self.load(self.v2_raw())
+        self.assertEqual(recipe.schema_version, 2)
+        self.assertEqual(recipe.rhythm.density, "compact")
+        self.assertEqual(recipe.rhythm.spacing, "technical")
+        self.assertEqual(recipe.rhythm.type_scale, "compact")
+        self.assertEqual(recipe.interaction.hover, "shift")
+        self.assertEqual(recipe.interaction.selected, "outline")
+        self.assertEqual(recipe.interaction.motion, "precise")
+        self.assertEqual(recipe.responsive.strategy, "compress")
+        self.assertEqual(recipe.responsive.compact_controls_at, 768)
+
+    def test_version_one_receives_compatibility_defaults(self):
+        recipe = self.load(self.valid_raw())
+        self.assertEqual(recipe.schema_version, 1)
+        self.assertEqual(recipe.rhythm, type(recipe.rhythm)("balanced", "technical", "balanced"))
+        self.assertEqual(recipe.interaction, type(recipe.interaction)("none", "fill", "precise"))
+        self.assertEqual(recipe.responsive, type(recipe.responsive)("reflow", 768))
+
+    def test_version_two_rejects_invalid_axis_values(self):
+        cases = (
+            ("rhythm", "density", "wide"),
+            ("rhythm", "spacing", "airy"),
+            ("rhythm", "typeScale", "huge"),
+            ("interaction", "hover", "bounce"),
+            ("interaction", "selected", "stripe"),
+            ("interaction", "motion", "fast"),
+            ("responsive", "strategy", "shrink"),
+        )
+        for section, key, value in cases:
+            with self.subTest(section=section, key=key):
+                raw = self.v2_raw()
+                raw[section][key] = value
+                with self.assertRaisesRegex(PackageError, f"{section}/{key}"):
+                    self.load(raw)
+
+    def test_version_two_rejects_unsupported_compact_width(self):
+        raw = self.v2_raw()
+        raw["responsive"]["compactControlsAt"] = 640
+        with self.assertRaisesRegex(PackageError, "compactControlsAt"):
+            self.load(raw)
+
     def test_unknown_recipe_property_fails(self):
         raw = self.valid_raw()
         raw["identity"]["surprise"] = True

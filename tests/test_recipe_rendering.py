@@ -88,6 +88,7 @@ class RecipeRenderingTests(unittest.TestCase):
 
     def test_owned_source_digest_is_stable_and_tracks_generated_source(self):
         theme = create_theme(self.repo, self.recipe()).created
+        self.assertEqual(json.loads((theme / "theme.recipe.json").read_text(encoding="utf-8"))["schemaVersion"], 2)
         first = owned_source_digest(theme)
         self.assertEqual(first, owned_source_digest(theme))
         tokens = theme / "css/tokens.css"

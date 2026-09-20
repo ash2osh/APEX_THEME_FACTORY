@@ -24,6 +24,18 @@ PROFILE_VALUES = {
     "reports": {"ruled", "spacious"},
     "dialogs": {"flat", "layered", "offset"},
 }
+RHYTHM_VALUES = {
+    "density": {"compact", "balanced", "spacious"},
+    "spacing": {"technical", "editorial", "soft", "playful"},
+    "typeScale": {"compact", "balanced", "editorial", "display"},
+}
+INTERACTION_VALUES = {
+    "hover": {"none", "lift", "shift", "glow"},
+    "selected": {"fill", "rail", "underline", "outline"},
+    "motion": {"none", "precise", "smooth", "buoyant"},
+}
+RESPONSIVE_VALUES = {"compress", "reflow", "stack"}
+RESPONSIVE_WIDTHS = {0, 375, 768, 1024}
 GENERATED_CSS_MARKER = "/* @theme-factory-generated */"
 
 
@@ -86,6 +98,26 @@ class ComponentProfiles:
 
 
 @dataclass(frozen=True)
+class Rhythm:
+    density: str
+    spacing: str
+    type_scale: str
+
+
+@dataclass(frozen=True)
+class Interaction:
+    hover: str
+    selected: str
+    motion: str
+
+
+@dataclass(frozen=True)
+class Responsive:
+    strategy: str
+    compact_controls_at: int
+
+
+@dataclass(frozen=True)
 class FontProvenanceFace:
     file: str
     weight: int
@@ -115,6 +147,9 @@ class ThemeRecipe:
     focus: Focus
     components: ComponentProfiles
     font_provenance: FontProvenance | None = None
+    rhythm: Rhythm = Rhythm("balanced", "technical", "balanced")
+    interaction: Interaction = Interaction("none", "fill", "precise")
+    responsive: Responsive = Responsive("reflow", 768)
 
 
 @dataclass(frozen=True)
@@ -203,13 +238,14 @@ def load_recipe(path: Path) -> ThemeRecipe:
         raise PackageError("Recipe root must be an object")
 
     required_root_keys = {"schemaVersion", "identity", "palette", "typography", "geometry", "focus", "components"}
-    root_keys = {*required_root_keys, "fontProvenance"}
+    root_keys = {*required_root_keys, "fontProvenance", "rhythm", "interaction", "responsive"}
     _check_allowed_keys(raw, root_keys, "")
     missing = sorted(required_root_keys - raw.keys())
     if missing:
         raise PackageError(f"Missing required property '{missing[0]}'")
-    if raw["schemaVersion"] != 1:
-        raise PackageError("schemaVersion must be 1")
+    schema_version = raw["schemaVersion"]
+    if schema_version not in {1, 2}:
+        raise PackageError("schemaVersion must be 1 or 2")
 
     identity_raw = _object(
         raw,
@@ -306,6 +342,30 @@ def load_recipe(path: Path) -> ThemeRecipe:
         dialogs=_choice(component_raw["dialogs"], "components/dialogs", PROFILE_VALUES["dialogs"]),
     )
 
+    if schema_version == 2:
+        rhythm_raw = _object(raw, "rhythm", set(RHYTHM_VALUES))
+        rhythm = Rhythm(
+            density=_choice(rhythm_raw["density"], "rhythm/density", RHYTHM_VALUES["density"]),
+            spacing=_choice(rhythm_raw["spacing"], "rhythm/spacing", RHYTHM_VALUES["spacing"]),
+            type_scale=_choice(rhythm_raw["typeScale"], "rhythm/typeScale", RHYTHM_VALUES["typeScale"]),
+        )
+        interaction_raw = _object(raw, "interaction", set(INTERACTION_VALUES))
+        interaction = Interaction(
+            hover=_choice(interaction_raw["hover"], "interaction/hover", INTERACTION_VALUES["hover"]),
+            selected=_choice(interaction_raw["selected"], "interaction/selected", INTERACTION_VALUES["selected"]),
+            motion=_choice(interaction_raw["motion"], "interaction/motion", INTERACTION_VALUES["motion"]),
+        )
+        responsive_raw = _object(raw, "responsive", {"strategy", "compactControlsAt"})
+        strategy = _choice(responsive_raw["strategy"], "responsive/strategy", RESPONSIVE_VALUES)
+        compact_at = responsive_raw["compactControlsAt"]
+        if isinstance(compact_at, bool) or not isinstance(compact_at, int) or compact_at not in RESPONSIVE_WIDTHS:
+            raise PackageError("'responsive/compactControlsAt' must be one of [0, 375, 768, 1024]")
+        responsive = Responsive(strategy, compact_at)
+    else:
+        rhythm = Rhythm("balanced", "technical", "balanced")
+        interaction = Interaction("none", "fill", "precise")
+        responsive = Responsive("reflow", 768)
+
     font_provenance = None
     if "fontProvenance" in raw:
         provenance_raw = _object(
@@ -353,7 +413,10 @@ def load_recipe(path: Path) -> ThemeRecipe:
             faces=tuple(provenance_faces),
         )
 
-    return ThemeRecipe(1, identity, palette, typography, geometry, focus, components, font_provenance)
+    return ThemeRecipe(
+        schema_version, identity, palette, typography, geometry, focus, components,
+        font_provenance, rhythm, interaction, responsive,
+    )
 
 
 def _linear(channel: int) -> float:

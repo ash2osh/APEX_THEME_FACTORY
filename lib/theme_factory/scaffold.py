@@ -42,7 +42,9 @@ class ScaffoldResult:
 def _recipe_document(recipe: ThemeRecipe) -> dict[str, object]:
     raw = asdict(recipe)
     document = {
-        "schemaVersion": raw["schema_version"],
+        # Source emitted by the scaffold is always the current schema. Version-1
+        # recipes are accepted by the loader only as a migration input.
+        "schemaVersion": 2,
         "identity": {
             "name": raw["identity"]["name"],
             "title": raw["identity"]["title"],
@@ -82,6 +84,20 @@ def _recipe_document(recipe: ThemeRecipe) -> dict[str, object]:
             "offset": raw["focus"]["offset"],
         },
         "components": raw["components"],
+        "rhythm": {
+            "density": raw["rhythm"]["density"],
+            "spacing": raw["rhythm"]["spacing"],
+            "typeScale": raw["rhythm"]["type_scale"],
+        },
+        "interaction": {
+            "hover": raw["interaction"]["hover"],
+            "selected": raw["interaction"]["selected"],
+            "motion": raw["interaction"]["motion"],
+        },
+        "responsive": {
+            "strategy": raw["responsive"]["strategy"],
+            "compactControlsAt": raw["responsive"]["compact_controls_at"],
+        },
     }
     if recipe.font_provenance is not None:
         provenance = recipe.font_provenance

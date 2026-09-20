@@ -33,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # allow `python
 
 from lib.theme_factory.apexlang import canonical_digest, inspect_export, read_install_state
 from lib.theme_factory.sqlcl import SqlclClient
+from lib.theme_factory.gitstate import assert_clean_source
 
 REQUIRED_OPERATIONS = (
     "install", "reinstall", "coexistence", "switcherEnableDisable", "uninstall", "restore", "preserveUnrelated",
@@ -70,6 +71,13 @@ class OperationResult:
     status: str
     steps: List[dict] = field(default_factory=list)
     notes: List[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class LayerCThemeResult:
+    status: str
+    summary: Path
+    operations: Dict[str, OperationResult]
 
 
 def _now() -> str:
@@ -336,6 +344,44 @@ def write_layer_c_evidence(evidence_dir: Path, package: PackageRef, git_commit: 
     return summary_path
 
 
+def run_layer_c_theme(
+    connection: str,
+    workspace: str,
+    targets: List[ApplicationTarget],
+    primary: PackageRef,
+    secondary: PackageRef,
+    work_dir: Path,
+    evidence_dir: Path,
+    git_commit: str,
+    *,
+    env: Optional[dict] = None,
+    lifecycle_runner=run_lifecycle,
+    evidence_writer=write_layer_c_evidence,
+    clean_checker=assert_clean_source,
+) -> LayerCThemeResult:
+    """Run one candidate across consumers and write evidence only from a clean source tree."""
+
+    combined: Dict[str, OperationResult] = {}
+    for target in targets:
+        clean_checker()
+        results = lifecycle_runner(
+            connection, workspace, target, primary.zip_path, secondary.zip_path,
+            Path(work_dir) / target.consumer, env=env, with_switcher=True,
+        )
+        for name, result in results.items():
+            merged = combined.setdefault(name, OperationResult(operation=name, status="PASS"))
+            merged.steps.extend({"consumer": target.consumer, **step} for step in result.steps)
+            merged.notes.extend(f"{target.consumer}: {note}" for note in result.notes)
+            if result.status == "FAIL" or (result.status != "PASS" and merged.status == "PASS"):
+                merged.status = result.status if result.status == "FAIL" else (
+                    merged.status if merged.status == "FAIL" else result.status
+                )
+    clean_checker()
+    summary = evidence_writer(evidence_dir, primary, git_commit, targets, combined)
+    status = "PASS" if combined and all(result.status == "PASS" for result in combined.values()) else "FAIL"
+    return LayerCThemeResult(status, summary, combined)
+
+
 # ---------------------------------------------------------------- CLI
 
 def main() -> None:
@@ -356,7 +402,6 @@ def main() -> None:
     # evidence artifacts are outputs of this tool; anything else uncommitted invalidates the binding.
     # Re-checked before each consumer's lifecycle below, not only here - a tree that goes dirty
     # mid-run must abort within that operation, not silently pass it and only fail the next (Task 4).
-    from lib.theme_factory.gitstate import assert_clean_source
     try:
         assert_clean_source()
     except RuntimeError as exc:

@@ -209,6 +209,66 @@ class ReleaseVerdictTests(unittest.TestCase):
             with self.assertRaisesRegex(PackageError, "does not reference"):
                 load_evidence(root, "linen", "a" * 40, "b" * 64)
 
+    def test_instruction_evidence_survives_a_theme_package_rebuild_and_can_be_shared(self):
+        from lib.theme_factory.release import _load_bound_raw_artifact
+
+        with tempfile.TemporaryDirectory() as temp:
+            runtime_root = Path(temp)
+            theme_dir = runtime_root / "2026-09-20-release-cobalt-press"
+            shared = runtime_root / "shared/raw"
+            theme_dir.mkdir()
+            shared.mkdir(parents=True)
+            artifact = shared / "agent-runtime-codex.json"
+            artifact.write_text(json.dumps({
+                "schemaVersion": 1,
+                "theme": "linen",
+                "evidenceType": "agent-runtime",
+                "runtime": "codex",
+                "status": "PASS",
+                "capturedAt": "2026-09-20T00:00:00Z",
+                "gitCommit": "a" * 40,
+                "packageSha256": "b" * 64,
+            }), encoding="utf-8")
+            reference = {
+                "path": "shared/raw/agent-runtime-codex.json",
+                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            }
+            raw = _load_bound_raw_artifact(
+                theme_dir, reference, "cobalt-press", "a" * 40, "c" * 64,
+                "Layer E runtime codex", instruction_bound=True,
+                commit_equivalence=lambda expected, actual: expected == actual,
+            )
+            self.assertEqual(raw["runtime"], "codex")
+
+    def test_theme_runtime_evidence_is_rejected_after_package_rebuild(self):
+        from lib.theme_factory.release import _load_bound_raw_artifact
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            raw_dir = root / "raw"
+            raw_dir.mkdir()
+            artifact = raw_dir / "scenario-11.json"
+            artifact.write_text(json.dumps({
+                "schemaVersion": 1,
+                "theme": "linen",
+                "evidenceType": "agent-scenario",
+                "scenario": "11",
+                "status": "PASS",
+                "capturedAt": "2026-09-20T00:00:00Z",
+                "gitCommit": "a" * 40,
+                "packageSha256": "b" * 64,
+            }), encoding="utf-8")
+            reference = {
+                "path": "raw/scenario-11.json",
+                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            }
+            with self.assertRaisesRegex(PackageError, "different package"):
+                _load_bound_raw_artifact(
+                    root, reference, "linen", "a" * 40, "c" * 64,
+                    "Layer E scenario 11",
+                    commit_equivalence=lambda expected, actual: expected == actual,
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,6 +13,22 @@ from lib.theme_factory.apexlang import (
 from lib.theme_factory.errors import PackageError
 
 
+class ApexLangCompatibilityTests(unittest.TestCase):
+    def test_public_surface_remains_available_from_facade(self):
+        import lib.theme_factory.apexlang as apexlang
+
+        public = {
+            "InstalledPackage", "TargetExport", "InstallPatch", "strip_bootstrap_regions",
+            "strip_switcher_entries", "list_is_static", "insert_switcher_entries",
+            "build_bootstrap_html", "build_bootstrap_regions", "build_switcher_entries",
+            "inspect_export", "read_registry_document", "read_install_state",
+            "verify_package_ownership", "verify_runtime_ownership", "canonical_digest",
+            "plan_install", "set_file_urls", "apply_navigation_menu_style",
+            "theme_factory_projection", "apply_patch",
+        }
+        self.assertTrue(public.issubset(set(dir(apexlang))))
+
+
 class ApexLangPatchTests(unittest.TestCase):
     def fixture_copy(self, name: str) -> Path:
         tmp = Path(tempfile.mkdtemp())
@@ -389,4 +405,3 @@ class EmptyApplicationTargetTests(unittest.TestCase):
 )"""
         close = _find_matching_brace(sample, sample.find("("))
         self.assertEqual(close, len(sample) - 1)
-

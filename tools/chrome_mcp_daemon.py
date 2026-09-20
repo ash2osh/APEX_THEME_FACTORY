@@ -278,27 +278,32 @@ class ChromeMcpDaemon:
 
     def close(self) -> None:
         self.stopping.set()
+        process = self.proc
         if self.server_sock:
             try:
                 self.server_sock.close()
             except OSError:
                 pass
             self.server_sock = None
-        if self.proc and self.proc.poll() is None:
+        if process and process.poll() is None:
             try:
-                if self.proc.stdin:
-                    self.proc.stdin.close()
+                if process.stdin:
+                    process.stdin.close()
             except OSError:
                 pass
-            self.proc.terminate()
+            process.terminate()
             try:
-                self.proc.wait(timeout=5)
+                process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                self.proc.kill()
-                self.proc.wait(timeout=5)
+                process.kill()
+                process.wait(timeout=5)
         for thread in (self.reader_thread, self.stderr_thread):
             if thread is not None and thread.is_alive():
                 thread.join(timeout=2)
+        if process:
+            for stream in (process.stdout, process.stderr):
+                if stream:
+                    stream.close()
         self.proc = None
         try:
             info = self.socket_path.lstat()

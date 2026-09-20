@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a20b9a2bee01e4989af71093686ba4407ff3f4e42c0788ce61acbf1cb1bfa3ef",
+  "capturedAt": "2026-09-20T17:57:53Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "preserveUnrelated",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "compare unrelated static files",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "consumer": "business",
+      "command": "compare unrelated static files",
+      "before": 7,
+      "after": 7
+    }
+  ],
+  "notes": []
+}

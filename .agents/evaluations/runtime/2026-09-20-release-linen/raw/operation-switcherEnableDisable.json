@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a20b9a2bee01e4989af71093686ba4407ff3f4e42c0788ce61acbf1cb1bfa3ef",
+  "capturedAt": "2026-09-20T17:57:53Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-jmep8sg1/layer-c/linen/minimal/packages/linen-1.1.0/linen-1.1.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 1a9799992a501be9aac245a97a23ca040bfb0ff642a575ec7da99bdd52705bfa\n  Backup:        /tmp/theme-release-batch-jmep8sg1/layer-c/linen/minimal/backups/DEMO-9010/20260920T175103Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-jmep8sg1/layer-c/linen/minimal/packages/linen-1.1.0/linen-1.1.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 16b7674d1d5457aa09b5c6c1bc96a86c7f504134a2deb8d99754f73fd0474d57\n  Backup:        /tmp/theme-release-batch-jmep8sg1/layer-c/linen/minimal/backups/DEMO-9010/20260920T175202Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-jmep8sg1/layer-c/linen/business/packages/linen-1.1.0/linen-1.1.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 2ce35f8081ccf8365536ca17b5d7b4344edbed688e7e21a180d84a591511b3d0\n  Backup:        /tmp/theme-release-batch-jmep8sg1/layer-c/linen/business/backups/DEMO-9011/20260920T175513Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-jmep8sg1/layer-c/linen/business/packages/linen-1.1.0/linen-1.1.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: dec032335714c38eace63531e8fee2fd8f1bead5a00f0812f2aee83cd246c9f4\n  Backup:        /tmp/theme-release-batch-jmep8sg1/layer-c/linen/business/backups/DEMO-9011/20260920T175614Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

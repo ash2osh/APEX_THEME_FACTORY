@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "df0973c63d0b25983d408d2c4c81176509cf55764e1a313da21025b4986318a3",
+  "capturedAt": "2026-09-20T17:24:21Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/velvet-signal/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: d0a377f1c0d5b8448566f3e45d1d5c7546be2f0057a15fc05f3d51e3ac7ff5c4\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260920T171802Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/velvet-signal/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: a11251e27c664061b577e9cf1f5b300561bef4b4c25d2fb9d5dd0a4967f1cca6\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/velvet-signal/business/backups/DEMO-9011/20260920T172212Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

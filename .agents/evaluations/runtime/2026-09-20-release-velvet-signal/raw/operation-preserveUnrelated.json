@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "df0973c63d0b25983d408d2c4c81176509cf55764e1a313da21025b4986318a3",
+  "capturedAt": "2026-09-20T17:24:21Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "preserveUnrelated",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "compare unrelated static files",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "consumer": "business",
+      "command": "compare unrelated static files",
+      "before": 7,
+      "after": 7
+    }
+  ],
+  "notes": []
+}

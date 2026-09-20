@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "079b1d770b8d393959f0adbec7c00d7cd39dc7174362bcc8a0487dd8a560efe6",
+  "capturedAt": "2026-09-20T16:49:03Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: b9ac6d276dc87f3547b054d4f545e0ee7a1d126c636170da27a1b1154e8df00d\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/minimal/backups/DEMO-9010/20260920T164237Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 92bab94e5b429f16d544cca2405893373042df32a64e345473c124d8b5b4d44b\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/estate-slate/business/backups/DEMO-9011/20260920T164651Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

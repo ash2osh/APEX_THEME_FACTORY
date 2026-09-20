@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "c5ba7afa1a27db68f41c6bfeeba95ced3c6fded2b0219e6074507502227b6e97",
+  "capturedAt": "2026-09-20T17:33:04Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "preserveUnrelated",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "compare unrelated static files",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "consumer": "business",
+      "command": "compare unrelated static files",
+      "before": 7,
+      "after": 7
+    }
+  ],
+  "notes": []
+}

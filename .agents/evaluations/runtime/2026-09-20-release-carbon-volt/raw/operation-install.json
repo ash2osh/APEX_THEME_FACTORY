@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "5ddb83c3830b6fd02623a47602827797cd7d41b7d272e0714392353a913b92bf",
+  "capturedAt": "2026-09-20T17:15:39Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "nses/OFL.txt\": \"07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,49 @@\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         carbon-volt v1.1.0\n  Staged Digest: 16092830aa0d0ccd449970c33a4bd418e9c0e22b797a348718c95279168eb79f\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260920T170742Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "85cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,52 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         carbon-volt v1.1.0\n  Staged Digest: d5073be5e44f0df08da335444b9bcdf291ac18e8f43204ab42cf8d6b5bb1c1ec\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/business/backups/DEMO-9011/20260920T171152Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

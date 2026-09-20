@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "c5ba7afa1a27db68f41c6bfeeba95ced3c6fded2b0219e6074507502227b6e97",
+  "capturedAt": "2026-09-20T17:33:04Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/cobalt-press/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 81fe776fcf1a9ad726ce310db9ea8fd683945c94a1b4c29c7eb9f2f90f4daeda\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260920T172645Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/cobalt-press/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: b67d7e0c0aba46bd9ae6d9cea25cd0825cfdd86da0cf371cb3b15188434e81c1\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/cobalt-press/business/backups/DEMO-9011/20260920T173055Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

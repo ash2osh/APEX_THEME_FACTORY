@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "citrus-pop",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "21731f03c197edd2abb830f55a441662d103221f57e53b5b6fd067a26c20031f",
+  "capturedAt": "2026-09-20T17:41:42Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "uninstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme citrus-pop --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     citrus-pop\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'citrus-pop' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme citrus-pop --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     citrus-pop\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'citrus-pop' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

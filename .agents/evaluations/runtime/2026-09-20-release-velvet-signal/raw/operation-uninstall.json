@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "df0973c63d0b25983d408d2c4c81176509cf55764e1a313da21025b4986318a3",
+  "capturedAt": "2026-09-20T17:24:21Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "uninstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme velvet-signal --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     velvet-signal\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'velvet-signal' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme velvet-signal --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     velvet-signal\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'velvet-signal' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

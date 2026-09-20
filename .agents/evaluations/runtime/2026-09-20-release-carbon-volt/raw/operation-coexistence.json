@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "5ddb83c3830b6fd02623a47602827797cd7d41b7d272e0714392353a913b92bf",
+  "capturedAt": "2026-09-20T17:15:39Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: 8d08e658c987af75a4e5e2b5816625f88461692537023eca883331237abfbbe8\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260920T170918Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 75ef94779b798aa3785e141e538f32272c2c2cfc0377e73a8a5f7f0f2b13ec03\n  Backup:        /tmp/theme-release-batch-53kv2xbm/layer-c/carbon-volt/business/backups/DEMO-9011/20260920T171330Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

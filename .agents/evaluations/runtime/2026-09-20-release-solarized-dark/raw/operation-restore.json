@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "2a4ba357d308512c40088e0547670b7cd1ab54bf",
+  "packageSha256": "a356c92458f6bf34043d75abcfdfa63a8daef4813427ff7a07cb71f9710157e0",
+  "capturedAt": "2026-09-20T17:06:53Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "restore",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T165820Z-before-solarized-dark --apply",
+      "appId": 9010,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   7fd349566d80a5ff4451a853f7b628f05a03524b6f37a38b39383fb9f73aa4be\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
+      "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T165820Z-before-solarized-dark --discard-later-changes --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T165820Z-before-solarized-dark.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170247Z-before-solarized-dark --apply",
+      "appId": 9011,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   b0c03db684b2762f3136ba2b89ddcca97f83170e001f4572d1ed2c02ec2a6789\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
+      "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170247Z-before-solarized-dark --discard-later-changes --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/theme-release-batch-53kv2xbm/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T170247Z-before-solarized-dark.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "checks": [
+    {
+      "layer": "C",
+      "check": "database_installation",
+      "status": "PASS",
+      "artifact": "database_installation.json",
+      "artifactSha256": "d5621d9b48f573f76a65b1965d9db26a367d1ad3aa92189ba01594d5bddf7321",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 2a4ba357d308"
+    }
+  ]
+}

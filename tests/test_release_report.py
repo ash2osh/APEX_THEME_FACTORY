@@ -10,6 +10,7 @@ from lib.theme_factory.release import (
 from lib.theme_factory.errors import PackageError
 import json
 import hashlib
+import shutil
 import tempfile
 from unittest.mock import patch
 
@@ -106,6 +107,39 @@ class ReleaseVerdictTests(unittest.TestCase):
         self.assertIn("Layer E", report)
         self.assertIn("Package artifact", report)
         self.assertIn("Database installation", report)
+
+    def test_historical_layer_e_is_returned_as_legacy_without_synthesis(self):
+        fixture = Path(".agents/evaluations/runtime/2026-09-17-release-linen")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            shutil.copytree(fixture, root, dirs_exist_ok=True)
+            manifest_path = root / "evidence.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            for check in manifest["checks"]:
+                if check["layer"] in {"C", "D"}:
+                    check["status"] = "UNVERIFIED"
+                    check.pop("artifact", None)
+                    check.pop("artifactSha256", None)
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            items = load_evidence(root, "linen")
+        legacy = [item for item in items if item["layer"] == "E"]
+        self.assertEqual(len(legacy), 1)
+        self.assertTrue(legacy[0]["legacy"])
+        self.assertFalse(any(item["layer"] == "E" and item["path"] == "missing" for item in items))
+
+    def test_missing_layer_e_is_not_synthesized_for_a_d_only_manifest(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "evidence.json").write_text(json.dumps({
+                "schemaVersion": 1,
+                "theme": "linen",
+                "checks": [
+                    {"layer": "C", "check": "database_installation", "status": "UNVERIFIED", "artifact": ""},
+                    {"layer": "D", "check": "browser_runtime_matrix", "status": "UNVERIFIED", "artifact": ""},
+                ],
+            }), encoding="utf-8")
+            items = load_evidence(root, "linen")
+        self.assertFalse(any(item["layer"] == "E" for item in items))
 
     def test_legacy_arbitrary_evidence_list_is_rejected(self):
         with tempfile.TemporaryDirectory() as temp:

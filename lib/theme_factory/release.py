@@ -147,7 +147,11 @@ def load_evidence(
             layer = str(check.get("layer", "")).upper()
             status = str(check.get("status", "")).upper()
             check_name = check.get("check")
-            if layer not in LAYER_DESCRIPTIONS or status not in VALID_STATUSES or not isinstance(check_name, str):
+            if (
+                (layer not in THEME_LAYER_DESCRIPTIONS and layer not in LEGACY_EVIDENCE_LAYERS)
+                or status not in VALID_STATUSES
+                or not isinstance(check_name, str)
+            ):
                 raise PackageError(f"Evidence {path} contains an invalid layer, status, or check name")
             artifact = str(check.get("artifact", ""))
             digest = str(check.get("artifactSha256", ""))
@@ -174,6 +178,7 @@ def load_evidence(
                 "path": artifact or path.name,
                 "status": status,
                 "details": str(check.get("details", "")),
+                "legacy": layer in LEGACY_EVIDENCE_LAYERS,
             })
     for layer, required_check in REQUIRED_EVIDENCE_CHECKS.items():
         if not any(item["layer"] == layer and item["check"] == required_check for item in evidence):

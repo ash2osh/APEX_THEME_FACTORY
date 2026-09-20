@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "estate-slate-dark",
   "title": "Estate Slate Dark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "tagline": "Deep monolithic slate-950 telemetry cockpit with luminous amber and emerald indicators.",
   "direction": "Monolithic dark corporate slate with luminous amber directives and emerald telemetry.",
   "class": "app-theme-estate-slate-dark",

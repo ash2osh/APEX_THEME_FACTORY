@@ -1,3 +1,5 @@
+/* identity: square control edges for cockpit actions */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Button { border-radius: var(--app-radius-sm); }
 /* Buttons.
    Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
 
@@ -59,4 +61,3 @@
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
-

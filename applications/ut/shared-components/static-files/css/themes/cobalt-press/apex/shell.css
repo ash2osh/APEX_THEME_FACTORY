@@ -1,3 +1,6 @@
+/* identity: editorial rules, black ink chrome, and deliberate sheet alignment */
+.app-theme-cobalt-press .apex-theme-iris .t-Header { border-block-end: 2px solid var(--app-color-primary); }
+.app-theme-cobalt-press .apex-theme-iris .t-Body-title { letter-spacing: .05em; border-block-end: 1px solid var(--app-border-color); }
 /* Page shell — header, side navigation, title bar, footer.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 

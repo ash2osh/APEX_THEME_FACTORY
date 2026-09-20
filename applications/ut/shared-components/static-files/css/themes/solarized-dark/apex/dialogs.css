@@ -1,3 +1,5 @@
+/* identity: flat dialogs preserve the documentation workspace plane */
+.app-theme-solarized-dark .apex-theme-iris .ui-dialog { box-shadow: none; }
 /* Modal dialogs (jQuery UI dialog chrome in the parent page), wizard dialog pages and popup menus.
    Atoms --jui-dialog-* / --a-menu-* are declared on :root by Core/Iris → override on body; the dialog chrome
    and menus live directly under body, so no element rules are needed. Scoped to .app-theme-solarized-dark. */

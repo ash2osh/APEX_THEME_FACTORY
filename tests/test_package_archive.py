@@ -78,7 +78,7 @@ class ArchiveTests(unittest.TestCase):
                 pkg_root = next(extract_dir.iterdir())
                 manifest = verify_package(pkg_root)
                 self.assertEqual(manifest.name, "linen")
-                self.assertEqual(manifest.version, "1.0.0")
+                self.assertEqual(manifest.version, "1.1.0")
 
                 # Test tamper detection
                 (pkg_root / "theme.css").write_text("/* tampered */", encoding="utf-8")

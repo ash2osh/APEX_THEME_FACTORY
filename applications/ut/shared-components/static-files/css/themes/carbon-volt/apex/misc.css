@@ -1,4 +1,5 @@
-/* Alerts, badges, tabs — Solarized semantic mapping on dark surfaces.
+/* identity: acid-lime state outlines and cyan telemetry chips */
+/* Alerts, badges, tabs — telemetry semantic mapping on dark surfaces.
    Media list, content rows, timeline, comments and links list need nothing here: Core paints them from the
    --ut-component-* / --ut-*-item-background-color tokens set in tokens.css. Scoped to .app-theme-carbon-volt. */
 
@@ -86,7 +87,7 @@
 }
 
 /* Code samples (Prism.js, loaded app-wide by application.apx): Prism's light token colours are 2.4–2.5:1 on
-   the card. Solarized is a code palette — put code on the canvas surface, where the raw accents pass 4.5:1,
+   the card. Carbon Volt reserves code for the canvas surface, where raw accents pass 4.5:1,
    and tint the three that do not (magenta, orange, violet). Scoped to .app-theme-carbon-volt. */
 .app-theme-carbon-volt pre[class*="language-"],
 .app-theme-carbon-volt code[class*="language-"] {

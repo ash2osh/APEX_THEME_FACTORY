@@ -24,3 +24,7 @@
     outline: none;
 }
 
+/* identity: outlined form borders */
+.app-theme-estate-slate .apex-theme-iris .apex-item-text,
+.app-theme-estate-slate .apex-theme-iris .apex-item-select,
+.app-theme-estate-slate .apex-theme-iris .apex-item-textarea { border: 1px solid var(--app-border-strong); }

@@ -61,3 +61,10 @@
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+
+/* identity: underline selected navigation and text-led actions */
+.app-theme-linen .apex-theme-iris .t-Button--primary {
+    background: transparent;
+    color: var(--app-color-primary);
+    border-block-end: 2px solid var(--app-color-primary);
+}

@@ -1,3 +1,5 @@
+/* identity: flat pane regions with low-elevation terminal surfaces */
+.app-theme-solarized-dark .apex-theme-iris .t-Region { box-shadow: none; border-radius: var(--app-radius-sm); }
 /* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
    Surfaces and text come from the --ut-component-* / palette tokens in tokens.css (Core paints .t-Wizard,
    .t-MetricCard, .t-MediaList, .t-ContentRow, .t-Timeline, .t-Comments from them); this file only sets

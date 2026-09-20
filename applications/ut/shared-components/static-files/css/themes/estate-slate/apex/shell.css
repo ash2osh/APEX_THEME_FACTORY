@@ -118,3 +118,18 @@
     line-height: 3rem;
     font-size: 1.5rem;
 }
+
+/* identity: champagne section markers and rail selection */
+.app-theme-estate-slate .apex-theme-iris .t-Region-header::before {
+    content: "";
+    display: inline-block;
+    inline-size: .25rem;
+    block-size: 1.25rem;
+    margin-inline-end: var(--app-space-2);
+    background: var(--app-color-primary);
+    vertical-align: middle;
+}
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top {
+    border-inline-start: 3px solid var(--app-color-primary);
+    background: var(--app-surface-selected);
+}

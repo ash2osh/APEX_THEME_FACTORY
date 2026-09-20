@@ -1,3 +1,5 @@
+/* identity: offset detail dialogs for monitor drill-down */
+.app-theme-estate-slate-dark .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }
 /* Modal dialogs (jQuery UI dialog chrome in parent page), wizard dialog pages, and popup menus.
    Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
 
@@ -48,4 +50,3 @@
     background-color: var(--app-surface-chrome);
     border-top: 1px solid var(--app-border-color);
 }
-

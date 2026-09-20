@@ -25,3 +25,9 @@
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
+
+/* identity: editorial forms use generous line rhythm and quiet fields */
+.app-theme-linen .apex-theme-iris .t-Form-label { letter-spacing: .025em; }
+.app-theme-linen .apex-theme-iris .apex-item-text,
+.app-theme-linen .apex-theme-iris .apex-item-select,
+.app-theme-linen .apex-theme-iris .apex-item-textarea { border-block-end-width: 1px; }

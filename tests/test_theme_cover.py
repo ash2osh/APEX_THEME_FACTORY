@@ -40,6 +40,11 @@ class FakeClient:
         if name == "new_page":
             return _text_result("## Pages\n41: Theme cover (http://localhost/) [selected]")
         if name == "evaluate_script":
+            function = arguments.get("function", "")
+            if "previousStorage" in function:
+                return _text_result(json.dumps({"previousStorage": "linen"}))
+            if "restoreStorage" in function:
+                return _text_result(json.dumps({"restored": True}))
             return _text_result(json.dumps({
                 "appId": "102", "pageId": "500", "theme": "carbon-volt",
                 "fontsStatus": "loaded",
@@ -77,15 +82,21 @@ class ThemeCoverTests(unittest.TestCase):
         self.assertFalse(any(name == "resize_page" for name, _ in self.client.calls))
         self.assertTrue(any(name == "close_page" for name, _ in self.client.calls))
 
-    def test_capture_never_writes_local_storage(self):
+    def test_capture_selects_theme_via_runtime_and_restores_storage(self):
         capture_cover(self.client, "carbon-volt", self.output, apply=True, overwrite=False)
         scripts = "\n".join(
             args.get("function", "") for name, args in self.client.calls
             if name == "evaluate_script"
         )
-        self.assertNotIn("localStorage", scripts)
+        self.assertIn("localStorage", scripts)
+        self.assertIn("previousStorage", scripts)
+        self.assertIn("restoreStorage", scripts)
+        self.assertIn("setItem", scripts)
         self.assertIn("app-theme-", scripts)
-        self.assertIn("appThemeCurrent", scripts)
+        self.assertIn("document.fonts", scripts)
+        calls = [name for name, _ in self.client.calls]
+        self.assertLess(calls.index("navigate_page"), calls.index("take_screenshot"))
+        self.assertGreater(calls.count("evaluate_script"), 2)
 
     def test_capture_writes_a_valid_960_pixel_jpeg(self):
         report = capture_cover(
@@ -123,6 +134,10 @@ class ThemeCoverTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "simulated screenshot failure"):
             capture_cover(client, "carbon-volt", self.output, apply=True, overwrite=False)
         self.assertFalse(self.output.exists())
+        self.assertTrue(any(
+            name == "evaluate_script" and "restoreStorage" in args.get("function", "")
+            for name, args in client.calls
+        ))
         self.assertTrue(any(name == "close_page" for name, _ in client.calls))
 
     def test_console_or_network_errors_prevent_capture(self):
@@ -157,7 +172,7 @@ class ThemeCoverTests(unittest.TestCase):
         original = client.call_tool
 
         def wrong_page(name, arguments=None):
-            if name == "evaluate_script":
+            if name == "evaluate_script" and "fontsStatus" in (arguments or {}).get("function", ""):
                 client.calls.append((name, arguments or {}))
                 return _text_result(json.dumps({
                     "appId": "102", "pageId": "405", "theme": "carbon-volt",

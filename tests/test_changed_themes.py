@@ -139,6 +139,18 @@ class CiTierContractTests(unittest.TestCase):
         self.assertNotIn("chrome_devtools", nightly)
         self.assertNotIn("apex-import", nightly)
 
+    def test_workflows_install_declared_offline_test_dependencies(self):
+        requirements_path = self.ROOT / "tools/test-requirements.txt"
+        self.assertTrue(requirements_path.is_file())
+        requirements = requirements_path.read_text(encoding="utf-8")
+        for dependency in ("Pillow==", "PyYAML=="):
+            self.assertIn(dependency, requirements)
+
+        for workflow_name in ("verify.yml", "nightly.yml"):
+            workflow = (self.ROOT / ".github/workflows" / workflow_name).read_text(encoding="utf-8")
+            self.assertIn("python -m pip install", workflow)
+            self.assertIn("tools/test-requirements.txt", workflow)
+
     def test_package_offline_script_discovers_themes_without_a_shortlist(self):
         script = (self.ROOT / "tests/run-package-offline.sh").read_text(encoding="utf-8")
         self.assertIn("theme_names", script)

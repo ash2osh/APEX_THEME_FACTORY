@@ -248,3 +248,40 @@
 .app-theme-estate-slate-dark .maplibregl-ctrl-attrib a {
     color: var(--app-text-primary);
 }
+
+/* Custom calendar events: bright status fills pair with the package's dark accent text. */
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-success);
+    border-color: var(--app-color-success);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-info);
+    border-color: var(--app-color-info);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-warning);
+    border-color: var(--app-color-warning);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
+    color: var(--app-text-on-accent);
+}

@@ -20,9 +20,9 @@
 .app-theme-linen .apex-theme-iris .t-Header-logo-link {
     font-weight: var(--app-font-weight-semibold);
 }
-/* Nav-bar / menu-toggle buttons: muted until hovered */
+/* Nav-bar / menu-toggle buttons: readable at rest, emphasized on hover */
 .app-theme-linen .apex-theme-iris .t-Header .t-Button--header {
-    --a-button-text-color: var(--app-text-secondary);
+    --a-button-text-color: var(--app-text-primary);
     --a-button-hover-text-color: var(--app-text-primary);
     --a-button-border-radius: var(--app-radius-sm);
 }

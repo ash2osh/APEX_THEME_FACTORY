@@ -30,7 +30,7 @@
 }
 
 .app-theme-cobalt-press .apex-theme-iris .t-Header .t-Button--header {
-    --a-button-text-color: var(--app-text-chrome-muted);
+    --a-button-text-color: var(--app-text-chrome);
     --a-button-hover-text-color: var(--app-text-chrome);
     --a-button-border-radius: var(--app-radius-sm);
 }

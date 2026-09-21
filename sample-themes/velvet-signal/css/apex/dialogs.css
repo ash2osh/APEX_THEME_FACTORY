@@ -27,13 +27,14 @@
     --a-menu-border-color: var(--app-border-color);
     --a-menu-background-color: var(--app-surface-chrome);
     --a-menu-callout-background-color: var(--app-surface-chrome);
-    --a-menu-text-color: var(--app-text-primary);
-    --a-menu-default-text-color: var(--app-text-primary);
+    --a-menu-text-color: var(--app-text-emphasized);
+    --a-menu-default-text-color: var(--app-text-emphasized);
     --a-menu-focused-background-color: var(--app-surface-hover);
     --a-menu-focused-text-color: var(--app-text-emphasized);
+    --a-menu-font-weight: var(--app-font-weight-medium);
     --a-menu-sep-border-color: var(--app-border-color);
-    --a-menu-accel-text-color: var(--app-text-secondary);           /* keyboard-accelerator hint text: 6.27:1
-                                                                         on the menu bg #00212b */
+    --a-menu-accel-text-color: var(--app-text-primary);             /* keyboard-accelerator hint text */
+    --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* base1 was only 4.23:1 on the focused
                                                                          hover bg #004052; base3 is 10.49:1 */
     --a-menu-callout-border-color: var(--app-border-color);

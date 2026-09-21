@@ -9,14 +9,14 @@ from retained evidence under `.agents/evaluations/runtime/<date>-release-<theme>
 <!-- @generated:theme-status:start -->
 | Theme | A | B | C | D | Verdict |
 |---|---:|---:|---:|---:|---|
-| carbon-volt | PASS | PASS | PASS | PASS | VERIFIED |
-| citrus-pop | PASS | PASS | PASS | PASS | VERIFIED |
-| cobalt-press | PASS | PASS | PASS | PASS | VERIFIED |
-| estate-slate | PASS | PASS | PASS | PASS | VERIFIED |
-| estate-slate-dark | PASS | PASS | PASS | PASS | VERIFIED |
-| linen | PASS | PASS | PASS | PASS | VERIFIED |
-| solarized-dark | PASS | PASS | PASS | PASS | VERIFIED |
-| velvet-signal | PASS | PASS | PASS | PASS | VERIFIED |
+| carbon-volt | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| citrus-pop | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| cobalt-press | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| estate-slate-dark | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| linen | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| solarized-dark | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
+| velvet-signal | PASS | UNVERIFIED | UNVERIFIED | UNVERIFIED | UNVERIFIED — release evidence is bound to a different source identity |
 <!-- @generated:theme-status:end -->
 
 The table above is authoritative for current theme release status. The dated sections below retain

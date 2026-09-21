@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "bf6e0f13c3c166c5e030920dd3e983678dcf10bd22e6eb949d04e216934b4577",
+  "capturedAt": "2026-09-20T23:53:54Z",
+  "evidenceType": "sqlcl-application",
+  "consumer": "minimal",
+  "appId": "9010",
+  "appAlias": "TF-CONSUMER-MINIMAL-9010",
+  "apexVersion": "26.1.4",
+  "status": "PASS"
+}

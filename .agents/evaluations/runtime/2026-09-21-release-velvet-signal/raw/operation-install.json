@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "velvet-signal",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "bf6e0f13c3c166c5e030920dd3e983678dcf10bd22e6eb949d04e216934b4577",
+  "capturedAt": "2026-09-20T23:53:54Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "1.0/licenses/OFL.txt\": \"56372aed19c2701f50e6e784110af55bf8796ed51648805324ad1adb0a3860bb\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,49 @@\n+file \"theme-factory/packages/velvet-signal/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: 2d254a5436b29feaf926d2e92a5278714a1aef750a868eeb6e9df2682be391ef\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260920T234603Z-before-velvet-signal\nType application ID 9010 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "72aed19c2701f50e6e784110af55bf8796ed51648805324ad1adb0a3860bb\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,52 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/velvet-signal/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-bold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-medium.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-regular.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/fonts/alexandria-semibold.woff2\" (\n+    mimeType: font/woff2\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/velvet-signal/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         velvet-signal v1.1.0\n  Staged Digest: a8cdbc85a10bb8b657de31fb2324b3a10ff956d8504481bfd4d80b9cc8056a01\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/velvet-signal/business/backups/DEMO-9011/20260920T235009Z-before-velvet-signal\nType application ID 9011 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

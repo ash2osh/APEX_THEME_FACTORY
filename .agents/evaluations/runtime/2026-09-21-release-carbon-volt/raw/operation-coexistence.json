@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "91ad7c539b20543a1069d586b338d702a8575861e813bddd638de966725d34c8",
+  "capturedAt": "2026-09-20T23:45:15Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "coexistence",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/carbon-volt/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         linen v1.1.0\n  Staged Digest: e5247dda4140a9fbeb266af4d05d3b953113d2b879238e93312c2668e3e738a4\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260920T233857Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/carbon-volt/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         linen v1.1.0\n  Staged Digest: 005adf5b2e8b38e9d16a219899a60688aa3ae12a9ae0e6be01e9ee289d183a5f\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/carbon-volt/business/backups/DEMO-9011/20260920T234306Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

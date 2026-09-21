@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "linen",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "6e76c4c4a64205363182068de24312e0b4048b2777ead405c51d989b16455e61",
+  "capturedAt": "2026-09-21T00:43:37Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "restore",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/minimal/backups/DEMO-9010/20260921T003530Z-before-linen --apply",
+      "appId": 9010,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   1d068c21dc91e52fa532072e134b11d702431f09d0796fc61237d0e19d4d0708\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
+      "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/minimal/backups/DEMO-9010/20260921T003530Z-before-linen --discard-later-changes --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/minimal/backups/DEMO-9010/20260921T003530Z-before-linen.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/business/backups/DEMO-9011/20260921T003937Z-before-linen --apply",
+      "appId": 9011,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   5c56017d39d6d0fe8838004b609f2f3b013f3f0f33f471e1871772f61586447e\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
+      "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/business/backups/DEMO-9011/20260921T003937Z-before-linen --discard-later-changes --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/theme-release-batch-checkpoints-docrefresh-linen-retry-20260921/layer-c/linen/business/backups/DEMO-9011/20260921T003937Z-before-linen.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

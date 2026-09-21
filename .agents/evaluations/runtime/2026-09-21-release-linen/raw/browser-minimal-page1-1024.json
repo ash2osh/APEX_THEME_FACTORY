@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "evidenceContractVersion": 2,
+  "evidenceType": "browser-runtime",
+  "theme": "linen",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "6e76c4c4a64205363182068de24312e0b4048b2777ead405c51d989b16455e61",
+  "capturedAt": "2026-09-21T00:45:47Z",
+  "consumer": "minimal",
+  "viewportWidth": 1024,
+  "url": "http://localhost:8181/ords/r/demo/tf-consumer-minimal-9010/home",
+  "appId": "9010",
+  "appAlias": "",
+  "pageId": "1",
+  "apexVersion": "26.1.4",
+  "browserVersion": "Chrome/153.0.0.0",
+  "bodyClasses": [
+    "t-PageBody",
+    "t-PageBody--hideLeft",
+    "t-PageBody--hideActions",
+    "t-PageTemplate--standard",
+    "apex-side-nav",
+    "apex-icons-fontapex",
+    "apex-theme-iris",
+    "js-ready",
+    "js-navCollapsed--hidden",
+    "js-navCollapsed",
+    "t-PageBody--leftNav"
+  ],
+  "htmlClasses": [
+    "page-1",
+    "app-TF-CONSUMER-MINIMAL-9010",
+    "app-theme-linen"
+  ],
+  "cssUrls": [
+    "/i/app_ui/css/Core.min.css?v=26.1.4",
+    "/i/app_ui/css/Theme-Standard.min.css?v=26.1.4",
+    "/i/libraries/font-apex/2.5.1/css/font-apex.min.css?v=26.1.4",
+    "/i/themes/theme_42/26.1/css/Core.min.css?v=26.1.4",
+    "/i/libraries/oracle-fonts/oraclesans-apex.min.css?v=26.1.4",
+    "/i/themes/theme_42/26.1/css/Iris.min.css?v=26.1.4",
+    "r/demo/9010/files/static/v2461305004404/theme-factory/packages/linen/1.1.0/theme.css"
+  ],
+  "javascriptUrls": [
+    "/i/libraries/apex/minified/desktop_all.min.js?v=26.1.4",
+    "wwv_flow.js_messages?p_app_id=9010&p_lang=en&p_version=26.1.4-7938722&p_nls_settings=eyJudW1lcmljQ2hhcmFjdGVycyI6Ii4sIiwiY3VycmVuY3kiOiIkIiwiaXNvQ3VycmVuY3kiOiJBTUVSSUNBIiwiZHVhbEN1cnJlbmN5IjoiJCJ9",
+    "wwv_flow.js_dialogs?p_app_id=9010&p_version=26.1.4-7938722",
+    "/i/libraries/apex/minified/widget.stickyWidget.min.js?v=26.1.4",
+    "/i/themes/theme_42/26.1/js/theme42.min.js?v=26.1.4",
+    "r/demo/9010/files/static/v2461305004404/theme-factory/runtime/theme-factory-runtime.js",
+    "/i/libraries/apex/minified/widget.treeView.min.js?v=26.1.4"
+  ],
+  "loadedUrls": [
+    "http://localhost:8181/i/app_ui/css/Core.min.css?v=26.1.4",
+    "http://localhost:8181/i/app_ui/css/Theme-Standard.min.css?v=26.1.4",
+    "http://localhost:8181/i/libraries/font-apex/2.5.1/css/font-apex.min.css?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/css/Core.min.css?v=26.1.4",
+    "http://localhost:8181/i/libraries/oracle-fonts/oraclesans-apex.min.css?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/css/Iris.min.css?v=26.1.4",
+    "http://localhost:8181/ords/r/demo/9010/files/static/v2461305004404/theme-factory/packages/linen/1.1.0/theme.css",
+    "http://localhost:8181/i/libraries/apex/minified/desktop_all.min.js?v=26.1.4",
+    "http://localhost:8181/ords/wwv_flow.js_messages?p_app_id=9010&p_lang=en&p_version=26.1.4-7938722&p_nls_settings=eyJudW1lcmljQ2hhcmFjdGVycyI6Ii4sIiwiY3VycmVuY3kiOiIkIiwiaXNvQ3VycmVuY3kiOiJBTUVSSUNBIiwiZHVhbEN1cnJlbmN5IjoiJCJ9",
+    "http://localhost:8181/ords/wwv_flow.js_dialogs?p_app_id=9010&p_version=26.1.4-7938722",
+    "http://localhost:8181/i/libraries/apex/minified/widget.stickyWidget.min.js?v=26.1.4",
+    "http://localhost:8181/i/themes/theme_42/26.1/js/theme42.min.js?v=26.1.4",
+    "http://localhost:8181/ords/r/demo/9010/files/static/v2461305004404/theme-factory/runtime/theme-factory-runtime.js",
+    "http://localhost:8181/i/libraries/apex/minified/widget.treeView.min.js?v=26.1.4",
+    "http://localhost:8181/i/app_ui/font/apex-core-font.woff2",
+    "http://localhost:8181/i/libraries/font-apex/2.5.1/fonts/Font-APEX-Small.woff2?",
+    "http://localhost:8181/i/libraries/oraclejet/20.0.5/js/libs/oj/20.0.5/resources/nls/localeElements.js",
+    "http://localhost:8181/i/libraries/oraclejet/20.0.5/js/libs/oj/20.0.5/resources/nls/en/localeElements.js",
+    "http://localhost:8181/i/favicon.ico",
+    "http://localhost:8181/ords/r/demo/9010/files/static/v2461305004404/theme-factory/runtime/registry.json"
+  ],
+  "windowApp": null,
+  "windowAlpine": null,
+  "activeTheme": "linen",
+  "registry": {
+    "defaultTheme": "linen",
+    "runtimeFiles": {
+      "theme-factory-runtime.js": "112dbaaf8f4583e6e525c242066f7b80dc812a3ab2de4303891effca73aae9dd"
+    },
+    "switcherEnabled": true,
+    "themes": [
+      {
+        "className": "app-theme-linen",
+        "files": {
+          "theme-factory/packages/linen/1.1.0/cover.jpg": "e914eb200e863c5ee723a5f150e1b1fc8ac77188d7862c2e76ba179a7398f25d",
+          "theme-factory/packages/linen/1.1.0/theme.css": "81dcafdc7e625338c7d2551eb5316007fa346c2ca1050ea65f7fc631b09faaaa",
+          "theme-factory/packages/linen/1.1.0/theme.json": "7f6d756442ba4c51ae8539794c38242851850f7ba0061ceb355020826e0eb270"
+        },
+        "name": "linen",
+        "stylesheetUrl": "#APP_FILES#theme-factory/packages/linen/1.1.0/theme.css",
+        "title": "Linen",
+        "version": "1.1.0"
+      }
+    ]
+  },
+  "switcherAvailable": true,
+  "consoleErrors": [],
+  "failedRequests": [],
+  "fonts": [],
+  "declaredFaceCount": 0,
+  "fontApexFamilyBefore": "\"Font APEX Small\"",
+  "fontApexFamilyAfter": "\"Font APEX Small\"",
+  "fontsVerified": true,
+  "accessibilityVerified": true,
+  "persistenceVerified": true,
+  "notes": []
+}

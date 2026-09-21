@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "91b83bf05611544c40445bda115c722f45a9030ad05eb1084050bb9620d2d4b8",
+  "capturedAt": "2026-09-20T23:36:35Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 39f06113ba83ee5a729c7d58527e11f0454670ab60aa1d52d18f5d9ac30cd761\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T232945Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 2659ee2d6a3139f2df2bae7700e518ad5bef9bffb6aca624df06e941c78697cc\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T233045Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 448a5560d6a7382a625bd2dd084ba1bce7dad552c921dee3579e845098f19bf0\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T233355Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: fe25ecdfbf11c486a9d2eff91219b3e52a7ef557df67377cdd8fad83efe88ab0\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T233455Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

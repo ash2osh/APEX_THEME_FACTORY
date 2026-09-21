@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "91b83bf05611544c40445bda115c722f45a9030ad05eb1084050bb9620d2d4b8",
+  "capturedAt": "2026-09-20T23:36:35Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "reinstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 7242e8a041a0818ccd680c74ef68a6276bba46076ee59e97ff3d0f5cd8e95919\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260920T232916Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Theme:         solarized-dark v1.2.0\n  Staged Digest: 09b73dc1cf590adbcf04a6d434cd83518d66f0eee4260c17943bcf4f4f4a1434\n  Backup:        /tmp/theme-release-batch-checkpoints-docrefresh-20260921/layer-c/solarized-dark/business/backups/DEMO-9011/20260920T233325Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

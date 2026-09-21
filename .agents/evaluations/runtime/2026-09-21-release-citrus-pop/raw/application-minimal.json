@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "theme": "citrus-pop",
+  "gitCommit": "1db3f70a6e7543cb9f878394a9099cca5ced7956",
+  "packageSha256": "21cb48cef6d880b8927631654661076cb4cd65c0b92ecb460386fdeb3d3d5a5d",
+  "capturedAt": "2026-09-21T00:11:13Z",
+  "evidenceType": "sqlcl-application",
+  "consumer": "minimal",
+  "appId": "9010",
+  "appAlias": "TF-CONSUMER-MINIMAL-9010",
+  "apexVersion": "26.1.4",
+  "status": "PASS"
+}

@@ -30,7 +30,7 @@
 }
 
 .app-theme-estate-slate-dark .apex-theme-iris .t-Header .t-Button--header {
-    --a-button-text-color: var(--app-text-secondary);
+    --a-button-text-color: var(--app-text-emphasized);
     --a-button-hover-text-color: var(--app-text-emphasized);
     --a-button-border-radius: var(--app-radius-sm);
 }

@@ -7,7 +7,7 @@
    :root) so Core's own state rules (hover, focus, collapsed, RTL) keep working. Hooks as in
    .agents/knowledge/ut-dom-shell.md; all rules scoped to .app-theme-velvet-signal. */
 
-/* ---- Header: title-bar surface, hairline bottom, muted controls, no accent strip ----------- */
+/* ---- Header: title-bar surface, hairline bottom, clear controls, no accent strip ------------ */
 .app-theme-velvet-signal .apex-theme-iris .t-Header {
     --ut-header-strip-size: 3px;
     --ut-header-background-color: var(--app-surface-subtle);
@@ -25,9 +25,9 @@
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-emphasized);
 }
-/* Nav-bar / menu-toggle buttons: muted until hovered */
+/* Nav-bar / menu-toggle buttons: readable at rest, emphasized on hover */
 .app-theme-velvet-signal .apex-theme-iris .t-Header .t-Button--header {
-    --a-button-text-color: var(--app-text-secondary);
+    --a-button-text-color: var(--app-text-emphasized);
     --a-button-hover-text-color: var(--app-text-emphasized);
     --a-button-border-radius: var(--app-radius-sm);
 }

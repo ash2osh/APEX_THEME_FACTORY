@@ -46,6 +46,7 @@ html.app-theme-citrus-pop {
     --app-text-on-accent:    #ffffff;
     --app-text-chrome:       var(--cit-slate-50);
     --app-text-chrome-muted: var(--cit-slate-400);
+    --app-calendar-warning-text: #000000; /* black on tangerine is 4.97:1 */
     --app-border-chrome:     var(--cit-slate-800);
 
     /* Colours */

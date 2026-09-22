@@ -4,7 +4,9 @@ import tempfile
 import unittest
 
 from lib.theme_factory.fingerprint import (
+    SimilarityReport,
     check_uniqueness,
+    classify_similarity,
     compare_fingerprints,
     delta_e_1976,
     fingerprint_theme,
@@ -151,6 +153,41 @@ class ThemeFingerprintTests(unittest.TestCase):
         )
         issues = check_uniqueness(right, (left, right))
         self.assertIn("IDENTITY_COLLISION", {issue.code for issue in issues if issue.severity == "error"})
+
+    def similarity_report(self, **overrides) -> SimilarityReport:
+        values = {
+            "candidate": "candidate",
+            "nearest_theme": "existing",
+            "css_similarity": 0.10,
+            "palette_delta_e": 19.99,
+            "matching_profiles": (),
+            "font_match": False,
+            "geometry_match": True,
+            "rhythm_match": True,
+            "typography_match": True,
+            "interaction_match": True,
+            "responsive_match": True,
+        }
+        values.update(overrides)
+        return SimilarityReport(**values)
+
+    def test_identity_collision_uses_explicit_axes_not_font_or_profiles(self):
+        self.assertEqual(
+            classify_similarity(self.similarity_report()),
+            ("error", "IDENTITY_COLLISION"),
+        )
+
+    def test_identity_collision_palette_threshold_is_strictly_below_twenty(self):
+        self.assertEqual(
+            classify_similarity(self.similarity_report(palette_delta_e=20.0)),
+            ("PASS", "PASS"),
+        )
+
+    def test_identity_collision_requires_every_explicit_axis(self):
+        self.assertEqual(
+            classify_similarity(self.similarity_report(interaction_match=False)),
+            ("PASS", "PASS"),
+        )
 
     def test_distinct_explicit_axes_avoid_identity_collision_even_with_same_font(self):
         left = self.recipe_theme("left", ("#101820", "#F2F2F2"))

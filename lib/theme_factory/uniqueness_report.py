@@ -9,7 +9,12 @@ from pathlib import Path
 
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.fingerprint import (
+    ERROR_PROFILE_MATCH_THRESHOLD,
+    IDENTITY_COLLISION_DELTA_E_THRESHOLD,
+    PROFILE_COLLISION_CSS_THRESHOLD,
     SimilarityReport,
+    STRUCTURAL_RECOLOR_CSS_THRESHOLD,
+    STRUCTURAL_SIMILARITY_CSS_THRESHOLD,
     classify_similarity,
     compare_fingerprints,
     fingerprint_theme,
@@ -60,8 +65,16 @@ def render_uniqueness_report(rows: tuple[PairwiseUniquenessRow, ...], *, source_
         "This generated matrix shows every unordered theme pair; warning-only similarities are intentionally retained.",
         "",
         f"- Source commit: `{source_commit or 'unknown'}`",
-        "- Error thresholds: structural recolor ≥ 0.98 with ≥ 5 matching profiles; identity collision requires all seven profiles, matching geometry/font, and palette Delta E < 12.",
-        "- Warning threshold: CSS similarity ≥ 0.85 when no error rule applies.",
+        "- Error thresholds: "
+        f"structural recolor CSS ≥ {STRUCTURAL_RECOLOR_CSS_THRESHOLD:g} with "
+        f"≥ {ERROR_PROFILE_MATCH_THRESHOLD} matching profiles; "
+        f"profile collision CSS ≥ {PROFILE_COLLISION_CSS_THRESHOLD:g} with "
+        f"≥ {ERROR_PROFILE_MATCH_THRESHOLD} matching profiles; "
+        "identity collision requires matching geometry, rhythm, typography treatment, "
+        "interaction, and responsive strategy with palette Delta E "
+        f"< {IDENTITY_COLLISION_DELTA_E_THRESHOLD:g}.",
+        f"- Warning threshold: CSS similarity ≥ {STRUCTURAL_SIMILARITY_CSS_THRESHOLD:g} "
+        "when no error rule applies.",
         "",
         "| Theme A | Theme B | CSS similarity | Average palette Delta E | Matching profiles | Font match | Geometry match | Rhythm match | Typography match | Interaction match | Responsive match | Severity | Issue |",
         "|---|---|---:|---:|---:|---|---|---|---|---|---|---|---|",

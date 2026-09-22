@@ -72,6 +72,24 @@ class UniquenessReportTests(unittest.TestCase):
             self.assertIn("DRIFT", check.stdout + check.stderr)
             self.assertEqual(output.read_text(encoding="utf-8"), original + "drift\n")
 
+    def test_check_reports_actual_pair_count(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "report.md"
+            command = [
+                sys.executable,
+                "-m",
+                "lib.theme_factory.uniqueness_report",
+                "--repo-root",
+                ".",
+                "--output",
+                str(output),
+            ]
+            generated = subprocess.run(command, capture_output=True, text=True)
+            self.assertEqual(generated.returncode, 0)
+            check = subprocess.run([*command, "--check"], capture_output=True, text=True)
+            self.assertEqual(check.returncode, 0)
+            self.assertIn("THEME_UNIQUENESS_REPORT status=PASS rows=28", check.stdout)
+
     def test_common_offline_gate_checks_committed_report(self):
         script = (Path("tests/run-common-offline.sh")).read_text(encoding="utf-8")
         self.assertIn(

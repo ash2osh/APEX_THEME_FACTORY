@@ -105,8 +105,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true", help="fail when output differs; never write")
     args = parser.parse_args(argv)
     repo_root = args.repo_root.resolve()
+    rows = build_uniqueness_rows(repo_root)
     rendered = render_uniqueness_report(
-        build_uniqueness_rows(repo_root),
+        rows,
         source_commit=_source_commit(repo_root),
     )
     output = args.output if args.output.is_absolute() else repo_root / args.output
@@ -115,11 +116,11 @@ def main(argv: list[str] | None = None) -> int:
         if current != rendered:
             print(f"THEME_UNIQUENESS_REPORT status=DRIFT path={output}")
             return 1
-        print(f"THEME_UNIQUENESS_REPORT status=PASS rows={rendered.count(chr(10)) - 12} path={output}")
+        print(f"THEME_UNIQUENESS_REPORT status=PASS rows={len(rows)} path={output}")
         return 0
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(rendered, encoding="utf-8")
-    print(f"THEME_UNIQUENESS_REPORT status=PASS rows={len(build_uniqueness_rows(repo_root))} path={output}")
+    print(f"THEME_UNIQUENESS_REPORT status=PASS rows={len(rows)} path={output}")
     return 0
 
 

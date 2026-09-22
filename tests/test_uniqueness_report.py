@@ -41,6 +41,16 @@ class UniquenessReportTests(unittest.TestCase):
         self.assertIn("Severity", report)
         self.assertIn("Issue", report)
         self.assertIn("carbon-volt", report)
+        self.assertIn("structural recolor CSS ≥ 0.98 with ≥ 5 matching profiles", report)
+        self.assertIn("profile collision CSS ≥ 0.92 with ≥ 5 matching profiles", report)
+        self.assertIn(
+            "identity collision requires matching geometry, rhythm, typography treatment, "
+            "interaction, and responsive strategy with palette Delta E < 20",
+            report,
+        )
+        self.assertIn("CSS similarity ≥ 0.85", report)
+        self.assertNotIn("Delta E < 12", report)
+        self.assertNotIn("requires all seven profiles", report)
 
     def test_check_detects_drift_without_writing(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -72,6 +72,14 @@ class UniquenessReportTests(unittest.TestCase):
             self.assertIn("DRIFT", check.stdout + check.stderr)
             self.assertEqual(output.read_text(encoding="utf-8"), original + "drift\n")
 
+    def test_common_offline_gate_checks_committed_report(self):
+        script = (Path("tests/run-common-offline.sh")).read_text(encoding="utf-8")
+        self.assertIn(
+            "python3 -m lib.theme_factory.uniqueness_report "
+            "--repo-root . --output docs/generated/theme-uniqueness-report.md --check",
+            script,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

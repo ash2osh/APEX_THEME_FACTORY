@@ -28,7 +28,7 @@ jobs:
         run: scripts/theme.sh inspect-iris --check
       - name: State live-evidence boundary
         if: always()
-        run: echo 'Layers C-E are UNVERIFIED — run the local release workflow with SQLcl and the approved Chrome daemon.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Layers C-D are UNVERIFIED — run the local release workflow with SQLcl and the approved Chrome daemon. Agent compatibility has a separate project-level verdict.' >> "$GITHUB_STEP_SUMMARY"
 
   select:
     needs: common

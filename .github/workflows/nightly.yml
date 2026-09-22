@@ -38,4 +38,4 @@ jobs:
           if-no-files-found: error
       - name: State hosted-runner boundary
         if: always()
-        run: echo 'Offline/package checks only. No database import, Chrome session, or Layers C-E verification ran.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Offline/package checks only. No database import, Chrome session, or Layers C-D verification ran. Agent compatibility has a separate project-level verdict.' >> "$GITHUB_STEP_SUMMARY"

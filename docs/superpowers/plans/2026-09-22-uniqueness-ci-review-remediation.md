@@ -58,7 +58,7 @@
 - Consumes: `SimilarityReport` and `classify_similarity(report: SimilarityReport) -> tuple[str, str]`.
 - Produces: named threshold constants and an identity rule based only on the five explicit axes plus palette distance.
 
-- [ ] **Step 1: Import the direct classifier interface in the test module**
+- [x] **Step 1: Import the direct classifier interface in the test module**
 
 Add `SimilarityReport` and `classify_similarity` to the existing import from `lib.theme_factory.fingerprint`:
 
@@ -73,7 +73,7 @@ from lib.theme_factory.fingerprint import (
 )
 ```
 
-- [ ] **Step 2: Write focused failing tests for the approved identity rule**
+- [x] **Step 2: Write focused failing tests for the approved identity rule**
 
 Add this helper and these tests to `ThemeFingerprintTests`:
 
@@ -114,7 +114,7 @@ Add this helper and these tests to `ThemeFingerprintTests`:
         )
 ```
 
-- [ ] **Step 3: Run the focused tests and verify the missing collision is exposed**
+- [x] **Step 3: Run the focused tests and verify the missing collision is exposed**
 
 Run:
 
@@ -127,7 +127,7 @@ python3 -m unittest \
 
 Expected: the first test fails because the current classifier returns `IDENTITY_SIMILARITY`; the two boundary tests pass.
 
-- [ ] **Step 4: Add named classifier thresholds**
+- [x] **Step 4: Add named classifier thresholds**
 
 Add these module constants below `SEMANTIC_TOKENS` in `lib/theme_factory/fingerprint.py`:
 
@@ -139,7 +139,7 @@ ERROR_PROFILE_MATCH_THRESHOLD = 5
 IDENTITY_COLLISION_DELTA_E_THRESHOLD = 20.0
 ```
 
-- [ ] **Step 5: Replace classifier literals and remove the extra identity prerequisites**
+- [x] **Step 5: Replace classifier literals and remove the extra identity prerequisites**
 
 Implement `classify_similarity()` as:
 
@@ -180,13 +180,13 @@ def classify_similarity(report: SimilarityReport) -> tuple[str, str]:
     return "PASS", "PASS"
 ```
 
-- [ ] **Step 6: Run all fingerprint tests**
+- [x] **Step 6: Run all fingerprint tests**
 
 Run: `python3 -m unittest tests.test_theme_fingerprint -v`
 
 Expected: all fingerprint tests pass, including the new different-font/zero-profile collision case.
 
-- [ ] **Step 7: Commit the classifier correction**
+- [x] **Step 7: Commit the classifier correction**
 
 ```bash
 git add lib/theme_factory/fingerprint.py tests/test_theme_fingerprint.py
@@ -205,7 +205,7 @@ git commit -m "fix: enforce explicit theme identity collision axes"
 - Consumes: the five public threshold constants introduced by Task 1.
 - Produces: `render_uniqueness_report(...) -> str` whose policy summary cannot silently retain obsolete numeric thresholds.
 
-- [ ] **Step 1: Write a failing report-contract test**
+- [x] **Step 1: Write a failing report-contract test**
 
 Extend `test_markdown_explains_all_similarity_dimensions` with exact policy assertions:
 
@@ -222,7 +222,7 @@ Extend `test_markdown_explains_all_similarity_dimensions` with exact policy asse
         self.assertNotIn("requires all seven profiles", report)
 ```
 
-- [ ] **Step 2: Run the report test and verify the stale prose fails**
+- [x] **Step 2: Run the report test and verify the stale prose fails**
 
 Run:
 
@@ -233,7 +233,7 @@ python3 -m unittest \
 
 Expected: FAIL because the renderer still says all seven profiles and Delta E `< 12`.
 
-- [ ] **Step 3: Import classifier constants into the report renderer**
+- [x] **Step 3: Import classifier constants into the report renderer**
 
 Extend the existing import from `lib.theme_factory.fingerprint`:
 
@@ -251,7 +251,7 @@ from lib.theme_factory.fingerprint import (
 )
 ```
 
-- [ ] **Step 4: Render accurate policy text from those constants**
+- [x] **Step 4: Render accurate policy text from those constants**
 
 Replace the two threshold lines in `render_uniqueness_report()` with:
 
@@ -268,7 +268,7 @@ Replace the two threshold lines in `render_uniqueness_report()` with:
         "when no error rule applies.",
 ```
 
-- [ ] **Step 5: Run the complete report and classifier test modules**
+- [x] **Step 5: Run the complete report and classifier test modules**
 
 Run:
 
@@ -278,7 +278,7 @@ python3 -m unittest tests.test_theme_fingerprint tests.test_uniqueness_report -v
 
 Expected: all tests pass. Do not regenerate the committed report yet; later source commits would immediately invalidate its source binding.
 
-- [ ] **Step 6: Commit the report-policy correction**
+- [x] **Step 6: Commit the report-policy correction**
 
 ```bash
 git add lib/theme_factory/uniqueness_report.py tests/test_uniqueness_report.py
@@ -300,7 +300,7 @@ git commit -m "fix: derive uniqueness report policy from classifier"
 - Consumes: `python3 -m lib.theme_factory.uniqueness_report ... --check`, which is read-only and exits `1` on drift.
 - Produces: a shared common gate that rejects report drift and workflow summaries consistent with the Layers A-D model.
 
-- [ ] **Step 1: Add a failing test that requires the common gate command**
+- [x] **Step 1: Add a failing test that requires the common gate command**
 
 Add this method to `UniquenessReportTests`:
 
@@ -314,7 +314,7 @@ Add this method to `UniquenessReportTests`:
         )
 ```
 
-- [ ] **Step 2: Replace the stale workflow assertion with positive and negative release-model checks**
+- [x] **Step 2: Replace the stale workflow assertion with positive and negative release-model checks**
 
 In `CiTierContractTests.test_workflows_parse_and_keep_live_layers_out_of_hosted_ci`, replace the `Layers C-E` assertion with:
 
@@ -327,7 +327,7 @@ In `CiTierContractTests.test_workflows_parse_and_keep_live_layers_out_of_hosted_
 
 Keep the YAML parsing, changed-theme selection, no-Chrome, and no-import assertions already in that test.
 
-- [ ] **Step 3: Run the two targeted tests and verify they fail for the intended reasons**
+- [x] **Step 3: Run the two targeted tests and verify they fail for the intended reasons**
 
 Run:
 
@@ -339,7 +339,7 @@ python3 -m unittest \
 
 Expected: FAIL because the common script lacks the report check and both workflows still say `Layers C-E`.
 
-- [ ] **Step 4: Add the report check to the common offline gate**
+- [x] **Step 4: Add the report check to the common offline gate**
 
 Insert this command after the unit suite and before `scripts/check-agent-layout.sh` in `tests/run-common-offline.sh`:
 
@@ -347,7 +347,7 @@ Insert this command after the unit suite and before `scripts/check-agent-layout.
 python3 -m lib.theme_factory.uniqueness_report --repo-root . --output docs/generated/theme-uniqueness-report.md --check
 ```
 
-- [ ] **Step 5: Correct the push/PR workflow summary**
+- [x] **Step 5: Correct the push/PR workflow summary**
 
 Replace the summary command in `.github/workflows/verify.yml` with:
 
@@ -357,7 +357,7 @@ Replace the summary command in `.github/workflows/verify.yml` with:
         run: echo 'Layers C-D are UNVERIFIED — run the local release workflow with SQLcl and the approved Chrome daemon. Agent compatibility has a separate project-level verdict.' >> "$GITHUB_STEP_SUMMARY"
 ```
 
-- [ ] **Step 6: Correct the nightly workflow summary**
+- [x] **Step 6: Correct the nightly workflow summary**
 
 Replace the summary command in `.github/workflows/nightly.yml` with:
 
@@ -367,7 +367,7 @@ Replace the summary command in `.github/workflows/nightly.yml` with:
         run: echo 'Offline/package checks only. No database import, Chrome session, or Layers C-D verification ran. Agent compatibility has a separate project-level verdict.' >> "$GITHUB_STEP_SUMMARY"
 ```
 
-- [ ] **Step 7: Run the focused contract tests**
+- [x] **Step 7: Run the focused contract tests**
 
 Run:
 
@@ -377,7 +377,7 @@ python3 -m unittest tests.test_uniqueness_report tests.test_changed_themes -v
 
 Expected: the test modules pass. Do not run `tests/run-common-offline.sh` yet: the newly enforced gate must correctly report drift until Task 4 regenerates the committed report.
 
-- [ ] **Step 8: Commit every remaining source-affecting change**
+- [x] **Step 8: Commit every remaining source-affecting change**
 
 ```bash
 git add \
@@ -403,7 +403,7 @@ Expected: this commit is intentionally followed immediately by Task 4 and must n
 - Consumes: the committed classifier, renderer, shared gate, and workflow changes from Tasks 1-3.
 - Produces: a 28-pair report bound to the final source commit and a repository where the shared push/nightly gate passes.
 
-- [ ] **Step 1: Confirm there are no uncommitted non-Markdown source changes**
+- [x] **Step 1: Confirm there are no uncommitted non-Markdown source changes**
 
 Run:
 
@@ -414,7 +414,7 @@ git diff --name-only -- ':!**/*.md'
 
 Expected: the second command prints nothing. The plan Markdown itself may still be modified as checkboxes are tracked.
 
-- [ ] **Step 2: Regenerate the uniqueness report after the final source commit**
+- [x] **Step 2: Regenerate the uniqueness report after the final source commit**
 
 Run:
 
@@ -426,7 +426,7 @@ python3 -m lib.theme_factory.uniqueness_report \
 
 Expected: `THEME_UNIQUENESS_REPORT status=PASS rows=28`.
 
-- [ ] **Step 3: Verify report freshness, row count, and absence of error-level pairs**
+- [x] **Step 3: Verify report freshness, row count, and absence of error-level pairs**
 
 Run:
 
@@ -441,7 +441,7 @@ test "$(rg -c '^\| `[^`]+` \| `[^`]+` \|' docs/generated/theme-uniqueness-report
 
 Expected: the check reports `PASS`, the row-count assertion exits `0`, and no error row is found. Warning rows remain visible for human review.
 
-- [ ] **Step 4: Run the focused remediation suite**
+- [x] **Step 4: Run the focused remediation suite**
 
 Run:
 
@@ -454,19 +454,19 @@ python3 -m unittest \
 
 Expected: all focused tests pass.
 
-- [ ] **Step 5: Run the complete common offline suite through the real CI entry point**
+- [x] **Step 5: Run the complete common offline suite through the real CI entry point**
 
 Run: `tests/run-common-offline.sh`
 
 Expected: all unit tests pass, the committed report check reports `PASS`, agent layout passes, and the script ends with `COMMON_OFFLINE_CHECKS status=PASS`.
 
-- [ ] **Step 6: Run repository package verification**
+- [x] **Step 6: Run repository package verification**
 
 Run: `tests/run-package-offline.sh`
 
 Expected: all package tests pass and all discovered themes build and verify successfully.
 
-- [ ] **Step 7: Run the remaining generated-state and compatibility checks**
+- [x] **Step 7: Run the remaining generated-state and compatibility checks**
 
 Run:
 
@@ -478,7 +478,7 @@ scripts/agent-compatibility-check.sh --check
 
 Expected: catalog and Iris inventory are current, and the standalone agent compatibility verdict is `PASS`.
 
-- [ ] **Step 8: Commit the generated report as a report-only follow-up**
+- [x] **Step 8: Commit the generated report as a report-only follow-up**
 
 ```bash
 git add \
@@ -490,7 +490,7 @@ git commit -m "docs: refresh theme uniqueness report"
 
 Expected: the staged list contains Markdown only. Because Markdown is excluded by `last_source_commit()`, this commit does not invalidate the report binding.
 
-- [ ] **Step 9: Re-run the report check and inspect final repository state**
+- [x] **Step 9: Re-run the report check and inspect final repository state**
 
 Run:
 

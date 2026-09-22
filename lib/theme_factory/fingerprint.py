@@ -35,6 +35,12 @@ SEMANTIC_TOKENS = {
     "danger": ("--app-color-danger", "--app-danger"),
 }
 
+STRUCTURAL_RECOLOR_CSS_THRESHOLD = 0.98
+PROFILE_COLLISION_CSS_THRESHOLD = 0.92
+STRUCTURAL_SIMILARITY_CSS_THRESHOLD = 0.85
+ERROR_PROFILE_MATCH_THRESHOLD = 5
+IDENTITY_COLLISION_DELTA_E_THRESHOLD = 20.0
+
 
 @dataclass(frozen=True)
 class ThemeFingerprint:
@@ -389,26 +395,34 @@ def classify_similarity(report: SimilarityReport) -> tuple[str, str]:
     """Return the highest-priority finding for a pair."""
 
     profile_count = len(report.matching_profiles)
-    if report.css_similarity >= 0.98 and profile_count >= 5:
+    if (
+        report.css_similarity >= STRUCTURAL_RECOLOR_CSS_THRESHOLD
+        and profile_count >= ERROR_PROFILE_MATCH_THRESHOLD
+    ):
         return "error", "STRUCTURAL_RECOLOR"
-    if report.css_similarity >= 0.92 and profile_count >= 5:
+    if (
+        report.css_similarity >= PROFILE_COLLISION_CSS_THRESHOLD
+        and profile_count >= ERROR_PROFILE_MATCH_THRESHOLD
+    ):
         return "error", "PROFILE_COLLISION"
     if (
-        report.font_match
-        and report.geometry_match
-        and profile_count == 7
+        report.geometry_match
         and report.rhythm_match
         and report.typography_match
         and report.interaction_match
         and report.responsive_match
-        and report.palette_delta_e < 20.0
+        and report.palette_delta_e < IDENTITY_COLLISION_DELTA_E_THRESHOLD
     ):
         return "error", "IDENTITY_COLLISION"
-    if report.css_similarity >= 0.85:
+    if report.css_similarity >= STRUCTURAL_SIMILARITY_CSS_THRESHOLD:
         return "warning", "STRUCTURAL_SIMILARITY"
-    if profile_count >= 5:
+    if profile_count >= ERROR_PROFILE_MATCH_THRESHOLD:
         return "warning", "PROFILE_SIMILARITY"
-    if report.font_match and report.geometry_match and report.palette_delta_e < 20.0:
+    if (
+        report.font_match
+        and report.geometry_match
+        and report.palette_delta_e < IDENTITY_COLLISION_DELTA_E_THRESHOLD
+    ):
         return "warning", "IDENTITY_SIMILARITY"
     return "PASS", "PASS"
 

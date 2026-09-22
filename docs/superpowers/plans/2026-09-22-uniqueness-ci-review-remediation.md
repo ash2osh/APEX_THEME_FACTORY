@@ -125,7 +125,7 @@ python3 -m unittest \
   tests.test_theme_fingerprint.ThemeFingerprintTests.test_identity_collision_requires_every_explicit_axis -v
 ```
 
-Expected: the first test fails because the current classifier returns `IDENTITY_SIMILARITY`; the two boundary tests pass.
+Expected: the first test fails because the current classifier returns `PASS`; the two boundary tests pass.
 
 - [x] **Step 4: Add named classifier thresholds**
 

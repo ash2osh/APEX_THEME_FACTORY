@@ -14,6 +14,7 @@ done
 
 bash -n scripts/*.sh installer/*.sh tests/*.sh
 python3 -m unittest discover -s tests -t . -p 'test_*.py' -v
+python3 -m lib.theme_factory.uniqueness_report --repo-root . --output docs/generated/theme-uniqueness-report.md --check
 scripts/check-agent-layout.sh
 
 if [[ -n "$artifact" ]]; then

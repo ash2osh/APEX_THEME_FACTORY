@@ -135,7 +135,10 @@ class CiTierContractTests(unittest.TestCase):
         self.assertIn("lib.theme_factory.changed", verify)
         self.assertIn("catalog --check", verify)
         self.assertIn("inspect-iris --check", verify)
-        self.assertIn("Layers C-E are UNVERIFIED", verify)
+        for workflow in (verify, nightly):
+            self.assertIn("Layers C-D", workflow)
+            self.assertIn("Agent compatibility has a separate project-level verdict", workflow)
+            self.assertNotIn("Layers C-E", workflow)
         self.assertNotIn("chrome_devtools", nightly)
         self.assertNotIn("apex-import", nightly)
 

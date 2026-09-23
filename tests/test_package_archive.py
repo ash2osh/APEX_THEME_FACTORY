@@ -6,6 +6,7 @@ import tempfile
 import unittest
 import zipfile
 import shutil
+from unittest import mock
 
 from lib.theme_factory.archive import (
     build_package,
@@ -256,6 +257,26 @@ class ArchiveTests(unittest.TestCase):
                 else:
                     os.environ["THEME_FACTORY_ALLOW_DIRTY"] = old_val
 
+
+    def test_extract_package_returns_root_named_by_the_archive(self):
+        from lib.theme_factory.archive import extract_package
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"THEME_FACTORY_ALLOW_DIRTY": "1"}):
+            zip_path = build_package(self.repo_root, "linen", Path(tmp) / "zip")
+            root = extract_package(zip_path, Path(tmp) / "out")
+            self.assertEqual(root.name, zip_path.stem)
+            self.assertEqual(root.parent, (Path(tmp) / "out").resolve())
+            self.assertEqual(verify_package(root).name, "linen")
+
+    def test_extract_package_refuses_traversal_before_writing(self):
+        from lib.theme_factory.archive import extract_package
+        with tempfile.TemporaryDirectory() as tmp:
+            bad = Path(tmp) / "bad.zip"
+            with zipfile.ZipFile(bad, "w") as archive:
+                archive.writestr("pkg/theme.json", "{}")
+                archive.writestr("../escape.txt", "x")
+            with self.assertRaises(PackageError):
+                extract_package(bad, Path(tmp) / "out")
+            self.assertFalse((Path(tmp) / "escape.txt").exists())
 
 if __name__ == "__main__":
     unittest.main()

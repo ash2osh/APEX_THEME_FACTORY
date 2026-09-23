@@ -205,6 +205,41 @@ Candidate `PASS` is an iteration result, never a release verdict. Only current L
 theme `VERIFIED`; hosted CI intentionally proves only the offline source/package layers. Agent compatibility is a
 separate instruction-bound project signal; theme CSS, package, font, and preview changes do not trigger it.
 
+### How long each lane takes
+
+Measured 2026-09-23. The lanes differ by orders of magnitude, so pick the cheapest one that answers your question.
+
+| Lane | Wall time | What dominates |
+|---|---|---|
+| Author — `scripts/theme.sh check NAME` | ~0.7 s (0.3 s cached) | offline Python |
+| Candidate — `scripts/sync-static.sh` | ~0.15 s | file copies |
+| Candidate — validate + import app 102 | ~6 min (75 s validate, ~5 min import) | SQLcl; app 102 is large |
+| Release — one theme | TIMING_ONE_THEME | SQLcl: each installer step is its own JVM session (~7 s startup) plus a full export, validate or import |
+| Release — all 8 themes | TIMING_ALL_THEMES | the same, times 8 |
+
+How to keep it fast:
+
+- **Iterate in the author lane.** Import app 102 only when you need to see the page, and batch several edits per import.
+- **Release only what changed.** `release-batch --themes NAME` for an edit inside `sample-themes/NAME/`. A change to
+  shared code (`lib/`, `tools/`, `scripts/`, `static-files/`, `tests/`) changes every package, because `lib/` ships
+  inside each ZIP and evidence binds to the last source commit, so it needs all themes.
+- **Finish source work first.** Commit all source (and the uniqueness-report refresh it triggers), then run the batch,
+  and leave the tree alone until it ends: a non-Markdown edit makes it refuse the next theme.
+- **Start from clean consumers.** The batch refuses a consumer that already carries Theme Factory packages (it
+  finishes by installing the candidates for Layer D, so the next batch needs a reset). Reset both with:
+
+  ```bash
+  sql -S -name docker-demo <<SQL
+  whenever sqlerror exit failure
+  apex import -input $PWD/tests/live/consumer-apps/minimal -workspace DEMO -id 9010 -alias TF-CONSUMER-MINIMAL-9010 -name "Theme Factory Minimal Consumer"
+  apex import -input $PWD/tests/live/consumer-apps/business -workspace DEMO -id 9011 -alias TF-CONSUMER-BUSINESS-9011 -name "Theme Factory Business Consumer"
+  exit
+  SQL
+  ```
+
+- **Don't buy speed with safety.** The drift guard and the separate validate before every import each cost about
+  15% of an install; release evidence must exercise the installer exactly as users run it, so keep them.
+
 ```text
 sample-themes/<name>/
 ├── theme.json        name, title, tagline, direction, class (app-theme-<name>), template options

@@ -96,3 +96,17 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   `pkill`, and wait for an in-flight `install`/`uninstall` to finish before stopping a pipeline, so no consumer app
   is left half-imported. (The bracket trick from §5.x still applies — `pipeline1[8].sh` so the pattern does not
   match the `pkill` command line itself.)
+
+### 5.7 Consumer apps carry whatever the last install left, and a release batch assumes they are clean
+- Met 2026-09-23: 9010/9011 held linen 1.0.0 and solarized-dark 1.1.0 (the stale `dist/` ZIPs that the old
+  `install-all-themes` fallback picked up); carbon-volt's Layer C then failed "install" and "full uninstall" after
+  70 minutes. Every release batch also ends by installing its candidates for Layer D, so back-to-back batches
+  need a reset in between.
+- `release-batch` now refuses a baseline that already has packages (`assert_pristine_baseline`), in the first
+  minute. Reset with the two `apex import … -id 9010/9011 -alias …` commands in README "How long each lane takes".
+
+### 5.8 Tests must not read the evidence root
+- Met 2026-09-23: two tests read `.agents/evaluations/runtime/2026-09-17-release-linen` as real-data fixtures, so
+  `theme.sh evidence prune` broke the offline gate. The evidence root is pruned by design; frozen copies live
+  under `tests/fixtures/legacy-evidence/`.
+

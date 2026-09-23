@@ -155,6 +155,24 @@ class ReleaseBatchLayerCTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             run_in_parallel(restore, ["minimal", "business"])
 
+    def test_pristine_consumer_baseline_is_accepted(self):
+        from tools.release_batch import assert_pristine_baseline
+        assert_pristine_baseline("minimal", 9010, Path("tests/fixtures/apexlang/real-shape"))
+
+    def test_consumer_baseline_with_leftover_packages_is_refused_before_any_work(self):
+        import shutil
+        from lib.theme_factory.apexlang import apply_patch, plan_install
+        from lib.theme_factory.errors import PackageError
+        from tools.release_batch import assert_pristine_baseline
+        with tempfile.TemporaryDirectory() as tmp:
+            app = Path(tmp) / "app"
+            shutil.copytree("tests/fixtures/apexlang/real-shape", app)
+            apply_patch(plan_install(app, Path("tests/fixtures/packages/valid-basic"), "preserve"))
+            with self.assertRaises(PackageError) as context:
+                assert_pristine_baseline("minimal", 9010, app)
+        self.assertIn("valid-basic", str(context.exception))
+        self.assertIn("tests/live/consumer-apps/minimal", str(context.exception))
+
 class ObsoleteEvidenceTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()

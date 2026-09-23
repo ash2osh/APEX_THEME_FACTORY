@@ -68,6 +68,8 @@ work; read a layer file when one of its headings touches the task.
 - **§5.x** Evidence is bound to the last *source* commit
 - **§5.5** Hardcoding a package version in a helper script silently skips a theme
 - **§5.6** `pkill` on a wrapper shell orphans the Python process doing the work
+- **§5.7** Consumer apps carry whatever the last install left, and a release batch assumes they are clean
+- **§5.8** Tests must not read the evidence root
 
 ## 6. Evaluation protocol (spec §58/§62) — traps from the evaluation rounds — [pitfalls/6-evaluation-protocol.md](pitfalls/6-evaluation-protocol.md)
 - **§6.1** A baseline commit must predate the *code/instruction under test*, not just the finding

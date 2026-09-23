@@ -212,6 +212,22 @@ def prune_evidence(root: Path, *, keep_latest: int, apply: bool) -> tuple[Path, 
     return targets
 
 
+def assert_pristine_baseline(consumer: str, app_id: int, export_dir: Path) -> None:
+    """Refuse a consumer whose baseline already carries Theme Factory packages.
+
+    The Layer C lifecycle assumes an application without packages; leftovers (for example
+    from an earlier install-all-themes run) fail it only after an hour of SQLcl work.
+    """
+    from lib.theme_factory.apexlang import read_install_state
+    installed, _default, _switcher = read_install_state(Path(export_dir))
+    if installed:
+        listed = ", ".join(f"{package.name} {package.version}" for package in installed)
+        raise PackageError(
+            f"Consumer {consumer} (app {app_id}) already has Theme Factory packages ({listed}); "
+            f"re-import tests/live/consumer-apps/{consumer} over it before a release batch"
+        )
+
+
 def _resolve_package(repo_root: Path, value: str | Path, work_dir: Path, source_commit: str) -> Path:
     """A ZIP path is used as given; a theme name is built fresh from sample-themes/<name>.
 
@@ -319,6 +335,7 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
         baselines[target.consumer] = sqlcl.export_apexlang(
             target.app_id, work_dir / "baselines" / target.consumer
         )
+        assert_pristine_baseline(target.consumer, target.app_id, baselines[target.consumer])
 
     package_by_theme = {package.theme: package for package in packages}
 

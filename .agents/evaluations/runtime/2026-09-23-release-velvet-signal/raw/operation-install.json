@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "theme": "velvet-signal",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "4c3dc1ad7d59123b81be74a1829ad8ec96c8f973b5ea95b4c500bd37d5b15ea8",
-  "capturedAt": "2026-09-23T14:38:11Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "3e65f30063721bd4c7fc5a86cce7e2e376614364fa1c644d2fa77c621565c07e",
+  "capturedAt": "2026-09-23T17:28:45Z",
   "evidenceType": "sqlcl-operation",
   "operation": "install",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
       "appId": 9010,
       "exitCode": 0,
       "status": "STAGED_ONLY",
@@ -19,16 +19,16 @@
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/minimal/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'velvet-signal' v1.1.0\n  Staged Digest: 73a7d89af8367b24c548dda5fb6c2ac10dfc6062aa8a8c0906a660b8076f1cba\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260923T141159Z-before-velvet-signal\nType application ID 9010 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'velvet-signal' v1.1.0\n  Staged Digest: 6ebde3d4255ef19490c8e469e15d5f74d618e5e7a33b89d3aab81508964852a6\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/minimal/backups/DEMO-9010/20260923T171352Z-before-velvet-signal\nType application ID 9010 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0",
       "appId": 9011,
       "exitCode": 0,
       "status": "STAGED_ONLY",
@@ -37,11 +37,11 @@
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/business/packages/velvet-signal-1.1.0/velvet-signal-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'velvet-signal' v1.1.0\n  Staged Digest: 91a277986695bd86e1b9c78b2c9bdf0017fd60d2dabc900cefb6c969086f51e5\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/velvet-signal/business/backups/DEMO-9011/20260923T142531Z-before-velvet-signal\nType application ID 9011 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'velvet-signal' v1.1.0\n  Staged Digest: e98b9396541853ecbfc25e38552ab435a4efc17e8a604a55e8c4adc7aab3ffac\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/velvet-signal/business/backups/DEMO-9011/20260923T171352Z-before-velvet-signal\nType application ID 9011 to import: \nResult: IMPORTED theme 'velvet-signal' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

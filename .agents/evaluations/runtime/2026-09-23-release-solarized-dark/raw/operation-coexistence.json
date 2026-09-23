@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "b90d1a01d940d9c81174eb43f33582cb3722d21083eb2f03512e2a852259b6b0",
-  "capturedAt": "2026-09-23T14:08:45Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "42165d3c216a95eea97420f50ca4952e014d0f1dd00fb1a8f26c6b8d9d6243db",
+  "capturedAt": "2026-09-23T17:10:58Z",
   "evidenceType": "sqlcl-operation",
   "operation": "coexistence",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/minimal/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'linen' v1.1.0\n  Staged Digest: d86a18880a353510f56cb1433c357b21a9ec7beaed158096f03b852dc98590c2\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260923T135117Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'linen' v1.1.0\n  Staged Digest: 9fac511339682992abfa26ad0738207ae9f02be7c62620c16b80303912f72b70\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260923T170212Z-before-linen\nType application ID 9010 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/business/packages/linen-1.1.0/linen-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/business/packages/linen-1.1.0/linen-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'linen' v1.1.0\n  Staged Digest: 3b7bac05e767051d9c542c9e55647ee2aad02694e095df55638a5ea7f852b318\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/business/backups/DEMO-9011/20260923T140248Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'linen' v1.1.0\n  Staged Digest: 4b9a72946c5b121f61c1d3f628a958f2176d0ed2984d7557b0d7711eb31e4362\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/business/backups/DEMO-9011/20260923T170212Z-before-linen\nType application ID 9011 to import: \nResult: IMPORTED theme 'linen' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

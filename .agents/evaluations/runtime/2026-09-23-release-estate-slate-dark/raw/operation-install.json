@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "theme": "estate-slate-dark",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "91320eeb6441beea290c83141206da9dc69ee59da92f7df3dc0ae75fafc64514",
-  "capturedAt": "2026-09-23T13:42:41Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "f7a1ced74cf78faaaed14ed7c36b4c55d33247b31f1d5a9404836e40c014e41e",
+  "capturedAt": "2026-09-23T16:54:21Z",
   "evidenceType": "sqlcl-operation",
   "operation": "install",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/minimal/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/minimal/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0",
       "appId": 9010,
       "exitCode": 0,
       "status": "STAGED_ONLY",
@@ -19,16 +19,16 @@
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/minimal/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/minimal/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'estate-slate-dark' v1.1.0\n  Staged Digest: 23a8dad075a9db0eee017f4f2778f0f9edb3259aac52d137c3ba9684e1b5992f\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260923T131900Z-before-estate-slate-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'estate-slate-dark' v1.1.0\n  Staged Digest: e0a21ecad385fc1621b6a8dae57cc5ee6cded06c7e9ba8148a745ec919da39b3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/minimal/backups/DEMO-9010/20260923T164124Z-before-estate-slate-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/business/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/business/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0",
       "appId": 9011,
       "exitCode": 0,
       "status": "STAGED_ONLY",
@@ -37,11 +37,11 @@
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/business/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/business/packages/estate-slate-dark-1.1.0/estate-slate-dark-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'estate-slate-dark' v1.1.0\n  Staged Digest: 5f7710dde6e8b77a2d7b0aa4da57b14af3814c5eea920dff953f7b50f37502d3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260923T133009Z-before-estate-slate-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'estate-slate-dark' v1.1.0\n  Staged Digest: 9aa4477909949547acefa929e9bf2daaed472663b82c31fcea74ef2d96704155\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/estate-slate-dark/business/backups/DEMO-9011/20260923T164124Z-before-estate-slate-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate-dark' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

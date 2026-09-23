@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "carbon-volt",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "9772193eddf6e9eeab08418e998af97823bf65160272b560d7e7ab248bdb96b3",
-  "capturedAt": "2026-09-23T11:58:09Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "320609c88dcc388ad19bbd192d7e9383c9aa1c70d4ce97b3a1d724c87374aead",
+  "capturedAt": "2026-09-23T15:49:57Z",
   "evidenceType": "sqlcl-operation",
   "operation": "switcherEnableDisable",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --with-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --with-switcher --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: e8406eb7ce84585bbd1de06c0a5c508e5378a5719f1d2d9275bd13c1ea324b57\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T110940Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: d71cec1b89d42e8ecdac3ca5be5a438187bf36913ec0570eb5ee20a3622961b8\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T154007Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --without-switcher --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: bce958799dfd0f9a4005eeeba22edaea9893c92d921cb1fc3e64be894efaf54c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T111827Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: f7b06ec67f5a17934376f9bc2f7588d6c9f6926c357ba4db636eaaaa2b44aef4\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T154339Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --with-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --with-switcher --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: ed179861bfc250db53823423f2f656b9df03e7590a0e19bd232d63be7b4ab74d\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T114348Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: 5425cc9ecdf3f36b49ca4661e490797c9e9fd8c0713aab7f59312914b59ce8f1\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T154007Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --without-switcher --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: 52166083d63beae10b7054f0c436e0a4495412942543a09ceabdc185dcd26db9\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T115118Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: 5593097fc679986dd08b035ad5ef75aa3d4fb9b3b2c6293bd92cfb7747e8ebdd\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T154339Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

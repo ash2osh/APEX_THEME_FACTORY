@@ -19,17 +19,7 @@ from lib.theme_factory.apexlang_state import (
     _sha256_file, inspect_export, read_install_state, read_registry_document,
     verify_package_ownership, verify_runtime_ownership,
 )
-
-
-MIME_BY_SUFFIX = {
-    ".css": "text/css",
-    ".js": "application/javascript",
-    ".json": "application/json",
-    ".jpg": "image/jpeg",
-    ".jpeg": "image/jpeg",
-    ".woff2": "font/woff2",
-    ".txt": "text/plain",
-}
+from lib.theme_factory.static_files import MIME_BY_SUFFIX, file_block
 
 
 
@@ -210,23 +200,10 @@ def plan_install(
     # Add files from staged_copies that go under shared-components/static-files/
     for src_path, dst_path in staged_copies:
         rel_static = dst_path.relative_to(export_dir / "shared-components/static-files").as_posix()
-        suffix = dst_path.suffix.lower()
-        mime = MIME_BY_SUFFIX.get(suffix, "application/octet-stream")
-        block = (
-            f'file "{rel_static}" (\n'
-            f"    mimeType: {mime}\n"
-            f"    charSet: utf-8\n"
-            f")\n"
-        )
-        new_sf_blocks.append(block)
+        new_sf_blocks.append(file_block(rel_static) + "\n")
 
     # Also register registry.json
-    new_sf_blocks.append(
-        'file "theme-factory/runtime/registry.json" (\n'
-        '    mimeType: application/json\n'
-        '    charSet: utf-8\n'
-        ')\n'
-    )
+    new_sf_blocks.append(file_block("theme-factory/runtime/registry.json") + "\n")
 
     clean_sf = "\n".join(filtered_sf_lines).strip()
     after_sf = (clean_sf + "\n\n" + "\n".join(new_sf_blocks)).strip() + "\n"

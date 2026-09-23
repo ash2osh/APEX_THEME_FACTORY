@@ -106,7 +106,7 @@ adapter contract with Linen; its composition and interaction profile are indepen
 
 ## Release evidence
 
-**Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-estate-slate/`, verdict
+**Release evidence, 2026-09-17** (`2026-09-17-release-estate-slate` (pruned 2026-09-23; in git history), verdict
 `VERIFIED`, commit `7ac2e0204ca0`): the first Layer C/D/E evidence this package has ever had — committed with
 no such evidence 2026-09-17 in `a38076b`, invisible to the release system until captured this same day (see
 the 2026-09-17 verification-integrity-defects plan (removed 2026-09-23; see git history), Task 6). Layer C exercised install,

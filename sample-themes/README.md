@@ -38,14 +38,14 @@ package appears in both as soon as it is imported — nothing to register by han
 <!-- @generated:theme-catalog:start -->
 | Theme | Direction | Status |
 |---|---|---|
-| [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [solarized-dark](solarized-dark/) | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | **UNVERIFIED — release evidence is bound to a different source identity** |
-| [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | **UNVERIFIED — release evidence is bound to a different source identity** |
+| [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. | **VERIFIED** |
+| [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | **VERIFIED** |
+| [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | **VERIFIED** |
+| [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. | **VERIFIED** |
+| [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | **VERIFIED** |
+| [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. | **VERIFIED** |
+| [solarized-dark](solarized-dark/) | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | **VERIFIED** |
+| [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | **VERIFIED** |
 <!-- @generated:theme-catalog:end -->
 
 Adding a theme: define a strict `theme.recipe.json`, run `scripts/theme.sh new <name> --recipe <file>`, customize

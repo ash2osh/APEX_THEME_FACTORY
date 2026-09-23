@@ -146,14 +146,14 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 <!-- @generated:theme-deltas:start -->
 | Theme | Direction | Typography | Release verdict |
 |---|---|---|---|
-| `carbon-volt` | Square technical graphite with acid-lime actions and cyan telemetry. | Noto Kufi Arabic | `UNVERIFIED` |
-| `citrus-pop` | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | Tajawal | `UNVERIFIED` |
-| `cobalt-press` | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | Cairo | `UNVERIFIED` |
-| `estate-slate` | Precision corporate slate, white cards, and restrained champagne-amber actions. | IBMPlexSansArabic | `UNVERIFIED` |
-| `estate-slate-dark` | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | IBMPlexSansArabic | `UNVERIFIED` |
-| `linen` | Quiet product surfaces with white chrome, hairline seams, and teal actions. | Iris / system | `UNVERIFIED` |
-| `solarized-dark` | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | IBM Plex Sans, Space Grotesk, IBM Plex Mono | `UNVERIFIED` |
-| `velvet-signal` | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | Alexandria | `UNVERIFIED` |
+| `carbon-volt` | Square technical graphite with acid-lime actions and cyan telemetry. | Noto Kufi Arabic | `VERIFIED` |
+| `citrus-pop` | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | Tajawal | `VERIFIED` |
+| `cobalt-press` | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | Cairo | `VERIFIED` |
+| `estate-slate` | Precision corporate slate, white cards, and restrained champagne-amber actions. | IBMPlexSansArabic | `VERIFIED` |
+| `estate-slate-dark` | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | IBMPlexSansArabic | `VERIFIED` |
+| `linen` | Quiet product surfaces with white chrome, hairline seams, and teal actions. | Iris / system | `VERIFIED` |
+| `solarized-dark` | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | IBM Plex Sans, Space Grotesk, IBM Plex Mono | `VERIFIED` |
+| `velvet-signal` | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | Alexandria | `VERIFIED` |
 <!-- @generated:theme-deltas:end -->
 
 #### Detailed Linen / Solarized reference

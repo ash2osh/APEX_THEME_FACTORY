@@ -95,7 +95,7 @@ Live, per browser: navigation-bar **Theme** menu or page 405 *Themes*; `#theme=s
 ## Status: VERIFIED (2026-09-17) — history of how it got there
 
 **Release verdict: `VERIFIED`.** Layers A–E all pass with retained, digest-bound evidence at commit
-`7ac2e0204ca0` (`.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`); see the "Release evidence"
+`7ac2e0204ca0` (`2026-09-17-release-solarized-dark` (pruned 2026-09-23; in git history)); see the "Release evidence"
 paragraph at the end of this section and `tests/live/RELEASE-MATRIX.md` for the full row-by-row record. The
 rest of this section is kept as the history of how that verdict was earned: a live Chrome pass finally ran
 (2026-09-17, details below) — the first runtime evidence this package ever had — and it changed the picture in
@@ -308,7 +308,7 @@ Solarized Dark is a flat terminal/documentation workspace: minimal command navig
 terminal rules, underline actions, and flat dialogs. The full dark Iris/frozen-palette/JET coverage described
 above is retained; this identity is not a recolored Estate or Carbon cockpit.
 
-**Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`, verdict
+**Release evidence, 2026-09-17** (`2026-09-17-release-solarized-dark` (pruned 2026-09-23; in git history), verdict
 `VERIFIED`, commit `7ac2e0204ca0`): Layer C exercised install, stale-restore guard, reinstall, switcher on/off,
 coexistence with `linen`, uninstall ×2, unrelated-file preservation and restore — 7/7 on a minimal consumer app
 and a business one. Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus Reports and Widgets,

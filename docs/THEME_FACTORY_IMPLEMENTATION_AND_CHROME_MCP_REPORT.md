@@ -94,7 +94,7 @@ actual evidence captured on the same application IDs, re-provisioned from the co
 |---|---|---|---|
 | A | Repository source | PASS | clean tree, `tests/run-offline.sh` (208 + 11 + 113 test runs), `AGENT_LAYOUT status=PASS` |
 | B | Package artifact | PASS | deterministic ZIPs, `verify-package`, `RELEASE-REPORT.md` |
-| C | Database installation | PASS (both themes) | `tools/live_matrix.py` on TF-CONSUMER-MINIMAL-9010 and TF-CONSUMER-BUSINESS-9011, APEX 26.1.4: install, stale-restore guard, reinstall, switcher on/off, coexistence, uninstall ×2, unrelated-file preservation, restore — `.agents/evaluations/runtime/2026-09-17-release-<theme>/` |
+| C | Database installation | PASS (both themes) | `tools/live_matrix.py` on TF-CONSUMER-MINIMAL-9010 and TF-CONSUMER-BUSINESS-9011, APEX 26.1.4: install, stale-restore guard, reinstall, switcher on/off, coexistence, uninstall ×2, unrelated-file preservation, restore — `2026-09-17-release-` (pruned 2026-09-23; in git history)<theme>/` |
 | D | Browser runtime | PASS (both themes, 12 rows each) | `tools/browser_matrix.py` through the Chrome MCP daemon: both consumers at 1440/1024/768/375 + business Reports/Widgets; zero console errors, zero failed requests, AA contrast clean, keyboard-operable switcher, persisted selection, Font APEX intact |
 | E | Agent behavior | PASS (both themes) | three runtime smokes PASS (`tests/agent-smoke/runs/2026-09-16/{codex,claude}.json`, `2026-09-17/antigravity.json`); scenarios 04, 05, 09, 11, 14 PASS; 0 pending findings — `2026-09-17-release-<theme>/agent_behavior_matrix.json` + `raw/` |
 

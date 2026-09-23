@@ -48,7 +48,7 @@ were captured through the same Layer C/D/E pipeline as `linen`/`solarized-dark`.
 
 Between the 2026-09-17 post-import round and this one, six defects were found and fixed in the verification
 system itself — not in any theme — documented in
-`docs/superpowers/plans/2026-09-17-verification-integrity-defects.md` and `.agents/knowledge/pitfalls.md` §4.6
+the 2026-09-17 verification-integrity-defects plan (removed 2026-09-23; see git history) and `.agents/knowledge/pitfalls.md` §4.6
 and §5.5–5.6: the runtime-evidence schema went from documented-but-unenforced to validated at the gate; the
 gate now checks font-evidence *completeness* (a count and a per-face check), not just its presence; Layer E
 binds on instruction Markdown specifically, separate from the general source binding Layers C/D use; both

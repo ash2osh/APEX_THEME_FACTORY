@@ -9,7 +9,7 @@
 | Typography | **IBM Plex Sans Arabic** (bundled OFL-1.1, weights 400, 500, 600, 700) with complete Arabic (Arabic, Persian, Urdu) and Latin coverage; JetBrains Mono / system monospace stack for tabular figures |
 | Palette | Deep obsidian neutrals (`#0a0e17`, `#111827`, `#181b25`, `#1e293b`, `#31353f`), luminous amber (`#d97706`, `#ffb77d`), telemetry emerald (`#34d399`), and transit cyan (`#22d3ee`) |
 | Scope | App-wide, strictly scoped under `html.app-theme-estate-slate-dark` (`color-scheme: dark`); no page-level edits required |
-| Status | **VERIFIED** (release evidence captured 2026-09-17, commit `7ac2e0204ca0`; Layers A–E all PASS — see *Release evidence* below). Additionally, a manual Chrome DevTools contrast audit against app 102 covered 7 core component pages (Pages 500, 1402, 1410, 1500, 1600, 3100, 1111): **769 visible text nodes scanned — 0 package-caused WCAG AA contrast failures**, Interactive Grid row selection at **10.4:1** (this pass predates and is separate from the release pipeline). |
+| Status | Not hand-maintained — see the generated status table in [`../README.md`](../README.md) (`scripts/theme.sh catalog`). The history below records earlier release rounds. |
 
 ## Preview
 
@@ -132,7 +132,7 @@ coverage remains intact while its geometry is independent from both light Estate
 **Release evidence, 2026-09-17** (`.agents/evaluations/runtime/2026-09-17-release-estate-slate-dark/`, verdict
 `VERIFIED`, commit `7ac2e0204ca0`): the first Layer C/D/E evidence this package has ever had — committed with
 no such evidence 2026-09-17 in `a38076b`, invisible to the release system until captured this same day (see
-`docs/superpowers/plans/2026-09-17-verification-integrity-defects.md`, Task 6). Layer C exercised install,
+the 2026-09-17 verification-integrity-defects plan (removed 2026-09-23; see git history), Task 6). Layer C exercised install,
 stale-restore guard, reinstall, switcher on/off, coexistence with `estate-slate`, uninstall ×2, unrelated-file
 preservation and restore — 7/7 on a minimal consumer app (TF-CONSUMER-MINIMAL-9012) and a business one
 (TF-CONSUMER-BUSINESS-9013). Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus Reports and

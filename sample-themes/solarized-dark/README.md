@@ -8,7 +8,7 @@
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
-| Status | **VERIFIED** (1.1.0, re-captured 2026-09-17 with custom fonts): Layers A–E all PASS, retained evidence in `.agents/evaluations/runtime/2026-09-17-release-solarized-dark/`. All 5 declared WOFF2 faces proven loaded from the package on every Layer D row. |
+| Status | Not hand-maintained — see the generated status table in [`../README.md`](../README.md) (`scripts/theme.sh catalog`). The history below records earlier release rounds. |
 
 ## Preview
 

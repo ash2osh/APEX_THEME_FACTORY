@@ -214,8 +214,8 @@ Measured 2026-09-23. The lanes differ by orders of magnitude, so pick the cheape
 | Author — `scripts/theme.sh check NAME` | ~0.7 s (0.3 s cached) | offline Python |
 | Candidate — `scripts/sync-static.sh` | ~0.15 s | file copies |
 | Candidate — validate + import app 102 | ~6 min (75 s validate, ~5 min import) | SQLcl; app 102 is large |
-| Release — one theme | TIMING_ONE_THEME | SQLcl: each installer step is its own JVM session (~7 s startup) plus a full export, validate or import |
-| Release — all 8 themes | TIMING_ALL_THEMES | the same, times 8 |
+| Release — one theme | ~20 min (linen: 21 min — Layer C on both consumers in parallel, then 8 browser rows) | SQLcl: each installer step is its own JVM session (~7 s startup) plus a full export, validate or import |
+| Release — all 8 themes | ~2.5 h (7 themes 2 h 08 min + linen 21 min; 4.5 h before the consumers ran in parallel) | the same, times 8 |
 
 How to keep it fast:
 

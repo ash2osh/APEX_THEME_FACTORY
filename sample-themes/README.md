@@ -1,8 +1,9 @@
 # sample-themes
 
 One folder per theme package — the only editable copy of a theme. No symlinks: `scripts/sync-static.sh`
-assembles `static-files/css|js/**` and every `sample-themes/<name>/css/**` into the APEXLang export
-(`css/themes/<name>/…`) and regenerates the `@themes` block of `static-files/css/app.css`.
+assembles `static-files/css|js/**` into the APEXLang export, flattens each `sample-themes/<name>/css/theme.css`
+(with its imports) into one `css/themes/<name>/theme.css`, and regenerates the `@themes` block of
+`static-files/css/app.css`. `scripts/sync-static.sh --check` reports drift between sources and the export.
 
 ```text
 sample-themes/<name>/

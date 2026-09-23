@@ -1,7 +1,8 @@
 """Assemble app 102's static files into its APEXLang export (scripts/sync-static.sh).
 
   static-files/css/**, static-files/js/**   -> applications/ut/shared-components/static-files/css|js/**
-  sample-themes/<name>/css/**               -> …/css/themes/<name>/**  (theme.css gains the generated @font-face)
+  sample-themes/<name>/css/theme.css (+ its @imports) -> …/css/themes/<name>/theme.css  (one flattened file,
+                                                          + generated @font-face; 1 request instead of 9)
   sample-themes/<name>/fonts/**/*.woff2     -> …/css/themes/<name>/fonts/  (only when the theme declares fonts)
   sample-themes/<name>/theme.json           -> …/css/themes/<name>/theme.json  (read by the switcher and page 405)
   sample-themes/<name>/preview/cover.jpg    -> …/css/themes/<name>/cover.jpg
@@ -18,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import re
 
-from lib.theme_factory.css_bundle import render_font_css
+from lib.theme_factory.css_bundle import flatten_css, render_font_css
 from lib.theme_factory.manifest import load_manifest
 from lib.theme_factory.static_files import file_block
 
@@ -61,11 +62,10 @@ def _theme_files(theme_root: Path, name: str) -> dict[str, bytes]:
     font_css = render_font_css(load_manifest(theme_root / "theme.json", theme_root)).rstrip("\n")
     wanted: dict[str, bytes] = {}
     css_root = theme_root / "css"
-    for path in _files(css_root):
-        data = path.read_bytes()
-        if font_css and path == css_root / "theme.css":
-            data = data + b"\n" + font_css.encode("utf-8") + b"\n"
-        wanted[f"css/themes/{name}/{path.relative_to(css_root).as_posix()}"] = data
+    bundled = flatten_css(css_root / "theme.css", (css_root,)).encode("utf-8")
+    if font_css:
+        bundled += b"\n" + font_css.encode("utf-8") + b"\n"
+    wanted[f"css/themes/{name}/theme.css"] = bundled
     if font_css:
         for font in (path for path in _files(theme_root / "fonts") if path.suffix == ".woff2"):
             wanted[f"css/themes/{name}/fonts/{font.name}"] = font.read_bytes()

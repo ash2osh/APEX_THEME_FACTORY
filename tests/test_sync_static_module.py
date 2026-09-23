@@ -68,3 +68,22 @@ class SyncStaticTests(unittest.TestCase):
         report = sync(self.root, check=True)
         self.assertTrue(any(item.startswith("css/themes/linen/") for item in report.drift), report.drift)
         self.assertEqual(before, {p: p.read_bytes() for p in self.dst.rglob("*") if p.is_file()})
+
+    def test_each_theme_ships_as_one_flattened_stylesheet(self):
+        sync(self.root)
+        linen = self.dst / "css/themes/linen"
+        self.assertEqual(sorted(p.relative_to(linen).as_posix() for p in linen.rglob("*") if p.is_file()),
+                         ["cover.jpg", "theme.css", "theme.json"])
+        css = (linen / "theme.css").read_text(encoding="utf-8")
+        self.assertNotIn("@import", css)
+        self.assertIn("html.app-theme-linen", css)
+
+    def test_previously_synced_module_files_are_pruned(self):
+        module = self.dst / "css/themes/linen/apex/shell.css"
+        module.parent.mkdir(parents=True)
+        module.write_text("x", encoding="utf-8")
+        self.apx.write_text(self.apx.read_text(encoding="utf-8") + "\n" + file_block("css/themes/linen/apex/shell.css") + "\n",
+                            encoding="utf-8")
+        sync(self.root)
+        self.assertFalse(module.exists())
+        self.assertNotIn("css/themes/linen/apex/", self.apx.read_text(encoding="utf-8"))

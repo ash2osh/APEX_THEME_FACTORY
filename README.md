@@ -123,10 +123,11 @@ reload.
 
 It is deliberately narrow, and everything it owns is marked so it can be removed exactly:
 
-- **Adds** static files under `css/themes/<name>/` (the CSS, `theme.json`, the preview image).
+- **Adds** static files under `theme-factory/packages/<name>/<version>/` (the CSS, `theme.json`, the preview
+  image, any fonts) plus `theme-factory/runtime/registry.json`.
 - **Adds** one hidden page-0 region carrying the bootstrap script, with the Static ID
   `theme_factory_bootstrap` and an HTML marker comment. A second one covers dialog templates.
-- **Adds** `#APP_FILES#css/themes/<name>/theme.css` to the application's CSS file URLs.
+- **Adds** `#APP_FILES#theme-factory/packages/<name>/<version>/theme.css` to the application's CSS file URLs.
 - **With `--with-switcher` only:** adds list entries under the `theme-factory-` static-ID namespace.
 - **Never** touches your pages, regions, processes, items, or any file it did not create. It records a
   SHA-256 for each file it owns in `registry.json` and refuses to remove anything whose digest has changed.

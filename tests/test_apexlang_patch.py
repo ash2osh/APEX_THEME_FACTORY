@@ -345,6 +345,18 @@ class RealShapeTargetTests(unittest.TestCase):
         (root / "shared-components/static-files/css/business-brand.css").write_text("changed", encoding="utf-8")
         self.assertNotEqual(before, theme_factory_projection(root))
 
+    def test_source_theme_directory_is_refused_without_writing_into_it(self):
+        root = self.fixture_copy()
+        parent = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, parent)
+        source = parent / "valid-basic"  # load_manifest requires the directory to carry the theme name
+        source.mkdir()
+        shutil.copy(self.PACKAGE / "theme.json", source / "theme.json")
+        with self.assertRaises(PackageError) as context:
+            plan_install(root, source, "preserve")
+        self.assertIn("theme.css", str(context.exception))
+        self.assertFalse((source / "theme.css").exists())
+
 
 class EmptyApplicationTargetTests(unittest.TestCase):
     """A consumer with no CSS/JS URLs, no static files and no Global Page (real minimal consumer 9010)."""

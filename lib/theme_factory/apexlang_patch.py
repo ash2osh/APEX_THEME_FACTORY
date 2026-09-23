@@ -99,13 +99,10 @@ def plan_install(
     pkg_static_dir = export_dir / f"shared-components/static-files/theme-factory/packages/{manifest.name}/{manifest.version}"
 
     # Add manifest, theme.css, cover.jpg
-    theme_css_path = package_root / "theme.css"
-    if not theme_css_path.exists():
-        # Source mode: build CSS if not already built in package_root
-        from lib.theme_factory.css_bundle import build_theme_css
-        theme_css_content = build_theme_css(export_dir.parent.parent if (export_dir.parent.parent / "static-files").exists() else export_dir, package_root, manifest, "source")
-        temp_css = package_root / "theme.css"
-        temp_css.write_text(theme_css_content, encoding="utf-8")
+    if not (package_root / "theme.css").is_file():
+        raise PackageError(
+            f"{package_root} has no built theme.css; install a built package, not a source theme directory"
+        )
 
     staged_copies.append((package_root / "theme.json", pkg_static_dir / "theme.json"))
     staged_copies.append((package_root / "theme.css", pkg_static_dir / "theme.css"))

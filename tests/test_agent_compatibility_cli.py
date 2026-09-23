@@ -139,7 +139,7 @@ class AgentCompatibilityCliTests(unittest.TestCase):
         self.assertEqual(documentation.read_bytes(), before)
 
     def test_migrate_legacy_artifact_is_standalone_and_omits_scenario_11(self):
-        legacy = Path(".agents/evaluations/runtime/2026-09-17-release-linen/agent_behavior_matrix.json")
+        legacy = Path("tests/fixtures/legacy-evidence/2026-09-17-release-linen/agent_behavior_matrix.json")
         output = self.root / "agent-compatibility" / "2026-09-17" / "compatibility.json"
         result = self.run_cli("--migrate-legacy", legacy, "--output", output)
         self.assertEqual(result.returncode, 2, result.stderr)

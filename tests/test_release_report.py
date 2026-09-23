@@ -109,7 +109,7 @@ class ReleaseVerdictTests(unittest.TestCase):
         self.assertIn("Database installation", report)
 
     def test_historical_layer_e_is_returned_as_legacy_without_synthesis(self):
-        fixture = Path(".agents/evaluations/runtime/2026-09-17-release-linen")
+        fixture = Path("tests/fixtures/legacy-evidence/2026-09-17-release-linen")  # frozen copy: the evidence root gets pruned
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             shutil.copytree(fixture, root, dirs_exist_ok=True)

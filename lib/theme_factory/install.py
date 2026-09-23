@@ -31,7 +31,7 @@ from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
 @dataclass(frozen=True)
 class InstallOptions:
-    package_root: Path
+    package_roots: tuple[Path, ...]
     connection: str
     workspace: str
     app_id: int
@@ -125,10 +125,25 @@ def run_install(options: InstallOptions) -> OperationReport:
     return report
 
 
+def _describe(manifests: list[ThemeManifest]) -> str:
+    if len(manifests) == 1:
+        return f"theme '{manifests[0].name}' v{manifests[0].version}"
+    listed = ", ".join(f"'{manifest.name}' v{manifest.version}" for manifest in manifests)
+    return f"themes {listed} (default '{manifests[-1].name}')"
+
+
 def _run_install(options: InstallOptions, staging: list) -> OperationReport:
-    # 1. Verify package and manifest
-    package_root = options.package_root.resolve()
-    manifest = verify_package(package_root)
+    # 1. Verify every package before touching the target; the last one listed becomes the default.
+    package_roots = tuple(Path(root).resolve() for root in options.package_roots)
+    if not package_roots:
+        raise PackageError("At least one package is required")
+    manifests = [verify_package(root) for root in package_roots]
+    names = [item.name for item in manifests]
+    repeated = sorted({name for name in names if names.count(name) > 1})
+    if repeated:
+        raise PackageError(f"Theme listed more than once: {', '.join(repeated)}")
+    manifest = manifests[-1]
+    label = manifest.name if len(manifests) == 1 else f"{len(manifests)}-themes"
 
     # 2. Setup SQLcl client & validate connection/workspace/app_id
     sqlcl = SqlclClient(options.connection)
@@ -162,10 +177,10 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     else:
         base_dir = Path("./theme-factory-backups").resolve() / f"{options.workspace}-{options.app_id}"
 
-    backup_dir = base_dir / f"{now}-before-{manifest.name}"
+    backup_dir = base_dir / f"{now}-before-{label}"
     count = 1
     while backup_dir.exists():
-        backup_dir = base_dir / f"{now}-before-{manifest.name}-{count}"
+        backup_dir = base_dir / f"{now}-before-{label}-{count}"
         count += 1
 
     backup_dir.mkdir(parents=True, exist_ok=True)
@@ -181,14 +196,18 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
         "apexVersion": target_meta.apex_version,
         "theme": manifest.name,
         "themeVersion": manifest.version,
+        "themes": [{"name": item.name, "version": item.version} for item in manifests],
         "timestamp": now,
         "preExportDigest": pre_digest,
     }
     (backup_dir / "target.json").write_text(json.dumps(target_json, indent=2), encoding="utf-8")
 
-    # 6. Plan and apply staged patch
-    patch = plan_install(staged_dir, package_root, options.switcher_mode)
-    apply_patch(patch)
+    # 6. Plan and apply one staged patch per package, in the order given
+    diffs = []
+    for package_root in package_roots:
+        patch = plan_install(staged_dir, package_root, options.switcher_mode)
+        apply_patch(patch)
+        diffs.append(patch.diff)
     staged_digest = canonical_digest(staged_dir)
     # SQLcl reformats APEXLang on export (indentation, ordering, dropped comments), so the
     # post-import comparison uses the semantic Theme Factory projection, not raw bytes.
@@ -220,11 +239,11 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
         print(f"  Alias:     {target_meta.alias}")
-        print(f"  Theme:     {manifest.name} v{manifest.version}")
+        print(f"  Install:   {_describe(manifests)}")
         print(f"  Switcher:  {options.switcher_mode}")
         print(f"  Backup:    {backup_dir}")
         print(f"  Staged:    {staged_dir}")
-        print(f"\nUnified Diff:\n{patch.diff}")
+        print("\nUnified Diff:\n" + "\n".join(diffs))
         print("\nStatus: STAGED_ONLY (dry-run, no database changes applied)")
         return OperationReport(
             status="STAGED_ONLY",
@@ -239,7 +258,7 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
     print(f"  App ID:        {target_meta.app_id} ({target_meta.name})")
     print(f"  Workspace:     {target_meta.workspace}")
     print(f"  Alias:         {target_meta.alias}")
-    print(f"  Theme:         {manifest.name} v{manifest.version}")
+    print(f"  Install:       {_describe(manifests)}")
     print(f"  Staged Digest: {staged_digest}")
     print(f"  Backup:        {backup_dir}")
 
@@ -286,7 +305,7 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
                 staged_dir=staged_dir, message="Imported export differs from staged transaction",
             )
         post_target = inspect_export(post_dir)
-        if not matches_install(post_target, manifest, options.switcher_mode):
+        if not all(matches_install(post_target, item, options.switcher_mode) for item in manifests):
             print("WARNING: Post-check inspection did not match expected installed state!")
             print("Status: IMPORTED_POSTCHECK_FAILED")
             return OperationReport(
@@ -297,11 +316,11 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
                 message="Imported but postcheck verification failed",
             )
         installed_packages, default_theme, switcher_enabled = read_install_state(post_dir)
-        installed = next((package for package in installed_packages if package.name == manifest.name), None)
+        installed = {package.name: package for package in installed_packages}
         expected_switcher = options.switcher_mode == "enable" or (
             options.switcher_mode == "preserve" and switcher_enabled
         )
-        if not installed or default_theme != manifest.name or (
+        if any(item.name not in installed for item in manifests) or default_theme != manifest.name or (
             options.switcher_mode != "preserve" and switcher_enabled != expected_switcher
         ):
             print("Status: IMPORTED_POSTCHECK_FAILED")
@@ -309,21 +328,22 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
                 status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
                 staged_dir=staged_dir, message="Imported but registry postcheck failed",
             )
-        verify_package_ownership(post_dir, installed)
+        for item in manifests:
+            verify_package_ownership(post_dir, installed[item.name])
         verify_runtime_ownership(post_dir, read_registry_document(post_dir))
         post_digest = canonical_digest(post_dir)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
     _record_post_digest(backup_dir, post_digest)
 
-    print(f"\nResult: IMPORTED theme '{manifest.name}' v{manifest.version} into application {options.app_id}.")
+    print(f"\nResult: IMPORTED {_describe(manifests)} into application {options.app_id}.")
     print("Status: IMPORTED")
     return OperationReport(
         status="IMPORTED",
         exit_code=0,
         backup_dir=backup_dir,
         staged_dir=None,
-        message=f"Theme {manifest.name} v{manifest.version} successfully imported",
+        message=f"{_describe(manifests)} successfully imported",
     )
 
 
@@ -337,7 +357,7 @@ def run_install_cli(args) -> None:
 
     options = InstallOptions(
         assume_yes=getattr(args, "yes", False),
-        package_root=args.package_root,
+        package_roots=tuple(args.package_root),
         connection=args.connection,
         workspace=args.workspace,
         app_id=args.app_id,

@@ -8,7 +8,7 @@ import unittest
 import zipfile
 from unittest import mock
 
-from lib.theme_factory.archive import build_package_from_root, render_template
+from lib.theme_factory.archive import build_package_from_root, extract_package, render_template
 from scripts import install_all_themes
 
 
@@ -27,6 +27,12 @@ class InstallerCliTests(unittest.TestCase):
         with zipfile.ZipFile(zip_path) as z:
             z.extractall(cls.package_root)
         cls.package_dir = next(cls.package_root.iterdir())
+        cls.linen_zip = zip_path
+        cobalt_zip = build_package_from_root(
+            cls.repo_root, cls.repo_root / "sample-themes/cobalt-press", cls.shared_tmp / "dist",
+        )
+        cls.cobalt_zip = cobalt_zip
+        cls.second_package_dir = extract_package(cobalt_zip, cls.shared_tmp / "pkg2")
 
     @classmethod
     def tearDownClass(cls):
@@ -389,3 +395,38 @@ class InstallerCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
         self.assertIn("3.10", result.stderr)
         self.assertNotIn("lib should never be imported", result.stderr)
+
+    def run_install_many(self, *package_dirs: Path, extra=(), stdin: str = "", log: Path = None):
+        env = os.environ.copy()
+        if log:
+            env["FAKE_SQL_LOG"] = str(log)
+        roots = [arg for path in package_dirs for arg in ("--package-root", str(path))]
+        return subprocess.run(
+            ["python3", "-m", "lib.theme_factory.cli", "install", *roots,
+             "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+             "--backup-dir", str(self.tmp / "b"), *extra],
+            input=stdin, text=True, capture_output=True, env=env, check=False,
+        )
+
+    def test_one_transaction_installs_every_package_and_last_is_default(self):
+        from lib.theme_factory.apexlang import read_install_state
+        result = self.run_install_many(self.package_dir, self.second_package_dir, extra=["--apply"], stdin="314\n")
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("Status: IMPORTED", result.stdout)
+        store = Path(Path(os.environ["FAKE_SQL_STATE_FILE"]).read_text(encoding="utf-8").strip())
+        packages, default_theme, _ = read_install_state(store)
+        self.assertEqual(sorted(package.name for package in packages), ["cobalt-press", "linen"])
+        self.assertEqual(default_theme, "cobalt-press")
+        backups = list((self.tmp / "b" / "DEMO-314").iterdir())
+        self.assertEqual(len(backups), 1)
+        self.assertTrue(backups[0].name.endswith("-before-2-themes"), backups[0].name)
+        target = json.loads((backups[0] / "target.json").read_text(encoding="utf-8"))
+        self.assertEqual([item["name"] for item in target["themes"]], ["linen", "cobalt-press"])
+        self.assertEqual(target["theme"], "cobalt-press")
+
+    def test_same_theme_twice_is_refused_before_sqlcl(self):
+        log = self.tmp / "sql.log"
+        result = self.run_install_many(self.package_dir, self.package_dir, log=log)
+        self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
+        self.assertIn("more than once", result.stderr)
+        self.assertFalse(log.exists())

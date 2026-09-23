@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Validate and import applications/ut into app 102 in ONE SQLcl session (overwrites the live app).
+# Import applications/ut into app 102 (overwrites the live app). A failed `apex validate` does not stop a
+# SQLcl script (pitfalls §4.4), so a separate text-checked validate gates it; then validate + import run in ONE session.
 set -euo pipefail
 source "$(dirname "$0")/_env.sh"
 if [[ "${1:-}" != "--yes" ]]; then
   read -r -p "This overwrites application $APP_ID in workspace $WORKSPACE from $APP_DIR. Continue? [y/N] " a
   [[ "$a" == "y" || "$a" == "Y" ]] || { echo "aborted"; exit 1; }
 fi
+"$ROOT/scripts/apex-validate.sh" || { echo "apex-import: validation failed - nothing imported" >&2; exit 1; }
 sql -S -name "$CONN" <<SQL
 whenever sqlerror exit failure
 apex validate -input $APP_DIR -workspace $WORKSPACE

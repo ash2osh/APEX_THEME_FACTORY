@@ -183,6 +183,10 @@ class SqlclClient:
         validate_workspace(workspace)
         validate_app_id(confirmed_app_id)
         apexlang_dir = apexlang_dir.resolve()
+        # `whenever sqlerror` does not stop the script after a failed `apex validate` (probe
+        # 2026-09-23: three compile errors, the next statement still ran, exit 0), so refuse
+        # here first; the import session still validates in-session.
+        self.validate(apexlang_dir, workspace)
 
         script = "\n".join([
             "whenever sqlerror exit failure",

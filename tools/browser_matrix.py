@@ -37,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.chrome_devtools_client import ChromeDevToolsClient  # noqa: E402
 from lib.theme_factory.evidence_cache import (  # noqa: E402
-    EVIDENCE_CONTRACT_VERSION, EvidenceIdentity, write_checkpoint,
+    EVIDENCE_CONTRACT_VERSION, EvidenceIdentity,
 )
 from lib.theme_factory.gitstate import assert_clean_source  # noqa: E402
 
@@ -415,35 +415,23 @@ class LiveBrowserMatrix:
                           notes=notes, declared_face_count=len(expected_faces))
 
 
-def run_layer_d_row(
-    matrix: LiveBrowserMatrix,
-    consumer: str,
-    url: str,
-    theme: str,
-    width: int,
-    git_commit: str,
-    package_sha256: str,
-    checkpoint_path: Path,
-    identity: EvidenceIdentity,
-    *,
-    clean_checker=assert_clean_source,
-) -> RowCapture:
-    """Capture one browser row and checkpoint it only while source remains clean."""
+def assert_row_identity(artifact: dict, identity: EvidenceIdentity) -> None:
+    """Refuse a captured row that disagrees with the checkpoint identity it will be filed under.
 
-    clean_checker()
-    row = matrix.capture_row(consumer, url, theme, width)
-    artifact = build_runtime_artifact(theme, git_commit, package_sha256, row)
-    if (
-        artifact.get("apexVersion") != identity.apex_version
-        or artifact.get("browserVersion") != identity.browser_version
-        or artifact.get("consumer") != identity.consumer
-        or artifact.get("pageId") != identity.page
-        or artifact.get("viewportWidth") != identity.viewport
-    ):
-        raise RuntimeError("captured browser row does not match its checkpoint identity")
-    clean_checker()
-    write_checkpoint(checkpoint_path, identity, artifact)
-    return row
+    The page is not compared: live batch identities key rows by URL, while the artifact
+    records the APEX page id.
+    """
+    mismatched = [
+        name for name, expected in (
+            ("apexVersion", identity.apex_version),
+            ("browserVersion", identity.browser_version),
+            ("consumer", identity.consumer),
+            ("viewportWidth", identity.viewport),
+        )
+        if artifact.get(name) != expected
+    ]
+    if mismatched:
+        raise RuntimeError(f"captured browser row does not match its checkpoint identity: {', '.join(mismatched)}")
 
 
 def main() -> None:

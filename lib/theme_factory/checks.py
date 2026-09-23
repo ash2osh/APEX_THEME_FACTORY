@@ -1,17 +1,14 @@
-"""Quiet, composed author-lane checks with content-addressed caching."""
+"""Quiet, composed author-lane checks."""
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 import hashlib
 import json
-import os
 from pathlib import Path
-import stat
 import struct
 import tempfile
 import time
 
 from lib.theme_factory.archive import build_package_from_root, verify_package
-from lib.theme_factory.cache import CacheKey, load_cached_report, store_cached_report
 from lib.theme_factory.css_bundle import build_theme_css
 from lib.theme_factory.css_policy import scan_package
 from lib.theme_factory.discovery import discover_themes
@@ -21,7 +18,6 @@ from lib.theme_factory.manifest import NAME_REGEX, ThemeManifest, load_manifest
 from lib.theme_factory.recipe import ThemeRecipe, load_recipe, validate_core_contrast
 
 
-CHECK_CONTRACT_VERSION = "1"
 SEVERITY_ORDER = {"error": 0, "warning": 1, "info": 2}
 
 
@@ -42,64 +38,28 @@ class CheckIssue:
             "line": self.line,
         }
 
-    @classmethod
-    def from_dict(cls, raw: dict[str, object]) -> "CheckIssue":
-        return cls(
-            severity=str(raw["severity"]),
-            code=str(raw["code"]),
-            message=str(raw["message"]),
-            path=str(raw.get("path", "")),
-            line=int(raw.get("line", 0)),
-        )
-
 
 @dataclass(frozen=True)
 class CheckReport:
     status: str
     theme: str
-    cache_hit: bool
     duration_ms: int
-    input_digest: str
     issues: tuple[CheckIssue, ...]
 
     def to_dict(self) -> dict[str, object]:
         return {
             "status": self.status,
             "theme": self.theme,
-            "cacheHit": self.cache_hit,
             "durationMs": self.duration_ms,
-            "inputDigest": self.input_digest,
             "issues": [issue.to_dict() for issue in self.issues],
         }
-
-    @classmethod
-    def from_dict(cls, raw: dict[str, object]) -> "CheckReport":
-        required = {"status", "theme", "cacheHit", "durationMs", "inputDigest", "issues"}
-        if set(raw) != required or not isinstance(raw["issues"], list):
-            raise ValueError("Invalid cached check report")
-        return cls(
-            status=str(raw["status"]),
-            theme=str(raw["theme"]),
-            cache_hit=bool(raw["cacheHit"]),
-            duration_ms=int(raw["durationMs"]),
-            input_digest=str(raw["inputDigest"]),
-            issues=tuple(CheckIssue.from_dict(issue) for issue in raw["issues"]),
-        )
-
-    def with_cache_hit(self, cache_hit: bool, duration_ms: int | None = None) -> "CheckReport":
-        return replace(
-            self,
-            cache_hit=cache_hit,
-            duration_ms=self.duration_ms if duration_ms is None else duration_ms,
-        )
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), separators=(",", ":"), sort_keys=True)
 
     def to_human(self) -> str:
-        cache = "hit" if self.cache_hit else "miss"
         summary = (
-            f"THEME_CHECK theme={self.theme} status={self.status} cache={cache} "
+            f"THEME_CHECK theme={self.theme} status={self.status} "
             f"duration_ms={self.duration_ms} issues={len(self.issues)}"
         )
         if not self.issues:
@@ -138,56 +98,6 @@ def _jpeg_dimensions(path: Path) -> tuple[int, int] | None:
             return None
         offset += length
     return None
-
-
-def _hash_file(digest, repo_root: Path, path: Path) -> None:
-    relative = path.relative_to(repo_root).as_posix().encode("utf-8")
-    data = path.read_bytes()
-    mode = stat.S_IMODE(path.stat().st_mode)
-    digest.update(len(relative).to_bytes(4, "big"))
-    digest.update(relative)
-    digest.update(mode.to_bytes(4, "big"))
-    digest.update(len(data).to_bytes(8, "big"))
-    digest.update(data)
-
-
-def canonical_input_digest(repo_root: Path, theme_root: Path) -> str:
-    """Hash every author-check input while reducing previews to cover dimensions."""
-
-    repo_root = Path(repo_root).resolve()
-    theme_root = Path(theme_root).resolve()
-    digest = hashlib.sha256()
-    digest.update(f"check-contract:{CHECK_CONTRACT_VERSION}\n".encode("utf-8"))
-
-    for path in sorted(theme_root.rglob("*")):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(theme_root)
-        if relative.parts and relative.parts[0] == "preview":
-            continue
-        _hash_file(digest, repo_root, path)
-
-    cover = theme_root / "preview/cover.jpg"
-    dimensions = _jpeg_dimensions(cover)
-    cover_state = f"cover:{'missing' if not cover.exists() else dimensions}\n"
-    digest.update(cover_state.encode("utf-8"))
-
-    direct_inputs = (
-        repo_root / "static-files/css/foundation/tokens.css",
-        repo_root / "installer/theme-factory-runtime.js",
-        repo_root / "installer/install.sh",
-        repo_root / "installer/uninstall.sh",
-        repo_root / "tools/font-tools-requirements.txt",
-    )
-    for path in direct_inputs:
-        if path.is_file():
-            _hash_file(digest, repo_root, path)
-    for directory in (repo_root / "theme-templates", repo_root / "installer/templates"):
-        if directory.is_dir():
-            for path in sorted(directory.rglob("*")):
-                if path.is_file():
-                    _hash_file(digest, repo_root, path)
-    return digest.hexdigest()
 
 
 def _relative(repo_root: Path, path: Path) -> str:
@@ -250,7 +160,7 @@ def _sort_issues(issues: list[CheckIssue]) -> tuple[CheckIssue, ...]:
     )
 
 
-def run_theme_checks(repo_root: Path, theme_name: str, use_cache: bool = True) -> CheckReport:
+def run_theme_checks(repo_root: Path, theme_name: str) -> CheckReport:
     """Run all cheap author checks directly and aggregate every finding."""
 
     if not isinstance(theme_name, str) or not NAME_REGEX.fullmatch(theme_name):
@@ -259,14 +169,6 @@ def run_theme_checks(repo_root: Path, theme_name: str, use_cache: bool = True) -
     started = time.perf_counter()
     repo_root = Path(repo_root).resolve()
     theme_root = repo_root / "sample-themes" / theme_name
-    input_digest = canonical_input_digest(repo_root, theme_root)
-    key = CacheKey(CHECK_CONTRACT_VERSION, input_digest)
-    cache_dir = repo_root / ".theme-factory/cache/checks" / theme_name
-    if use_cache:
-        cached = load_cached_report(cache_dir, key)
-        if cached is not None:
-            elapsed = round((time.perf_counter() - started) * 1000)
-            return cached.with_cache_hit(True, elapsed)
 
     issues: list[CheckIssue] = []
     manifest = None
@@ -339,7 +241,4 @@ def run_theme_checks(repo_root: Path, theme_name: str, use_cache: bool = True) -
     sorted_issues = _sort_issues(issues)
     status = "ERROR" if any(issue.severity == "error" for issue in sorted_issues) else "PASS"
     elapsed = round((time.perf_counter() - started) * 1000)
-    report = CheckReport(status, theme_name, False, elapsed, input_digest, sorted_issues)
-    if use_cache and report.status == "PASS":
-        store_cached_report(cache_dir, key, report)
-    return report
+    return CheckReport(status, theme_name, elapsed, sorted_issues)

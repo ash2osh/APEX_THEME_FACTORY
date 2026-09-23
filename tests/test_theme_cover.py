@@ -192,7 +192,7 @@ class ThemeCoverCliTests(unittest.TestCase):
         issues = () if status == "PASS" else (
             CheckIssue("error", "BROKEN", "broken package", "theme.json", 1),
         )
-        return CheckReport(status, "carbon-volt", False, 4, "a" * 64, issues)
+        return CheckReport(status, "carbon-volt", 4, issues)
 
     @staticmethod
     def _invoke(*arguments: str):

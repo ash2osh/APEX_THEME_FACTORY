@@ -8,86 +8,19 @@ permissions:
   contents: read
 
 jobs:
-  common:
+  offline:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install offline test dependencies
+      - name: Install test dependencies
         run: python -m pip install --disable-pip-version-check --no-cache-dir -r tools/test-requirements.txt
-      - name: Run common offline verification once
-        run: tests/run-common-offline.sh
-      - name: Check generated catalogs
-        run: scripts/theme.sh catalog --check
-      - name: Check pinned Iris token inventory
-        run: scripts/theme.sh inspect-iris --check
-      - name: State live-evidence boundary
+      - name: Offline gate
+        run: tests/run-offline.sh
+      - name: Live checks are local
         if: always()
-        run: echo 'Layers C-D are UNVERIFIED — run the local release workflow with SQLcl and the approved Chrome daemon. Agent compatibility has a separate project-level verdict.' >> "$GITHUB_STEP_SUMMARY"
-
-  select:
-    needs: common
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.changed.outputs.matrix }}
-      count: ${{ steps.changed.outputs.count }}
-      selection: ${{ steps.changed.outputs.selection }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Select affected themes
-        id: changed
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PUSH_BASE: ${{ github.event.before }}
-          HEAD_SHA: ${{ github.sha }}
-        run: |
-          base="$PUSH_BASE"
-          if [[ "$EVENT_NAME" == "pull_request" ]]; then base="$PR_BASE"; fi
-          if [[ -z "$base" || "$base" == "0000000000000000000000000000000000000000" ]]; then base="HEAD^"; fi
-          selection="$(python3 -m lib.theme_factory.changed --base "$base" --head "$HEAD_SHA")"
-          matrix="$(python3 -c 'import json,sys; p=json.loads(sys.argv[1]); print(json.dumps({"include":p["include"]},separators=(",",":")))' "$selection")"
-          count="$(python3 -c 'import json,sys; print(len(json.loads(sys.argv[1])["include"]))' "$selection")"
-          echo "selection=$selection" >> "$GITHUB_OUTPUT"
-          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
-          echo "count=$count" >> "$GITHUB_OUTPUT"
-          echo "Changed-theme selection: $selection" >> "$GITHUB_STEP_SUMMARY"
-
-  changed-theme:
-    needs: select
-    if: needs.select.outputs.count != '0'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Run affected theme checks
-        run: scripts/theme.sh check "${{ matrix.theme }}" --no-cache
-      - name: Build non-release candidate artifact
-        run: scripts/package-theme.sh "${{ matrix.theme }}" "$RUNNER_TEMP/${{ matrix.theme }}"
-      - name: Verify candidate archive
-        run: |
-          archive="$(find "$RUNNER_TEMP/${{ matrix.theme }}" -maxdepth 1 -name '*.zip' -print -quit)"
-          python3 -m lib.theme_factory.cli verify-package --package "$archive"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: candidate-${{ matrix.theme }}-${{ github.sha }}
-          path: ${{ runner.temp }}/${{ matrix.theme }}/*.zip
-          if-no-files-found: error
+        run: echo 'Offline only. The live smoke (install + browser) runs locally with scripts/theme.sh release NAME.' >> "$GITHUB_STEP_SUMMARY"

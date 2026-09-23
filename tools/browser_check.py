@@ -1,48 +1,26 @@
 #!/usr/bin/env python3
-"""Browser runtime matrix (Layer D) through the project Chrome MCP daemon.
+"""Live browser check of one installed theme, through the project Chrome MCP daemon.
 
-For each consumer application and required width (1440, 1024, 768, 375) the tool opens the
-consumer's home page in its own tab, activates the theme under test through the installed
-switcher API, reloads, and records:
-
-* identity: app, alias, page, APEX version, html/body classes, CSS/JS URLs, loaded resources
-* console errors and failed network requests since the navigation
-* fonts: Font APEX stays loaded and is the icon family; the body family equals bare Iris on the
-  same page (a package without custom fonts must not change it — Iris 26.1.4 resolves to the
-  system stack, `oraclesans-apex.min.css` is linked but unused) or names the package family
-* persistence: the selection survives a reload under `apex.themeFactory.<APP_ID>`
-* accessibility: the documented AA contrast audit (docs/CHROME_DEVTOOLS_MCP.md) reports zero
-  failures and the switcher menu is keyboard operable (Enter opens a `menuitemradio` group)
-
-Every verification boolean is `true` only when its check passed; a row with errors or an
-unverified flag makes the Layer D summary `FAIL`, never `PASS`.
+Opens the consumer page in its own background tab at a given width, selects the theme through the
+installed switcher runtime, reloads, and reports what a user would hit: console errors, failed
+requests, fonts that did not load, AA contrast failures (the audit in docs/CHROME_DEVTOOLS_MCP.md),
+a switcher that is not keyboard operable, or a selection that does not survive a reload.
 """
 
 from __future__ import annotations
 
-import argparse
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-import hashlib
 import json
 import zipfile
 from pathlib import Path
 import re
-import subprocess
 import sys
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.chrome_devtools_client import ChromeDevToolsClient  # noqa: E402
-from lib.theme_factory.evidence_cache import (  # noqa: E402
-    EVIDENCE_CONTRACT_VERSION, EvidenceIdentity,
-)
-from lib.theme_factory.gitstate import assert_clean_source  # noqa: E402
-
-REQUIRED_WIDTHS = (1440, 1024, 768, 375)
-CONSUMERS = ("minimal", "business")
 
 
 @dataclass
@@ -56,127 +34,23 @@ class RowCapture:
     accessibility_verified: bool = False
     persistence_verified: bool = False
     notes: List[str] = field(default_factory=list)
-    # How many faces the package's own manifest declares (tools.browser_matrix.font_expectations),
-    # recorded independently of the `fonts` evidence list so the gate can catch a regression that
-    # silently drops entries rather than trusting a self-consistent but wrong array (Task 2).
     declared_face_count: int = 0
 
+    def problems(self, theme: str) -> List[str]:
+        """Everything a user would notice; empty means the row passed."""
+        found = []
+        if self.page.get("activeTheme") != theme:
+            found.append(f"active theme is {self.page.get('activeTheme')!r}, not {theme!r}")
+        found += [f"console error: {line}" for line in self.console_errors]
+        found += [f"failed request: {line}" for line in self.failed_requests]
+        if not self.fonts_verified:
+            found.append("declared fonts not loaded")
+        if not self.accessibility_verified:
+            found.append("contrast or keyboard check failed")
+        if not self.persistence_verified:
+            found.append("theme selection not kept across reload")
+        return found + [f"note: {note}" for note in self.notes] if found else []
 
-def _now() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def build_runtime_artifact(theme: str, git_commit: str, package_sha256: str, row: RowCapture,
-                           captured_at: Optional[str] = None) -> dict:
-    page = row.page
-    window_app = page.get("windowApp")
-    if isinstance(window_app, list):
-        window_app = {"keys": window_app}
-    return {
-        "schemaVersion": 1,
-        "evidenceContractVersion": EVIDENCE_CONTRACT_VERSION,
-        "evidenceType": "browser-runtime",
-        "theme": theme,
-        "gitCommit": git_commit,
-        "packageSha256": package_sha256,
-        "capturedAt": captured_at or _now(),
-        "consumer": row.consumer,
-        "viewportWidth": row.width,
-        "url": page.get("url", ""),
-        "appId": str(page.get("appId", "")),
-        "appAlias": str(page.get("appAlias", "")),
-        "pageId": str(page.get("pageId", "")),
-        "apexVersion": str(page.get("apexVersion", "")),
-        "browserVersion": str(page.get("browserVersion", "")),
-        "bodyClasses": list(page.get("bodyClasses", [])),
-        "htmlClasses": list(page.get("htmlClasses", [])),
-        "cssUrls": list(page.get("cssUrls", [])),
-        "javascriptUrls": list(page.get("javascriptUrls", [])),
-        "loadedUrls": list(page.get("loadedUrls", [])),
-        "windowApp": window_app if isinstance(window_app, dict) or window_app is None else {"value": window_app},
-        "windowAlpine": page.get("windowAlpine"),
-        "activeTheme": str(page.get("activeTheme", "")),
-        "registry": page.get("registry") if isinstance(page.get("registry"), dict) else {},
-        "switcherAvailable": bool(page.get("switcherAvailable")),
-        "consoleErrors": list(row.console_errors),
-        "failedRequests": list(row.failed_requests),
-        "fonts": list(page.get("fonts", [])),
-        "declaredFaceCount": int(row.declared_face_count),
-        "fontApexFamilyBefore": str(page.get("fontApexFamilyBefore", "")),
-        "fontApexFamilyAfter": str(page.get("fontApexFamilyAfter", "")),
-        "fontsVerified": bool(row.fonts_verified),
-        "accessibilityVerified": bool(row.accessibility_verified),
-        "persistenceVerified": bool(row.persistence_verified),
-        "notes": list(row.notes),
-    }
-
-
-def write_layer_d_evidence(evidence_dir: Path, theme: str, git_commit: str, package_sha256: str,
-                           rows: List[RowCapture], captured_at: Optional[str] = None) -> Path:
-    from lib.theme_factory.release import _valid_browser_runtime_artifact  # local import keeps tools importable alone
-
-    captured_at = captured_at or _now()
-    evidence_dir = Path(evidence_dir)
-    raw_dir = evidence_dir / "raw"
-    raw_dir.mkdir(parents=True, exist_ok=True)
-    row_refs = []
-    failures = []
-    covered = set()
-    for row in rows:
-        artifact = build_runtime_artifact(theme, git_commit, package_sha256, row, captured_at)
-        page_label = re.sub(r"[^a-z0-9]+", "-", (row.page.get("pageId") or "p").lower()) or "p"
-        path = raw_dir / f"browser-{row.consumer}-page{page_label}-{row.width}.json"
-        path.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
-        row_refs.append({"consumer": row.consumer, "width": row.width,
-                         "evidence": {"path": f"raw/{path.name}", "sha256": _sha256(path)}})
-        if _valid_browser_runtime_artifact(artifact, theme, row.consumer, row.width):
-            covered.add((row.consumer, row.width))
-        else:
-            reasons = []
-            if artifact["consoleErrors"]:
-                reasons.append(f"console errors: {artifact['consoleErrors'][:3]}")
-            if artifact["failedRequests"]:
-                reasons.append(f"failed requests: {artifact['failedRequests'][:3]}")
-            for flag in ("fontsVerified", "accessibilityVerified", "persistenceVerified"):
-                if not artifact[flag]:
-                    reasons.append(f"{flag} false")
-            if artifact["activeTheme"] != theme:
-                reasons.append(f"active theme {artifact['activeTheme']!r}")
-            failures.append(f"{row.consumer}@{row.width}: {'; '.join(reasons) or 'contract violation'}" + (f" ({' | '.join(row.notes)})" if row.notes else ""))
-    missing = sorted({(c, w) for c in CONSUMERS for w in REQUIRED_WIDTHS} - covered)
-    for consumer, width in missing:
-        if not any(f.startswith(f"{consumer}@{width}:") for f in failures):
-            failures.append(f"{consumer}@{width}: no passing capture")
-    status = "PASS" if not failures else "FAIL"
-    summary = {
-        "schemaVersion": 1, "theme": theme, "gitCommit": git_commit, "packageSha256": package_sha256,
-        "capturedAt": captured_at, "layer": "D", "check": "browser_runtime_matrix", "status": status,
-        "results": {"rows": row_refs, "failures": failures},
-    }
-    summary_path = evidence_dir / "browser_runtime_matrix.json"
-    summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-
-    manifest_path = evidence_dir / "evidence.json"
-    manifest = {"schemaVersion": 1, "theme": theme, "checks": []}
-    if manifest_path.exists():
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["checks"] = [c for c in manifest.get("checks", []) if not (c.get("layer") == "D" and c.get("check") == "browser_runtime_matrix")]
-    manifest["checks"].append({
-        "layer": "D", "check": "browser_runtime_matrix", "status": status,
-        "artifact": summary_path.name, "artifactSha256": _sha256(summary_path),
-        "details": f"{len(covered)}/{len(CONSUMERS) * len(REQUIRED_WIDTHS)} consumer/width rows verified live at commit {git_commit[:12]}"
-                   + ("" if status == "PASS" else f"; failures: {'; '.join(failures)}"),
-    })
-    manifest["checks"].sort(key=lambda c: (c["layer"], c["check"]))
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    return summary_path
-
-
-# ---------------------------------------------------------------- live capture
 
 PAGE_SNIPPET_TEMPLATE = r"""async () => {
   const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href') || l.href);
@@ -413,84 +287,3 @@ class LiveBrowserMatrix:
         return RowCapture(consumer=consumer, width=width, page=page, console_errors=errors, failed_requests=failed,
                           fonts_verified=fonts_ok, accessibility_verified=accessibility, persistence_verified=persistence,
                           notes=notes, declared_face_count=len(expected_faces))
-
-
-def assert_row_identity(artifact: dict, identity: EvidenceIdentity) -> None:
-    """Refuse a captured row that disagrees with the checkpoint identity it will be filed under.
-
-    The page is not compared: live batch identities key rows by URL, while the artifact
-    records the APEX page id.
-    """
-    mismatched = [
-        name for name, expected in (
-            ("apexVersion", identity.apex_version),
-            ("browserVersion", identity.browser_version),
-            ("consumer", identity.consumer),
-            ("viewportWidth", identity.viewport),
-        )
-        if artifact.get(name) != expected
-    ]
-    if mismatched:
-        raise RuntimeError(f"captured browser row does not match its checkpoint identity: {', '.join(mismatched)}")
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Capture the Layer D browser matrix through the Chrome MCP daemon")
-    parser.add_argument("--theme", required=True)
-    parser.add_argument("--package", type=Path, required=True, help="the theme's ZIP (for its SHA-256)")
-    parser.add_argument("--minimal-url", required=True)
-    parser.add_argument("--business-url", required=True)
-    parser.add_argument("--business-extra-urls", default="", help="comma-separated extra business pages (reports, widgets, ...) captured at the outer widths")
-    parser.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
-    parser.add_argument("--date", default=datetime.now(timezone.utc).strftime("%Y-%m-%d"))
-    parser.add_argument("--widths", default=",".join(map(str, REQUIRED_WIDTHS)))
-    args = parser.parse_args()
-
-    commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-    # Re-checked before each row below, not only here - a tree that goes dirty mid-run must abort
-    # within that operation, not silently pass it and only fail the next capture (plan Task 4).
-    try:
-        assert_clean_source()
-    except RuntimeError as exc:
-        print(f"Refusing: {exc}", file=sys.stderr)
-        raise SystemExit(2)
-    from lib.theme_factory.gitstate import last_source_commit, package_source_commit, package_matches_source
-    _source_commit = last_source_commit()
-    if not package_matches_source(args.package, _source_commit):
-        print(f"Refusing: package {args.package} was built at {package_source_commit(args.package)!r}, "
-              f"but the current source is {_source_commit!r}; rebuild it before capturing evidence",
-              file=sys.stderr)
-        raise SystemExit(2)
-    package_sha = _sha256(args.package)
-    client = ChromeDevToolsClient()
-    opened = client.call_tool("new_page", {"url": args.minimal_url, "background": True})
-    page_id = int(re.findall(r"^(\d+): .*\[selected\]", _text(opened), re.MULTILINE)[0])
-    matrix = LiveBrowserMatrix(client, page_id, package=args.package)
-    rows: List[RowCapture] = []
-    try:
-        widths = [int(w) for w in args.widths.split(",")]
-        plan = [("minimal", args.minimal_url, widths), ("business", args.business_url, widths)]
-        outer = [w for w in widths if w in (max(widths), min(widths))]
-        plan += [("business", url.strip(), outer) for url in args.business_extra_urls.split(",") if url.strip()]
-        for consumer, url, plan_widths in plan:
-            for width in plan_widths:
-                try:
-                    assert_clean_source()
-                except RuntimeError as exc:
-                    print(f"Refusing: {exc}", file=sys.stderr)
-                    raise SystemExit(2)
-                row = matrix.capture_row(consumer, url, args.theme, width)
-                status = "ok" if (row.fonts_verified and row.accessibility_verified and row.persistence_verified and not row.console_errors and not row.failed_requests) else "issues"
-                print(f"{consumer} page {row.page.get('pageId')}@{width}: {status} {'; '.join(row.notes)}")
-                rows.append(row)
-    finally:
-        try:
-            client.call_tool("close_page", {"pageId": page_id})
-        except Exception:
-            pass
-    summary = write_layer_d_evidence(args.evidence_root / f"{args.date}-release-{args.theme}", args.theme, commit, package_sha, rows)
-    print(f"Layer D evidence written: {summary}")
-
-
-if __name__ == "__main__":
-    main()

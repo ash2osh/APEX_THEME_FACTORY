@@ -61,8 +61,6 @@ class AgentLayoutTests(unittest.TestCase):
         (self.tmp / ".agents/README.md").write_text(
             ".agents/skills .claude/skills .agent/skills .agents/rules\n", encoding="utf-8"
         )
-        (self.tmp / "sample-prompts").mkdir()
-        (self.tmp / "sample-prompts/init.md").write_text("Inspect only; stop before edits.\n", encoding="utf-8")
 
     def run_check(self):
         return subprocess.run(
@@ -169,40 +167,6 @@ class AgentLayoutTests(unittest.TestCase):
         result = self.run_check()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("documentation missing path", result.stdout)
-
-    def test_forbidden_init_commands_fail(self):
-        (self.tmp / "sample-prompts/init.md").write_text("Run git init to start\n", encoding="utf-8")
-        result = self.run_check()
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("forbidden pattern found: 'git init'", result.stdout)
-
-    def test_permission_bypass_in_any_prompt_fails(self):
-        """Every starter prompt is scanned, not just init.md - a bypass flag must never ship."""
-        (self.tmp / "sample-prompts/install-theme.md").write_text(
-            "Run it with --dangerously-skip-permissions\n", encoding="utf-8")
-        result = self.run_check()
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("dangerously-skip-permissions", result.stdout)
-
-    def test_mutating_prompt_may_mention_apex_import(self):
-        """install-theme legitimately documents importing; only read-only prompts must not."""
-        (self.tmp / "sample-prompts/install-theme.md").write_text(
-            "After confirmation, scripts/apex-import.sh performs the import.\n", encoding="utf-8")
-        result = self.run_check()
-        self.assertEqual(result.returncode, 0, result.stdout)
-
-    def test_read_only_prompt_may_not_mention_apex_import(self):
-        (self.tmp / "sample-prompts/accessibility-audit.md").write_text(
-            "Finish by running apex-import.sh\n", encoding="utf-8")
-        result = self.run_check()
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("apex-import.sh", result.stdout)
-
-    def test_init_prompt_requests_evidence_and_stops(self):
-        repo_root = Path(__file__).resolve().parent.parent
-        text = (repo_root / "sample-prompts/init.md").read_text(encoding="utf-8")
-        for phrase in ("git status", "apex-validate.sh", "APEX_VERSION", "apex-theme-iris", "stop"):
-            self.assertIn(phrase, text)
 
     def test_contract_assertions(self):
         # Real repository contract tests

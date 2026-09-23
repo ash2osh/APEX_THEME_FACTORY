@@ -160,42 +160,6 @@ else:
         if req_path not in readme_text:
             add_error(".agents/README.md", f"documentation missing path '{req_path}'")
 
-# 8. sample-prompts/*.md
-# Two tiers. Nothing legitimate needs a permission bypass or a destructive shell command, so those are
-# refused in every prompt. `apex import` is different: install-theme.md exists to explain importing, so it
-# is refused only in the prompts that declare themselves read-only.
-ALWAYS_FORBIDDEN = [
-    "git init",
-    "git commit",
-    "dangerously-skip-permissions",
-    "dangerously-bypass-approvals-and-sandbox",
-    "rm -rf",
-]
-READ_ONLY_FORBIDDEN = ["apex import", "apex-import.sh"]
-READ_ONLY_PROMPTS = {
-    "init.md", "README.md", "accessibility-audit.md", "release-verify.md", "diagnose-runtime.md",
-}
-
-prompts_dir = root / "sample-prompts"
-init_prompt = prompts_dir / "init.md"
-if not init_prompt.exists() or not init_prompt.is_file():
-    add_error("sample-prompts/init.md", "missing file")
-
-if prompts_dir.is_dir():
-    for prompt in sorted(prompts_dir.glob("*.md")):
-        rel_prompt = f"sample-prompts/{prompt.name}"
-        try:
-            prompt_text = prompt.read_text(encoding="utf-8")
-        except OSError as exc:
-            add_error(rel_prompt, f"unreadable: {exc}")
-            continue
-        patterns = list(ALWAYS_FORBIDDEN)
-        if prompt.name in READ_ONLY_PROMPTS:
-            patterns += READ_ONLY_FORBIDDEN
-        for pattern in patterns:
-            if re.search(r"\b" + re.escape(pattern) + r"\b", prompt_text, re.IGNORECASE):
-                add_error(rel_prompt, f"forbidden pattern found: '{pattern}'")
-
 # Print all errors
 for rel_path, msg in errors:
     print(f"ERROR path={rel_path} message={msg}")

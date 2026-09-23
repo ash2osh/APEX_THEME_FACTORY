@@ -27,6 +27,7 @@ from lib.theme_factory.evidence_cache import (
     write_checkpoint,
 )
 from lib.theme_factory.errors import PackageError
+from tools.live_matrix import run_in_parallel
 
 
 @dataclass(frozen=True)
@@ -322,8 +323,10 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
     package_by_theme = {package.theme: package for package in packages}
 
     def restore_baselines() -> None:
-        for target in targets:
-            sqlcl.import_apexlang(baselines[target.consumer], args.workspace, target.app_id)
+        run_in_parallel(
+            lambda target: sqlcl.import_apexlang(baselines[target.consumer], args.workspace, target.app_id),
+            targets,
+        )
 
     def layer_c(theme: str) -> bool:
         result = run_layer_c_theme(
@@ -342,7 +345,8 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
         raise PackageError(f"Layer C failed for {layer_c_report.failures[0]}; remaining candidates were not run")
 
     package_zips = ",".join(str(package.zip_path) for package in packages)
-    for target in targets:
+
+    def install_candidates(target) -> None:
         assert_clean_source(repo_root)
         install = subprocess.run([
             str(repo_root / "scripts/install-all-themes.sh"),
@@ -352,6 +356,8 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
         ], cwd=repo_root, check=False)
         if install.returncode != 0:
             raise PackageError(f"Candidate-set install failed for {target.consumer}")
+
+    run_in_parallel(install_candidates, targets)
 
     client = ChromeDevToolsClient()
     opened = client.call_tool("new_page", {"url": args.minimal_url, "background": True})

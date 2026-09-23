@@ -16,6 +16,7 @@ scripts/cleanup-consumer-fixtures.sh for that, with their own confirmations.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 import hashlib
@@ -27,7 +28,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Sequence
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # allow `python3 tools/live_matrix.py`
 
@@ -78,6 +79,18 @@ class LayerCThemeResult:
     status: str
     summary: Path
     operations: Dict[str, OperationResult]
+
+
+def run_in_parallel(action: Callable, items: Sequence) -> list:
+    """Run action(item) for every item at once, one thread each; results keep item order.
+
+    The consumer applications are independent, so their SQLcl work can overlap (about half the
+    wall time of a release batch). Every call finishes before the first failure is re-raised, so a
+    failing consumer never leaves the other one mid-import.
+    """
+    with ThreadPoolExecutor(max_workers=max(1, len(items))) as pool:
+        futures = [pool.submit(action, item) for item in items]
+    return [future.result() for future in futures]
 
 
 def _now() -> str:
@@ -361,13 +374,15 @@ def run_layer_c_theme(
 ) -> LayerCThemeResult:
     """Run one candidate across consumers and write evidence only from a clean source tree."""
 
-    combined: Dict[str, OperationResult] = {}
-    for target in targets:
+    def run_target(target: ApplicationTarget) -> Dict[str, OperationResult]:
         clean_checker()
-        results = lifecycle_runner(
+        return lifecycle_runner(
             connection, workspace, target, primary.zip_path, secondary.zip_path,
             Path(work_dir) / target.consumer, env=env, with_switcher=True,
         )
+
+    combined: Dict[str, OperationResult] = {}
+    for target, results in zip(targets, run_in_parallel(run_target, targets)):
         for name, result in results.items():
             merged = combined.setdefault(name, OperationResult(operation=name, status="PASS"))
             merged.steps.extend({"consumer": target.consumer, **step} for step in result.steps)

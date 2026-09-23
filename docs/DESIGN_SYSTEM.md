@@ -19,8 +19,7 @@ Rules
   `body.apex-theme-iris` — the theme-style scope, not `:root`. Core/Iris declare base atoms on `:root` and every
   modifier/state on the element, so body-level overrides restyle everything while `--small`, `--hot`, `--header`,
   floating labels etc. keep precedence. Where an atom is set on the element (`.a-IRR{--a-gv-border-radius}`),
-  override on that element. Prefer an atom override to a property override whenever the atom exists
-  (see `.agents/findings/accepted/2026-09-13-theme-style-scope-token-overrides.md`).
+  override on that element. Prefer an atom override to a property override whenever the atom exists.
 - Before adding an `--app-*` literal, check the Iris table below and `static-files/css/foundation/tokens.css`.
 - New tokens only when reusable and design-system meaningful (spec §18).
 
@@ -143,18 +142,16 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 
 ### 3.2 Theme deltas
 
-<!-- @generated:theme-deltas:start -->
-| Theme | Direction | Typography | Release verdict |
-|---|---|---|---|
-| `carbon-volt` | Square technical graphite with acid-lime actions and cyan telemetry. | Noto Kufi Arabic | `VERIFIED` |
-| `citrus-pop` | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | Tajawal | `VERIFIED` |
-| `cobalt-press` | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | Cairo | `VERIFIED` |
-| `estate-slate` | Precision corporate slate, white cards, and restrained champagne-amber actions. | IBMPlexSansArabic | `VERIFIED` |
-| `estate-slate-dark` | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | IBMPlexSansArabic | `VERIFIED` |
-| `linen` | Quiet product surfaces with white chrome, hairline seams, and teal actions. | Iris / system | `VERIFIED` |
-| `solarized-dark` | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | IBM Plex Sans, Space Grotesk, IBM Plex Mono | `VERIFIED` |
-| `velvet-signal` | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | Alexandria | `VERIFIED` |
-<!-- @generated:theme-deltas:end -->
+| Theme | Direction | Typography |
+|---|---|---|
+| `carbon-volt` | Square technical graphite with acid-lime actions and cyan telemetry. | Noto Kufi Arabic |
+| `citrus-pop` | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | Tajawal |
+| `cobalt-press` | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | Cairo |
+| `estate-slate` | Precision corporate slate, white cards, and restrained champagne-amber actions. | IBMPlexSansArabic |
+| `estate-slate-dark` | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | IBMPlexSansArabic |
+| `linen` | Quiet product surfaces with white chrome, hairline seams, and teal actions. | Iris / system |
+| `solarized-dark` | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | IBM Plex Sans, Space Grotesk, IBM Plex Mono |
+| `velvet-signal` | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | Alexandria |
 
 #### Detailed Linen / Solarized reference
 

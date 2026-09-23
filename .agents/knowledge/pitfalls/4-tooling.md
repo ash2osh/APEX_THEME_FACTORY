@@ -94,7 +94,7 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - A declared face that no captured page uses is indistinguishable, to a naive probe, from a face that is
   missing: `document.fonts.check()` is false and no `performance` resource entry exists, because the browser
   never fetched it. Met 2026-09-17 on `solarized-dark`, which declares an IBM Plex Mono face: no consumer page
-  renders monospace text, so `mono/400` came back `check: false` with an empty `requestUrl` on all 12 Layer D
+  renders monospace text, so `mono/400` came back `check: false` with an empty `requestUrl` on all 12 browser
   rows, and `heading/700` failed on every page except the one business page that renders a 700-weight heading.
   The package was correct throughout — `--app-font-family-mono` resolved to `"ThemeFactory-solarized-dark-mono",
   ui-monospace, monospace`, the WOFF2 was registered and served, and a forced load fetched it from

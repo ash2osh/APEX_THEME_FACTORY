@@ -1,13 +1,12 @@
 # Pitfalls and lessons — living record
 
 Every trap this project has fallen into, with the fix that worked. Organised by layer, not by date; each
-entry says how it was verified. Add to it — the entry in its layer file, its heading line here — whenever something surprises you (spec §50–§58: file a finding
-first if the lesson should change a skill). Confidence CONFIRMED unless marked. Verified on APEX 26.1.4 /
-Universal Theme 42 / Iris, app 102, 2026-09-13 → 14.
+entry says how it was verified. When something surprises you, add the entry to its layer file and its heading
+line here. Verified on APEX 26.1.4 / Universal Theme 42 / Iris, app 102.
 
 Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime facts),
 [`iris-ut-tokens.md`](iris-ut-tokens.md) (token values), `ut-dom-*.md` (markup hooks),
-[`reference/README.md`](reference/README.md) (offline CSS/JS copies), `../findings/` (protocol records — pending until their evaluation has run).
+[`reference/README.md`](reference/README.md) (offline CSS/JS copies).
 
 Entries live in one file per layer under `pitfalls/`. Entry numbers are stable, so `pitfalls §4.3c` still
 means entry 4.3c: find it below and open its layer file. Skim this index before theme, runtime or import
@@ -63,19 +62,6 @@ work; read a layer file when one of its headings touches the task.
 ## 5. Workflow — [pitfalls/5-workflow.md](pitfalls/5-workflow.md)
 - **§5.1** Another agent may be editing the same tree
 - **§5.2** Review before claiming
-- **§5.3** Don't promote a finding before its evaluation has run
-- **§5.4** Skills lag the architecture unless the protocol runs
-- **§5.x** Evidence is bound to the last *source* commit
 - **§5.5** Hardcoding a package version in a helper script silently skips a theme
 - **§5.6** `pkill` on a wrapper shell orphans the Python process doing the work
-- **§5.7** Consumer apps carry whatever the last install left, and a release batch assumes they are clean
-- **§5.8** Tests must not read the evidence root
-
-## 6. Evaluation protocol (spec §58/§62) — traps from the evaluation rounds — [pitfalls/6-evaluation-protocol.md](pitfalls/6-evaluation-protocol.md)
-- **§6.1** A baseline commit must predate the *code/instruction under test*, not just the finding
-- **§6.2** Never build an evaluee prompt by quoting a finding's `Given` verbatim if it states the conclusion
-- **§6.3** An evaluee-prompt template's permissions must not contradict its own restrictions
-- **§6.4** A scenario's `Expected`/`Failure` may only describe what its task can actually trigger
-- **§6.5** When a verdict is downgraded, sweep every place that verdict is repeated, not just the Status line
-- **§6.6** Resetting an evaluee worktree between runs destroys the evidence, not just the state
-- **§6.7** The author of a fix should not be its only grader
+- **§5.7** The live smoke needs a clean consumer app

@@ -22,7 +22,7 @@ never from memory.
 7. IMPLEMENT one section → `apexlang-design-editor`, `apex-css-design-system`, `apex-css-selector-strategy`; if custom interaction → `apex-alpine-components`, `apex-alpine-lifecycle`, `apex-alpine-server-integration`.
 8. VALIDATE SOURCE → `apexlang-roundtrip` (validate; import only when asked).
 9. RELOAD, CHECK CONSOLE, COMPARE → `apex-visual-comparison`; then `apex-responsive-design`, `apex-accessibility`.
-10. REVIEW → `apex-design-review` (completion checklist §75). Capture findings in `.agents/findings/pending/`.
+10. REVIEW → `apex-design-review` (completion checklist §75). Record new traps in `.agents/knowledge/pitfalls.md`.
 
 Load only the skills the step needs.
 
@@ -56,4 +56,4 @@ run them **through** this router, on the CSS/Alpine layers, in refinement mode o
 **`web-design-guidelines`** — checklist review (focus, forms, contrast, motion, a11y) in `file:line`
 format. Point it at `static-files/css/**` and `static-files/js/components/**` before `apex-design-review`.
 It fetches its rule list from GitHub at run time. Findings about UT-generated markup are reported as
-findings (`.agents/findings/pending/`), not fixed by overriding `.t-*` globally.
+pitfalls (`.agents/knowledge/pitfalls.md`), not fixed by overriding `.t-*` globally.

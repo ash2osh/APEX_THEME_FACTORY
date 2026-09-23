@@ -16,7 +16,7 @@ class PitfallsIndexTests(unittest.TestCase):
     def test_every_layer_entry_is_listed_in_the_index(self):
         index = INDEX.read_text(encoding="utf-8")
         entries = self.entries()
-        self.assertGreaterEqual(len(entries), 51)
+        self.assertGreaterEqual(len(entries), 40)
         for layer, entry in entries:
             self.assertIn(f"**§{entry}**", index, f"{layer.name}: §{entry} missing from the index")
 

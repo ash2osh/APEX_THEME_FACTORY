@@ -14,12 +14,10 @@ page paints. Remove it and you are back to stock Iris, byte for byte.
 | Put an existing theme into my APEX app | [Using a theme](#using-a-theme) |
 | Take a theme back out, or undo an install | [Removing a theme](#removing-a-theme) |
 | Build a theme of my own | [Building a theme](#building-a-theme) |
-| Understand how it's verified before release | [Verification](#verification) |
+| Release a theme (check, package, live smoke) | [Releasing a theme](#releasing-a-theme) |
 | Work on the factory itself (agents, skills, specs) | [docs/AGENT_SPEC.md](docs/AGENT_SPEC.md) |
 
-<!-- @generated:theme-catalog:start -->
 **8 themes ship with the factory:** [Carbon Volt](sample-themes/carbon-volt/), [Citrus Pop](sample-themes/citrus-pop/), [Cobalt Press](sample-themes/cobalt-press/), [Estate Slate](sample-themes/estate-slate/), [Estate Slate Dark](sample-themes/estate-slate-dark/), [Linen](sample-themes/linen/), [Solarized Dark](sample-themes/solarized-dark/), [Velvet Signal](sample-themes/velvet-signal/).
-<!-- @generated:theme-catalog:end -->
 
 ---
 
@@ -104,8 +102,8 @@ Options:
 - `--app-id <ID>`: Target APEX application ID (required).
 - `--connection <CONN>`: SQLcl saved connection name (default: `docker-demo`).
 - `--workspace <WS>`: Target APEX workspace name (default: `DEMO`).
-- `--themes <list>`: Comma-separated themes, built fresh from `sample-themes/` (default: every discovered theme). The build refuses a dirty tree unless `THEME_FACTORY_ALLOW_DIRTY=1`.
-- `--packages <zip,...>`: Install these exact archives instead (used by the release batch).
+- `--themes <list>`: Comma-separated themes, built fresh from `sample-themes/` (default: every discovered theme).
+- `--packages <zip,...>`: Install these exact archives instead.
 - `--with-switcher` / `--without-switcher`: Control the navigation-bar switcher (default: `--with-switcher`). A navigation bar that is not a static list is refused, exactly like the single-theme installer — see `MANUAL-INSTALL.md`. This is why app 102 (SQL navigation bar) is served by `scripts/sync-static.sh` instead.
 - `--backup-dir <dir>`: Backup root (default: `theme-factory-backups/`).
 - `--apply`: Import into the database (default is a dry run). The last theme listed becomes the default.
@@ -190,55 +188,15 @@ matching uninstall steps.
 ## Building a theme
 
 Work in this repository. A theme lives in one folder and nothing outside it is theme-specific.
-The recipe-driven workshop is the supported fast path; its speed and token-efficiency claims are measured by
-the repeatable [workflow benchmark](docs/THEME_WORKFLOW_BENCHMARK.md), never estimated from character counts.
 
-The workflow has three deliberately different lanes:
-
-| Lane | Command | Purpose |
+| Step | Command | Time |
 |---|---|---|
-| Author | `scripts/theme.sh new NAME --recipe FILE`, then `scripts/theme.sh check NAME` | Generate source and run fast cached offline policy, contrast, font, package, and uniqueness checks. |
-| Candidate | `scripts/theme.sh dev NAME --sync --validate [--import --apply] [--open]` | Exercise app 102 and Theme Lab during iteration. Import remains explicit. |
-| Release | `scripts/theme.sh release-batch … --apply`, then `scripts/release-check.sh NAME` | Bind clean packages to database/browser/accessibility evidence; run the separate compatibility check when instruction files change. |
+| Create | `scripts/theme.sh new NAME --recipe FILE` | seconds |
+| Check (policy, contrast, fonts, packaging, uniqueness) | `scripts/theme.sh check NAME` | ~0.1 s |
+| See it in app 102 | `scripts/sync-static.sh`, `scripts/apex-validate.sh`, `scripts/apex-import.sh` | ~6 min |
+| Release | `scripts/theme.sh release NAME` | ~5 min |
 
-Candidate `PASS` is an iteration result, never a release verdict. Only current Layers A–D evidence can mark a
-theme `VERIFIED`; hosted CI intentionally proves only the offline source/package layers. Agent compatibility is a
-separate instruction-bound project signal; theme CSS, package, font, and preview changes do not trigger it.
-
-### How long each lane takes
-
-Measured 2026-09-23. The lanes differ by orders of magnitude, so pick the cheapest one that answers your question.
-
-| Lane | Wall time | What dominates |
-|---|---|---|
-| Author — `scripts/theme.sh check NAME` | ~0.7 s (0.3 s cached) | offline Python |
-| Candidate — `scripts/sync-static.sh` | ~0.15 s | file copies |
-| Candidate — validate + import app 102 | ~6 min (75 s validate, ~5 min import) | SQLcl; app 102 is large |
-| Release — one theme | ~20 min (linen: 21 min — Layer C on both consumers in parallel, then 8 browser rows) | SQLcl: each installer step is its own JVM session (~7 s startup) plus a full export, validate or import |
-| Release — all 8 themes | ~2.5 h (7 themes 2 h 08 min + linen 21 min; 4.5 h before the consumers ran in parallel) | the same, times 8 |
-
-How to keep it fast:
-
-- **Iterate in the author lane.** Import app 102 only when you need to see the page, and batch several edits per import.
-- **Release only what changed.** `release-batch --themes NAME` for an edit inside `sample-themes/NAME/`. A change to
-  shared code (`lib/`, `tools/`, `scripts/`, `static-files/`, `tests/`) changes every package, because `lib/` ships
-  inside each ZIP and evidence binds to the last source commit, so it needs all themes.
-- **Finish source work first.** Commit all source (and the uniqueness-report refresh it triggers), then run the batch,
-  and leave the tree alone until it ends: a non-Markdown edit makes it refuse the next theme.
-- **Start from clean consumers.** The batch refuses a consumer that already carries Theme Factory packages (it
-  finishes by installing the candidates for Layer D, so the next batch needs a reset). Reset both with:
-
-  ```bash
-  sql -S -name docker-demo <<SQL
-  whenever sqlerror exit failure
-  apex import -input $PWD/tests/live/consumer-apps/minimal -workspace DEMO -id 9010 -alias TF-CONSUMER-MINIMAL-9010 -name "Theme Factory Minimal Consumer"
-  apex import -input $PWD/tests/live/consumer-apps/business -workspace DEMO -id 9011 -alias TF-CONSUMER-BUSINESS-9011 -name "Theme Factory Business Consumer"
-  exit
-  SQL
-  ```
-
-- **Don't buy speed with safety.** The drift guard and the separate validate before every import each cost about
-  15% of an install; release evidence must exercise the installer exactly as users run it, so keep them.
+Iterate with `check`; import app 102 only when you need to see the page, and batch several edits per import.
 
 ```text
 sample-themes/<name>/
@@ -311,15 +269,11 @@ working. [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) §1 explains why.
 
 ```bash
 scripts/theme.sh check midnight
-scripts/theme.sh dev midnight --sync --validate
-scripts/theme.sh dev midnight --sync --validate --import --apply --open  # explicit live mutation
+scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh
 ```
 
-The check cache is keyed by the complete consumed-source digest and validator version. A theme file, shared
-foundation/token file, generator, policy, font, or manifest change invalidates it; gallery-only images do not.
-Use `--no-cache` when investigating the checker itself. Theme Lab on page 406 consolidates typography,
-surfaces, buttons, forms/validation, cards, IR, IG, reports, calendar, JET chart, menus, date picker, Popup LOV,
-modal, and drawer specimens. Page 405 remains package discovery/catalog navigation.
+Theme Lab on page 406 shows typography, surfaces, buttons, forms/validation, cards, IR, IG, reports, calendar,
+JET chart, menus, date picker, Popup LOV, modal, and drawer specimens. Page 405 is the theme gallery.
 
 To make it the app's default: `scripts/apply-theme.sh midnight` (then sync + import again).
 
@@ -334,16 +288,13 @@ WCAG AA in states you did not look at. Run the audit snippet in
 states a resting sweep cannot see**: select a report row, open a date picker, hover a toolbar, open a dialog,
 empty a search box. Every real defect found in this project's own dark theme lived in a state, not at rest.
 
-### 7. Package it
+### 7. Package and release it
 
-```bash
-scripts/package-theme.sh midnight          # → dist/midnight/midnight-1.0.0.zip
-```
+See [Releasing a theme](#releasing-a-theme). `scripts/theme.sh release midnight --offline` alone builds
+`dist/midnight/midnight-<version>.zip`; builds are deterministic and the ZIP carries its own installer,
+uninstaller and manual instructions.
 
-Builds are deterministic — same input, same bytes — and the ZIP carries its own installer, uninstaller and
-manual instructions.
-
-Capture a gallery cover only after the candidate checks pass:
+Capture a gallery cover after `check` passes:
 
 ```bash
 scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jpg          # dry run
@@ -382,6 +333,35 @@ before starting a dark theme will save you a day.
 
 ---
 
+## Releasing a theme
+
+```bash
+scripts/theme.sh release midnight            # check + package + live smoke, ~5 min
+scripts/theme.sh release midnight --offline  # check + package only, seconds
+```
+
+1. **Check** — the author checks must pass.
+2. **Package** — builds and verifies `dist/<name>/<name>-<version>.zip`.
+3. **Live smoke** (skipped with `--offline`) — exports the disposable consumer app 9010, installs the package
+   with the switcher, opens it in its own Chrome tab at 1440 and 375 px (console errors, failed requests,
+   fonts, AA contrast, keyboard switcher, selection kept across reload), then re-imports the clean export.
+
+It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the Chrome
+MCP daemon (`python3 tools/chrome_mcp_daemon.py`, never a direct MCP call — each new connection raises a
+consent prompt) and a clean 9010. If 9010 already carries packages, it refuses; reset it with:
+
+```bash
+sql -S -name docker-demo <<SQL
+whenever sqlerror exit failure
+apex import -input $PWD/tests/live/consumer-apps/minimal -workspace DEMO -id 9010 -alias TF-CONSUMER-MINIMAL-9010 -name "Theme Factory Minimal Consumer"
+exit
+SQL
+```
+
+(No 9010 yet? `scripts/provision-consumer-fixtures.sh --connection docker-demo --workspace DEMO` creates it.)
+
+---
+
 ## Repository map
 
 ```text
@@ -389,56 +369,27 @@ sample-themes/<name>/   theme packages — the only editable copy of a theme
 static-files/css/       shared foundation: --app-* roles, reset, app.css entry
 static-files/js/        app.js (App.theme helper), Alpine components, vendor
 applications/ut/        APEXLang export of the reference app (app 102) — generated + source
-scripts/                export / validate / import, sync-static, apply-theme, package-theme
-lib/theme_factory/      the installer, uninstaller, packager and verification engine
-tools/                  live matrix, browser matrix, Chrome MCP daemon, agent smokes
+scripts/                theme.sh, export / validate / import, sync-static, apply-theme, install-all-themes
+lib/theme_factory/      installer, uninstaller, packager, recipe/scaffold, checks
+tools/                  release smoke, browser check, cover capture, Chrome MCP daemon
 docs/                   spec, design system, components, tooling guides
-.agents/                agent skills, knowledge, findings, evaluations
+.agents/                agent skills and knowledge (pitfalls)
 ```
 
 | Script | What it does |
 |---|---|
+| `scripts/theme.sh new / font / check / cover / release …` | Scaffold, fonts, checks, covers, release |
 | `scripts/apex-export.sh` | Refresh `applications/ut/` from app 102 |
 | `scripts/apex-validate.sh` | Compile-check the APEXLang source (read-only) |
-| `scripts/apex-import.sh` | Validate + import (asks first; full replace) |
-| `scripts/sync-static.sh` | Assemble `static-files/` + `sample-themes/*/css` into the export |
+| `scripts/apex-import.sh` | Validate, then validate + import (asks first; full replace) |
+| `scripts/sync-static.sh [--check]` | Assemble `static-files/` + `sample-themes/*/css` into the export |
 | `scripts/apply-theme.sh <name>` | Set the app's default theme |
-| `scripts/package-theme.sh <name> [out]` | Build the distributable ZIP |
-| `scripts/release-check.sh <name>` | Build + verify + write the release report |
-| `scripts/theme.sh …` | Recipe scaffold, pinned fonts, cached checks, candidate lane, covers, catalog, evidence, and Iris drift inspection |
-
----
+| `scripts/install-all-themes.sh` | Install several themes into any consumer app |
 
 ## Verification
 
-Run the offline gate any time — no credentials, no database:
-
 ```bash
-bash tests/run-offline.sh
+tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every theme check + package (~20 s)
 ```
 
-Release verification is deliberately layered, and a layer only passes with a retained, digest-bound artifact:
-
-| Layer | Covers | Where it runs |
-|---|---|---|
-| **A** Repository source | clean tree, unit tests, agent layout | offline / CI |
-| **B** Package artifact | deterministic ZIP, manifest, CSS policy | offline / CI |
-| **C** Database install | install → reinstall → coexistence → switcher → uninstall ×2 → restore, on disposable consumer apps | local, live DB |
-| **D** Browser runtime | both consumers at 1440/1024/768/375: console, network, contrast, fonts, keyboard switcher, persistence | local, live Chrome |
-
-> **CI proves A and B only.** A green CI badge says nothing about whether the theme installs, renders, or is
-> accessible. C and D need local evidence — see [tests/live/RELEASE-MATRIX.md](tests/live/RELEASE-MATRIX.md).
-> Project-level agent compatibility is validated separately in [docs/AGENT_COMPATIBILITY.md](docs/AGENT_COMPATIBILITY.md)
-> and never changes a theme verdict.
-
-```bash
-scripts/release-check.sh linen      # → dist/linen/RELEASE-REPORT.md; exit 0 only when current Layers A–D PASS
-```
-
-Evidence is bound to the package SHA-256 and the last **source** commit, so a report cannot outlive the code it
-describes: change the source and the old evidence is rejected rather than quietly reused. Missing or failed
-checks stay `UNVERIFIED`/`FAIL` — and so does the verdict.
-
-Browser checks go through the shared Chrome MCP daemon (`python3 tools/chrome_mcp_daemon.py`), never a direct
-MCP call — Chrome's debugging consent is per connection, so a direct call raises a prompt that only the person
-at the machine can accept.
+CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.

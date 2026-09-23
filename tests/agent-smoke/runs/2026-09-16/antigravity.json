@@ -1,8 +1,0 @@
-{
-  "runtime": "antigravity",
-  "cliVersion": "1.2.4",
-  "dateUtc": "2026-09-16",
-  "status": "UNVERIFIED",
-  "message": "Provider capacity/availability limitation: no capacity ([agy] print timeout after 5m0s with turn in progress; returning partial output)",
-  "payload": null
-}

@@ -9,7 +9,6 @@
 | Typography | **IBM Plex Sans Arabic** (bundled OFL-1.1, weights 400, 500, 600, 700) with complete Arabic (Arabic, Persian, Urdu) and Latin coverage; JetBrains Mono / system monospace stack for tabular figures |
 | Palette | Restful corporate slate (`#f8fafc`, `#f1f5f9`, `#e2e8f0`, `#cbd5e1`, `#0f172a`), champagne amber directives (`#b45309`), emerald telemetry (`#059669`), and transit cyan (`#0891b2`) |
 | Scope | App-wide, strictly scoped under `html.app-theme-estate-slate`; no page-level edits required |
-| Status | Not hand-maintained — see the generated status table in [`../README.md`](../README.md) (`scripts/theme.sh catalog`). The history below records earlier release rounds. |
 
 ## Preview
 
@@ -76,43 +75,14 @@ scripts/apply-theme.sh estate-slate
 # Assemble static files and register into APEX export
 scripts/sync-static.sh
 
-# Build redistributable ZIP archive into dist/
-scripts/package-theme.sh estate-slate
+# Check + package (+ live smoke without --offline)
+scripts/theme.sh release estate-slate --offline
 ```
 
 Live in browser: set URL hash `#theme=estate-slate` or execute `App.theme.use('estate-slate')` in the developer console.
-
-## Runtime Verification Report
-
-Audited live via Chrome DevTools MCP daemon against Oracle APEX 26.1.4 (Universal Theme 42 / Iris light, app 102) using full WCAG AA contrast evaluation:
-
-| Page | Component Category | Visible Text Nodes | SVG Text Nodes | Package Contrast Failures |
-|---|---|---|---|---|
-| **Page 500** | Getting Started & Navigation | 21 | 0 | **0** |
-| **Page 1402** | Interactive Report | 116 | 0 | **0** |
-| **Page 1410** | Interactive Grid | 134 | 0 | **0** |
-| **Page 1500** | Buttons (Primary, Hot, Normal, Outline) | 165 | 0 | **0** |
-| **Page 1600** | Form Controls, Textfields, Checkboxes | 99 | 0 | **0** |
-| **Page 3100** | Card Templates & Regions | 223 | 0 | **0** |
-| **Page 1111** | Standard Modal Dialog | 11 | 0 | **0** |
-| **Total** | | **769** | **0** | **0 failures** |
-
 
 ## Identity
 
 Estate Slate is the formal property-operations light system: champagne section markers, metric-strip regions,
 outlined form borders, ruled data rows, rail selection, and layered decision dialogs. It shares only the Iris
 adapter contract with Linen; its composition and interaction profile are independent.
-
-## Release evidence
-
-**Release evidence, 2026-09-17** (`2026-09-17-release-estate-slate` (pruned 2026-09-23; in git history), verdict
-`VERIFIED`, commit `7ac2e0204ca0`): the first Layer C/D/E evidence this package has ever had — committed with
-no such evidence 2026-09-17 in `a38076b`, invisible to the release system until captured this same day (see
-the 2026-09-17 verification-integrity-defects plan (removed 2026-09-23; see git history), Task 6). Layer C exercised install,
-stale-restore guard, reinstall, switcher on/off, coexistence with `estate-slate-dark`, uninstall ×2,
-unrelated-file preservation and restore — 7/7 on a minimal consumer app (TF-CONSUMER-MINIMAL-9012) and a
-business one (TF-CONSUMER-BUSINESS-9013). Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus
-Reports and Widgets, with zero console errors, zero failed requests, an AA-clean contrast sweep, a
-keyboard-operable switcher, a selection that survives reload, and all 4 declared WOFF2 faces forced to load
-and matched to the request that served them from the package.

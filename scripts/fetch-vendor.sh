@@ -42,4 +42,3 @@ fetch "$APEX_ORIGIN/i/libraries/oracle-fonts/oraclesans-apex.min.css"        "$R
   (cd "$ROOT" && sha256sum static-files/js/vendor/*.js .agents/knowledge/reference/ut-$UT_VERSION/*.{css,js})
 } > "$REF/MANIFEST.txt"
 echo "done; manifest: $REF/MANIFEST.txt"
-echo "review Iris token drift, then update intentionally with: scripts/theme.sh inspect-iris --write"

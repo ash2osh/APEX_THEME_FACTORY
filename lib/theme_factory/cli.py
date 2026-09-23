@@ -30,7 +30,8 @@ def register_package_commands(subparsers: argparse._SubParsersAction) -> None:
 
 def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     install = subparsers.add_parser("install", help="Install theme into APEX application")
-    install.add_argument("--package-root", type=Path, required=True)
+    install.add_argument("--package-root", type=Path, required=True, action="append",
+                         help="Package directory; repeat to install several in one transaction (last = default)")
     install.add_argument("--connection", required=True)
     install.add_argument("--workspace", required=True)
     install.add_argument("--app-id", type=int, required=True)

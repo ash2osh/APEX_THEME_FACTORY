@@ -1,27 +1,19 @@
 #!/usr/bin/env bash
+# Offline gate (no database, no browser): shell syntax, unit tests, skills layout, app 102 export in sync
+# with its sources, and every theme through check -> package -> verify.
 set -euo pipefail
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT"
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-bash tests/run-common-offline.sh
-bash tests/run-package-offline.sh
+bash -n scripts/*.sh installer/*.sh tests/*.sh
+python3 -m unittest discover -s tests -t . -p 'test_*.py'
+scripts/check-agent-layout.sh
+python3 -m lib.theme_factory.sync_static --repo-root . --check
 
-# Agent compatibility is a project-level signal.  A missing or unavailable external runtime is
-# honest UNVERIFIED (exit 2) and must not block theme/package offline verification; malformed evidence
-# or generated-document drift remains a hard failure.
-set +e
-bash scripts/agent-compatibility-check.sh --check
-AGENT_COMPATIBILITY_STATUS=$?
-set -e
-if [[ "$AGENT_COMPATIBILITY_STATUS" -ne 0 && "$AGENT_COMPATIBILITY_STATUS" -ne 2 ]]; then
-  exit "$AGENT_COMPATIBILITY_STATUS"
-fi
-if [[ "$AGENT_COMPATIBILITY_STATUS" -eq 2 ]]; then
-  echo "AGENT_COMPATIBILITY status=UNVERIFIED (offline signal; theme release remains A-D)"
-fi
-
-if [[ "${CI:-}" == "true" ]]; then
-  git diff --exit-code
-fi
-
-echo "ALL_OFFLINE_CHECKS status=PASS"
+tmp="$(mktemp -d)"
+trap 'rm -rf -- "$tmp"' EXIT
+for theme in $(python3 -c 'from pathlib import Path; from lib.theme_factory.discovery import theme_names; print(*theme_names(Path.cwd()))'); do
+  scripts/theme.sh check "$theme" > "$tmp/check.txt" || { cat "$tmp/check.txt"; exit 1; }
+  scripts/theme.sh release "$theme" --offline --repo-root . > "$tmp/release.txt" 2>&1 || { cat "$tmp/release.txt"; exit 1; }
+  echo "THEME $theme status=PASS"
+done
+echo "OFFLINE status=PASS"

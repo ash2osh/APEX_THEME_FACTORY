@@ -23,7 +23,7 @@ class ThemeCliTests(unittest.TestCase):
         issues = () if status == "PASS" else (
             CheckIssue("error", "BROKEN", "broken package", "theme.json", 1),
         )
-        return CheckReport(status, "fixture", False, 4, "a" * 64, issues)
+        return CheckReport(status, "fixture", 4, issues)
 
     def invoke(self, *arguments: str):
         stdout = io.StringIO()
@@ -63,13 +63,6 @@ class ThemeCliTests(unittest.TestCase):
         )
         self.assertEqual(code, 2)
         self.assertIn("--mode", stderr)
-
-    def test_dev_import_requires_apply(self):
-        code, _, stderr = self.invoke(
-            "dev", "fixture", "--repo-root", str(self.repo), "--import"
-        )
-        self.assertEqual(code, 2)
-        self.assertIn("--apply", stderr)
 
 
 if __name__ == "__main__":

@@ -27,29 +27,15 @@ SOURCE_ONLY_THEME_FILES = frozenset({"theme.recipe.json"})
 
 
 def get_source_commit(repo_root: Path) -> str:
-    """Determine source commit or check dirty state."""
-    try:
-        status = subprocess.run(
-            ["git", "status", "--porcelain"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-    except Exception:
-        status = ""
-
-    allow_dirty = os.getenv("THEME_FACTORY_ALLOW_DIRTY", "0") == "1"
-    if status and not allow_dirty:
-        raise PackageError("Repository has uncommitted changes (set THEME_FACTORY_ALLOW_DIRTY=1 to override)")
-
-    # The banner names the last commit that changed the source, so committing release evidence
-    # (which lives under the evidence root) does not change a package's bytes or SHA-256.
-    from lib.theme_factory.gitstate import last_source_commit
-    commit = last_source_commit(repo_root)
-    if commit is None:
-        return "dirty" if status else "source"
-    return f"{commit}-dirty" if (status and allow_dirty) else commit
+    """Commit named in each package banner: HEAD, suffixed -dirty for uncommitted changes."""
+    def git(*args: str) -> str:
+        try:
+            return subprocess.run(["git", *args], cwd=repo_root, capture_output=True, text=True,
+                                  check=True).stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            return ""
+    commit = git("rev-parse", "HEAD") or "source"
+    return f"{commit}-dirty" if git("status", "--porcelain") else commit
 
 
 def render_template(tmpl_path: Path, replacements: Dict[str, str]) -> str:

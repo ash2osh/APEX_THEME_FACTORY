@@ -28,43 +28,22 @@ class ThemeChecksTests(unittest.TestCase):
         self.temporary.cleanup()
 
     def test_valid_theme_has_compact_human_and_machine_output(self):
-        report = run_theme_checks(self.repo, "linen", use_cache=False)
+        report = run_theme_checks(self.repo, "linen")
         self.assertEqual(report.status, "PASS")
         self.assertEqual(len(report.to_human().splitlines()), 1)
         self.assertRegex(
             report.to_human(),
-            r"^THEME_CHECK theme=linen status=PASS cache=miss duration_ms=\d+ issues=0$",
+            r"^THEME_CHECK theme=linen status=PASS duration_ms=\d+ issues=0$",
         )
         payload = json.loads(report.to_json())
         self.assertEqual(
             set(payload),
-            {"status", "theme", "cacheHit", "durationMs", "inputDigest", "issues"},
+            {"status", "theme", "durationMs", "issues"},
         )
 
-    def test_unsafe_theme_name_is_rejected_before_cache_path_construction(self):
+    def test_unsafe_theme_name_is_rejected(self):
         with self.assertRaisesRegex(PackageError, "theme name"):
             run_theme_checks(self.repo, "../escape")
-
-    def test_cache_hits_then_shared_and_local_changes_invalidate(self):
-        first = run_theme_checks(self.repo, "linen")
-        second = run_theme_checks(self.repo, "linen")
-        self.assertFalse(first.cache_hit)
-        self.assertTrue(second.cache_hit)
-        self.assertEqual(first.input_digest, second.input_digest)
-
-        self.shared_tokens.write_text(
-            self.shared_tokens.read_text(encoding="utf-8") + "\n:root { --app-test: 1px; }\n",
-            encoding="utf-8",
-        )
-        shared_change = run_theme_checks(self.repo, "linen")
-        self.assertFalse(shared_change.cache_hit)
-        self.assertNotEqual(first.input_digest, shared_change.input_digest)
-
-        buttons = self.repo / "sample-themes/linen/css/apex/buttons.css"
-        buttons.write_text(buttons.read_text(encoding="utf-8") + "\n/* local input */\n", encoding="utf-8")
-        local_change = run_theme_checks(self.repo, "linen")
-        self.assertFalse(local_change.cache_hit)
-        self.assertNotEqual(shared_change.input_digest, local_change.input_digest)
 
     def test_multiple_defects_are_aggregated_in_one_run(self):
         theme = self.repo / "sample-themes/linen"
@@ -80,7 +59,7 @@ class ThemeChecksTests(unittest.TestCase):
         )
         (theme / "preview/cover.jpg").unlink()
 
-        report = run_theme_checks(self.repo, "linen", use_cache=False)
+        report = run_theme_checks(self.repo, "linen")
 
         self.assertEqual(report.status, "ERROR")
         codes = {issue.code for issue in report.issues}
@@ -88,20 +67,6 @@ class ThemeChecksTests(unittest.TestCase):
         self.assertIn("CSS_UNSCOPED_SELECTOR", codes)
         self.assertIn("COVER_MISSING", codes)
         self.assertGreaterEqual(len(report.issues), 3)
-
-    def test_preview_gallery_images_do_not_invalidate_but_cover_dimensions_do(self):
-        first = run_theme_checks(self.repo, "linen")
-        gallery = self.repo / "sample-themes/linen/preview/p500-getting-started-1440.jpg"
-        gallery.write_bytes(gallery.read_bytes() + b"ignored author preview change")
-        gallery_change = run_theme_checks(self.repo, "linen")
-        self.assertTrue(gallery_change.cache_hit)
-        self.assertEqual(first.input_digest, gallery_change.input_digest)
-
-        cover = self.repo / "sample-themes/linen/preview/cover.jpg"
-        cover.write_bytes(b"not a jpeg")
-        cover_change = run_theme_checks(self.repo, "linen")
-        self.assertFalse(cover_change.cache_hit)
-        self.assertNotEqual(first.input_digest, cover_change.input_digest)
 
 
 if __name__ == "__main__":

@@ -2,10 +2,8 @@
 
 import argparse
 import json
-import os
 from pathlib import Path
 import sys
-import tempfile
 
 from lib.theme_factory.archive import build_package, build_package_from_root, verify_package
 from lib.theme_factory.checks import run_theme_checks
@@ -66,18 +64,6 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
 
 
 def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
-    inspector = subparsers.add_parser("inspect-iris", help="Check or update the Iris token inventory")
-    inspector.add_argument("--reference-root", type=Path,
-                           default=Path(".agents/knowledge/reference/ut-26.1"))
-    inspector.add_argument("--inventory", type=Path,
-                           default=Path(".agents/knowledge/reference/ut-26.1/iris-token-inventory.json"))
-    inspector.add_argument("--report", type=Path,
-                           default=Path("docs/generated/iris-26.1-token-report.md"))
-    action = inspector.add_mutually_exclusive_group(required=True)
-    action.add_argument("--check", action="store_true")
-    action.add_argument("--write", action="store_true")
-    inspector.set_defaults(handler=_handle_inspect_iris)
-
     new = subparsers.add_parser("new", help="Scaffold a theme from a recipe or neutral defaults")
     new.add_argument("name")
     new.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -101,31 +87,11 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     add.add_argument("--json", action="store_true")
     add.set_defaults(handler=_handle_font_add)
 
-    check = subparsers.add_parser("check", help="Run cached author checks for one theme")
+    check = subparsers.add_parser("check", help="Run the offline author checks for one theme")
     check.add_argument("name")
     check.add_argument("--repo-root", type=Path, default=Path.cwd())
-    check.add_argument("--no-cache", action="store_true")
     check.add_argument("--json", action="store_true")
     check.set_defaults(handler=_handle_check)
-
-    dev = subparsers.add_parser("dev", help="Run explicit candidate-lane gates")
-    dev.add_argument("name")
-    dev.add_argument("--repo-root", type=Path, default=Path.cwd())
-    dev.add_argument("--sync", action="store_true")
-    dev.add_argument("--validate", action="store_true")
-    dev.add_argument("--import", dest="import_app", action="store_true")
-    dev.add_argument("--apply", action="store_true")
-    dev.add_argument("--open", dest="open_browser", action="store_true")
-    dev.add_argument("--json", action="store_true")
-    dev.set_defaults(handler=_handle_dev)
-
-    catalog = subparsers.add_parser("catalog", help="Check or update generated theme catalogs")
-    catalog.add_argument("--repo-root", type=Path, default=Path.cwd())
-    catalog.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
-    action = catalog.add_mutually_exclusive_group(required=True)
-    action.add_argument("--check", action="store_true", help="Report generated documentation drift")
-    action.add_argument("--write", action="store_true", help="Update generated documentation atomically")
-    catalog.set_defaults(handler=_handle_catalog)
 
     cover = subparsers.add_parser("cover", help="Capture a checked theme cover through Chrome")
     cover.add_argument("name")
@@ -136,34 +102,15 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     cover.add_argument("--json", action="store_true")
     cover.set_defaults(handler=_handle_cover)
 
-    release_batch = subparsers.add_parser("release-batch", help="Batch digest-bound release evidence")
-    release_batch.add_argument("--themes", required=True)
-    release_batch.add_argument("--secondary", required=True, type=Path)
-    release_batch.add_argument("--evidence-root", type=Path, default=Path(".agents/evaluations/runtime"))
-    release_batch.add_argument("--repo-root", type=Path, default=Path.cwd())
-    release_batch.add_argument("--connection")
-    release_batch.add_argument("--workspace")
-    release_batch.add_argument("--minimal-id", type=int)
-    release_batch.add_argument("--business-id", type=int)
-    release_batch.add_argument("--minimal-url")
-    release_batch.add_argument("--business-url")
-    release_batch.add_argument("--business-extra-urls", default="")
-    release_batch.add_argument("--widths", default="1440,1024,768,375")
-    release_batch.add_argument("--date")
-    release_batch.add_argument("--work-dir", type=Path)
-    release_batch.add_argument("--common-check-artifact", type=Path)
-    release_batch.add_argument("--resume", action="store_true")
-    release_batch.add_argument("--report-obsolete", action="store_true")
-    release_batch.add_argument("--apply", action="store_true")
-    release_batch.set_defaults(handler=_handle_release_batch)
-
-    evidence = subparsers.add_parser("evidence", help="Manage runtime evidence")
-    evidence_commands = evidence.add_subparsers(dest="evidence_command", required=True)
-    prune = evidence_commands.add_parser("prune", help="Prune old release evidence safely")
-    prune.add_argument("--repo-root", type=Path, default=Path.cwd())
-    prune.add_argument("--keep-latest", type=int, required=True)
-    prune.add_argument("--apply", action="store_true")
-    prune.set_defaults(handler=_handle_evidence_prune)
+    release = subparsers.add_parser("release", help="Check, package, and smoke-test one theme live")
+    release.add_argument("name")
+    release.add_argument("--repo-root", type=Path, default=Path.cwd())
+    release.add_argument("--offline", action="store_true", help="Stop after check + package (no database, no browser)")
+    release.add_argument("--connection", default="docker-demo")
+    release.add_argument("--workspace", default="DEMO")
+    release.add_argument("--app-id", type=int, default=9010, help="Disposable consumer app (default 9010)")
+    release.add_argument("--url", help="Consumer page to check (default: the 9010 home page)")
+    release.set_defaults(handler=_handle_release)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -277,33 +224,19 @@ def _handle_font_add(args: argparse.Namespace) -> int:
 
 
 def _handle_check(args: argparse.Namespace) -> int:
-    report = run_theme_checks(args.repo_root, args.name, use_cache=not args.no_cache)
+    report = run_theme_checks(args.repo_root, args.name)
     print(report.to_json() if args.json else report.to_human())
     return 0 if report.status == "PASS" else 2
 
 
-def _handle_dev(args: argparse.Namespace) -> int:
-    from lib.theme_factory.dev import DevOptions, run_dev
-    report = run_dev(DevOptions(args.repo_root, args.name, args.sync, args.validate,
-                                args.import_app, args.apply, args.open_browser))
-    print(report.to_json() if args.json else report.to_human())
-    return 0 if report.status == "PASS" else 2
 
 
-def _handle_catalog(args: argparse.Namespace) -> int:
-    from lib.theme_factory.catalog import update_catalog
-    evidence_root = args.evidence_root
-    if not evidence_root.is_absolute():
-        evidence_root = args.repo_root / evidence_root
-    changed = update_catalog(args.repo_root, evidence_root, check=args.check)
-    if args.check and changed:
-        for path in changed:
-            print(f"DRIFT {path.relative_to(args.repo_root.resolve())}")
-        return 2
-    action = "updated" if changed else "current"
-    print(f"THEME_CATALOG status=PASS files={len(changed)} action={action}")
-    return 0
-
+def _handle_release(args: argparse.Namespace) -> int:
+    from tools.release_smoke import DEFAULT_URL, ReleaseOptions, run_release
+    return run_release(ReleaseOptions(
+        repo_root=args.repo_root, theme=args.name, live=not args.offline, connection=args.connection,
+        workspace=args.workspace, app_id=args.app_id, url=args.url or DEFAULT_URL,
+    ))
 
 def _handle_cover(args: argparse.Namespace) -> int:
     from tools.theme_cover import capture_cover
@@ -324,112 +257,7 @@ def _handle_cover(args: argparse.Namespace) -> int:
     return 0
 
 
-def _handle_release_batch(args: argparse.Namespace) -> int:
-    from tools.release_batch import (
-        current_package_shas, evidence_directory_current, execute_live_batch,
-        find_obsolete_evidence,
-    )
 
-    themes = [name.strip() for name in args.themes.split(",") if name.strip()]
-    if not themes:
-        raise PackageError("release-batch --themes must name at least one theme")
-    if args.apply:
-        required = {
-            "--connection": args.connection,
-            "--workspace": args.workspace,
-            "--minimal-id": args.minimal_id,
-            "--business-id": args.business_id,
-            "--minimal-url": args.minimal_url,
-            "--business-url": args.business_url,
-        }
-        missing = [name for name, value in required.items() if value is None]
-        if missing:
-            raise PackageError("release-batch --apply requires " + ", ".join(missing))
-    payload = {
-        "status": "READY" if args.apply else "DRY_RUN",
-        "themes": themes,
-        "secondary": str(args.secondary),
-        "resume": bool(args.resume),
-        "evidenceRoot": str(args.evidence_root),
-    }
-    if args.report_obsolete:
-        package_shas = current_package_shas(args.repo_root.resolve(), themes)
-        payload["obsolete"] = [
-            str(path) for path in find_obsolete_evidence(
-                args.evidence_root,
-                lambda path: evidence_directory_current(path, args.repo_root.resolve(), package_shas),
-            )
-        ]
-    if not args.apply:
-        print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
-        return 0
-    return execute_live_batch(args, tuple(themes))
-
-
-def _handle_evidence_prune(args: argparse.Namespace) -> int:
-    from tools.release_batch import prune_evidence
-
-    root = args.repo_root.resolve() / ".agents/evaluations/runtime"
-    paths = prune_evidence(root, keep_latest=args.keep_latest, apply=args.apply)
-    payload = {
-        "status": "APPLIED" if args.apply else "DRY_RUN",
-        "root": str(root),
-        "keepLatest": args.keep_latest,
-        "targets": [str(path) for path in paths],
-    }
-    print(json.dumps(payload, separators=(",", ":"), sort_keys=True))
-    return 0
-
-
-def _atomic_write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as stream:
-            stream.write(content)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, path)
-    except Exception:
-        try:
-            os.unlink(temporary)
-        except FileNotFoundError:
-            pass
-        raise
-
-
-def _handle_inspect_iris(args: argparse.Namespace) -> int:
-    from lib.theme_factory.iris_inspector import (
-        inspect_iris, inventory_from_json, render_drift_report, render_inventory_json,
-    )
-
-    current = inspect_iris(args.reference_root)
-    rendered_inventory = render_inventory_json(current)
-    if args.write:
-        rendered_report = render_drift_report(current, current)
-        _atomic_write(args.inventory, rendered_inventory)
-        _atomic_write(args.report, rendered_report)
-        print(f"IRIS_INSPECT status=PASS action=updated tokens={len(current.declarations)}")
-        return 0
-    if not args.inventory.is_file():
-        raise PackageError(f"Missing committed Iris token inventory: {args.inventory}")
-    baseline_text = args.inventory.read_text(encoding="utf-8")
-    baseline = inventory_from_json(baseline_text)
-    rendered_report = render_drift_report(current, baseline)
-    expected_report = render_drift_report(baseline, baseline)
-    drift = []
-    if rendered_inventory != baseline_text:
-        drift.append(str(args.inventory))
-    if not args.report.is_file() or args.report.read_text(encoding="utf-8") != expected_report:
-        drift.append(str(args.report))
-    if drift:
-        for path in drift:
-            print(f"DRIFT {path}")
-        if rendered_inventory != baseline_text:
-            print(rendered_report, end="")
-        return 2
-    print(f"IRIS_INSPECT status=PASS action=current tokens={len(current.declarations)}")
-    return 0
 
 
 def run_cli(argv: list[str] | None = None) -> int:

@@ -1,14 +1,1242 @@
 /* Estate Slate Dark — dark theme package for Universal Theme / Iris.
    Entry point; loaded by static-files/css/app.css.
    All rules are scoped to html.app-theme-estate-slate-dark. */
-@import "tokens.css";
-@import "apex/shell.css";
-@import "apex/regions.css";
-@import "apex/buttons.css";
-@import "apex/forms.css";
-@import "apex/reports.css";
-@import "apex/dialogs.css";
-@import "apex/misc.css";
+/* Estate Slate Dark — dark theme tokens over the shared foundation.
+   Scoped to html.app-theme-estate-slate-dark for safe co-existence with other theme packages.
+   Aesthetic: Monolithic deep slate-950 canvas, structured hairline borders,
+   discreet luxury operational cockpit, and luminous champagne amber directives.
+   Custom font: IBM Plex Sans Arabic (Latin + Arabic). */
+
+html.app-theme-estate-slate-dark {
+    color-scheme: dark;
+
+    /* Theme-private dark palette */
+    --est-dark-canvas:   #0a0e17;
+    --est-dark-card:     #181b25;
+    --est-dark-chrome:   #0a0e17;
+    --est-dark-subtle:   #1c1f29;
+    --est-dark-input:    #12151e;
+    --est-dark-hover:    #262a34;
+    --est-dark-selected: #31353f;
+
+    /* Text levels ensuring WCAG AA (≥ 4.5:1) on #181b25 card surface */
+    --est-dark-text-emph:   #f8fafc; /* 16.42:1 on card */
+    --est-dark-text-body:   #dfe2ef; /* 13.30:1 on card */
+    --est-dark-text-muted:  #94a3b8; /*  6.70:1 on card */
+    --est-dark-text-dark:   #0a0e17; /*  6.06:1 on amber fill */
+
+    /* Functional telemetry accents */
+    --est-dark-amber:        #d97706; /* Primary action fill */
+    --est-dark-amber-hover:  #f59e0b;
+    --est-dark-amber-text:   #ffb77d; /* 10.08:1 on card */
+    --est-dark-amber-shade:  rgba(217, 119, 6, 0.18);
+    --est-dark-amber-glow:   rgba(217, 119, 6, 0.35);
+
+    --est-dark-emerald:       #34d399; /* 8.94:1 on card */
+    --est-dark-emerald-shade: rgba(16, 185, 129, 0.18);
+    --est-dark-cyan:          #22d3ee; /* 9.51:1 on card */
+    --est-dark-cyan-shade:    rgba(6, 182, 212, 0.18);
+    --est-dark-ruby:          #f87171; /* 6.21:1 on card */
+    --est-dark-ruby-shade:    rgba(239, 68, 68, 0.18);
+
+    /* Surfaces */
+    --app-surface-page:     var(--est-dark-canvas);
+    --app-surface-card:     var(--est-dark-card);
+    --app-surface-chrome:   var(--est-dark-chrome);
+    --app-surface-subtle:   var(--est-dark-subtle);
+    --app-surface-input:    var(--est-dark-input);
+    --app-surface-hover:    var(--est-dark-hover);
+    --app-surface-selected: var(--est-dark-selected);
+
+    /* Text */
+    --app-text-emphasized: var(--est-dark-text-emph);
+    --app-text-primary:    var(--est-dark-text-body);
+    --app-text-secondary:  var(--est-dark-text-muted);
+    --app-text-on-accent:  var(--est-dark-text-dark);
+
+    /* Colours */
+    --app-color-primary: var(--est-dark-amber-text);
+    --app-color-success: var(--est-dark-emerald);
+    --app-color-warning: var(--est-dark-amber-text);
+    --app-color-danger:  var(--est-dark-ruby);
+    --app-color-info:    var(--est-dark-cyan);
+    --app-accent-shade:  var(--est-dark-amber-shade);
+
+    /* Borders: faint hairlines for division, strong 3.3:1 for control bounds */
+    --app-border-color:    rgba(148, 163, 184, 0.2);
+    --app-border-hairline: 1px solid var(--app-border-color);
+    --app-border-strong:   rgba(148, 163, 184, 0.65);
+
+    /* Radii */
+    --app-radius-sm: 4px;
+    --app-radius-md: 6px;
+    --app-radius-lg: 8px;
+
+    /* Shadows */
+    --app-shadow-sm:       none;
+    --app-shadow-md:       0 4px 12px rgba(0, 0, 0, 0.4);
+    --app-shadow-lg:       0 10px 25px -5px rgba(0, 0, 0, 0.6);
+    --app-shadow-dialog:   0 16px 48px -12px rgba(0, 0, 0, 0.85);
+    --app-overlay-background: rgba(10, 14, 23, 0.8);
+    --app-card-media-overlay: rgba(10, 14, 23, 0.85);
+    --app-focus-halo-color: var(--est-dark-amber-glow);
+    --app-badge-danger-text: #ffffff;
+
+    /* Geometry */
+    --app-control-h: 2.25rem;
+    --app-density-scale: .875;
+    --app-space-unit: .375rem;
+    --app-heading-scale: 1.125;
+    --app-hover-transform: none;
+    --app-hover-shadow: 0 0 0 3px var(--app-focus-halo-color);
+    --app-motion-duration: 120ms;
+    --app-selected-treatment: rail;
+    --app-responsive-strategy: compress;
+
+    /* Focus ring */
+    --app-focus-ring: 0 0 0 2px var(--est-dark-canvas), 0 0 0 4px var(--est-dark-amber);
+
+    /* Type */
+    --app-font-family-body:    "ThemeFactory-estate-slate-dark-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-estate-slate-dark-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+
+    /* Oracle JET charts — must be declared on html scope */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--est-dark-amber);
+}
+
+/* Universal Theme / Iris overrides on the theme-style scope */
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --ut-color-scheme: dark;
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: rgba(148, 163, 184, 0.12);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-border-radius-sm: var(--app-radius-sm);
+    --ut-border-radius-md: var(--app-radius-md);
+    --ut-border-radius-lg: var(--app-radius-lg);
+
+    --ut-focus-outline-color: var(--est-dark-amber);
+    --ut-link-text-color: var(--app-color-primary);
+
+    --ut-palette-primary: var(--est-dark-amber);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--est-dark-amber-hover);
+    --ut-palette-primary-text: var(--app-color-primary);
+
+    --ut-palette-success: var(--app-color-success);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: var(--est-dark-emerald-shade);
+
+    --ut-palette-warning: var(--app-color-warning);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: var(--est-dark-amber-shade);
+
+    --ut-palette-danger: var(--app-color-danger);
+    --ut-palette-danger-contrast: #ffffff;
+    --ut-palette-danger-shade: var(--est-dark-ruby-shade);
+
+    --ut-palette-info: var(--app-color-info);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: var(--est-dark-cyan-shade);
+
+    --ut-palette-generic: var(--app-surface-chrome);
+    --ut-palette-generic-contrast: var(--app-text-primary);
+    --ut-palette-generic-shade: var(--app-surface-subtle);
+    --ut-palette-generic-text: var(--app-text-primary);
+
+    /* Restate all 15 --a-palette-* atoms to prevent :root light literal freeze (pitfalls §1.2) */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    --a-base-link-text-color: var(--ut-link-text-color);
+
+    /* Remap Iris literal :root tokens (pitfalls §1.1) */
+    --ut-region-background-color: var(--app-surface-card);
+    --ut-region-header-background-color: var(--app-surface-card);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-text-color: var(--app-text-primary);
+    --ut-region-header-text-color: var(--app-text-emphasized);
+    --ut-field-label-text-color: var(--app-text-secondary);
+    --ut-field-input-focus-icon-color: var(--est-dark-amber);
+    --ut-field-fl-input-focus-icon-background-color: var(--est-dark-amber);
+    --ut-field-fl-input-focus-icon-color: var(--app-text-on-accent);
+    --ut-component-badge-background-color: var(--app-surface-hover);
+    --ut-component-toolbar-background-color: var(--app-surface-chrome);
+    --ut-body-sidebar-background-color: var(--app-surface-page);
+    --ut-body-sidebar-text-color: var(--app-text-primary);
+    --ut-body-actions-background-color: var(--app-surface-chrome);
+    --ut-body-actions-text-color: var(--app-text-primary);
+    --ut-body-actionstoggle-background-color: var(--app-surface-chrome);
+    --ut-body-actionstoggle-hover-background-color: var(--app-surface-hover);
+    --ut-footer-background-color: transparent;
+    --ut-footer-border-color: var(--app-border-color);
+    --ut-linkslist-arrow-color: var(--app-text-secondary);
+    --ut-login-page-background-color: var(--app-surface-page);
+    --ut-login-region-background-color: var(--app-surface-card);
+    --ut-navbar-button-badge-background-color: var(--est-dark-amber);
+    --ut-navtabs-background-color: var(--app-surface-chrome);
+    --ut-navtabs-text-color: var(--app-text-primary);
+    --ut-navtabs-item-active-background-color: var(--app-surface-selected);
+    --ut-navtabs-item-border-color: var(--app-border-color);
+    --ut-navtabs-item-highlight-color: var(--est-dark-amber);
+    --ut-resultsregion-background-color: var(--app-surface-card);
+    --ut-resultsregion-search-background-color: var(--app-surface-input);
+    --ut-resultsregion-search-border-color: var(--app-border-strong);
+    --ut-report-cell-alt-background-color: var(--app-surface-subtle);
+    --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
+    --ut-treeview-badge-background-color: var(--est-dark-amber);
+    --ut-treeview-badge-text-color: var(--app-text-on-accent);
+
+    /* Component atoms */
+    --a-checkbox-background-color: var(--app-surface-input);
+    --a-checkbox-border-color: var(--app-border-strong);
+    --a-checkbox-text-color: var(--app-text-on-accent);
+    --a-checkbox-checked-background-color: var(--est-dark-amber);
+    --a-checkbox-checked-text-color: var(--app-text-on-accent);
+    --a-checkbox-hover-background-color: var(--app-surface-hover);
+    --a-chip-hover-background-color: var(--app-surface-hover);
+    --a-chip-active-background-color: var(--app-surface-selected);
+    --a-chip-applied-background-color: var(--app-surface-hover);
+    --a-chip-applied-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-active-background-color: var(--app-surface-selected);
+    --a-cr-checkbox-background-color: var(--app-surface-input);
+    --a-datepicker-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-title-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-background-color: var(--app-surface-card);
+    --a-datepicker-calendar-week-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+    --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);
+    --a-datepicker-footer-background-color: var(--app-surface-card);
+    --jui-datepicker-background-color: var(--app-surface-card);
+    --jui-datepicker-border-color: var(--app-border-color);
+    --a-gv-background-color: var(--app-surface-card);
+    --a-gv-deleted-background-color: var(--app-surface-subtle);
+    --a-gv-grandtotal-background-color: var(--app-surface-chrome);
+    --a-kb-shortcut-background-color: var(--app-surface-hover);
+    --a-kb-shortcut-border-color: var(--app-border-color);
+    --a-popuplov-chip-background-color: var(--app-surface-hover);
+    --a-report-controls-cell-label-text-color: var(--app-text-primary);
+    --a-report-controls-cell-label-background-color: var(--app-surface-card);
+    --a-resultsitem-background-color: var(--app-surface-card);
+    --a-resultsitem-badge-background-color: var(--app-surface-hover);
+    --a-starrating-stars-bg-color: var(--app-border-strong);
+    --a-chat-client-background-color: var(--app-surface-card);
+    --a-chat-user-primary-message-background-color: var(--app-surface-selected);
+    --a-chat-user-secondary-message-background-color: var(--app-surface-hover);
+    --a-chat-input-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-input-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-message-action-button-background-color: var(--app-surface-card);
+    --a-chat-message-action-button-state-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-border-color: var(--app-border-strong);
+    --a-chat-view-more-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-background: var(--app-surface-page);
+    --a-chat-body-background-color: var(--app-surface-page);
+    --a-chat-title-background: var(--app-surface-chrome);
+    --a-chat-title-color: var(--app-text-emphasized);
+    --a-chat-message-border-color: var(--app-border-color);
+    --a-chat-message-error-icon-color: var(--app-color-danger);
+    --a-chat-transcript-outline-color: var(--est-dark-amber);
+    --a-chat-user-primary-text-color: var(--app-text-primary);
+    --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
+    --a-chat-user-primary-icon-background-color: var(--est-dark-amber);
+    --a-chat-user-secondary-text-color: var(--app-text-primary);
+    --a-chat-user-secondary-icon-background-color: var(--app-color-danger);
+    --a-chat-user-secondary-icon-text-color: #ffffff;
+    --a-chat-view-more-button-background-color: var(--app-surface-page);
+    --ut-component-badge-text-color: var(--app-text-primary);
+    --ut-component-icon-background-color: var(--est-dark-amber);
+    --ut-component-icon-color: var(--app-text-on-accent);
+    --ut-header-menubar-item-hover-background-color: var(--app-surface-hover);
+    --ut-header-menubar-item-hover-text-color: var(--app-text-emphasized);
+    --ut-navtabs-item-hover-background-color: var(--app-surface-hover);
+    --ut-navtabs-item-active-highlight-color: var(--est-dark-amber);
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--est-dark-amber);
+
+    /* Wizard */
+    --ut-wizard-header-background-color: var(--app-surface-chrome);
+    --ut-wp-track-color: rgba(148, 163, 184, 0.3);
+    --ut-wp-marker-color: var(--app-border-strong);
+
+    /* Lists */
+    --ut-comment-item-background-color: var(--app-surface-card);
+    --ut-comment-chat-background-color: var(--app-surface-input);
+    --ut-comment-chat-active-background-color: var(--app-surface-hover);
+    --ut-medialist-item-background-color: var(--app-surface-card);
+    --ut-cr-item-background-color: var(--app-surface-card);
+    --ut-cr-border-color: var(--app-border-color);
+    --ut-timeline-type-background-color: var(--app-surface-card);
+}
+/* identity: dense rail navigation and map-frame monitoring cockpit */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-nav { --ut-nav-width: 13rem; }
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-inline-start: 3px solid var(--app-color-primary); }
+/* Page shell — header, side navigation, title bar, footer.
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+/* ---- Header: deep slate-950 chrome with hairline border --------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Header {
+    --ut-header-strip-size: 2px;
+    --ut-header-background-color: var(--app-surface-chrome);
+    --ut-header-text-color: var(--app-text-emphasized);
+    --ut-header-border-color: var(--app-border-color);
+    --ut-header-menubar-background-color: var(--app-surface-chrome);
+    --ut-header-menubar-item-text-color: var(--app-text-primary);
+    --ut-header-menubar-item-border-color: var(--app-border-color);
+    --ut-header-menubar-item-current-background-color: var(--app-accent-shade);
+    --ut-header-menubar-item-current-text-color: var(--app-text-emphasized);
+    --ut-header-menubar-item-split-border-color: var(--app-border-color);
+    --ut-header-menubar-item-split-icon-color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Header-logo-link {
+    font-weight: var(--app-font-weight-semibold);
+    color: var(--app-text-emphasized);
+    letter-spacing: -0.02em;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Header-logo-link:hover {
+    color: var(--app-color-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Header .t-Button--header {
+    --a-button-text-color: var(--app-text-emphasized);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-border-radius: var(--app-radius-sm);
+}
+
+/* ---- Side navigation: deep command rail ------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-nav {
+    --ut-body-nav-background-color: var(--app-surface-chrome);
+    --ut-body-nav-text-color: var(--app-text-secondary);
+    --ut-body-nav-border-color: var(--app-border-color);
+    --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-strong);
+    --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-nav .t-TreeNav {
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--est-dark-amber);
+    --a-treeview-node-font-weight: var(--app-font-weight-medium);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel ul,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-collapsible > .a-TreeView-row {
+    background-color: transparent;
+    color: inherit;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-selected {
+    background-color: var(--app-surface-selected);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+    background-color: var(--app-surface-hover) !important; /* Iris: .a-TreeView-row.is-hover{...!important} */
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: var(--app-text-emphasized);
+}
+
+/* Style B Navigation Menu */
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row {
+    border-radius: var(--app-radius-sm);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected {
+    background-color: var(--app-surface-selected);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top,
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected + .a-TreeView-toggle {
+    color: var(--app-text-emphasized);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top.is-hover {
+    color: var(--app-text-emphasized) !important; /* Iris: color:#fff!important */
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-hover {
+    background-color: var(--app-surface-selected) !important; /* Iris: #006c91!important */
+}
+
+/* Style A fallback */
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel {
+    border-bottom-color: var(--ut-component-inner-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel.is-collapsible {
+    color: inherit;
+}
+
+/* ---- Title bar: canvas surface, hairline, light title ------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-title {
+    --ut-body-title-background-color: var(--app-surface-page);
+    --ut-body-title-box-shadow: none;
+    --ut-body-title-border-width: 1px;
+    --ut-body-title-border-color: var(--app-border-color);
+    --ut-body-title-text-color: var(--app-text-emphasized);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-HeroRegion-title {
+    color: var(--app-text-emphasized);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-HeroRegion-icon {
+    color: var(--app-color-primary);
+}
+
+/* ---- Footer: hairline separator, muted text ------------------------------------------------ */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Footer {
+    border-top-color: var(--app-border-color);
+    color: var(--app-text-secondary);
+}
+/* identity: layered monitor panels and inset map-frame surfaces */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Region,
+.app-theme-estate-slate-dark .apex-theme-iris .t-CardsRegion { box-shadow: var(--app-shadow-md); border-radius: var(--app-radius-sm); }
+.app-theme-estate-slate-dark .apex-theme-iris .maplibregl-map,
+.app-theme-estate-slate-dark .apex-theme-iris .t-MapRegion { border: 1px solid var(--app-border-strong); box-shadow: inset 0 0 0 1px var(--app-color-info); }
+/* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+/* ---- Standard region: slate card surface, 6px radius, hairline border, flat elevation ---- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Region {
+    --ut-region-border-radius: var(--app-radius-md);
+    --ut-region-box-shadow: none;
+    --ut-region-header-padding-y: var(--app-space-3);
+    --ut-region-header-padding-x: var(--app-space-4);
+    --ut-region-body-padding-x: var(--app-space-4);
+    --ut-region-body-padding-y: var(--app-space-4);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Region-header {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Region-headerIcon {
+    color: var(--app-color-primary);
+}
+
+/* ---- Cards region (.a-CardView) ----------------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --a-cv-background-color: var(--app-surface-card);
+    --a-cv-hover-background-color: var(--app-surface-hover);
+    --a-cv-hover-border-color: var(--est-dark-amber);
+    --a-cv-hover-text-color: var(--app-text-emphasized);
+    --a-cv-active-background-color: var(--app-surface-selected);
+    --a-cv-focus-border-color: var(--est-dark-amber);
+    --a-cv-border-color: var(--app-border-color);
+    --a-cv-border-radius: var(--app-radius-md);
+    --a-cv-shadow: none;
+    --a-cv-hover-shadow: none;
+    --a-cv-active-shadow: none;
+    --a-cv-text-color: var(--app-text-primary);
+    --a-cv-title-text-color: var(--app-text-emphasized);
+    --a-cv-title-font-weight: var(--app-font-weight-semibold);
+    --a-cv-subtitle-text-color: var(--app-text-secondary);
+    --a-cv-maincontent-text-color: var(--app-text-primary);
+    --a-cv-subcontent-text-color: var(--app-text-secondary);
+    --a-cv-header-border-color: var(--app-border-color);
+    --a-cv-actions-border-color: var(--app-border-color);
+    --a-cv-badge-background-color: var(--est-dark-amber);
+    --a-cv-badge-text-color: var(--app-text-on-accent);
+    --a-cv-media-background-color: var(--app-surface-page);
+    --a-cv-media-overlay-color: var(--app-card-media-overlay);
+    --a-cv-active-border-color: var(--est-dark-amber);
+    --a-cv-icon-background-color: var(--est-dark-amber);
+    --a-cv-icon-text-color: var(--app-text-on-accent);
+    --a-cv-initials-background-color: var(--est-dark-amber);
+    --a-cv-initials-text-color: var(--app-text-on-accent);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-CardsRegion {
+    background-color: transparent;
+    border-color: var(--app-border-color);
+}
+
+/* ---- Wizard region: amber active step, emerald completed step ---------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard {
+    --ut-wizard-box-shadow: none;
+    --ut-wizard-border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard-header,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard-footer {
+    background-color: var(--app-surface-chrome);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard-header {
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard-footer {
+    border-top: 1px solid var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Wizard-title {
+    font-weight: var(--app-font-weight-semibold);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-WizardSteps {
+    --ut-wp-label-color: var(--app-text-secondary);
+    --ut-wp-active-background-color: var(--est-dark-amber);
+    --ut-wp-active-text-color: var(--app-text-on-accent);
+    --ut-wp-complete-background-color: var(--est-dark-emerald);
+    --ut-wp-checkmark-color: var(--app-text-on-accent);
+    --ut-wp-label-active-font-weight: var(--app-font-weight-semibold);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-WizardSteps-step.is-active .t-WizardSteps-label {
+    color: var(--app-text-emphasized);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-WizardSteps-step.is-complete .t-WizardSteps-label {
+    color: var(--app-text-primary);
+}
+
+/* ---- Cards (list template "Cards") -------------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Cards {
+    --ut-cardlist-border-radius: var(--app-radius-md);
+    --ut-cardlist-box-shadow: none;
+    --ut-cardlist-title-text-color: var(--app-text-emphasized);
+    --ut-cardlist-title-font-weight: var(--app-font-weight-semibold);
+    --ut-cardlist-subtitle-text-color: var(--app-text-secondary);
+    --ut-cardlist-desc-color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    border-color: var(--est-dark-amber);
+    background-color: var(--app-surface-hover);
+    box-shadow: 0 0 0 1px var(--est-dark-amber);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Card-title {
+    font-size: var(--app-text-md);
+    letter-spacing: -0.01em;
+}
+
+/* ---- Metric cards: champagne amber value -------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-MetricCard {
+    --ut-metric-card-shadow: none;
+    --ut-metric-card-metric-text-color: var(--app-color-primary);
+    --ut-metric-card-meta-text-color: var(--app-text-secondary);
+}
+
+/* ---- Content blocks: heading scale -------------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-ContentBlock {
+    --ut-content-block-header-font-weight: var(--app-font-weight-semibold);
+    --ut-content-block-header-line-height: 1.3;
+    --ut-content-block-border-radius: var(--app-radius-md);
+    --ut-content-block-box-shadow: none;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-ContentBlock--h1 { --ut-content-block-header-font-size: var(--app-text-2xl); }
+.app-theme-estate-slate-dark .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
+.app-theme-estate-slate-dark .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
+
+/* Headings */
+.app-theme-estate-slate-dark .apex-theme-iris .t-ContentBlock-title,
+.app-theme-estate-slate-dark .apex-theme-iris .t-HeroRegion-title,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+    color: var(--app-text-emphasized);
+}
+
+/* ---- Breadcrumb title --------------------------------------------------------------------- */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Body-title {
+    --ut-breadcrumb-title-font-size: var(--app-text-2xl);
+    --ut-breadcrumb-title-line-height: 2rem;
+    --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+/* identity: square control edges for cockpit actions */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Button { border-radius: var(--app-radius-sm); }
+/* Buttons.
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: slate card surface with 3.3:1 identifying border */
+    --a-button-background-color: var(--app-surface-card);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-strong);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-active-background-color: var(--app-surface-selected);
+    --a-button-focus-background-color: var(--app-surface-hover);
+    --a-button-focus-border-color: var(--est-dark-amber);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot button: champagne amber directive with dark text (6.06:1 AA pass) */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary),
+.app-theme-estate-slate-dark .apex-theme-iris .a-CardView-button--hot,
+.app-theme-estate-slate-dark .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--est-dark-amber);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--est-dark-amber-hover);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--est-dark-amber);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--est-dark-amber-hover);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Primary button */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Button--primary {
+    --a-button-background-color: var(--est-dark-amber);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--est-dark-amber-hover);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+}
+
+/* Keyboard focus on buttons */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+/* identity: dense form fields with visible operational boundaries */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer { row-gap: var(--app-space-unit); }
+/* Form items.
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-radius-sm);
+    --a-field-input-padding-y: .4375rem;
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-hover-background-color: var(--app-surface-input);
+    --a-field-input-text-color: var(--app-text-emphasized);
+    --a-field-input-border-color: var(--app-border-strong);
+    --a-field-input-hover-border-color: var(--app-border-strong);
+    --a-field-input-focus-border-color: var(--est-dark-amber);
+    --a-field-input-focus-background-color: var(--app-surface-input);
+    --a-field-placeholder-text-color: var(--app-text-secondary);
+    --a-field-placeholder-opacity: 1;
+    --a-chip-border-color: var(--app-border-strong);
+
+    /* File Drop */
+    --a-filedrop-border-color: var(--app-border-strong);
+    --a-filedrop-focus-border-color: var(--est-dark-amber);
+    --a-filedrop-heading-text-color: var(--app-text-emphasized);
+    --a-filedrop-text-color: var(--app-text-secondary);
+    --a-filedrop-icon-action-background-color: var(--app-surface-hover);
+    --a-filedrop-icon-action-border-color: var(--app-border-strong);
+
+    /* Markdown Editor */
+    --a-mdeditor-background-color: var(--app-surface-input);
+    --a-mdeditor-border-color: var(--app-border-strong);
+    --a-mdeditor-focus-border-color: var(--est-dark-amber);
+
+    /* Combo Box */
+    --a-combo-select-item-selected-background-color: var(--app-surface-selected);
+}
+
+/* Stacked / inline labels */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Floating labels */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel .t-Form-label {
+    color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel.is-active .t-Form-label {
+    color: var(--app-text-emphasized);
+}
+
+/* Focus halo on native item types */
+.app-theme-estate-slate-dark .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-estate-slate-dark .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-estate-slate-dark .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-estate-slate-dark .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px var(--app-focus-halo-color);
+    border-color: var(--est-dark-amber);
+    outline: none;
+}
+/* identity: scan-ready monitoring tables */
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-table tr { border-block-end: 1px solid var(--app-border-color); }
+/* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    /* header row: chrome surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-chrome);
+    --a-gv-header-text-color: var(--app-text-emphasized);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: var(--app-space-3);
+
+    /* body: 13px, 40px rows, hairline row separators */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: var(--app-space-3);
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-background-color: var(--app-surface-card);
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+    --a-gv-pagination-button-text-color: var(--app-text-primary);
+    --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
+    --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);
+    --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);
+
+    /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+    --a-report-controls-cell-label-border-color: var(--app-border-color);
+    --a-report-controls-input-border-color: var(--app-border-strong);
+    --a-report-controls-input-focus-border-color: var(--est-dark-amber);
+    --a-gv-nodata-message-text-color: var(--app-text-secondary);
+    --a-resultsitem-border-color: var(--app-border-color);
+    --a-resultsitem-misc-text-color: var(--app-text-secondary);
+    --a-searchresults-pagination-color: var(--app-text-secondary);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-chrome);
+    --ut-report-header-text-color: var(--app-text-emphasized);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Flatten type-specific control items to dark hover surface */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Hairline horizontal borders */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-header,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-hover);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-emphasized);
+}
+
+/* IRR toolbar and search */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-toolbar {
+    background-color: var(--app-surface-card);
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-search-field {
+    background-color: var(--app-surface-input);
+    color: var(--app-text-emphasized);
+    border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables */
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report td,
+.app-theme-estate-slate-dark .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
+}
+
+/* Tabular numeric alignment */
+.app-theme-estate-slate-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-estate-slate-dark .apex-theme-iris .a-GV-cell,
+.app-theme-estate-slate-dark .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}
+/* identity: offset detail dialogs for monitor drill-down */
+.app-theme-estate-slate-dark .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }
+/* Modal dialogs (jQuery UI dialog chrome in parent page), wizard dialog pages, and popup menus.
+   Scoped to .app-theme-estate-slate-dark .apex-theme-iris. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --jui-dialog-border-radius: var(--app-radius-lg);
+    --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
+    --jui-dialog-background-color: var(--app-surface-card);
+    --jui-dialog-text-color: var(--app-text-primary);
+    --jui-dialog-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-background-color: var(--app-surface-subtle);
+    --jui-dialog-titlebar-text-color: var(--app-text-emphasized);
+    --jui-dialog-titlebar-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-padding-x: 1.25rem;
+    --jui-dialog-title-font-weight: var(--app-font-weight-semibold);
+    --jui-dialog-title-close-border-radius: var(--app-radius-sm);
+    --jui-dialog-title-close-border-color: transparent;
+    --jui-dialog-buttonpane-background-color: var(--app-surface-chrome);
+    --jui-dialog-buttonpane-border-color: var(--app-border-color);
+    --jui-overlay-background-color: var(--app-overlay-background);
+
+    /* Popup menus */
+    --a-menu-shadow: var(--app-shadow-dialog);
+    --a-menu-border-radius: var(--app-radius-md);
+    --a-menu-border-color: var(--app-border-color);
+    --a-menu-background-color: var(--app-surface-chrome);
+    --a-menu-callout-background-color: var(--app-surface-chrome);
+    --a-menu-text-color: var(--app-text-emphasized);
+    --a-menu-default-text-color: var(--app-text-emphasized);
+    --a-menu-focused-background-color: var(--app-surface-hover);
+    --a-menu-focused-text-color: var(--app-text-emphasized);
+    --a-menu-font-weight: var(--app-font-weight-medium);
+    --a-menu-sep-border-color: var(--app-border-color);
+    --a-menu-accel-text-color: var(--app-text-primary);
+    --a-menu-default-accel-text-color: var(--app-text-primary);
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);
+    --a-menu-callout-border-color: var(--app-border-color);
+}
+
+/* Wizard Modal Dialog pages */
+.app-theme-estate-slate-dark .t-Dialog-page--wizard .t-Dialog-header {
+    background-color: var(--app-surface-chrome);
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .t-Dialog-page--wizard .t-Dialog-body {
+    background-color: var(--app-surface-page);
+}
+
+.app-theme-estate-slate-dark .t-Dialog-page--wizard .t-Dialog-footer {
+    background-color: var(--app-surface-chrome);
+    border-top: 1px solid var(--app-border-color);
+}
+/* identity: amber/emerald telemetry rails and map-frame utility states */
+/* Alerts, badges, tabs, code, demo surfaces.
+   Scoped to .app-theme-estate-slate-dark. */
+
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: none;
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+
+    /* Badges */
+    --ut-badge-background-color: var(--est-dark-amber);
+    --ut-badge-text-color: var(--app-text-on-accent);
+    --ut-badge-success-background-color: var(--est-dark-emerald);
+    --ut-badge-success-text-color: var(--app-text-on-accent);
+    --ut-badge-warning-background-color: var(--est-dark-amber);
+    --ut-badge-warning-text-color: var(--app-text-on-accent);
+    --ut-badge-danger-background-color: var(--est-dark-ruby);
+    --ut-badge-danger-text-color: var(--app-badge-danger-text);
+    --ut-badge-info-background-color: var(--est-dark-cyan);
+    --ut-badge-info-text-color: var(--app-text-on-accent);
+    --ut-badge-subtle-background-color: var(--app-surface-hover);
+    --ut-badge-subtle-text-color: var(--app-text-primary);
+    --ut-badge-subtle-success-text-color: var(--app-text-primary);
+    --ut-badge-subtle-warning-text-color: var(--app-text-primary);
+    --ut-badge-subtle-danger-text-color: var(--app-text-primary);
+    --ut-badge-subtle-info-text-color: var(--app-text-primary);
+
+    /* Tabs */
+    --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-item-text-color: var(--app-text-secondary);
+    --ut-tabs-item-active-text-color: var(--app-text-emphasized);
+    --ut-tabs-item-active-highlight-color: var(--est-dark-amber);
+    --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-chart-border-color: var(--app-border-color);
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);
+
+    /* Percent Graph */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--est-dark-amber);
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Dialog */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Tooltips */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);
+}
+
+/* Alerts */
+.app-theme-estate-slate-dark .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
+    border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--est-dark-amber));
+}
+
+/* Code samples */
+.app-theme-estate-slate-dark pre[class*="language-"],
+.app-theme-estate-slate-dark code[class*="language-"] {
+    color: var(--est-dark-text-body);
+    text-shadow: none;
+}
+
+.app-theme-estate-slate-dark pre[class*="language-"] {
+    background-color: var(--app-surface-page);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--app-radius-sm);
+}
+
+.app-theme-estate-slate-dark :not(pre) > code[class*="language-"] {
+    background-color: var(--app-surface-page);
+}
+
+.app-theme-estate-slate-dark .token.comment,
+.app-theme-estate-slate-dark .token.prolog,
+.app-theme-estate-slate-dark .token.doctype,
+.app-theme-estate-slate-dark .token.cdata {
+    color: var(--est-dark-text-muted);
+    font-style: italic;
+}
+
+.app-theme-estate-slate-dark .token.punctuation,
+.app-theme-estate-slate-dark .token.operator {
+    color: var(--est-dark-text-body);
+}
+
+.app-theme-estate-slate-dark .token.keyword,
+.app-theme-estate-slate-dark .token.atrule,
+.app-theme-estate-slate-dark .token.important {
+    color: var(--est-dark-emerald);
+}
+
+.app-theme-estate-slate-dark .token.string,
+.app-theme-estate-slate-dark .token.char,
+.app-theme-estate-slate-dark .token.attr-value,
+.app-theme-estate-slate-dark .token.inserted {
+    color: var(--est-dark-cyan);
+}
+
+.app-theme-estate-slate-dark .token.function,
+.app-theme-estate-slate-dark .token.class-name,
+.app-theme-estate-slate-dark .token.builtin {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.property,
+.app-theme-estate-slate-dark .token.tag,
+.app-theme-estate-slate-dark .token.selector,
+.app-theme-estate-slate-dark .token.attr-name,
+.app-theme-estate-slate-dark .token.variable {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.number,
+.app-theme-estate-slate-dark .token.boolean,
+.app-theme-estate-slate-dark .token.constant,
+.app-theme-estate-slate-dark .token.symbol,
+.app-theme-estate-slate-dark .token.regex {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .token.entity,
+.app-theme-estate-slate-dark .token.url,
+.app-theme-estate-slate-dark .token.deleted {
+    color: var(--est-dark-ruby);
+}
+
+/* Reference-app demo surfaces */
+.app-theme-estate-slate-dark input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+
+.app-theme-estate-slate-dark .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+
+.app-theme-estate-slate-dark .dm-Search-result:hover,
+.app-theme-estate-slate-dark .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+
+.app-theme-estate-slate-dark .dm-Search:empty:before {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-preview {
+    background-image: none;
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-code,
+.app-theme-estate-slate-dark .instructions {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+
+.app-theme-estate-slate-dark .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+
+.app-theme-estate-slate-dark .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .dm-Report--doc th,
+.app-theme-estate-slate-dark .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class {
+    color: var(--est-dark-amber-text);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .class-value,
+.app-theme-estate-slate-dark .apex-theme-iris .class-var {
+    color: var(--est-dark-cyan);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);
+}
+
+.app-theme-estate-slate-dark .event-name,
+.app-theme-estate-slate-dark code.event-name {
+    text-shadow: none;
+}
+
+.app-theme-estate-slate-dark .event-name:hover,
+.app-theme-estate-slate-dark code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}
+
+/* Calendar */
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
+    background-color: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+}
+
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default:hover {
+    background-color: var(--app-color-primary);
+    filter: brightness(1.08);
+}
+
+/* Map */
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib {
+    background-color: var(--app-overlay-background);
+}
+
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib,
+.app-theme-estate-slate-dark .maplibregl-ctrl-attrib a {
+    color: var(--app-text-primary);
+}
+
+/* Custom calendar events: bright status fills pair with the package's dark accent text. */
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-success);
+    border-color: var(--app-color-success);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-info);
+    border-color: var(--app-color-info);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-warning);
+    border-color: var(--app-color-warning);
+}
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-green .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-blue .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow .fc-event-title,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-time,
+.app-theme-estate-slate-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
+    color: var(--app-text-on-accent);
+}
 
 
 /* ==========================================================================

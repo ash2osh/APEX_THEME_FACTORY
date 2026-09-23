@@ -233,92 +233,12 @@ file "js/vendor/alpine.min.js" (
     charSet: utf-8
 )
 
-file "css/themes/linen/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/linen/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/linen/theme.css" (
     mimeType: text/css
     charSet: utf-8
 )
 
-file "css/themes/linen/tokens.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/solarized-dark/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/solarized-dark/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -343,47 +263,7 @@ file "js/components/themeFactoryDisclosure.js" (
     charSet: utf-8
 )
 
-file "css/themes/estate-slate-dark/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/estate-slate-dark/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate-dark/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -393,47 +273,7 @@ file "css/themes/estate-slate-dark/theme.json" (
     charSet: utf-8
 )
 
-file "css/themes/estate-slate/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/estate-slate/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/estate-slate/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -511,47 +351,7 @@ file "css/themes/solarized-dark/cover.jpg" (
     mimeType: image/jpeg
 )
 
-file "css/themes/carbon-volt/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/carbon-volt/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/carbon-volt/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -581,47 +381,7 @@ file "css/themes/carbon-volt/cover.jpg" (
     mimeType: image/jpeg
 )
 
-file "css/themes/citrus-pop/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/citrus-pop/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/citrus-pop/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -651,47 +411,7 @@ file "css/themes/citrus-pop/cover.jpg" (
     mimeType: image/jpeg
 )
 
-file "css/themes/cobalt-press/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/cobalt-press/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/cobalt-press/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )
@@ -721,47 +441,7 @@ file "css/themes/cobalt-press/cover.jpg" (
     mimeType: image/jpeg
 )
 
-file "css/themes/velvet-signal/apex/buttons.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/dialogs.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/forms.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/misc.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/regions.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/reports.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/apex/shell.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
 file "css/themes/velvet-signal/theme.css" (
-    mimeType: text/css
-    charSet: utf-8
-)
-
-file "css/themes/velvet-signal/tokens.css" (
     mimeType: text/css
     charSet: utf-8
 )

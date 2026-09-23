@@ -1,14 +1,622 @@
 /* Citrus Pop — light theme package for Universal Theme / Iris.
    Entry point; loaded by static-files/css/app.css.
    All rules are scoped to html.app-theme-citrus-pop. */
-@import "tokens.css";
-@import "apex/shell.css";
-@import "apex/regions.css";
-@import "apex/buttons.css";
-@import "apex/forms.css";
-@import "apex/reports.css";
-@import "apex/dialogs.css";
-@import "apex/misc.css";
+/* Citrus Pop — pale-aqua canvas, teal navigation, tangerine signals and buoyant pill geometry. */
+
+html.app-theme-citrus-pop {
+    color-scheme: light;
+
+    --cit-slate-950: #073B3A;
+    --cit-slate-900: #073B3A;
+    --cit-slate-800: #164E4B;
+    --cit-slate-700: #285F5B;
+    --cit-slate-600: #49726F;
+    --cit-slate-400: #83A5A1;
+    --cit-slate-200: #BBDDD5;
+    --cit-slate-100: #DDF3ED;
+    --cit-slate-50: #ECFAF6;
+
+    --cit-amber: #007F78;
+    --cit-amber-hover: #00635E;
+    --cit-teal-text: #00645F;
+    --cit-amber-shade: rgba(0, 127, 120, .11);
+    --cit-amber-glow: rgba(0, 127, 120, .24);
+
+    --cit-emerald: #17734E;
+    --cit-emerald-shade: rgba(23, 115, 78, .11);
+    --cit-cyan: #007F78;
+    --cit-cyan-shade: rgba(0, 127, 120, .11);
+    --cit-ruby: #C74320;
+    --cit-ruby-shade: rgba(199, 67, 32, .11);
+    --cit-tangerine: #FF6B35;
+    --cit-hot-button-text: #063332;
+    --cit-tangerine-shade: rgba(255, 107, 53, .16);
+
+    /* Surfaces */
+    --app-surface-page:     var(--cit-slate-50);
+    --app-surface-card:     #ffffff;
+    --app-surface-chrome:   var(--cit-slate-900);
+    --app-surface-chrome-hover: var(--cit-slate-700);
+    --app-surface-subtle:   var(--cit-slate-100);
+    --app-surface-input:    #ffffff;
+    --app-surface-hover:    var(--cit-slate-100);
+    --app-surface-selected: var(--cit-amber-shade);
+
+    /* Text */
+    --app-text-emphasized:   var(--cit-slate-950);
+    --app-text-primary:      var(--cit-slate-800);
+    --app-text-secondary:    var(--cit-slate-600);
+    --app-text-on-accent:    #ffffff;
+    --app-text-chrome:       var(--cit-slate-50);
+    --app-text-chrome-muted: var(--cit-slate-400);
+    --app-calendar-warning-text: #000000; /* black on tangerine is 4.97:1 */
+    --app-border-chrome:     var(--cit-slate-800);
+
+    /* Colours */
+    --app-color-primary: var(--cit-amber);
+    --app-color-success: var(--cit-emerald);
+    --app-color-warning: var(--cit-tangerine);
+    --app-color-danger:  var(--cit-ruby);
+    --app-color-info:    var(--cit-cyan);
+    --app-accent-shade:  var(--cit-amber-shade);
+
+    /* Borders */
+    --app-border-color:    var(--cit-slate-200);
+    --app-border-hairline: 1px solid var(--cit-slate-200);
+    --app-border-strong:   var(--cit-slate-400);
+
+    --app-radius-sm: 8px;
+    --app-radius-md: 16px;
+    --app-radius-lg: 24px;
+
+    /* Shadows */
+    --app-shadow-sm: 0 8px 18px rgba(7, 59, 58, .09);
+    --app-shadow-md: 0 14px 30px rgba(7, 59, 58, .13);
+    --app-shadow-lg: 0 22px 46px rgba(7, 59, 58, .16);
+    --app-shadow-dialog: 0 28px 60px rgba(7, 59, 58, .24);
+    --app-overlay-background: rgba(7, 59, 58, .56);
+    --app-card-media-overlay: rgba(7, 59, 58, .7);
+    --app-focus-halo-color: var(--cit-amber-glow);
+    --app-badge-danger-text: #ffffff;
+
+    /* Geometry */
+    --app-control-h: 2.625rem;
+    --app-density-scale: 1.125;
+    --app-space-unit: .75rem;
+    --app-heading-scale: 1.5;
+    --app-hover-transform: translateY(-2px);
+    --app-motion-duration: 240ms;
+    --app-selected-treatment: fill;
+    --app-responsive-strategy: stack;
+
+    /* Focus ring */
+    --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cit-amber);
+
+    /* Type */
+    --app-font-family-body:    "ThemeFactory-citrus-pop-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-citrus-pop-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+}
+
+/* Universal Theme / Iris overrides on the theme-style scope */
+.app-theme-citrus-pop .apex-theme-iris {
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: var(--app-border-color);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-border-radius-sm: var(--app-radius-sm);
+    --ut-border-radius-md: var(--app-radius-md);
+    --ut-border-radius-lg: var(--app-radius-lg);
+
+    --ut-focus-outline-color: var(--app-color-primary);
+    --ut-link-text-color: var(--cit-teal-text);
+
+    --ut-palette-primary: var(--app-color-primary);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--cit-amber);
+    --ut-palette-primary-text: var(--cit-teal-text);
+
+    --ut-palette-success: var(--app-color-success);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: var(--cit-emerald-shade);
+
+    --ut-palette-warning: var(--app-color-warning);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: var(--cit-tangerine-shade);
+
+    --ut-palette-danger: var(--app-color-danger);
+    --ut-palette-danger-contrast: var(--app-text-on-accent);
+    --ut-palette-danger-shade: var(--cit-ruby-shade);
+
+    --ut-palette-info: var(--app-color-info);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: var(--cit-cyan-shade);
+}
+/* identity: pill navigation, pale aqua canvas, and teal structure */
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
+.app-theme-citrus-pop .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
+/* Page shell — header, side navigation, title bar, footer.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+/* ---- Header: dark command slate chrome with amber branding ------------------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-Header {
+    --ut-header-strip-size: 2px;
+    --ut-header-background-color: var(--app-surface-chrome);
+    --ut-header-text-color: var(--app-text-chrome);
+    --ut-header-border-color: var(--app-border-chrome);
+    --ut-header-menubar-background-color: var(--app-surface-chrome);
+    --ut-header-menubar-item-text-color: var(--app-text-chrome);
+    --ut-header-menubar-item-border-color: var(--app-border-chrome);
+    --ut-header-menubar-item-current-background-color: var(--app-accent-shade);
+    --ut-header-menubar-item-current-text-color: var(--app-color-primary);
+    --ut-header-menubar-item-split-border-color: var(--app-border-chrome);
+    --ut-header-menubar-item-split-icon-color: var(--app-text-chrome-muted);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Header::before {
+    background-color: var(--cit-tangerine);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Header-logo-link {
+    font-weight: var(--app-font-weight-semibold);
+    color: var(--app-text-chrome);
+    letter-spacing: -0.02em;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Header-logo-link:hover {
+    color: var(--app-color-primary);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Header .t-Button--header {
+    --a-button-text-color: var(--app-text-chrome);
+    --a-button-hover-text-color: var(--app-text-chrome);
+    --a-button-border-radius: var(--app-radius-sm);
+}
+
+/* ---- Side navigation: sleek command rail ------------------------------------------------ */
+.app-theme-citrus-pop .apex-theme-iris .t-Body-nav {
+    --ut-body-nav-background-color: var(--app-surface-chrome);
+    --ut-body-nav-text-color: var(--app-text-chrome-muted);
+    --ut-body-nav-border-color: var(--app-border-chrome);
+    --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-chrome);
+    --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Body-nav .t-TreeNav {
+    --a-treeview-node-selected-background-color: var(--app-accent-shade);
+    --a-treeview-node-selected-text-color: var(--app-color-primary);
+    --a-treeview-node-focused-background-color: var(--app-accent-shade);
+    --a-treeview-node-focused-text-color: var(--app-color-primary);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--app-color-primary);
+    --a-treeview-node-font-weight: var(--app-font-weight-medium);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel ul,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-collapsible > .a-TreeView-row {
+    background-color: transparent;
+    color: inherit;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-selected {
+    background-color: var(--app-accent-shade);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+    background-color: var(--app-surface-chrome-hover) !important; /* Iris: .is-hover{...!important} */
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: var(--app-text-chrome);
+}
+
+/* Style B Navigation Menu */
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row {
+    border-radius: var(--app-radius-sm);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected {
+    background-color: var(--app-accent-shade);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected + .a-TreeView-toggle {
+    color: var(--app-color-primary);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top.is-hover {
+    color: var(--app-color-primary) !important; /* Iris: color:#fff!important */
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-hover {
+    background-color: var(--app-accent-shade) !important; /* Iris: #006c91!important */
+}
+
+/* ---- Title bar: canvas-coloured, hairline border ----------------------------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-Body-title {
+    --ut-body-title-background-color: var(--app-surface-page);
+    --ut-body-title-box-shadow: none;
+    --ut-body-title-border-width: 1px;
+    --ut-body-title-border-color: var(--app-border-color);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-HeroRegion-title {
+    font-size: var(--app-text-2xl);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 2rem;
+    letter-spacing: -0.02em;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-HeroRegion-icon {
+    border-radius: var(--app-radius-md);
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.5rem;
+}
+/* identity: buoyant card lift with generous playful spacing */
+.app-theme-citrus-pop .apex-theme-iris .t-Region,
+.app-theme-citrus-pop .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease; }
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover { transform: var(--app-hover-transform); box-shadow: var(--app-shadow-md); }
+/* Regions, cards, content blocks, breadcrumb title.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+/* ---- Standard region: crisp white card, 6px radius, hairline border ---------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-Region {
+    --ut-region-border-radius: var(--app-radius-md);
+    --ut-region-box-shadow: var(--app-shadow-sm);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-header-padding-y: var(--app-space-3);
+    --ut-region-header-padding-x: var(--app-space-4);
+    --ut-region-body-padding-x: var(--app-space-4);
+    --ut-region-body-padding-y: var(--app-space-4);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Region-header {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Region-headerIcon {
+    color: var(--app-color-primary);
+}
+
+/* ---- Cards (list template "Cards") -------------------------------------------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-Cards {
+    --ut-cardlist-border-radius: var(--app-radius-md);
+    --ut-cardlist-box-shadow: var(--app-shadow-sm);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 1px var(--app-color-primary);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Card-title {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    letter-spacing: -0.01em;
+}
+
+/* ---- Content blocks: heading scale -------------------------------------------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-ContentBlock {
+    --ut-content-block-header-font-weight: var(--app-font-weight-semibold);
+    --ut-content-block-header-line-height: 1.3;
+    --ut-content-block-border-radius: var(--app-radius-md);
+    --ut-content-block-box-shadow: none;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-ContentBlock--h1 { --ut-content-block-header-font-size: var(--app-text-2xl); }
+.app-theme-citrus-pop .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
+.app-theme-citrus-pop .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
+
+/* Headings: avoid single-word last lines */
+.app-theme-citrus-pop .apex-theme-iris .t-ContentBlock-title,
+.app-theme-citrus-pop .apex-theme-iris .t-HeroRegion-title,
+.app-theme-citrus-pop .apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+}
+
+/* ---- Breadcrumb in the title bar ---------------------------------------------------------- */
+.app-theme-citrus-pop .apex-theme-iris .t-Body-title {
+    --ut-breadcrumb-title-font-size: var(--app-text-2xl);
+    --ut-breadcrumb-title-line-height: 2rem;
+    --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+}
+
+/* buoyant-card: rounded white islands lift gently above the aqua canvas. */
+.app-theme-citrus-pop .apex-theme-iris .t-Region,
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap {
+    border-color: var(--cit-slate-200);
+    box-shadow: var(--app-shadow-md);
+    transform: translateY(0);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    box-shadow: var(--app-shadow-lg);
+    transform: translateY(-2px);
+}
+/* identity: tangerine action pills with audited dark text */
+.app-theme-citrus-pop .apex-theme-iris .t-Button--hot { background: var(--cit-tangerine); color: var(--cit-hot-button-text); border-radius: var(--app-radius-lg); }
+/* Buttons.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+.app-theme-citrus-pop .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: white + hairline, tint on hover */
+    --a-button-background-color: var(--ut-component-background-color);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-color);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-active-background-color: var(--app-surface-subtle);
+    --a-button-focus-background-color: var(--ut-component-background-color);
+    --a-button-focus-border-color: var(--app-color-primary);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot button: champagne amber directive action */
+.app-theme-citrus-pop .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--cit-amber-hover);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--app-color-primary);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--cit-amber-hover);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Button group */
+.app-theme-citrus-pop .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-citrus-pop .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--cit-amber-hover);
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--app-color-primary);
+    --a-button-focus-background-color: var(--cit-amber-hover);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+}
+
+/* Keyboard focus on buttons */
+.app-theme-citrus-pop .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+
+/* pill-control: friendly actions use full capsules; hot actions carry the citrus signal. */
+.app-theme-citrus-pop .apex-theme-iris .t-Button {
+    --a-button-border-radius: var(--app-control-h);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
+    --a-button-background-color: var(--cit-tangerine);
+    --a-button-text-color: var(--cit-hot-button-text);
+    --a-button-hover-background-color: var(--cit-tangerine);
+    --a-button-hover-text-color: var(--cit-hot-button-text);
+}
+/* identity: soft aqua fields and friendly rounded labels */
+.app-theme-citrus-pop .apex-theme-iris .t-Form-fieldContainer { row-gap: var(--app-space-unit); }
+/* Form items.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+.app-theme-citrus-pop .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-control-h);
+    --a-field-input-padding-y: .4375rem;
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-focus-border-color: var(--app-color-primary);
+}
+
+/* Stacked / inline labels: 13px, medium, slate-600 */
+.app-theme-citrus-pop .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Focus ring on native item types */
+.app-theme-citrus-pop .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-citrus-pop .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-citrus-pop .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-citrus-pop .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px var(--app-accent-shade);
+    outline: none;
+}
+/* identity: spacious reports with teal structural rules */
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-table td,
+.app-theme-citrus-pop .apex-theme-iris .a-GV-table td { padding-block: var(--app-space-4); }
+/* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+.app-theme-citrus-pop .apex-theme-iris {
+    /* header row: subtle surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-subtle);
+    --a-gv-header-text-color: var(--app-text-primary);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: var(--app-space-3);
+
+    /* body: 13px, 40px rows, hairline row separators, tint on hover */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: var(--app-space-3);
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+
+    /* toolbar / search controls */
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-subtle);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius */
+.app-theme-citrus-pop .apex-theme-iris .a-IRR,
+.app-theme-citrus-pop .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Hairline horizontal borders only */
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-table td,
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-header,
+.app-theme-citrus-pop .apex-theme-iris .a-GV-cell,
+.app-theme-citrus-pop .apex-theme-iris .a-GV-header,
+.app-theme-citrus-pop .apex-theme-iris .t-Report-cell,
+.app-theme-citrus-pop .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-subtle);
+}
+
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-primary);
+}
+
+/* Tabular numeric alignment */
+.app-theme-citrus-pop .apex-theme-iris .a-IRR-table td,
+.app-theme-citrus-pop .apex-theme-iris .a-GV-cell,
+.app-theme-citrus-pop .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}
+/* identity: layered dialogs with buoyant rounded surfaces */
+.app-theme-citrus-pop .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); border-radius: var(--app-radius-lg); }
+/* Modal dialogs and popup menus.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+.app-theme-citrus-pop .apex-theme-iris {
+    --jui-dialog-border-radius: var(--app-radius-lg);
+    --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
+    --jui-dialog-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-padding-x: 1.25rem;
+    --jui-dialog-title-font-weight: var(--app-font-weight-semibold);
+    --jui-dialog-title-close-border-radius: var(--app-radius-sm);
+    --jui-dialog-title-close-border-color: transparent;
+    --jui-dialog-buttonpane-background-color: var(--app-surface-subtle);
+    --jui-dialog-buttonpane-border-color: var(--app-border-color);
+    --jui-overlay-background-color: var(--app-overlay-background);
+
+    --a-menu-shadow: var(--app-shadow-dialog);
+    --a-menu-border-radius: var(--app-radius-md);
+    --a-menu-border-color: var(--app-border-color);
+    --a-menu-text-color: var(--app-text-emphasized);
+    --a-menu-default-text-color: var(--app-text-emphasized);
+    --a-menu-focused-text-color: var(--app-text-emphasized);
+    --a-menu-font-weight: var(--app-font-weight-medium);
+    --a-menu-accel-text-color: var(--app-text-primary);
+    --a-menu-default-accel-text-color: var(--app-text-primary);
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);
+}
+/* identity: playful pills, teal structure, and tangerine action states */
+/* Alerts, badges, tabs — status pills and indicator badges.
+   Scoped to .app-theme-citrus-pop .apex-theme-iris. */
+
+.app-theme-citrus-pop .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: var(--app-shadow-sm);
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+}
+
+/* Reference-app demo surfaces: use the package's semantic fills and explicit text pairs for FullCalendar. */
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-green,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-green > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-success);
+    border-color: var(--app-color-success);
+}
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-blue,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-blue > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-info);
+    border-color: var(--app-color-info);
+}
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-yellow,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-yellow > td {
+    --fc-event-text-color: var(--app-calendar-warning-text);
+    background-color: var(--app-color-warning);
+    border-color: var(--app-color-warning);
+}
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-green .fc-event-title,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-time,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-title,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-blue .fc-event-title,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-time,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-title {
+    color: var(--app-text-on-accent);
+}
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-yellow .fc-event-title,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-time,
+.app-theme-citrus-pop .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
+    color: var(--app-calendar-warning-text);
+}
+
+/* p6303/p6304 inline code labels use #008676; the package role keeps them comfortably above AA. */
+.app-theme-citrus-pop .apex-theme-iris .class-value,
+.app-theme-citrus-pop .apex-theme-iris .class-var {
+    color: var(--app-text-primary);
+}
 
 
 /* ==========================================================================

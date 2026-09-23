@@ -1,13 +1,1228 @@
 /* Solarized Dark — VS Code developer look for Universal Theme / Iris.
    Loaded by static-files/css/app.css. All rules scoped to .app-theme-solarized-dark. */
-@import "tokens.css";
-@import "apex/shell.css";
-@import "apex/regions.css";
-@import "apex/buttons.css";
-@import "apex/forms.css";
-@import "apex/reports.css";
-@import "apex/dialogs.css";
-@import "apex/misc.css";
+/* Solarized Dark — token deltas over the shared foundation (static-files/css/foundation/tokens.css).
+   Scoped to html.app-theme-solarized-dark so several packages can be loaded at once and switched live.
+   Palette: Ethan Schoonover's Solarized as shipped in VS Code "Solarized Dark"; surfaces that are not part of
+   the palette (chrome, input, hover, selected) are VS Code's own UI colours.
+
+   Deliberate deviation for WCAG AA (spec §46): on the #073642 card surface only base1 / base2 / base3 reach
+   4.5:1, so text is base3 (titles) / base2 (body) / base1 (secondary) instead of Solarized's base1 / base0 /
+   base01, and the colours used *as text* (links, primary palette, danger, active labels) are the palette
+   colours tinted towards white until they pass. Ratios and the verification list are in README.md. */
+html.app-theme-solarized-dark {
+    color-scheme: dark;                                 /* native controls, scrollbars, form widgets */
+
+    /* Solarized palette (theme-private; roles below map onto --app-* / --ut-*) */
+    --sol-base03:  #002b36;
+    --sol-base02:  #073642;
+    --sol-base01:  #586e75;
+    --sol-base0:   #839496;
+    --sol-base1:   #93a1a1;
+    --sol-base2:   #eee8d5;
+    --sol-base3:   #fdf6e3;
+    --sol-yellow:  #b58900;
+    --sol-orange:  #cb4b16;
+    --sol-red:     #dc322f;
+    --sol-magenta: #d33682;
+    --sol-violet:  #6c71c4;
+    --sol-blue:    #268bd2;
+    --sol-cyan:    #2aa198;
+    --sol-green:   #859900;
+    /* text-safe tints: the same hue, mixed towards white until ≥ 4.5:1 on #073642 */
+    --sol-blue-text:  #4b9fda;                          /* links, primary palette (blue is 3.5:1) */
+    --sol-cyan-text:  #39a89f;                          /* primary-alt text (cyan is 4.1:1) */
+    --sol-red-text:   #e87674;                          /* validation / danger text (red is 2.8:1) */
+    --sol-magenta-text: #e174a9;                        /* code numbers, class names: 4.5:1 on cards, 5.2:1 on canvas */
+    --sol-orange-text:  #db815c;                        /* code entities/urls: 4.5:1 on cards, 5.2:1 on canvas */
+    --sol-cyan-bright: #1ebcc5;                         /* hot-button hover */
+    --sol-blue-bright: #63acdf;                         /* primary-button hover */
+
+    /* surfaces */
+    --app-surface-page:     var(--sol-base03);          /* editor.background */
+    --app-surface-card:     var(--sol-base02);          /* widgets, regions, cards */
+    --app-surface-chrome:   #00212b;                    /* sideBar.background: side nav, report headers, menus */
+    --app-surface-subtle:   #002c39;                    /* titleBar.activeBackground: header, dialog title bar */
+    --app-surface-input:    #003847;                    /* input.background */
+    --app-surface-hover:    #004052;                    /* list.hoverBackground */
+    --app-surface-selected: #005a6f;                    /* list.activeSelectionBackground */
+
+    /* text — see the deviation note above */
+    --app-text-emphasized:  var(--sol-base3);           /* titles, headings, input text        12.0:1 on cards */
+    --app-text-primary:     var(--sol-base2);           /* body                                10.6:1 */
+    --app-text-secondary:   var(--sol-base1);           /* labels, subtitles, placeholders      4.9:1 */
+    --app-text-on-accent:   var(--sol-base03);          /* on cyan / green / yellow / blue-text ≥ 4.7:1 */
+
+    /* colour roles */
+    --app-color-primary:    var(--sol-blue-text);
+    --app-color-success:    var(--sol-green);
+    --app-color-warning:    var(--sol-yellow);
+    --app-color-danger:     var(--sol-red-text);
+    --app-color-info:       var(--sol-cyan);
+    --app-accent-shade:     rgba(42, 161, 152, .18);    /* cyan wash for current / selected states */
+
+    /* borders: decorative hairlines stay faint; boundaries that identify a control are ≥ 3:1 (WCAG 1.4.11) */
+    --app-border-color:     rgba(147, 161, 161, .2);
+    --app-border-hairline:  1px solid var(--app-border-color);
+    --app-border-strong:    rgba(131, 148, 150, .8);    /* inputs, default buttons, hover borders: 3.3:1 on cards */
+
+    /* geometry: technical / code-editor feel */
+    --app-radius-sm:        4px;
+    --app-radius-md:        6px;
+    --app-radius-lg:        8px;
+    --app-shadow-dialog:    0 16px 48px -12px rgba(0, 0, 0, .75);
+    --app-control-h:        2.25rem;                    /* 36px controls */
+    --app-density-scale: .875;
+    --app-space-unit: .375rem;
+    --app-heading-scale: 1.125;
+    --app-hover-transform: none;
+    --app-motion-duration: 0ms;
+    --app-selected-treatment: underline;
+    --app-responsive-strategy: compress;
+
+    /* focus ring: cyan halo (VS Code focusBorder) over the canvas */
+    --app-focus-ring:       0 0 0 2px var(--sol-base03), 0 0 0 4px rgba(42, 161, 152, .6);
+    --app-focus-halo-color: rgba(42, 161, 152, .35);
+    --app-overlay-background: rgba(0, 43, 54, .75);
+    --app-card-media-overlay: rgba(0, 43, 54, .82);
+    --app-badge-danger-text: #ffffff;
+
+    --app-font-weight-semibold: 600;
+
+    /* Oracle JET (charts, p1902). Iris maps JET's own token family onto --ut-* atoms *on :root*, so the chain
+       freezes to the light literals before this package's body-level --ut-* overrides can reach it
+       (pitfalls.md §1.2). JET's DVT layer reads the resolved value once, off the document element, and bakes
+       it into the SVG as a `fill` attribute, so the override has to sit on the html scope (where --app-* is
+       declared) and has to be present at page load: measured 2026-09-17 on p1902, chart axis / group / legend
+       labels were painted rgba(0,0,0,.65) = --oj-core-text-color-secondary's :root value (1.46:1 on the card)
+       and series labels rgb(0,0,0) = --oj-core-text-color-primary's (1.62:1).
+       RUNTIME-VERIFIED 2026-09-17, after the import that made these bytes reachable: p1902 now measures 25 of
+       25 SVG text nodes passing AA — fills rgb(238,232,213) (base2, 5 nodes) and rgb(147,161,161) (base1,
+       20 nodes), worst ratio 4.86:1 against the card. JET still resolves these once at bootstrap, which is
+       why an import + reload is the only way to observe a change here. */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--sol-cyan);
+}
+
+/* Universal Theme / Iris tokens, overridden on the theme-style scope (body.apex-theme-iris, never :root) so
+   every component modifier keeps precedence — see docs/DESIGN_SYSTEM.md §1. */
+.app-theme-solarized-dark .apex-theme-iris {
+    --ut-color-scheme: dark;
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: rgba(147, 161, 161, .12);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-focus-outline-color: var(--sol-cyan);
+    --ut-link-text-color: var(--app-color-primary);
+
+    /* palette: fills keep the Solarized accents; contrast text is dark except on red */
+    --ut-palette-primary: var(--app-color-primary);
+    --ut-palette-primary-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-shade: var(--app-accent-shade);
+    --ut-palette-primary-alt: var(--sol-cyan);
+    --ut-palette-primary-text: var(--app-color-primary);
+    --ut-palette-success: var(--sol-green);
+    --ut-palette-success-contrast: var(--app-text-on-accent);
+    --ut-palette-success-shade: rgba(133, 153, 0, .18);
+    --ut-palette-warning: var(--sol-yellow);
+    --ut-palette-warning-contrast: var(--app-text-on-accent);
+    --ut-palette-warning-shade: rgba(181, 137, 0, .2);
+    --ut-palette-danger: var(--sol-red-text);            /* also colours validation messages → tinted */
+    --ut-palette-danger-contrast: var(--app-text-on-accent);
+    --ut-palette-danger-shade: rgba(220, 50, 47, .18);
+    --ut-palette-info: var(--sol-cyan);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: rgba(42, 161, 152, .18);
+    --ut-palette-generic: var(--app-surface-chrome);
+    --ut-palette-generic-contrast: var(--app-text-primary);
+    --ut-palette-generic-shade: var(--app-surface-subtle);
+    --ut-palette-generic-text: var(--app-text-primary);
+    --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
+    --ut-palette-primary-alt-text: var(--sol-cyan-text);
+    --ut-palette-success-text: var(--sol-green);          /* 4.1:1 on cards: icons and large text only */
+    --ut-palette-warning-text: var(--sol-yellow);
+    --ut-palette-danger-text: var(--sol-red-text);
+    --ut-palette-info-text: var(--sol-cyan);
+
+    /* Core.min.css declares the whole --a-palette-* atom family as var(--ut-palette-*) *on :root*, so it
+       freezes to Iris' light literals (#00688c / #e4f1f7 / #fff) before the overrides above reach it
+       (pitfalls.md §1.2). Every consumer is an element-scoped rule, so restating the chain here is enough.
+       Measured 2026-09-17 on p1410: selecting an Interactive Grid row painted its cells #e4f1f7 under base2
+       text — 1.06:1; with these fifteen lines the same cells take the package's shade and measure 8.17:1.
+       Also feeds IRR/IG/Card View/Media List/Timeline/Comments selection, subtle badges, the date picker's
+       current day and the report-controls error state. */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    /* Same mechanism: Core.min.css declares --a-base-link-text-color: var(--ut-link-text-color) on :root.
+       The faceted-search text buttons (.a-FS-toggleOverflow / .a-FS-clearAll / .a-FS-clearButton) set
+       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: measured 2.39:1 on the card
+       (p1411, 2026-09-17); restated it measures 4.50:1. Hover/active fall back to this token in UT's own
+       declarations, so one line covers all three states. */
+    --a-base-link-text-color: var(--ut-link-text-color);
+
+    /* Iris declares these with literal colours on :root (they do not follow the component tokens) */
+    --ut-region-background-color: var(--app-surface-card);
+    --ut-region-header-background-color: var(--app-surface-card);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-text-color: var(--app-text-primary);
+    --ut-region-header-text-color: var(--app-text-emphasized);
+    --ut-field-label-text-color: var(--app-text-secondary);
+    --ut-field-input-focus-icon-color: var(--sol-cyan);
+    --ut-field-fl-input-focus-icon-background-color: var(--sol-cyan);
+    --ut-field-fl-input-focus-icon-color: var(--app-text-on-accent);
+    --ut-component-badge-background-color: var(--app-surface-hover);
+    --ut-component-toolbar-background-color: var(--app-surface-chrome);
+    --ut-body-sidebar-background-color: var(--app-surface-page);
+    --ut-body-sidebar-text-color: var(--app-text-primary);
+    --ut-body-actions-background-color: var(--app-surface-chrome);
+    --ut-body-actions-text-color: var(--app-text-primary);
+    --ut-body-actionstoggle-background-color: var(--app-surface-chrome);
+    --ut-body-actionstoggle-hover-background-color: var(--app-surface-hover);
+    --ut-footer-background-color: transparent;
+    --ut-footer-border-color: var(--app-border-color);
+    --ut-linkslist-arrow-color: var(--app-text-secondary);
+    --ut-login-page-background-color: var(--app-surface-page);
+    --ut-login-region-background-color: var(--app-surface-card);
+    --ut-navbar-button-badge-background-color: var(--sol-cyan);
+    --ut-navtabs-background-color: var(--app-surface-chrome);
+    --ut-navtabs-text-color: var(--app-text-primary);
+    --ut-navtabs-item-active-background-color: var(--app-surface-selected);
+    --ut-navtabs-item-border-color: var(--app-border-color);
+    --ut-navtabs-item-highlight-color: var(--sol-cyan);
+    --ut-resultsregion-background-color: var(--app-surface-card);
+    --ut-resultsregion-search-background-color: var(--app-surface-input);
+    --ut-resultsregion-search-border-color: var(--app-border-strong);
+    --ut-report-cell-alt-background-color: var(--app-surface-subtle);
+    --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
+    --ut-treeview-badge-background-color: var(--sol-cyan);
+    --ut-treeview-badge-text-color: var(--app-text-on-accent);
+
+    /* component atoms Iris declares with literal light colours on :root (checkbox/radio, chips, date picker,
+       grid states, keyboard hints, popup LOV chips, report controls, search results, star rating, chat) */
+    --a-checkbox-background-color: var(--app-surface-input);
+    --a-checkbox-border-color: var(--app-border-strong);
+    --a-checkbox-text-color: var(--app-text-on-accent);
+    --a-checkbox-checked-background-color: var(--sol-cyan);
+    --a-checkbox-checked-text-color: var(--app-text-on-accent);
+    --a-checkbox-hover-background-color: var(--app-surface-hover);
+    --a-chip-hover-background-color: var(--app-surface-hover);
+    --a-chip-active-background-color: var(--app-surface-selected);
+    --a-chip-applied-background-color: var(--app-surface-hover);
+    --a-chip-applied-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-hover-background-color: var(--app-surface-selected);
+    --a-chip-remove-active-background-color: var(--app-surface-selected);
+    --a-cr-checkbox-background-color: var(--app-surface-input);
+    --a-datepicker-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-title-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-header-background-color: var(--app-surface-chrome);
+    --a-datepicker-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-background-color: var(--app-surface-card);
+    --a-datepicker-calendar-week-background-color: var(--app-surface-chrome);
+    --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
+    --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+    --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);   /* the current day's cell
+                            takes --a-palette-primary-shade as its background and --a-palette-primary as its
+                            text: with the restatement above that pair is #4b9fda on the cyan wash = 3.47:1
+                            (measured p1601, 2026-09-17), so the day's own text token is set explicitly */
+    --a-datepicker-footer-background-color: var(--app-surface-card);
+    --jui-datepicker-background-color: var(--app-surface-card);
+    --jui-datepicker-border-color: var(--app-border-color);
+    --a-gv-background-color: var(--app-surface-card);
+    --a-gv-deleted-background-color: var(--app-surface-subtle);
+    --a-gv-grandtotal-background-color: var(--app-surface-chrome);
+    --a-kb-shortcut-background-color: var(--app-surface-hover);
+    --a-kb-shortcut-border-color: var(--app-border-color);
+    --a-popuplov-chip-background-color: var(--app-surface-hover);
+    --a-report-controls-cell-label-text-color: var(--app-text-primary);
+    --a-report-controls-cell-label-background-color: var(--app-surface-card);
+    --a-resultsitem-background-color: var(--app-surface-card);
+    --a-resultsitem-badge-background-color: var(--app-surface-hover);
+    --a-starrating-stars-bg-color: var(--app-border-strong);
+    --a-chat-client-background-color: var(--app-surface-card);
+    --a-chat-user-primary-message-background-color: var(--app-surface-selected);
+    --a-chat-user-secondary-message-background-color: var(--app-surface-hover);
+    --a-chat-input-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-input-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-message-action-button-background-color: var(--app-surface-card);
+    --a-chat-message-action-button-state-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-border-color: var(--app-border-strong);
+    --a-chat-view-more-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-background: var(--app-surface-page);
+    --a-chat-body-background-color: var(--app-surface-page);
+    --a-chat-title-background: var(--app-surface-chrome);
+    --a-chat-title-color: var(--app-text-emphasized);
+    --a-chat-message-border-color: var(--app-border-color);
+    --a-chat-message-error-icon-color: var(--sol-red-text);
+    --a-chat-transcript-outline-color: var(--sol-cyan);
+    --a-chat-user-primary-text-color: var(--app-text-primary);
+    --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
+    --a-chat-user-primary-icon-background-color: var(--sol-cyan);   /* paired with the dark icon text above;
+                                                                        was still Iris' :root-resolved #00688c
+                                                                        (4.75:1 dark-on-cyan vs. 2.4:1 before) */
+    --a-chat-user-secondary-text-color: var(--app-text-primary);
+    --a-chat-user-secondary-icon-background-color: var(--sol-red);
+    --a-chat-user-secondary-icon-text-color: #ffffff;
+    --a-chat-view-more-button-background-color: var(--app-surface-page);
+    --ut-component-badge-text-color: var(--app-text-primary);
+    --ut-component-icon-background-color: var(--sol-cyan);         /* paired with the dark icon text below */
+    --ut-component-icon-color: var(--app-text-on-accent);
+    --ut-header-menubar-item-hover-background-color: var(--app-surface-hover);
+    --ut-header-menubar-item-hover-text-color: var(--app-text-emphasized);
+    --ut-navtabs-item-hover-background-color: var(--app-surface-hover);
+    --ut-navtabs-item-active-highlight-color: var(--sol-cyan);
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--sol-cyan);
+
+    /* wizard progress */
+    --ut-wizard-header-background-color: var(--app-surface-chrome);
+    --ut-wp-track-color: rgba(147, 161, 161, .3);
+    --ut-wp-marker-color: var(--sol-base01);
+
+    /* list components that Core paints from their own tokens */
+    --ut-comment-item-background-color: var(--app-surface-card);
+    --ut-comment-chat-background-color: var(--app-surface-input);
+    --ut-comment-chat-active-background-color: var(--app-surface-hover);
+    --ut-medialist-item-background-color: var(--app-surface-card);
+    --ut-cr-item-background-color: var(--app-surface-card);
+    --ut-cr-border-color: var(--app-border-color);
+    --ut-timeline-type-background-color: var(--app-surface-card);
+}
+/* identity: minimal command nav and terminal-rule chrome */
+.app-theme-solarized-dark .apex-theme-iris .t-Header { --ut-header-strip-size: 0px; }
+.app-theme-solarized-dark .apex-theme-iris .t-Body-title { border-block-end: 1px solid var(--app-border-color); }
+/* Page shell — header, side navigation, title bar, footer.
+   VS Code Solarized Dark chrome: title bar (#002c39), side bar (#00212b), editor canvas (#002b36).
+   Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on
+   :root) so Core's own state rules (hover, focus, collapsed, RTL) keep working. Hooks as in
+   .agents/knowledge/ut-dom-shell.md; all rules scoped to .app-theme-solarized-dark. */
+
+/* ---- Header: title-bar surface, hairline bottom, clear controls, no accent strip ------------ */
+.app-theme-solarized-dark .apex-theme-iris .t-Header {
+    --ut-header-strip-size: 0px;                        /* .t-Header:before accent strip */
+    --ut-header-background-color: var(--app-surface-subtle);
+    --ut-header-text-color: var(--app-text-emphasized);
+    --ut-header-border-color: var(--app-border-color);
+    --ut-header-menubar-background-color: var(--app-surface-subtle);
+    --ut-header-menubar-item-text-color: var(--app-text-primary);
+    --ut-header-menubar-item-border-color: var(--app-border-color);
+    --ut-header-menubar-item-current-background-color: var(--app-accent-shade);
+    --ut-header-menubar-item-current-text-color: var(--app-text-emphasized);
+    --ut-header-menubar-item-split-border-color: var(--app-border-color);
+    --ut-header-menubar-item-split-icon-color: var(--app-text-secondary);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Header-logo-link {
+    font-weight: var(--app-font-weight-semibold);
+    color: var(--app-text-emphasized);
+}
+/* Nav-bar / menu-toggle buttons: readable at rest, emphasized on hover */
+.app-theme-solarized-dark .apex-theme-iris .t-Header .t-Button--header {
+    --a-button-text-color: var(--app-text-emphasized);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-border-radius: var(--app-radius-sm);
+}
+
+/* ---- Side navigation: side-bar surface, selection pill (#005a6f) with light text ----------- */
+.app-theme-solarized-dark .apex-theme-iris .t-Body-nav {
+    --ut-body-nav-background-color: var(--app-surface-chrome);
+    --ut-body-nav-text-color: var(--app-text-secondary);            /* base1 on #00212b: 6.3:1 */
+    --ut-body-nav-border-color: var(--app-border-color);
+    --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-strong);
+    --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Body-nav .t-TreeNav {
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);   /* 7.2:1 on the pill */
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--sol-cyan);
+    --a-treeview-node-font-weight: var(--app-font-weight-medium);
+}
+/* Iris paints current/expanded top-level rows white-on-translucent for its dark nav; neutralise. */
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel ul,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-collapsible > .a-TreeView-row {
+    background-color: transparent;
+    color: inherit;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-selected {
+    background-color: var(--app-surface-selected);
+}
+/* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
+   override has to be !important too. */
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+    background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: var(--app-text-emphasized);
+}
+/* Style B (template option on the Side Navigation Menu list) gives the pill geometry; Iris fills the current
+   pill teal + white — keep the pill, use the selection surface and light text. */
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row {
+    border-radius: var(--app-radius-sm);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected {
+    background-color: var(--app-surface-selected);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected + .a-TreeView-toggle {
+    color: var(--app-text-emphasized);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top.is-hover {
+    color: var(--app-text-emphasized) !important;      /* Iris: `color:#fff!important` */
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-hover {
+    background-color: var(--app-surface-selected) !important;   /* Iris: `#006c91!important` */
+}
+/* Style A fallback */
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel {
+    border-bottom-color: var(--ut-component-inner-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel.is-collapsible {
+    color: inherit;
+}
+
+/* ---- Title bar: canvas surface, hairline, light title ------------------------------------- */
+.app-theme-solarized-dark .apex-theme-iris .t-Body-title {
+    --ut-body-title-background-color: var(--app-surface-page);
+    --ut-body-title-box-shadow: none;
+    --ut-body-title-border-width: 1px;
+    --ut-body-title-border-color: var(--app-border-color);
+    --ut-body-title-text-color: var(--app-text-emphasized);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-HeroRegion-title {
+    color: var(--app-text-emphasized);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-HeroRegion-icon {
+    color: var(--sol-cyan);                             /* graphic: 4.1:1 on cards (≥ 3:1) */
+}
+
+/* ---- Footer: hairline separator, muted text ------------------------------------------------ */
+.app-theme-solarized-dark .apex-theme-iris .t-Footer {
+    border-top-color: var(--app-border-color);
+    color: var(--app-text-secondary);
+}
+/* identity: flat pane regions with low-elevation terminal surfaces */
+.app-theme-solarized-dark .apex-theme-iris .t-Region { box-shadow: none; border-radius: var(--app-radius-sm); }
+/* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
+   Surfaces and text come from the --ut-component-* / palette tokens in tokens.css (Core paints .t-Wizard,
+   .t-MetricCard, .t-MediaList, .t-ContentRow, .t-Timeline, .t-Comments from them); this file only sets
+   component atoms and the few states the tokens do not reach. All rules scoped to .app-theme-solarized-dark. */
+
+/* ---- Standard region: card surface, 6px radius, hairline border, no shadow ------------------ */
+.app-theme-solarized-dark .apex-theme-iris .t-Region {
+    --ut-region-border-radius: var(--app-radius-md);
+    --ut-region-box-shadow: none;
+    --ut-region-header-padding-y: .75rem;
+    --ut-region-header-padding-x: 1rem;
+    --ut-region-body-padding-x: 1rem;
+    --ut-region-body-padding-y: 1rem;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Region-header {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 1.25rem;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Region-headerIcon {
+    color: var(--sol-cyan);                             /* graphic: ≥ 3:1 */
+}
+
+/* ---- Cards region (.a-CardView): atoms are declared on :root by Core → override on body ---- */
+.app-theme-solarized-dark .apex-theme-iris {
+    --a-cv-background-color: var(--app-surface-card);
+    --a-cv-hover-background-color: var(--app-surface-hover);
+    --a-cv-hover-border-color: var(--sol-cyan);
+    --a-cv-hover-text-color: var(--app-text-emphasized);
+    --a-cv-active-background-color: var(--app-surface-selected);
+    --a-cv-focus-border-color: var(--sol-cyan);
+    --a-cv-border-color: var(--app-border-color);
+    --a-cv-border-radius: var(--app-radius-md);
+    --a-cv-shadow: none;
+    --a-cv-hover-shadow: none;
+    --a-cv-active-shadow: none;
+    --a-cv-text-color: var(--app-text-primary);
+    --a-cv-title-text-color: var(--app-text-emphasized);
+    --a-cv-title-font-weight: var(--app-font-weight-semibold);
+    --a-cv-subtitle-text-color: var(--app-text-secondary);
+    --a-cv-maincontent-text-color: var(--app-text-primary);
+    --a-cv-subcontent-text-color: var(--app-text-secondary);
+    --a-cv-header-border-color: var(--app-border-color);
+    --a-cv-actions-border-color: var(--app-border-color);
+    --a-cv-badge-background-color: var(--sol-cyan);
+    --a-cv-badge-text-color: var(--app-text-on-accent);    /* 4.75:1 (the cyan-on-tint badge was 2.5:1) */
+    --a-cv-media-background-color: var(--app-surface-page);
+    --a-cv-media-overlay-color: var(--app-card-media-overlay);
+    --a-cv-active-border-color: var(--sol-cyan);
+    --a-cv-icon-background-color: var(--sol-cyan);           /* Iris hard-codes its own teal #00688c here */
+    --a-cv-icon-text-color: var(--app-text-on-accent);
+    --a-cv-initials-background-color: var(--sol-cyan);
+    --a-cv-initials-text-color: var(--app-text-on-accent);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-CardsRegion {
+    background-color: transparent;
+    border-color: var(--app-border-color);
+}
+
+/* ---- Wizard region: chrome header/footer, cyan active step, green completed step ----------- */
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard {
+    --ut-wizard-box-shadow: none;
+    --ut-wizard-border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard-header,
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard-footer {
+    background-color: var(--app-surface-chrome);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard-header {
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard-footer {
+    border-top: 1px solid var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Wizard-title {
+    font-weight: var(--app-font-weight-semibold);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-WizardSteps {
+    --ut-wp-label-color: var(--app-text-secondary);
+    --ut-wp-active-background-color: var(--sol-cyan);
+    --ut-wp-active-text-color: var(--app-text-on-accent);
+    --ut-wp-complete-background-color: var(--sol-green);
+    --ut-wp-checkmark-color: var(--app-text-on-accent);   /* dark check on green: 4.7:1 (white is 3.2:1) */
+    --ut-wp-label-active-font-weight: var(--app-font-weight-semibold);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-WizardSteps-step.is-active .t-WizardSteps-label {
+    color: var(--app-text-emphasized);                 /* the cyan label was 4.1:1 */
+}
+.app-theme-solarized-dark .apex-theme-iris .t-WizardSteps-step.is-complete .t-WizardSteps-label {
+    color: var(--app-text-primary);
+}
+
+/* ---- Cards (list template "Cards") -------------------------------------------------------- */
+.app-theme-solarized-dark .apex-theme-iris .t-Cards {
+    --ut-cardlist-border-radius: var(--app-radius-md);
+    --ut-cardlist-box-shadow: none;
+    --ut-cardlist-title-text-color: var(--app-text-emphasized);
+    --ut-cardlist-title-font-weight: var(--app-font-weight-semibold);
+    --ut-cardlist-subtitle-text-color: var(--app-text-secondary);
+    --ut-cardlist-desc-color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-solarized-dark .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    border-color: var(--sol-cyan);
+    background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Card-title {
+    font-size: var(--app-text-md);
+}
+
+/* ---- Metric cards: cyan value (large text, 4.1:1 ≥ 3:1) ----------------------------------- */
+.app-theme-solarized-dark .apex-theme-iris .t-MetricCard {
+    --ut-metric-card-shadow: none;
+    --ut-metric-card-metric-text-color: var(--sol-cyan);
+    --ut-metric-card-meta-text-color: var(--app-text-secondary);
+}
+
+/* ---- Content blocks: heading scale 24 / 20 / 17, weight 600 ------------------------------- */
+.app-theme-solarized-dark .apex-theme-iris .t-ContentBlock {
+    --ut-content-block-header-font-weight: var(--app-font-weight-semibold);
+    --ut-content-block-header-line-height: 1.3;
+    --ut-content-block-border-radius: var(--app-radius-md);
+    --ut-content-block-box-shadow: none;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-ContentBlock--h1 { --ut-content-block-header-font-size: var(--app-text-2xl); }
+.app-theme-solarized-dark .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
+.app-theme-solarized-dark .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
+
+/* Headings: light colour, avoid single-word last lines */
+.app-theme-solarized-dark .apex-theme-iris .t-ContentBlock-title,
+.app-theme-solarized-dark .apex-theme-iris .t-HeroRegion-title,
+.app-theme-solarized-dark .apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+    color: var(--app-text-emphasized);
+}
+
+/* ---- Breadcrumb-as-title in the title bar --------------------------------------------------- */
+.app-theme-solarized-dark .apex-theme-iris .t-Body-title {
+    --ut-breadcrumb-title-font-size: var(--app-text-2xl);
+    --ut-breadcrumb-title-line-height: 2rem;
+    --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+/* identity: underline directives instead of filled controls; the text must stay on the card surface */
+.app-theme-solarized-dark .apex-theme-iris .t-Button--primary {
+    background: transparent;
+    color: var(--app-color-primary);
+    border-block-end: 2px solid var(--app-color-primary);
+}
+/* Buttons.
+   Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header, --hot,
+   --danger …) on the element, so overriding the base atoms on body.apex-theme-iris restyles all buttons while
+   every modifier keeps precedence. Default = card surface + 3:1 border; hot = cyan with dark text (4.75:1);
+   primary = text-safe blue with dark text (5.2:1). All rules scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: card surface; the border identifies it on a same-coloured region (WCAG 1.4.11) */
+    --a-button-background-color: var(--app-surface-card);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-strong);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-active-background-color: var(--app-surface-selected);
+    --a-button-focus-background-color: var(--app-surface-hover);
+    --a-button-focus-border-color: var(--sol-cyan);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot = the cyan action (card actions and checked button-group segments share it; Iris lists them together) */
+.app-theme-solarized-dark .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary),
+.app-theme-solarized-dark .apex-theme-iris .a-CardView-button--hot,
+.app-theme-solarized-dark .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--sol-cyan);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--sol-cyan-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--sol-cyan);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--sol-cyan-bright);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Primary palette button: blue is 3.7:1 under white text, so use the text-safe tint with dark text */
+.app-theme-solarized-dark .apex-theme-iris .t-Button--primary {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--sol-blue-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+}
+
+/* Visible keyboard focus on every button, consistent with fields */
+.app-theme-solarized-dark .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+/* identity: dense terminal inputs and compact labels */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-label { letter-spacing: .02em; }
+/* Form items. Base --a-field-* atoms live on :root (Core/Iris) → override on body; floating-label containers
+   set their own padding on the element, so body-level overrides only touch what they should.
+   Input surface #003847 (VS Code input.background), 3.3:1 border, cyan focus. Scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-radius-sm);
+    --a-field-input-padding-y: .4375rem;                /* stacked/inline items → ~36px */
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-hover-background-color: var(--app-surface-input);   /* Iris literal #fff otherwise */
+    --a-field-input-text-color: var(--app-text-emphasized);
+    --a-field-input-border-color: var(--app-border-strong);        /* 3.3:1 on cards (WCAG 1.4.11) */
+    --a-field-input-hover-border-color: var(--app-border-strong);
+    --a-field-input-focus-border-color: var(--sol-cyan);
+    --a-field-input-focus-background-color: var(--app-surface-input);
+    --a-field-placeholder-text-color: var(--app-text-secondary);   /* base1 on the input: 4.7:1 */
+    --a-field-placeholder-opacity: 1;
+    --a-chip-border-color: var(--app-border-strong);
+
+    /* File Drop (p1601, p423) */
+    --a-filedrop-border-color: var(--app-border-strong);
+    --a-filedrop-focus-border-color: var(--sol-cyan);
+    --a-filedrop-heading-text-color: var(--app-text-emphasized);
+    --a-filedrop-text-color: var(--app-text-secondary);
+    --a-filedrop-icon-action-background-color: var(--app-surface-hover);   /* not in Iris — widget CSS
+                                                                               fallback is #fff; the 16px
+                                                                               action glyph inherits
+                                                                               --a-filedrop-text-color, was
+                                                                               2.67:1 on that fallback */
+    --a-filedrop-icon-action-border-color: var(--app-border-strong);
+
+    /* Markdown Editor (p1601) */
+    --a-mdeditor-background-color: var(--app-surface-input);
+    --a-mdeditor-border-color: var(--app-border-strong);
+    --a-mdeditor-focus-border-color: var(--sol-cyan);
+
+    /* Combo Box (p1601) */
+    --a-combo-select-item-selected-background-color: var(--app-surface-selected);
+}
+
+/* Stacked / inline labels: 13px, medium, secondary (4.9:1) */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Floating labels are 11px on the highlight surface (#004052): body colour at rest (9.2:1), light while active
+   (the cyan focus border already marks focus; cyan text would be 3.9:1 there) */
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel .t-Form-label {
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Form-fieldContainer--floatingLabel.is-active .t-Form-label {
+    color: var(--app-text-emphasized);
+}
+
+/* Focus halo (soft cyan) on the native item types */
+.app-theme-solarized-dark .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-solarized-dark .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px var(--app-focus-halo-color);
+    border-color: var(--sol-cyan);
+    outline: none;
+}
+/* identity: terminal rules keep dense rows legible */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-table tr,
+.app-theme-solarized-dark .apex-theme-iris .a-GV-table tr { border-block-end: 1px solid var(--app-border-color); }
+/* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
+   IRR and IG cells are painted from the shared --a-gv-* atoms on :root (consumed by /i/app_ui/css/Core);
+   classic reports from --ut-report-*. Header row on the side-bar surface (#00212b), solid hover surface.
+   All rules scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    /* header row: chrome surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-chrome);
+    --a-gv-header-text-color: var(--app-text-emphasized);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: .75rem;
+
+    /* body: 13px, 40px rows, hairline row separators, solid hover surface (body text 9.2:1 on it) */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: .75rem;
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-background-color: var(--app-surface-card);          /* widget fallback is #fff */
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+    --a-gv-pagination-button-text-color: var(--app-text-primary);    /* Iris resolves var(--a-button-text-color) at :root → #161513 */
+    --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
+    --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);   /* Theme-Standard falls back to #e0e0e0 */
+    --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
+
+    /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);            /* Iris: var(--ut-region-header-background-color)
+                                                                           at :root — resolves before this package's
+                                                                           body-level override of that token reaches it
+                                                                           (pitfalls.md §1.2); consumed by .a-IG-header,
+                                                                           Markdown Editor toolbar, Popup LOV search bar,
+                                                                           CKEditor panels — anything without its own
+                                                                           direct rule like .a-IRR-toolbar below */
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+    --a-report-controls-cell-label-border-color: var(--app-border-color);
+    --a-report-controls-input-border-color: var(--app-border-strong);
+    --a-report-controls-input-focus-border-color: var(--sol-cyan);
+    --a-gv-nodata-message-text-color: var(--app-text-secondary);
+    --a-resultsitem-border-color: var(--app-border-color);
+    --a-resultsitem-misc-text-color: var(--app-text-secondary);
+    --a-searchresults-pagination-color: var(--app-text-secondary);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-chrome);
+    --ut-report-header-text-color: var(--app-text-emphasized);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Iris/app_ui-Core set --a-report-controls-cell-label-hover-background-color directly on each type-specific
+   .a-IG-controls-item--X / .a-IRR-controls-item--X modifier (pale literals), which outranks the body-level
+   --a-report-controls-cell-label-* mapping above; the label text (--app-text-primary, light-on-dark) then sits
+   on that pale hover background. Re-flatten every type group to one dark hover surface. */
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius: .a-IRR sets --a-gv-border-radius on the element, so scope there */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR,
+.app-theme-solarized-dark .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Horizontal rules only (Core's border-width is one value for all four sides) */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-header,
+.app-theme-solarized-dark .apex-theme-iris .a-GV-cell,
+.app-theme-solarized-dark .apex-theme-iris .a-GV-header,
+.app-theme-solarized-dark .apex-theme-iris .t-Report-cell,
+.app-theme-solarized-dark .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+/* Iris hard-codes the IRR header surface (#fafafa / #f2f2f2); route it through the atom */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-emphasized);
+}
+
+/* IRR toolbar and search field sit on the card surface */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-toolbar {
+    background-color: var(--app-surface-card);
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-search-field {
+    background-color: var(--app-surface-input);
+    color: var(--app-text-emphasized);
+    border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables (.u-Report — used by the reference pages' documentation tables): the widget CSS hard-codes
+   #fff / #fafafa cells (`.u-Report td`, `.u-Report--staticBG tr:nth-child(2n) td`) and #404040 text, so the
+   tokens never reach them. */
+.app-theme-solarized-dark .apex-theme-iris .u-Report td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-solarized-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-solarized-dark .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+.app-theme-solarized-dark .apex-theme-iris .u-Report td,
+.app-theme-solarized-dark .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
+}
+
+/* Numbers line up in columns */
+.app-theme-solarized-dark .apex-theme-iris .a-IRR-table td,
+.app-theme-solarized-dark .apex-theme-iris .a-GV-cell,
+.app-theme-solarized-dark .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}
+/* identity: flat dialogs preserve the documentation workspace plane */
+.app-theme-solarized-dark .apex-theme-iris .ui-dialog { box-shadow: none; }
+/* Modal dialogs (jQuery UI dialog chrome in the parent page), wizard dialog pages and popup menus.
+   Atoms --jui-dialog-* / --a-menu-* are declared on :root by Core/Iris → override on body; the dialog chrome
+   and menus live directly under body, so no element rules are needed. Scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    --jui-dialog-border-radius: var(--app-radius-lg);
+    --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
+    --jui-dialog-background-color: var(--app-surface-card);
+    --jui-dialog-text-color: var(--app-text-primary);
+    --jui-dialog-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-background-color: var(--app-surface-subtle);
+    --jui-dialog-titlebar-text-color: var(--app-text-emphasized);
+    --jui-dialog-titlebar-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-padding-x: 1.25rem;
+    --jui-dialog-title-font-weight: var(--app-font-weight-semibold);
+    --jui-dialog-title-close-border-radius: var(--app-radius-sm);
+    --jui-dialog-title-close-border-color: transparent;
+    --jui-dialog-buttonpane-background-color: var(--app-surface-chrome);
+    --jui-dialog-buttonpane-border-color: var(--app-border-color);
+    --jui-overlay-background-color: var(--app-overlay-background);
+
+    /* popup menus: side-bar surface, hover surface for the focused item */
+    --a-menu-shadow: var(--app-shadow-dialog);
+    --a-menu-border-radius: var(--app-radius-md);
+    --a-menu-border-color: var(--app-border-color);
+    --a-menu-background-color: var(--app-surface-chrome);
+    --a-menu-callout-background-color: var(--app-surface-chrome);
+    --a-menu-text-color: var(--app-text-emphasized);
+    --a-menu-default-text-color: var(--app-text-emphasized);
+    --a-menu-focused-background-color: var(--app-surface-hover);
+    --a-menu-focused-text-color: var(--app-text-emphasized);
+    --a-menu-font-weight: var(--app-font-weight-medium);
+    --a-menu-sep-border-color: var(--app-border-color);
+    --a-menu-accel-text-color: var(--app-text-primary);             /* keyboard-accelerator hint text */
+    --a-menu-default-accel-text-color: var(--app-text-primary);
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* base1 was only 4.23:1 on the focused
+                                                                         hover bg #004052; base3 is 10.49:1 */
+    --a-menu-callout-border-color: var(--app-border-color);
+}
+
+/* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */
+.app-theme-solarized-dark .t-Dialog-page--wizard .t-Dialog-header {
+    background-color: var(--app-surface-chrome);
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-solarized-dark .t-Dialog-page--wizard .t-Dialog-body {
+    background-color: var(--app-surface-page);
+}
+.app-theme-solarized-dark .t-Dialog-page--wizard .t-Dialog-footer {
+    background-color: var(--app-surface-chrome);
+    border-top: 1px solid var(--app-border-color);
+}
+/* identity: terminal-rule tabs, code specimens, and restrained status accents */
+/* Alerts, badges, tabs — Solarized semantic mapping on dark surfaces.
+   Media list, content rows, timeline, comments and links list need nothing here: Core paints them from the
+   --ut-component-* / --ut-*-item-background-color tokens set in tokens.css. Scoped to .app-theme-solarized-dark. */
+
+.app-theme-solarized-dark .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: none;            /* generic component shadow (menus, popups, cards) */
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+
+    /* badges: solid accent fills with dark text (≥ 4.7:1); red keeps white (4.6:1). Subtle variants sit on
+       the translucent palette shades, so their text is the light body colour rather than the accent. */
+    --ut-badge-background-color: var(--sol-cyan);
+    --ut-badge-text-color: var(--app-text-on-accent);
+    --ut-badge-success-background-color: var(--sol-green);
+    --ut-badge-success-text-color: var(--app-text-on-accent);
+    --ut-badge-warning-background-color: var(--sol-yellow);
+    --ut-badge-warning-text-color: var(--app-text-on-accent);
+    --ut-badge-danger-background-color: var(--sol-red);
+    --ut-badge-danger-text-color: var(--app-badge-danger-text);
+    --ut-badge-info-background-color: var(--sol-cyan);
+    --ut-badge-info-text-color: var(--app-text-on-accent);
+    --ut-badge-subtle-background-color: var(--app-surface-hover);
+    --ut-badge-subtle-text-color: var(--app-text-primary);
+    --ut-badge-subtle-success-text-color: var(--app-text-primary);
+    --ut-badge-subtle-warning-text-color: var(--app-text-primary);
+    --ut-badge-subtle-danger-text-color: var(--app-text-primary);
+    --ut-badge-subtle-info-text-color: var(--app-text-primary);
+
+    /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
+    --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-item-text-color: var(--app-text-secondary);
+    --ut-tabs-item-active-text-color: var(--app-text-emphasized);
+    --ut-tabs-item-active-highlight-color: var(--sol-cyan);
+    --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search (p1411) */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-chart-border-color: var(--app-border-color);   /* Iris: var(--ut-region-border-color) at :root —
+                                                               ~1.07:1 on the same card surface otherwise */
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);   /* Iris resolves to --a-button-border-color
+                                                                 rgba(0,0,0,.075) at :root — ~1.06:1 on the
+                                                                 dark toggle surface, boundary invisible */
+
+    /* Percent Graph item type (p423, p1601) */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--sol-cyan);   /* paired with the dark bar text below; was
+                                                                    still Iris' :root-resolved #00688c teal */
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Text dialog (p1903) */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend (p1906) */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Chart tooltips (p1902, JET) */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);   /* Theme-Standard literal #fff otherwise —
+                                                                      light text on white was 1.08:1 */
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);         /* .oj-dvt-datatip's base `color:` (outside
+                                                                       the --oj-core-text-color-* classified
+                                                                       spans the --ojet-tooltip-* atoms cover)
+                                                                       was still Theme-Standard's literal
+                                                                       #000 — black-on-#00212b now that the
+                                                                       background above is dark */
+}
+
+/* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */
+.app-theme-solarized-dark .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
+    border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--sol-cyan));
+}
+
+/* Code samples (Prism.js, loaded app-wide by application.apx): Prism's light token colours are 2.4–2.5:1 on
+   the card. Solarized is a code palette — put code on the canvas surface, where the raw accents pass 4.5:1,
+   and tint the three that do not (magenta, orange, violet). Scoped to .app-theme-solarized-dark. */
+.app-theme-solarized-dark pre[class*="language-"],
+.app-theme-solarized-dark code[class*="language-"] {
+    color: var(--sol-base1);
+    text-shadow: none;
+}
+.app-theme-solarized-dark pre[class*="language-"] {
+    background-color: var(--app-surface-page);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--app-radius-sm);
+}
+.app-theme-solarized-dark :not(pre) > code[class*="language-"] {
+    background-color: var(--app-surface-page);
+}
+.app-theme-solarized-dark .token.comment,
+.app-theme-solarized-dark .token.prolog,
+.app-theme-solarized-dark .token.doctype,
+.app-theme-solarized-dark .token.cdata { color: var(--sol-base0); font-style: italic; }   /* 4.75:1 */
+.app-theme-solarized-dark .token.punctuation,
+.app-theme-solarized-dark .token.operator { color: var(--sol-base1); }
+.app-theme-solarized-dark .token.keyword,
+.app-theme-solarized-dark .token.atrule,
+.app-theme-solarized-dark .token.important { color: var(--sol-green); }                    /* 4.69:1 */
+.app-theme-solarized-dark .token.string,
+.app-theme-solarized-dark .token.char,
+.app-theme-solarized-dark .token.attr-value,
+.app-theme-solarized-dark .token.inserted { color: var(--sol-cyan); }                      /* 4.75:1 */
+.app-theme-solarized-dark .token.function,
+.app-theme-solarized-dark .token.class-name,
+.app-theme-solarized-dark .token.builtin { color: var(--sol-blue-text); }                  /* 5.2:1 */
+.app-theme-solarized-dark .token.property,
+.app-theme-solarized-dark .token.tag,
+.app-theme-solarized-dark .token.selector,
+.app-theme-solarized-dark .token.attr-name,
+.app-theme-solarized-dark .token.variable { color: var(--sol-yellow); }                    /* 4.68:1 */
+.app-theme-solarized-dark .token.number,
+.app-theme-solarized-dark .token.boolean,
+.app-theme-solarized-dark .token.constant,
+.app-theme-solarized-dark .token.symbol,
+.app-theme-solarized-dark .token.regex { color: var(--sol-magenta-text); }                 /* 4.5:1 */
+.app-theme-solarized-dark .token.entity,
+.app-theme-solarized-dark .token.url,
+.app-theme-solarized-dark .token.deleted { color: var(--sol-orange-text); }                /* 4.5:1 */
+
+/* Reference-app demo surfaces. Some pages of app 102 style their own demo markup with literal light values in
+   page inline CSS (p4000 Icons: input#P4000_SEARCH, .dm-Search-*, .dm-IconDialog-*; p6303/p6304 modifiers:
+   .dm-Report--doc, .class*; p6100/p6200/p6201: .event-name, .icon-preview, .instructions). Under a dark
+   package they turn white-on-white, so the package restates them here — Oracle's Vita Dark did the same
+   inside the pages. Scoped to .app-theme-solarized-dark; higher specificity than the page rules. */
+.app-theme-solarized-dark input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+.app-theme-solarized-dark .dm-Search-result:hover,
+.app-theme-solarized-dark .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-solarized-dark .dm-Search:empty:before {
+    color: var(--app-text-secondary);              /* page inline CSS hard-codes rgba(0,0,0,.5) */
+}
+.app-theme-solarized-dark .dm-IconDialog-preview {
+    background-image: none;                       /* light checkerboard */
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-IconDialog-code,
+.app-theme-solarized-dark .instructions {
+    color: var(--app-text-secondary);
+}
+.app-theme-solarized-dark .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+.app-theme-solarized-dark .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+.app-theme-solarized-dark .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-solarized-dark .dm-Report--doc th,
+.app-theme-solarized-dark .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+/* p6303/p6304 class-name tokens (.class, .class-value, .class-var, .class.tag) also appear outside the doc table */
+.app-theme-solarized-dark .apex-theme-iris .class {
+    color: var(--sol-magenta-text);               /* #9C27B0 is 2.1:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+.app-theme-solarized-dark .apex-theme-iris .class-value,
+.app-theme-solarized-dark .apex-theme-iris .class-var {
+    color: var(--sol-cyan-text);                  /* #008676 is 2.9:1 on the card */
+}
+.app-theme-solarized-dark .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is 1.4:1 on the card */
+}
+.app-theme-solarized-dark .event-name,
+.app-theme-solarized-dark code.event-name {
+    text-shadow: none;
+}
+.app-theme-solarized-dark .event-name:hover,
+.app-theme-solarized-dark code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}
+
+/* Calendar (FullCalendar 5). UT gives default events a literal #2578cf background but colours their text
+   with --fc-event-text-color = --ut-palette-primary-contrast, which this package remaps to base03 for its
+   light primary: base03 on #2578cf is 3.3:1 (measured 2026-09-16, consumer 9011 page 3). Put default events
+   on the package primary so the contrast pair holds (base03 on --sol-blue-text = 5.2:1). */
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
+    background-color: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+}
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default:hover {
+    background-color: var(--app-color-primary);
+    filter: brightness(1.08);
+}
+
+/* Map (p1906, p1601 map item). MapLibre's attribution bar paints its own translucent white plate and takes
+   its text colour by inheritance, so the package's base2 body text landed on it: measured 2.57:1 on p1906,
+   2026-09-17. Give the plate the package overlay so the inherited text has a dark ground: 12.25:1 for both
+   the text and its links, measured with this rule injected. The zoom control group keeps MapLibre's white
+   chrome on purpose (it is an opaque light patch, not a contrast failure) — its glyphs are
+   dark SVG images that are not themable from CSS. */
+.app-theme-solarized-dark .maplibregl-ctrl-attrib {
+    background-color: var(--app-overlay-background);
+}
+.app-theme-solarized-dark .maplibregl-ctrl-attrib,
+.app-theme-solarized-dark .maplibregl-ctrl-attrib a {
+    color: var(--app-text-primary);
+}
+
+/* Custom calendar events: bright status fills pair with the package's dark accent text. */
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-success);
+    border-color: var(--app-color-success);
+}
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-info);
+    border-color: var(--app-color-info);
+}
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-warning);
+    border-color: var(--app-color-warning);
+}
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-green .fc-event-title,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-time,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-title,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-blue .fc-event-title,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-time,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-title,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-event.apex-cal-yellow .fc-event-title,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-time,
+.app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
+    color: var(--app-text-on-accent);
+}
 
 /* ==========================================================================
    Theme Custom Fonts (@font-face)

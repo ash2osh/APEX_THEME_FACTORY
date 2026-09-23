@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "citrus-pop",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "40f6e0c92a5da7a977b08cb3630531e46ffca7341032e1b911de4bfbb3c4fdae",
-  "capturedAt": "2026-09-23T12:23:08Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "148fcdd793b9eeb3b1cccd87bb6f3128df48f02aa5871d054ef2fa2281097bb0",
+  "capturedAt": "2026-09-23T16:07:10Z",
   "evidenceType": "sqlcl-operation",
   "operation": "reinstall",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/citrus-pop/minimal/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/citrus-pop/minimal/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'citrus-pop' v1.1.0\n  Staged Digest: 05efe5aff2db1cf209d26432fc7bf0d589fb3c6fce5fe9a4a10fbae0d9ce8fe4\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/citrus-pop/minimal/backups/DEMO-9010/20260923T120328Z-before-citrus-pop\nType application ID 9010 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'citrus-pop' v1.1.0\n  Staged Digest: 518b151c6187b07f69a463350f7b8609866ee397cb535ba6b84537c4690c2977\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/citrus-pop/minimal/backups/DEMO-9010/20260923T155439Z-before-citrus-pop\nType application ID 9010 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/citrus-pop/business/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/citrus-pop/business/packages/citrus-pop-1.1.0/citrus-pop-1.1.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'citrus-pop' v1.1.0\n  Staged Digest: 1cdf2506ea26ff34c6cbbf1bed76424b6332e37fe70fdf9dff6b868fe7377306\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/citrus-pop/business/backups/DEMO-9011/20260923T121430Z-before-citrus-pop\nType application ID 9011 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'citrus-pop' v1.1.0\n  Staged Digest: 431da34a8ca2b832d25ff3c55cfd6eb4216dcb5335dab1bfe4c577029ef02282\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/citrus-pop/business/backups/DEMO-9011/20260923T155439Z-before-citrus-pop\nType application ID 9011 to import: \nResult: IMPORTED theme 'citrus-pop' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

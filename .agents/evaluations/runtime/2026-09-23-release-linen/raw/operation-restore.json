@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "linen",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "234ebd96509bee805a368042fcfaba3aae17734427a7acccffe83523de77406e",
-  "capturedAt": "2026-09-23T15:22:03Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "d28eb2cb222bd318845b651c5a23bff4a85e79137b601cfda660ade63363b925",
+  "capturedAt": "2026-09-23T17:59:22Z",
   "evidenceType": "sqlcl-operation",
   "operation": "restore",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/minimal/backups/DEMO-9010/20260923T145630Z-before-linen --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/minimal/backups/DEMO-9010/20260923T174341Z-before-linen --apply",
       "appId": 9010,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   0e2d2b5cc6c97bf0f11dd58db6ffabb73f6c9a8b9db00ba3cae6a53132359c5c\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   184f75fb4ef47aac4b2c28ef5620c668673c600d8c0a238dd690445009366969\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
       "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "minimal",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/minimal/backups/DEMO-9010/20260923T145630Z-before-linen --discard-later-changes --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/minimal/backups/DEMO-9010/20260923T174341Z-before-linen --discard-later-changes --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/minimal/backups/DEMO-9010/20260923T145630Z-before-linen.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/minimal/backups/DEMO-9010/20260923T174341Z-before-linen.\nStatus: RESTORED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/business/backups/DEMO-9011/20260923T150912Z-before-linen --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/business/backups/DEMO-9011/20260923T174341Z-before-linen --apply",
       "appId": 9011,
       "exitCode": 7,
       "status": "",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   282d9f54d113cfe3feb9cf514b581e57f2b749d9ea43100fc43f5f9a99420a81\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   10454a23178426c954a2db1125c4a5a2b1c22d74c0f854cc66abb19c385c880a\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
       "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
     },
     {
       "consumer": "business",
-      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/business/backups/DEMO-9011/20260923T150912Z-before-linen --discard-later-changes --apply",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/business/backups/DEMO-9011/20260923T174341Z-before-linen --discard-later-changes --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "RESTORED",
-      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch2/layer-c/linen/business/backups/DEMO-9011/20260923T150912Z-before-linen.\nStatus: RESTORED\n",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbB/layer-c/linen/business/backups/DEMO-9011/20260923T174341Z-before-linen.\nStatus: RESTORED\n",
       "stderrTail": ""
     }
   ],

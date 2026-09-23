@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "citrus-pop",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "40f6e0c92a5da7a977b08cb3630531e46ffca7341032e1b911de4bfbb3c4fdae",
-  "capturedAt": "2026-09-23T14:53:31Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "148fcdd793b9eeb3b1cccd87bb6f3128df48f02aa5871d054ef2fa2281097bb0",
+  "capturedAt": "2026-09-23T17:41:55Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "7e9bd61290e4b29bf72094cb4130fa5024b2581992d6d389509965336c1ba122"
+          "sha256": "3e085bb64689e5b3fc756ab9734c1e7169c174153df4538e410677c5b7e8388a"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "0ce4040ba854ed7322819b5fd2f8bd00747c8a216c6eb359fcaa1273a601c3ec"
+          "sha256": "176bc2109112c7197661402a4ea06fbf2385ae0c7807b556cc754101d7975baf"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "208f0e019faf8e065651d5dd368ef03fc44c53ea75707a87c9558551d534a9fd"
+          "sha256": "7e3a95da9c87989655dbf85a47e7b9f2f93fac03e0f3b49f3bb456189a35e371"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "95009a5e79738a8526377224c0a232a979438c48cba3d3f49a7864439889a7de"
+          "sha256": "bc352774feec3fbde24bbae0ba566e08e8df9bc231100bed5717123f09d538c5"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "e63093d68cdbe84361ac9a117f70aca0bfe7280e1a07dc22d066fbf85d4865d7"
+          "sha256": "ae115170539cfbe2ce00753b742a70c5614cea6df59a77ed54cefc1fb67e0d57"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "febbe8ba48d2e3aa98e0e76809a16413d5d21add7f21f07251805ea855efe55e"
+          "sha256": "260a494a61623605e5bda1ad9f1b983f351898562ffba1bba8dee8750ee446f7"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "19c2a3349666ab9cf56c6dc761abd05b8b68a8628e59bf93e160922787cc2e02"
+          "sha256": "77f133b73b3a1726883340dd3ebd028a6b6e6ce22b8eb5372265430b06556940"
         }
       },
       {
@@ -70,7 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "028a7753b207771e0c8f219e5064a225b51a862e2ea5d23a3287fb5a5b5645f4"
+          "sha256": "572f1dc5fed3942130430701902b66b0d8cb9c45929660682eb51aade81d952b"
         }
       }
     ],

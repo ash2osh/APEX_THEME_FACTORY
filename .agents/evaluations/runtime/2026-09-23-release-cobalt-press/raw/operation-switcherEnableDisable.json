@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "theme": "cobalt-press",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "5bff577a01ebb0b060e59148853e182031a293c6c156a97f4836a6869d299f43",
-  "capturedAt": "2026-09-23T12:48:18Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "b730727b6089ee7fd0d5f6d6d8a7970feb8f0bb6523d2c8854e9674c173f6ac7",
+  "capturedAt": "2026-09-23T16:23:10Z",
   "evidenceType": "sqlcl-operation",
   "operation": "switcherEnableDisable",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --with-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --with-switcher --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: c91092b88a9df07c5e417702bc59d59c62ee73f41624143e90097dc56b957913\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260923T122929Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: a43b69aefa70b889ca528366f81f588c4819953a4fb5b150f5901ab26ebede0a\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260923T161333Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/minimal/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --without-switcher --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: 86c36f9e1304a0e5986b368479daf90551fff85c54c7db5fea94ee6728128cf7\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260923T123216Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: 6065939c63a7459c11d2c5838e4f41a4b34b1c63c5b1ce6150b7f17b56385ab5\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/minimal/backups/DEMO-9010/20260923T161709Z-before-cobalt-press\nType application ID 9010 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --with-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --with-switcher --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: f0ce84dbfca2294e5f8da5375775e962fabcc92c245fdb890c7d3c363d72d5ba\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/business/backups/DEMO-9011/20260923T124048Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: e964f038b9f6bbf037f4e83c78fd5c34e83cbf3e3c2893fce0ce50f0e39ba747\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/business/backups/DEMO-9011/20260923T161334Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --without-switcher --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/business/packages/cobalt-press-1.1.0/cobalt-press-1.1.0 --without-switcher --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: 9fc62bf50f85fd371e21f345d6da0c8a6af8b6bdd17551c2b9e847db4f8c8c35\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/cobalt-press/business/backups/DEMO-9011/20260923T124341Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'cobalt-press' v1.1.0\n  Staged Digest: 16c86a02412ed0986e1611cdf68d3c279d117e3b8f35fe50e795647b0c79a679\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/cobalt-press/business/backups/DEMO-9011/20260923T161709Z-before-cobalt-press\nType application ID 9011 to import: \nResult: IMPORTED theme 'cobalt-press' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

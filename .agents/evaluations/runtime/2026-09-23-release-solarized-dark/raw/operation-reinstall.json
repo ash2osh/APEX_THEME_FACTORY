@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "theme": "solarized-dark",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "b90d1a01d940d9c81174eb43f33582cb3722d21083eb2f03512e2a852259b6b0",
-  "capturedAt": "2026-09-23T14:08:45Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "42165d3c216a95eea97420f50ca4952e014d0f1dd00fb1a8f26c6b8d9d6243db",
+  "capturedAt": "2026-09-23T17:10:58Z",
   "evidenceType": "sqlcl-operation",
   "operation": "reinstall",
   "status": "PASS",
   "steps": [
     {
       "consumer": "minimal",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/minimal/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
       "appId": 9010,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'solarized-dark' v1.2.0\n  Staged Digest: 6e0d3e5f15ca1c34a96d6b5c595abbe6f460ce53ac937e310ba7c9d0cb50953c\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260923T134800Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'solarized-dark' v1.2.0\n  Staged Digest: 818ed98d94531b1583c647691ca2b677dbc1ed9085693f41344f49be4a8a8775\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/minimal/backups/DEMO-9010/20260923T165846Z-before-solarized-dark\nType application ID 9010 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9010.\nStatus: IMPORTED\n",
       "stderrTail": ""
     },
     {
       "consumer": "business",
-      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/business/packages/solarized-dark-1.2.0/solarized-dark-1.2.0 --apply",
       "appId": 9011,
       "exitCode": 0,
       "status": "IMPORTED",
-      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'solarized-dark' v1.2.0\n  Staged Digest: 98f141d291c86c4f9bcc6dce30a526aae1cb145c75cf0180b51314ad1595919d\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/solarized-dark/business/backups/DEMO-9011/20260923T140004Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'solarized-dark' v1.2.0\n  Staged Digest: 65f9ec3b61f86e169473faa3cabc7134a755ac723a3c77791a9261d4cf984e3d\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/rbA/layer-c/solarized-dark/business/backups/DEMO-9011/20260923T165847Z-before-solarized-dark\nType application ID 9011 to import: \nResult: IMPORTED theme 'solarized-dark' v1.2.0 into application 9011.\nStatus: IMPORTED\n",
       "stderrTail": ""
     }
   ],

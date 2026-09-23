@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "theme": "estate-slate-dark",
-  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
-  "packageSha256": "91320eeb6441beea290c83141206da9dc69ee59da92f7df3dc0ae75fafc64514",
-  "capturedAt": "2026-09-23T14:53:31Z",
+  "gitCommit": "b2e23e8c5c05b3905f2a7a4d34b7ac40b607c5e2",
+  "packageSha256": "f7a1ced74cf78faaaed14ed7c36b4c55d33247b31f1d5a9404836e40c014e41e",
+  "capturedAt": "2026-09-23T17:41:55Z",
   "layer": "D",
   "check": "browser_runtime_matrix",
   "status": "PASS",
@@ -14,7 +14,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-minimal-page1-1440.json",
-          "sha256": "29134c73f1af1d23184a49903602a970ebcd7ccae2abb2966b7f0a7b05750334"
+          "sha256": "f806af47f6f8c7ec7e05f757589eef8db4c68cc1df108b7fbdd2087ff8294ab8"
         }
       },
       {
@@ -22,7 +22,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-minimal-page1-1024.json",
-          "sha256": "a09b0a58c8556df9ecd9ea902ff13324fd160242381ee4c13b6306f7795d9b68"
+          "sha256": "da514033ec66c3073af08fa3889263122a9cf3342d3a28559f545c5cd3da8d7e"
         }
       },
       {
@@ -30,7 +30,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-minimal-page1-768.json",
-          "sha256": "a57eefed8c3c5359bfe0cd0def212792559c4ae81b80fa23cda526178f8ebb75"
+          "sha256": "d4a688b1980bd3de6177a01fea207e30d658c58b9d17d18e0cee0a586c82c89f"
         }
       },
       {
@@ -38,7 +38,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-minimal-page1-375.json",
-          "sha256": "338f052f38cd3eb781aa1f387afc4f81e8fcd72cc1d3af1ae01b9b89a14cf654"
+          "sha256": "333f2cebd2a6a17df9726d1f68671697052b7f69f0e26d56f6a7bca4cb1bad9c"
         }
       },
       {
@@ -46,7 +46,7 @@
         "width": 1440,
         "evidence": {
           "path": "raw/browser-business-page1-1440.json",
-          "sha256": "3b1145d05e5524554a66d55f90f37d4774c051fef83230cc7ac9be28e06e8f98"
+          "sha256": "b668b934e79690b775ed2e9a904aa9816734075af6eaa626f20c912711c3d68d"
         }
       },
       {
@@ -54,7 +54,7 @@
         "width": 1024,
         "evidence": {
           "path": "raw/browser-business-page1-1024.json",
-          "sha256": "96fbdc14b053fa5e64f4931e51458b89790fa46b15e278818c2a38456ddd22ff"
+          "sha256": "9cd88fdc6ec2e343b8d51fe0766aa5c27a2c257a69abe2582ed134a2ba9c1ffa"
         }
       },
       {
@@ -62,7 +62,7 @@
         "width": 768,
         "evidence": {
           "path": "raw/browser-business-page1-768.json",
-          "sha256": "31d16e999ae2fa2e885cd31b6f13f8706a1acdf2d3187069a905ed7c15c41102"
+          "sha256": "f7a91db64318eb862a32042b0aeaf40781621147472173da5da90cb8b86173f2"
         }
       },
       {
@@ -70,7 +70,7 @@
         "width": 375,
         "evidence": {
           "path": "raw/browser-business-page1-375.json",
-          "sha256": "f1248833c4fb9c89dd414f69c97e87059cbc1747e61738f18447ddc31142eeb2"
+          "sha256": "dbb5d5431221cc62a395e101ce46cc2ae9cacbe0485077f5352f20e41322961e"
         }
       }
     ],

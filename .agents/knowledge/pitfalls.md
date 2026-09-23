@@ -331,6 +331,12 @@ Companion files: [`ut-26.1-iris-runtime.md`](ut-26.1-iris-runtime.md) (runtime f
 - `apex_application_theme_styles` lists the six Iris/Vita/Redwood rows; `apex_application_static_files`
   shows what is really deployed (sizes tell you whether the working tree was imported).
 - `sql -S -name docker-demo` validate + import ≈ 65 s; validate alone ≈ 25 s.
+- `whenever sqlerror exit failure` does **not** stop a script after a failed `apex validate` (probe
+  2026-09-23: a deliberately broken page produced three `APEXlang Compile Errors`, the next statement still
+  ran, `sql` exited 0). Anything after validate in the same script — an `apex import` — would run. Imports
+  therefore run a separate, text-checked validate first (`scripts/apex-validate.sh` greps
+  `Validation successful`; `SqlclClient.validate` requires validation/success text), then validate + import
+  in one session. Cost: ~25 s per import.
 
 ### 4.5 In an agent-driven tab, `requestAnimationFrame` runs ~1×/s — don't call rAF-deferred UI a defect
 - Alpine's `x-show` hide path goes through `_x_toggleAndCascadeWithTransitions`, which defers with

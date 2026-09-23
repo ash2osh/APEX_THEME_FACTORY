@@ -112,6 +112,16 @@ class SqlclTests(unittest.TestCase):
             self.assertIn("apex import", call)
             self.assertIn("-id 314", call)
 
+    def test_import_is_never_attempted_after_a_validation_warning(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            log = Path(tmp) / "calls.log"
+            env = {"FAKE_SQL_LOG": str(log), "FAKE_SQL_MODE": "validation-warning",
+                   "FAKE_SQL_STATE_FILE": str(Path(tmp) / "state")}
+            with patch.dict(os.environ, env):
+                with self.assertRaises(PackageError):
+                    SqlclClient("demo").import_apexlang(Path("tests/fixtures/apexlang/minimal"), "DEMO", 314)
+            self.assertNotIn("apex import", log.read_text(encoding="utf-8"))
+
     def test_masked_logs_no_secrets(self):
         client = SqlclClient("secret_conn")
         # Ensure string representation doesn't expose sensitive info if any

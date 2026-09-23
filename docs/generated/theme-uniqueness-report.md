@@ -2,7 +2,7 @@
 
 This generated matrix shows every unordered theme pair; warning-only similarities are intentionally retained.
 
-- Source commit: `51061f5daf4b683292679a5364ac00e23429de86`
+- Source commit: `b3df7a84ce0d9c60d79920528757388b08a0157d`
 - Error thresholds: structural recolor CSS ≥ 0.98 with ≥ 5 matching profiles; profile collision CSS ≥ 0.92 with ≥ 5 matching profiles; identity collision requires matching geometry, rhythm, typography treatment, interaction, and responsive strategy with palette Delta E < 20.
 - Warning threshold: CSS similarity ≥ 0.85 when no error rule applies.
 

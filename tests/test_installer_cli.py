@@ -1,3 +1,5 @@
+import contextlib
+import io
 import json
 import os
 from pathlib import Path
@@ -333,24 +335,6 @@ class InstallerCliTests(unittest.TestCase):
         self.assertIn("ninth-theme", names)
         self.assertEqual(len(names), 9)
 
-    def test_resolve_package_zip_prefers_manifest_version_over_legacy_archive(self):
-        repo = self.tmp / "versioned-repo"
-        theme = repo / "sample-themes" / "versioned-theme"
-        theme.mkdir(parents=True)
-        (theme / "theme.json").write_text(
-            json.dumps({"name": "versioned-theme", "version": "2.1.0"}),
-            encoding="utf-8",
-        )
-        dist = repo / "dist" / "versioned-theme"
-        dist.mkdir(parents=True)
-        old = dist / "versioned-theme-1.0.0.zip"
-        current = dist / "versioned-theme-2.1.0.zip"
-        old.write_bytes(b"old")
-        current.write_bytes(b"current")
-
-        with mock.patch.object(install_all_themes, "repo_root", repo):
-            self.assertEqual(install_all_themes.resolve_package_zip("versioned-theme"), current)
-
     def test_dry_run_and_apply_remove_staging_directories(self):
         """Temporary staging exports must not accumulate in the system temp directory."""
         tmpdir = self.tmp / "tmpdir"
@@ -430,3 +414,59 @@ class InstallerCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
         self.assertIn("more than once", result.stderr)
         self.assertFalse(log.exists())
+
+    def sql_navigation_bar_fixture(self) -> Path:
+        app = self.tmp / "sql-nav-app"
+        shutil.copytree(self.repo_root / "tests/fixtures/apexlang/real-shape", app)
+        lists = app / "shared-components/lists.apx"
+        text = lists.read_text(encoding="utf-8")
+        head, tail = text.split("list navigation-bar (\n    name: Navigation Bar\n", 1)
+        body_end = tail.index("\n)\n")
+        lists.write_text(
+            head + "list navigation-bar (\n    name: Navigation Bar\n    source {\n        type: sqlQuery\n"
+            "        sqlQuery:\n            ```sql\n            select 1 from dual\n            ```\n    }\n"
+            + tail[body_end:],
+            encoding="utf-8",
+        )
+        return app
+
+    def test_install_all_refuses_sql_navigation_bar_and_never_imports(self):
+        log = self.tmp / "sql.log"
+        stderr = io.StringIO()
+        env = {"FAKE_SQL_FIXTURE_DIR": str(self.sql_navigation_bar_fixture()), "FAKE_SQL_LOG": str(log)}
+        with mock.patch.dict(os.environ, env), contextlib.redirect_stderr(stderr), \
+                contextlib.redirect_stdout(io.StringIO()):
+            code = install_all_themes.main([
+                "--app-id", "314", "--connection", "demo", "--themes", "linen", "--with-switcher",
+                "--apply", "--yes", "--backup-dir", str(self.tmp / "b"),
+            ])
+        self.assertNotEqual(code, 0)
+        self.assertIn("MANUAL-INSTALL.md", stderr.getvalue())
+        self.assertNotIn("apex import", log.read_text(encoding="utf-8"))
+
+    def test_theme_names_are_built_from_current_source(self):
+        args = install_all_themes.parse_args(["--app-id", "314", "--themes", "linen"])
+        roots = install_all_themes.stage_packages(args, self.tmp / "work")
+        version = json.loads((self.repo_root / "sample-themes/linen/theme.json").read_text(encoding="utf-8"))["version"]
+        self.assertEqual([root.name for root in roots], [f"linen-{version}"])
+        self.assertTrue(roots[0].is_relative_to((self.tmp / "work").resolve()))
+
+    def test_packages_option_installs_the_given_archives_as_is(self):
+        args = install_all_themes.parse_args(["--app-id", "314", "--packages", f"{self.linen_zip},{self.cobalt_zip}"])
+        roots = install_all_themes.stage_packages(args, self.tmp / "work")
+        self.assertEqual([root.name for root in roots], [self.linen_zip.stem, self.cobalt_zip.stem])
+
+    def test_install_all_installs_current_versions_together(self):
+        from lib.theme_factory.apexlang import read_install_state
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = install_all_themes.main([
+                "--app-id", "314", "--connection", "demo", "--themes", "linen,cobalt-press",
+                "--without-switcher", "--apply", "--yes", "--backup-dir", str(self.tmp / "b"),
+            ])
+        self.assertEqual(code, 0)
+        store = Path(Path(os.environ["FAKE_SQL_STATE_FILE"]).read_text(encoding="utf-8").strip())
+        packages, default_theme, _ = read_install_state(store)
+        for name in ("linen", "cobalt-press"):
+            source = json.loads((self.repo_root / f"sample-themes/{name}/theme.json").read_text(encoding="utf-8"))
+            self.assertEqual({p.name: p.version for p in packages}[name], source["version"])
+        self.assertEqual(default_theme, "cobalt-press")

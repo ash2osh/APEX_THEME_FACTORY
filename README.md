@@ -104,9 +104,14 @@ Options:
 - `--app-id <ID>`: Target APEX application ID (required).
 - `--connection <CONN>`: SQLcl saved connection name (default: `docker-demo`).
 - `--workspace <WS>`: Target APEX workspace name (default: `DEMO`).
-- `--themes <list>`: Comma-separated theme list (default: `linen,solarized-dark,estate-slate,estate-slate-dark`).
-- `--with-switcher` / `--without-switcher`: Control the navigation bar switcher (default: `--with-switcher`). Automatically migrates legacy dynamic SQL navigation bars to declarative static lists.
-- `--apply`: Apply live changes to the database (default is safe dry-run).
+- `--themes <list>`: Comma-separated themes, built fresh from `sample-themes/` (default: every discovered theme). The build refuses a dirty tree unless `THEME_FACTORY_ALLOW_DIRTY=1`.
+- `--packages <zip,...>`: Install these exact archives instead (used by the release batch).
+- `--with-switcher` / `--without-switcher`: Control the navigation-bar switcher (default: `--with-switcher`). A navigation bar that is not a static list is refused, exactly like the single-theme installer — see `MANUAL-INSTALL.md`. This is why app 102 (SQL navigation bar) is served by `scripts/sync-static.sh` instead.
+- `--backup-dir <dir>`: Backup root (default: `theme-factory-backups/`).
+- `--apply`: Import into the database (default is a dry run). The last theme listed becomes the default.
+
+It runs the same guarded transaction as `scripts/theme.sh install`: APEX 26.1 / UT 42 / Iris preflight,
+checksum verification, backup, SQLcl validation, drift guard and post-import check.
 
 ### 4. Check it worked
 

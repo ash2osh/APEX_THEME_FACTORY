@@ -338,3 +338,21 @@ def verify_package(package_target: Path) -> ThemeManifest:
                 raise PackageError("ZIP must contain exactly one single package root directory")
             return _verify_package_dir(expected_root)
     return _verify_package_dir(package_target)
+
+
+def extract_package(zip_path: Path, destination: Path) -> Path:
+    """Extract a package ZIP and return its single root directory.
+
+    The root is read from the archive itself, never re-spelled from a version string
+    (pitfalls §5.5), and every member is validated before anything is written.
+    """
+    zip_path = Path(zip_path).resolve()
+    destination = Path(destination).resolve()
+    destination.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(zip_path) as archive:
+        root_name = _validate_zip_members(archive)
+        archive.extractall(destination)
+    root = destination / root_name
+    if not root.is_dir():
+        raise PackageError(f"Package root '{root_name}' missing after extracting {zip_path}")
+    return root

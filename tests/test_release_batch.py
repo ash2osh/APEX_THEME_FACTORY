@@ -132,6 +132,29 @@ class ReleaseBatchLayerCTests(unittest.TestCase):
         self.assertEqual(events, ["restore", "restore"])
 
 
+    def test_parallel_restore_runs_every_target_concurrently(self):
+        import threading
+        from tools.release_batch import run_in_parallel
+        both_running = threading.Barrier(2, timeout=5)
+        seen = []
+
+        def restore(target):
+            both_running.wait()
+            seen.append(target)
+
+        run_in_parallel(restore, ["minimal", "business"])
+        self.assertEqual(sorted(seen), ["business", "minimal"])
+
+    def test_parallel_restore_surfaces_the_first_failure(self):
+        from tools.release_batch import run_in_parallel
+
+        def restore(target):
+            if target == "business":
+                raise RuntimeError("import failed")
+
+        with self.assertRaises(RuntimeError):
+            run_in_parallel(restore, ["minimal", "business"])
+
 class ObsoleteEvidenceTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()

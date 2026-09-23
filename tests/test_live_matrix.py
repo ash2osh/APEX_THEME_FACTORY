@@ -96,10 +96,45 @@ class LiveMatrixEvidenceTests(unittest.TestCase):
             lifecycle_runner=lifecycle, evidence_writer=writer,
             clean_checker=lambda: checks.append("clean"),
         )
-        self.assertEqual(calls, ["minimal", "business"])
+        self.assertEqual(sorted(calls), ["business", "minimal"])
         self.assertGreaterEqual(len(checks), 3)
         self.assertEqual(result.status, "PASS")
         self.assertEqual(len(written), 1)
+
+
+    def test_consumers_run_concurrently_and_evidence_keeps_target_order(self):
+        import threading
+        import time
+        apps = [
+            ApplicationTarget("minimal", 9010, "MIN", "26.1.4"),
+            ApplicationTarget("business", 9011, "BUS", "26.1.4"),
+        ]
+        package = PackageRef("linen", "1.0.0", self.tmp / "linen.zip", "b" * 64)
+        secondary = PackageRef("solarized-dark", "1.0.0", self.tmp / "secondary.zip", "c" * 64)
+        both_running = threading.Barrier(2, timeout=5)  # serial execution can never pass this
+
+        def lifecycle(connection, workspace, target, primary, secondary_path, work_dir, **kwargs):
+            both_running.wait()
+            if target.consumer == "minimal":
+                time.sleep(0.2)  # business finishes first; merged evidence must still list minimal first
+            operations = self.synthetic_operations()
+            for result in operations.values():
+                result.notes.append(f"ran {target.consumer}")
+            return operations
+
+        captured = []
+
+        def writer(evidence_dir, package_ref, commit, targets, operations):
+            captured.append(operations)
+            return evidence_dir / "database_installation.json"
+
+        result = run_layer_c_theme(
+            "demo", "DEMO", apps, package, secondary, self.tmp / "work", self.tmp / "evidence", COMMIT,
+            lifecycle_runner=lifecycle, evidence_writer=writer, clean_checker=lambda: None,
+        )
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(captured[0]["install"].notes, ["minimal: ran minimal", "business: ran business"])
+        self.assertEqual([step["consumer"] for step in captured[0]["install"].steps], ["minimal", "business"])
 
 
 class LiveMatrixLifecycleAgainstFakeSqlTests(unittest.TestCase):

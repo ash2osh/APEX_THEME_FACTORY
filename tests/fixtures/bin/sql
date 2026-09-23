@@ -13,7 +13,7 @@ fi
 
 state_file="${FAKE_SQL_STATE_FILE:-/tmp/fake_sql_imported_${USER:-default}.txt}"
 fixture_bin="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-fixture_root="$(cd "$fixture_bin/.." && pwd)/apexlang/${FAKE_SQL_FIXTURE:-minimal}"
+fixture_root="${FAKE_SQL_FIXTURE_DIR:-$(cd "$fixture_bin/.." && pwd)/apexlang/${FAKE_SQL_FIXTURE:-minimal}}"
 
 # Re-exports of an imported application go through the SQLcl formatting simulator so
 # tests see real export shapes (no APEXLang comments, re-indented fences, sorted files).

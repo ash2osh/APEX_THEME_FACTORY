@@ -911,143 +911,13 @@ Before declaring completion: inspect console, determine whether new errors were 
 
 Do not ignore Alpine initialization errors.
 
-## 50. Self-Improving Knowledge Architecture
+## 50–58. Learning from the Application
 
-The agent is expected to learn from the real application. However, learning must be controlled. Do not modify reusable skills based on every observation. Use a structured findings system.
+Learn from the real application, but keep learning cheap and honest.
 
-Recommended structure:
-
-```text
-.agents/
-├── skills/
-├── knowledge/
-├── findings/
-│   ├── pending/
-│   ├── accepted/
-│   └── rejected/
-└── evaluations/
-```
-
-## 51. Finding Categories
-
-Every meaningful discovery should be classified.
-
-```text
-PAGE-SPECIFIC
-APPLICATION-CONVENTION
-DESIGN-SYSTEM-PATTERN
-UNIVERSAL-THEME-KNOWLEDGE
-APEXLANG-KNOWLEDGE
-ALPINE-PATTERN
-APEX-JAVASCRIPT-PATTERN
-LIFECYCLE-PATTERN
-ACCESSIBILITY-PATTERN
-BUG
-```
-
-## 52. Page-Specific Finding
-
-Example: Page 210 contains legacy markup from an old implementation. This should not automatically become a reusable APEX rule. Store it as page/project knowledge.
-
-## 53. Application Convention
-
-Example: the application consistently uses `app-panel` for dashboard regions. This belongs in the application's design-system documentation.
-
-## 54. Reusable APEX Knowledge
-
-Example: runtime inspection shows a specific Universal Theme or Interactive Grid DOM behavior consistently across multiple pages. This may become reusable skill/reference knowledge after verification.
-
-## 55. Finding Format
-
-A finding should contain:
-
-```markdown
-# Finding
-
-Status:
-Pending
-
-Category:
-Universal Theme
-
-Confidence:
-High
-
-APEX Version:
-...
-
-Page:
-...
-
-Component:
-...
-
-## Observation
-
-Describe exactly what was observed.
-
-## Evidence
-
-Describe how it was verified.
-
-## Existing Assumption
-
-What did the current skill or documentation say?
-
-## Impact
-
-Why does this matter?
-
-## Proposed Knowledge Change
-
-What should change?
-
-## Regression Scenario
-
-Describe a scenario that would have failed under the previous assumption.
-
-## Scope
-
-Page-specific / application-wide / reusable general knowledge.
-```
-
-## 56. Evidence Requirements
-
-Useful evidence includes:
-
-* runtime DOM inspection
-* computed style inspection
-* Page Designer inspection
-* APEXLang source
-* repeated behavior on multiple pages
-* official Oracle documentation
-* reproducible testing
-* browser event observation
-
-One unusual page is weak evidence for a general rule.
-
-## 57. Confidence Levels
-
-Use: `LOW`, `MEDIUM`, `HIGH`, `CONFIRMED`.
-
-Do not promote LOW-confidence findings into reusable skills.
-
-## 58. Skill Improvement Protocol
-
-Before updating a reusable skill:
-
-1. Record the finding.
-2. Classify it.
-3. Gather evidence.
-4. Determine its scope.
-5. Create a regression/evaluation scenario.
-6. Confirm the previous instructions mishandle the scenario.
-7. Make the smallest relevant skill change.
-8. Run relevant evaluations.
-9. Verify existing behavior remains valid.
-10. Promote the finding to accepted.
-
-This is mandatory for meaningful reusable skill changes.
+* When something surprises you, record it in `.agents/knowledge/pitfalls.md`: what happened, how it was verified, the fix.
+* One unusual page is weak evidence for a general rule. Prefer runtime inspection, repeated behaviour, or official documentation.
+* Change a skill only when the lesson is reusable; page- or project-specific facts belong in knowledge or project docs.
 
 ## 59. Do Not Let Skills Become Diaries
 
@@ -1110,21 +980,9 @@ apex-design-review
 
 Do not load unnecessary knowledge for every task.
 
-## 62. Evaluation Suite
+## 62. Regression Checks
 
-Maintain regression scenarios for agent behavior.
-
-* **Native Grid Preservation** — Given an existing Interactive Grid and a Figma table design. Expected: style the Interactive Grid. Failure: replace it with custom HTML/Alpine unnecessarily.
-* **CSS Scoping** — Given one special region. Expected: use semantic class or Static ID. Failure: globally override `.t-Region`.
-* **Alpine Component Structure** — Given a reusable stateful component. Expected: use `Alpine.data()`. Failure: place 100 lines of JavaScript inside `x-data`.
-* **APEX Refresh** — Given an Alpine component inside a refreshable APEX region. Expected: component works correctly after refresh. Failure: duplicate handlers, broken state, repeated Alpine startup.
-* **Source Persistence** — Given a successful DevTools prototype. Expected: move the change into permanent source. Failure: consider DevTools modification complete.
-* **Component Reuse** — Given an existing `app-metric` component. Expected: reuse or extend it. Failure: create another KPI implementation.
-* **Token Reuse** — Given `--app-radius-lg` matching the target design. Expected: reuse token. Failure: hardcode the same radius repeatedly.
-
-Before running any of these scenarios for real, read `.agents/knowledge/pitfalls.md` §6 — six reusable traps
-in the harness itself (baseline isolation, prompt leakage, permission contradictions, partial coverage, stale
-verdict text, worktree evidence) found the hard way across the 2026-09-14 run's seven correction rounds.
+`tests/run-offline.sh` must pass before work is called done; `scripts/theme.sh release NAME` is the live smoke for a theme.
 
 ## 63. Design Debt Review
 
@@ -1289,9 +1147,8 @@ A design implementation is complete only when all relevant items pass.
 
 **Knowledge**
 
-* important discoveries were captured as findings
-* reusable findings were correctly classified
-* no page-specific finding polluted a general skill
+* surprising discoveries were recorded in `.agents/knowledge/pitfalls.md`
+* no page-specific fact polluted a general skill
 * reusable component documentation was updated when necessary
 
 ## 76. Working Philosophy
@@ -1311,7 +1168,7 @@ Do not fight Oracle APEX. Understand it.
 * Use Chrome DevTools as runtime truth.
 * Use Page Designer to understand APEX semantics.
 * Use visual comparison to verify your work.
-* Use findings and evaluations to improve your knowledge over time.
+* Use pitfalls to improve your knowledge over time.
 
 ## 77. Default Workflow for Every Design Task
 
@@ -1364,9 +1221,9 @@ Unless the task clearly requires a different workflow:
 
 16. REVIEW DESIGN SYSTEM CONSISTENCY
 
-17. CAPTURE IMPORTANT FINDINGS
+17. RECORD SURPRISES IN PITFALLS
 
-18. RUN RELEVANT EVALUATIONS
+18. RUN tests/run-offline.sh
 
 19. COMPLETE ONLY AFTER VERIFICATION
 ```

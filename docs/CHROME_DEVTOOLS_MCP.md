@@ -165,8 +165,8 @@ async () => {
 Offline, the same maths for a palette (pick tints that pass): `.agents/knowledge/pitfalls.md` §1.7.
 
 The sweep scores CSS `color` for HTML text **and** `fill` for `svg text`/`tspan` — added 2026-09-17 after an
-evaluation run found Oracle JET chart labels failing at 1.46:1 while this snippet reported the page clean
-(`tests/live/RELEASE-MATRIX.md`; `tools/browser_matrix.py` extracts this exact block, so the two cannot drift).
+run found Oracle JET chart labels failing at 1.46:1 while this snippet reported the page clean
+(`tools/browser_check.py` extracts this exact block, so the two cannot drift).
 
 **`failures: 0` on its own is not evidence.** A clean result and a scan that never reached the nodes look
 identical, and both have happened here: the pre-2026-09-17 snippet could not see SVG text at all, and a probe
@@ -181,8 +181,7 @@ Theme and APEX ship their own literal colours. Measure the same nodes three time
 package class on `document.documentElement`, with it removed (~900 ms settle), then restored. Identical
 numbers ⇒ the defect is UT/APEX-owned and no package change can fix it; different numbers ⇒ it is yours. This
 is a DOM-only, tab-local change that a reload undoes, and it is the control that makes a "0 package-caused
-failures" claim falsifiable — scenario 11's Required Artifact Checklist item 4. Worked example with numbers:
-`.agents/evaluations/runs/2026-09-17/11-dark-package-coverage-postimport.md` §4.
+failures" claim falsifiable.
 
 ### Working in the user's browser (etiquette)
 
@@ -200,8 +199,7 @@ failures" claim falsifiable — scenario 11's Required Artifact Checklist item 4
   console/network errors, writes a 960 px JPEG atomically, and closes the tab in a `finally` path. Overwriting a
   curated cover requires both `--apply` and `--overwrite`; the command never writes `localStorage`.
 - Page 406 Theme Lab is the preferred candidate surface because it contains native typography, forms, reports,
-  IR/IG, calendar, JET chart, menus and overlays together. Validate at 1440, 1024, 768 and 375 px, and treat its
-  PASS as iteration evidence only—not a release verdict.
+  IR/IG, calendar, JET chart, menus and overlays together. Validate at 1440, 1024, 768 and 375 px.
 
 ## Rules for this project (spec §13–14, §47, §49)
 

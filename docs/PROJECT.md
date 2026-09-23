@@ -40,12 +40,10 @@ APEX_THEME_FACTORY/
 ├── sample-themes/<name>/     # theme packages (theme.json, css/, preview/); all loaded, class-switched (default: linen)
 ├── static-files/css/         # app.css entry (+ generated @themes block), foundation/ (shared tokens, reset, …)
 ├── static-files/js/          # app.js (App.theme helper), components/, vendor/ (Alpine.js 3.17.2)
-├── scripts/                  # apex-export / validate / import, apply-theme, sync-static, package-theme, install-all-themes
-└── .agents/                  # skills, knowledge, findings, evaluations (spec §50)
+├── scripts/                  # theme.sh, apex-export / validate / import, apply-theme, sync-static, install-all-themes
+└── .agents/                  # skills and knowledge
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
-    ├── knowledge/            # + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
-    ├── findings/{pending,accepted,rejected}/
-    └── evaluations/
+    └── knowledge/            # pitfalls + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
 ```
 
 ## Tooling
@@ -55,20 +53,16 @@ APEX_THEME_FACTORY/
 | Chrome DevTools MCP (`--autoConnect` to the user's running Chrome) | runtime truth: DOM, computed CSS, console, network, screenshots | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
-| `scripts/theme.sh` | Unified recipe scaffold, font, cached author checks, candidate lane, cover, catalog, evidence and Iris-inspection CLI | [README.md](../README.md#building-a-theme) |
-| `tools/theme_benchmark.py` | Records exact wall time/file-touch/harness-token measurements and reports the fixed workflow targets | [THEME_WORKFLOW_BENCHMARK.md](THEME_WORKFLOW_BENCHMARK.md) |
+| `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [README.md](../README.md#releasing-a-theme) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 | External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
 | Codex PR review bot (`chatgpt-codex-connector`) | comments P-level findings on every pull request (verify each at runtime before acting); `@codex review` re-runs it | GitHub repo settings |
-| Contrast audit (`evaluate_script` snippet) | AA text-contrast sweep of a page — required before a theme package is called verified | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
+| Contrast audit (`evaluate_script` snippet) | AA text-contrast sweep of a page (the release smoke runs it automatically) | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | Pitfalls record | every trap met in this project, by layer, with the fix | [`.agents/knowledge/pitfalls.md`](../.agents/knowledge/pitfalls.md) |
 
-Hosted CI runs changed-theme fast checks on pull requests and the complete offline/package suite nightly. It
-does not have the local database or approved Chrome session required for Layers C–D; therefore CI and
-candidate-lane PASS never imply `VERIFIED`. Project-level agent compatibility is instruction-bound and reported
-separately in [AGENT_COMPATIBILITY.md](AGENT_COMPATIBILITY.md); theme/package/font/preview changes do not trigger
-those smokes.
+CI runs `tests/run-offline.sh` on every push and pull request. Live checks need the local database and the
+approved Chrome session, so they run locally through `scripts/theme.sh release NAME`.
 
 ## Not yet decided / open
 

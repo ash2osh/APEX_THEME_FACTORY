@@ -9,7 +9,6 @@
 | Typography | **IBM Plex Sans Arabic** (bundled OFL-1.1, weights 400, 500, 600, 700) with complete Arabic (Arabic, Persian, Urdu) and Latin coverage; JetBrains Mono / system monospace stack for tabular figures |
 | Palette | Deep obsidian neutrals (`#0a0e17`, `#111827`, `#181b25`, `#1e293b`, `#31353f`), luminous amber (`#d97706`, `#ffb77d`), telemetry emerald (`#34d399`), and transit cyan (`#22d3ee`) |
 | Scope | App-wide, strictly scoped under `html.app-theme-estate-slate-dark` (`color-scheme: dark`); no page-level edits required |
-| Status | Not hand-maintained — see the generated status table in [`../README.md`](../README.md) (`scripts/theme.sh catalog`). The history below records earlier release rounds. |
 
 ## Preview
 
@@ -93,49 +92,14 @@ scripts/apply-theme.sh estate-slate-dark
 # Assemble static files and register into APEX export
 scripts/sync-static.sh
 
-# Build redistributable ZIP archive into dist/
-scripts/package-theme.sh estate-slate-dark
+# Check + package (+ live smoke without --offline)
+scripts/theme.sh release estate-slate-dark --offline
 ```
 
 Live in browser: set URL hash `#theme=estate-slate-dark` or execute `App.theme.use('estate-slate-dark')` in the developer console.
-
-## Runtime Verification Report
-
-Audited live via Chrome DevTools MCP daemon against Oracle APEX 26.1.4 (Universal Theme 42 / Iris light, app 102) using full WCAG AA contrast evaluation:
-
-| Page | Component Category | Visible Text Nodes | SVG Text Nodes | Package Contrast Failures |
-|---|---|---|---|---|
-| **Page 500** | Getting Started & Navigation | 21 | 0 | **0** |
-| **Page 1402** | Interactive Report | 116 | 0 | **0** |
-| **Page 1410** | Interactive Grid | 134 | 0 | **0** |
-| **Page 1500** | Buttons (Primary, Hot, Normal, Outline) | 165 | 0 | **0** |
-| **Page 1600** | Form Controls, Textfields, Checkboxes | 99 | 0 | **0** |
-| **Page 3100** | Card Templates & Regions | 223 | 0 | **0** |
-| **Page 1111** | Standard Modal Dialog | 11 | 0 | **0** |
-| **Total** | | **769** | **0** | **0 failures** |
-
-### Interactive State Audits
-
-- **Interactive Grid Row Selection (Page 1410)**: Row selection state triggers `.a-GV-row.is-selected` with amber tint `rgba(217, 119, 6, 0.18)` over `#181b25` background and `#dfe2ef` text, measuring **10.40:1** (Pass).
-- **Navigation Tree Selection (Page 500)**: Active node `.a-TreeView-content.is-selected` renders with `#f8fafc` text on `#31353f` background, measuring **11.72:1** (Pass).
-- **Interactive Grid Pagination Selector (Page 1410)**: Selected page item `.a-GV-pageSelector-item.is-selected` renders with `#dfe2ef` text on slate chrome, measuring **13.30:1** (Pass).
-
 
 ## Identity
 
 Estate Slate Dark is a compact geospatial intelligence cockpit: a dense vertical rail, layered monitor panels,
 inset map frames, luminous state rails, square controls, and offset detail dialogs. Its complete dark Iris token
 coverage remains intact while its geometry is independent from both light Estate Slate and the terminal package.
-
-## Release evidence
-
-**Release evidence, 2026-09-17** (`2026-09-17-release-estate-slate-dark` (pruned 2026-09-23; in git history), verdict
-`VERIFIED`, commit `7ac2e0204ca0`): the first Layer C/D/E evidence this package has ever had — committed with
-no such evidence 2026-09-17 in `a38076b`, invisible to the release system until captured this same day (see
-the 2026-09-17 verification-integrity-defects plan (removed 2026-09-23; see git history), Task 6). Layer C exercised install,
-stale-restore guard, reinstall, switcher on/off, coexistence with `estate-slate`, uninstall ×2, unrelated-file
-preservation and restore — 7/7 on a minimal consumer app (TF-CONSUMER-MINIMAL-9012) and a business one
-(TF-CONSUMER-BUSINESS-9013). Layer D measured 12 rows: both consumers at 1440/1024/768/375 plus Reports and
-Widgets, with zero console errors, zero failed requests, an AA-clean contrast sweep, a keyboard-operable
-switcher, a selection that survives reload, and all 4 declared WOFF2 faces forced to load and matched to the
-request that served them from the package.

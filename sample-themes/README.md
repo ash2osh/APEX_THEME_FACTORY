@@ -35,18 +35,16 @@ package appears in both as soon as it is imported — nothing to register by han
   which also applies the theme's `templateOptions` (e.g. nav Style B) to `application.apx`. Declarative
   options are per-default-theme only; the live switch changes CSS alone.
 
-<!-- @generated:theme-catalog:start -->
-| Theme | Direction | Status |
-|---|---|---|
-| [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. | **VERIFIED** |
-| [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. | **VERIFIED** |
-| [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. | **VERIFIED** |
-| [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. | **VERIFIED** |
-| [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. | **VERIFIED** |
-| [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. | **VERIFIED** |
-| [solarized-dark](solarized-dark/) | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. | **VERIFIED** |
-| [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. | **VERIFIED** |
-<!-- @generated:theme-catalog:end -->
+| Theme | Direction |
+|---|---|
+| [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. |
+| [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. |
+| [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. |
+| [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. |
+| [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. |
+| [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. |
+| [solarized-dark](solarized-dark/) | Terminal-inspired Solarized depth with cyan-blue accents and compact geometry. |
+| [velvet-signal](velvet-signal/) | Spacious aubergine layers with rounded surfaces and fuchsia-violet signals. |
 
 Adding a theme: define a strict `theme.recipe.json`, run `scripts/theme.sh new <name> --recipe <file>`, customize
 only the generated package, then run `scripts/theme.sh check <name>`. The recipe chooses identity, palette,
@@ -71,6 +69,5 @@ Conventions
 - Dark packages must remap Iris' literal `:root` tokens (see `solarized-dark/README.md`, *Technique*).
 - Custom fonts: optional self-hosted WOFF2 assets (`wOF2` signature) under `fonts/` with licenses under `licenses/`. External font URLs and data URLs are forbidden. Manifest declares `body` (required if fonts used), optional `heading` and `mono`. Family identifiers are package-prefixed (`ThemeFactory-<name>-<role>`) and Font APEX icons remain untouched.
 - `preview/` holds `cover.jpg` plus a few curated `.jpg` captures; iteration PNGs never get committed
-  (`.gitignore`). Every package README ends with a *Verified* section (pages, widths, contrast, console).
-- `scripts/theme.sh check` caches only successful content-addressed results. Any consumed local/shared source or
-  validator change invalidates the key. A candidate-lane PASS is not release evidence.
+  (`.gitignore`).
+- `scripts/theme.sh release <name>` is the release: check, package, live smoke (see the root README).

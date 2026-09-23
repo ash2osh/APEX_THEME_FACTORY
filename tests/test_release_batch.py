@@ -249,5 +249,25 @@ class ReleaseBatchCliTests(unittest.TestCase):
         self.assertIn("docs/AGENT_COMPATIBILITY.md", readme)
 
 
+    def test_named_theme_is_built_fresh_into_the_work_dir(self):
+        from tools.release_batch import _resolve_package
+        repo = Path(__file__).resolve().parent.parent
+        version = json.loads((repo / "sample-themes/linen/theme.json").read_text(encoding="utf-8"))["version"]
+        with tempfile.TemporaryDirectory() as tmp:
+            zip_path = _resolve_package(repo, "linen", Path(tmp), "0" * 40)
+            self.assertEqual(zip_path, (Path(tmp) / "packages/linen" / f"linen-{version}.zip").resolve())
+
+    def test_explicit_zip_is_used_as_given(self):
+        from tools.release_batch import _resolve_package
+        with tempfile.TemporaryDirectory() as tmp:
+            given = Path(tmp) / "x-9.9.9.zip"
+            given.write_bytes(b"zip")
+            self.assertEqual(_resolve_package(Path(tmp), given, Path(tmp) / "work", "0" * 40), given.resolve())
+
+    def test_candidate_install_receives_the_verified_archives(self):
+        source = (Path(__file__).resolve().parent.parent / "tools/release_batch.py").read_text(encoding="utf-8")
+        self.assertIn('"--packages"', source)
+        self.assertNotIn("resolve_package_zip", source)
+
 if __name__ == "__main__":
     unittest.main()

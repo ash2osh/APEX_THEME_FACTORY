@@ -219,20 +219,23 @@ def prune_evidence(root: Path, *, keep_latest: int, apply: bool) -> tuple[Path, 
     return targets
 
 
-def _resolve_package(repo_root: Path, value: str | Path) -> Path:
+def _resolve_package(repo_root: Path, value: str | Path, work_dir: Path, source_commit: str) -> Path:
+    """A ZIP path is used as given; a theme name is built fresh from sample-themes/<name>.
+
+    Building here (never reading dist/) binds the batch to the source it just checked clean;
+    passing source_commit keeps uncommitted evidence from a resumed run out of the dirty check.
+    """
     path = Path(value)
-    if path.is_file():
+    if path.suffix == ".zip":
+        if not path.is_file():
+            raise PackageError(f"Package ZIP not found: {path}")
         return path.resolve()
-    from scripts.install_all_themes import resolve_package_zip
-    current = Path.cwd()
-    try:
-        # resolve_package_zip is repository-root based by design; batch execution already runs
-        # from that root, and this guard prevents an accidental alternate working directory.
-        if current.resolve() != repo_root.resolve():
-            raise PackageError(f"release-batch must run from repository root {repo_root}")
-        return resolve_package_zip(str(value)).resolve()
-    except PackageError:
-        raise
+    from lib.theme_factory.archive import build_package_from_root
+    name = str(value)
+    return build_package_from_root(
+        repo_root, repo_root / "sample-themes" / name, Path(work_dir) / "packages" / name,
+        source_identity=source_commit,
+    ).resolve()
 
 
 def _artifact_to_row(artifact: dict):
@@ -298,8 +301,8 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
     source_commit = last_source_commit(repo_root)
     if source_commit is None:
         raise PackageError("Unable to determine current source commit")
-    packages = tuple(PackageRef.from_zip(_resolve_package(repo_root, value)) for value in themes)
-    secondary = PackageRef.from_zip(_resolve_package(repo_root, args.secondary))
+    packages = tuple(PackageRef.from_zip(_resolve_package(repo_root, value, work_dir, source_commit)) for value in themes)
+    secondary = PackageRef.from_zip(_resolve_package(repo_root, args.secondary, work_dir, source_commit))
     for package in (*packages, secondary):
         if not package_matches_source(package.zip_path, source_commit):
             raise PackageError(
@@ -340,13 +343,13 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
         if result.status != "PASS":
             raise PackageError(f"Layer C failed for {package.theme}; remaining candidates were not run")
 
-    theme_names = ",".join(package.theme for package in packages)
+    package_zips = ",".join(str(package.zip_path) for package in packages)
     for target in targets:
         assert_clean_source(repo_root)
         install = subprocess.run([
             str(repo_root / "scripts/install-all-themes.sh"),
             "--app-id", str(target.app_id), "--connection", args.connection,
-            "--workspace", args.workspace, "--themes", theme_names,
+            "--workspace", args.workspace, "--packages", package_zips,
             "--with-switcher", "--apply", "--yes",
         ], cwd=repo_root, check=False)
         if install.returncode != 0:

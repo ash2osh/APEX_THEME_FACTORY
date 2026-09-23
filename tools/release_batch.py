@@ -53,7 +53,7 @@ class LayerDBatchReport:
 @dataclass(frozen=True)
 class LayerCBatchReport:
     status: str
-    completed: tuple[tuple[str, str], ...]
+    completed: tuple[str, ...]
     failures: tuple[str, ...]
 
 
@@ -98,31 +98,23 @@ def run_layer_d_batch(
 
 def run_layer_c_batch(
     themes: Sequence[str],
-    consumers: Sequence[str],
-    secondary: str,
     *,
-    export_baseline: Callable[[str], object],
-    restore_baseline: Callable[[str, object], None],
-    theme_runner: Callable[[str, str, str], bool],
+    restore_baselines: Callable[[], None],
+    theme_runner: Callable[[str], bool],
 ) -> LayerCBatchReport:
-    """Export each baseline once and isolate every candidate lifecycle with restores."""
+    """Run each candidate between two baseline restores; stop at the first failure."""
 
-    completed: list[tuple[str, str]] = []
-    failures: list[str] = []
-    for consumer in consumers:
-        baseline = export_baseline(consumer)
-        for theme in themes:
-            restore_baseline(consumer, baseline)
-            ok = False
-            try:
-                ok = bool(theme_runner(theme, consumer, secondary))
-            finally:
-                restore_baseline(consumer, baseline)
-            if not ok:
-                failures.append(f"{consumer}/{theme}")
-                break
-            completed.append((consumer, theme))
-    return LayerCBatchReport("PASS" if not failures else "FAIL", tuple(completed), tuple(failures))
+    completed: list[str] = []
+    for theme in themes:
+        restore_baselines()
+        try:
+            ok = bool(theme_runner(theme))
+        finally:
+            restore_baselines()
+        if not ok:
+            return LayerCBatchReport("FAIL", tuple(completed), (theme,))
+        completed.append(theme)
+    return LayerCBatchReport("PASS", tuple(completed), ())
 
 
 def find_obsolete_evidence(root: Path, identity_is_current: Callable[[Path], bool]) -> tuple[Path, ...]:
@@ -270,7 +262,7 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
     )
     from lib.theme_factory.sqlcl import SqlclClient
     from tools.browser_matrix import (
-        LiveBrowserMatrix, _text, build_runtime_artifact,
+        LiveBrowserMatrix, _text, assert_row_identity, build_runtime_artifact,
         write_layer_d_evidence,
     )
     from tools.chrome_devtools_client import ChromeDevToolsClient
@@ -327,21 +319,27 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
             target.app_id, work_dir / "baselines" / target.consumer
         )
 
-    for package in packages:
-        try:
-            for target in targets:
-                sqlcl.import_apexlang(baselines[target.consumer], args.workspace, target.app_id)
-            result = run_layer_c_theme(
-                args.connection, args.workspace, targets, package, secondary,
-                work_dir / "layer-c" / package.theme,
-                evidence_root / f"{date}-release-{package.theme}", source_commit,
-                clean_checker=lambda: assert_clean_source(repo_root),
-            )
-        finally:
-            for target in targets:
-                sqlcl.import_apexlang(baselines[target.consumer], args.workspace, target.app_id)
-        if result.status != "PASS":
-            raise PackageError(f"Layer C failed for {package.theme}; remaining candidates were not run")
+    package_by_theme = {package.theme: package for package in packages}
+
+    def restore_baselines() -> None:
+        for target in targets:
+            sqlcl.import_apexlang(baselines[target.consumer], args.workspace, target.app_id)
+
+    def layer_c(theme: str) -> bool:
+        result = run_layer_c_theme(
+            args.connection, args.workspace, targets, package_by_theme[theme], secondary,
+            work_dir / "layer-c" / theme,
+            evidence_root / f"{date}-release-{theme}", source_commit,
+            clean_checker=lambda: assert_clean_source(repo_root),
+        )
+        return result.status == "PASS"
+
+    layer_c_report = run_layer_c_batch(
+        [package.theme for package in packages],
+        restore_baselines=restore_baselines, theme_runner=layer_c,
+    )
+    if layer_c_report.status != "PASS":
+        raise PackageError(f"Layer C failed for {layer_c_report.failures[0]}; remaining candidates were not run")
 
     package_zips = ",".join(str(package.zip_path) for package in packages)
     for target in targets:
@@ -384,7 +382,6 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
             for width in (widths if url in {args.minimal_url, args.business_url}
                           else tuple(value for value in widths if value in {min(widths), max(widths)}))
         )
-        package_by_theme = {package.theme: package for package in packages}
 
         def identity_for(row: BrowserRowPlan) -> EvidenceIdentity:
             return EvidenceIdentity(
@@ -397,9 +394,11 @@ def execute_live_batch(args, themes: Sequence[str]) -> int:
             matrix.package = package_by_theme[row.theme].zip_path
             captured = matrix.capture_row(row.consumer, row.url, row.theme, row.viewport)
             assert_clean_source(repo_root)
-            return build_runtime_artifact(
+            artifact = build_runtime_artifact(
                 row.theme, source_commit, package_by_theme[row.theme].sha256, captured
             )
+            assert_row_identity(artifact, identity_for(row))
+            return artifact
 
         report = run_layer_d_batch(
             rows, checkpoint_root, resume=args.resume,

@@ -11,7 +11,7 @@ from lib.theme_factory.release import _valid_browser_runtime_artifact, load_evid
 from tools.browser_matrix import (
     RowCapture,
     build_runtime_artifact,
-    run_layer_d_row,
+    assert_row_identity,
     write_layer_d_evidence,
 )
 from lib.theme_factory.evidence_cache import (
@@ -111,29 +111,19 @@ class ResumableBrowserRowTests(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp)
 
-    def test_single_row_checks_cleanliness_before_capture_and_checkpoint_write(self):
-        row = capture("business", 1440)
+    def test_row_identity_guard_accepts_a_matching_capture(self):
+        artifact = build_runtime_artifact("linen", COMMIT, SHA, capture("business", 1440))
+        identity = EvidenceIdentity(COMMIT, SHA, artifact["apexVersion"], artifact["browserVersion"],
+                                    "business", "http://local/page1", 1440, "browser-runtime")
+        assert_row_identity(artifact, identity)
 
-        class Matrix:
-            def capture_row(self, consumer, url, theme, width):
-                self.args = (consumer, url, theme, width)
-                return row
-
-        matrix = Matrix()
-        checks = []
-        identity = EvidenceIdentity(
-            COMMIT, SHA, "26.1.4", "Chrome/140.0.7339.81",
-            "business", "1", 1440, "browser-runtime",
-        )
-        checkpoint = self.tmp / "row.json"
-        result = run_layer_d_row(
-            matrix, "business", "http://local/page1", "linen", 1440,
-            COMMIT, SHA, checkpoint, identity,
-            clean_checker=lambda: checks.append("clean"),
-        )
-        self.assertIs(result, row)
-        self.assertEqual(checks, ["clean", "clean"])
-        self.assertTrue(checkpoint_valid(checkpoint, identity))
+    def test_row_identity_guard_rejects_a_browser_that_changed_mid_batch(self):
+        artifact = build_runtime_artifact("linen", COMMIT, SHA, capture("business", 1440))
+        identity = EvidenceIdentity(COMMIT, SHA, artifact["apexVersion"], "Chrome/999.0.0.0",
+                                    "business", "http://local/page1", 1440, "browser-runtime")
+        with self.assertRaises(RuntimeError) as context:
+            assert_row_identity(artifact, identity)
+        self.assertIn("browserVersion", str(context.exception))
 
     def test_live_capture_uses_per_tab_emulation_not_shared_window_resize(self):
         import inspect

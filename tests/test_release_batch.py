@@ -97,49 +97,39 @@ class ReleaseBatchResumeTests(unittest.TestCase):
         self.assertEqual(report.skipped, 0)
 
 
-class FakeSql:
-    def __init__(self, fail_theme=None):
-        self.exports = []
-        self.restores = []
-        self.runs = []
-        self.fail_theme = fail_theme
-
-    def export_baseline(self, consumer):
-        self.exports.append(consumer)
-        return f"baseline:{consumer}"
-
-    def restore(self, consumer, baseline):
-        self.restores.append((consumer, baseline))
-
-    def run_theme(self, theme, consumer, secondary):
-        self.runs.append((theme, consumer, secondary))
-        return theme != self.fail_theme
-
-
 class ReleaseBatchLayerCTests(unittest.TestCase):
-    def test_baseline_is_exported_once_per_consumer_and_restored_around_each_theme(self):
-        sql = FakeSql()
+    def test_layer_c_restores_baselines_around_every_theme(self):
+        events = []
         report = run_layer_c_batch(
-            ("linen", "cobalt-press"), ("minimal", "business"), "solarized-dark",
-            export_baseline=sql.export_baseline,
-            restore_baseline=sql.restore,
-            theme_runner=sql.run_theme,
+            ["linen", "citrus-pop"],
+            restore_baselines=lambda: events.append("restore"),
+            theme_runner=lambda theme: events.append(theme) or True,
         )
-        self.assertEqual(sql.exports, ["minimal", "business"])
-        self.assertEqual(len(sql.runs), 4)
-        self.assertEqual(len(sql.restores), 8)
         self.assertEqual(report.status, "PASS")
+        self.assertEqual(report.completed, ("linen", "citrus-pop"))
+        self.assertEqual(events, ["restore", "linen", "restore", "restore", "citrus-pop", "restore"])
 
-    def test_candidate_failure_stops_that_consumer_before_the_next_theme(self):
-        sql = FakeSql(fail_theme="linen")
-        report = run_layer_c_batch(
-            ("linen", "cobalt-press"), ("minimal",), "solarized-dark",
-            export_baseline=sql.export_baseline,
-            restore_baseline=sql.restore,
-            theme_runner=sql.run_theme,
-        )
-        self.assertEqual(sql.runs, [("linen", "minimal", "solarized-dark")])
-        self.assertEqual(report.status, "FAIL")
+    def test_layer_c_failure_stops_before_the_next_theme(self):
+        events = []
+
+        def runner(theme):
+            events.append(theme)
+            return False
+
+        report = run_layer_c_batch(["linen", "citrus-pop"], restore_baselines=lambda: events.append("restore"),
+                                   theme_runner=runner)
+        self.assertEqual((report.status, report.completed, report.failures), ("FAIL", (), ("linen",)))
+        self.assertEqual(events, ["restore", "linen", "restore"])
+
+    def test_layer_c_restores_even_when_a_theme_run_raises(self):
+        events = []
+
+        def runner(theme):
+            raise RuntimeError("boom")
+
+        with self.assertRaises(RuntimeError):
+            run_layer_c_batch(["linen"], restore_baselines=lambda: events.append("restore"), theme_runner=runner)
+        self.assertEqual(events, ["restore", "restore"])
 
 
 class ObsoleteEvidenceTests(unittest.TestCase):

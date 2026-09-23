@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "theme": "cobalt-press",
+  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
+  "packageSha256": "5bff577a01ebb0b060e59148853e182031a293c6c156a97f4836a6869d299f43",
+  "capturedAt": "2026-09-23T14:53:31Z",
+  "layer": "D",
+  "check": "browser_runtime_matrix",
+  "status": "PASS",
+  "results": {
+    "rows": [
+      {
+        "consumer": "minimal",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1440.json",
+          "sha256": "23125321eaf448870ec0fa21a2ccf66d29a00148a2272c8f990fa44c6667b86a"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-1024.json",
+          "sha256": "2fc19d16eaf30c8dae7cf1008fee0d5a53dcc8d7545be5b20f5c9607c5f6050b"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-768.json",
+          "sha256": "c2a0460e0a664f7e21d46ddacf632d5f223da9d8120d03f83e25ef720cdecb59"
+        }
+      },
+      {
+        "consumer": "minimal",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-minimal-page1-375.json",
+          "sha256": "286b0ef41e5a757b503321bb77eee416b0041b1042044b383c791d511d83cedf"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1440,
+        "evidence": {
+          "path": "raw/browser-business-page1-1440.json",
+          "sha256": "e69b3090b8630bffc6c9fef74d6515736a9acfb8d0060905a83aba7e4e6b1896"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 1024,
+        "evidence": {
+          "path": "raw/browser-business-page1-1024.json",
+          "sha256": "79a153b3197429ed3379bf526bc7c6203997be48930fc50be26bb42a0f198fd6"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 768,
+        "evidence": {
+          "path": "raw/browser-business-page1-768.json",
+          "sha256": "8f707c1175532a7df92f6fbb6ba5d71a05897dccce250be586295045334a5735"
+        }
+      },
+      {
+        "consumer": "business",
+        "width": 375,
+        "evidence": {
+          "path": "raw/browser-business-page1-375.json",
+          "sha256": "73255e9a025d0bd3207841be7d74210bc9dc00dfe8d2944480a61536af2763f2"
+        }
+      }
+    ],
+    "failures": []
+  }
+}

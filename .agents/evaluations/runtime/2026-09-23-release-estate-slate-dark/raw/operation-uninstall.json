@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate-dark",
+  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
+  "packageSha256": "91320eeb6441beea290c83141206da9dc69ee59da92f7df3dc0ae75fafc64514",
+  "capturedAt": "2026-09-23T13:42:41Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "uninstall",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme estate-slate-dark --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate-dark\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'estate-slate-dark' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9010 (Theme Factory Minimal Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9010 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9010.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme estate-slate-dark --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     estate-slate-dark\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'estate-slate-dark' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "uninstall --theme linen --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "UNINSTALLED",
+      "stdoutTail": "\nUninstall Confirmation:\n  App ID:    9011 (Theme Factory Business Consumer)\n  Workspace: DEMO\n  Theme:     linen\nType application ID 9011 to uninstall: \nResult: UNINSTALLED theme 'linen' from application 9011.\nStatus: UNINSTALLED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

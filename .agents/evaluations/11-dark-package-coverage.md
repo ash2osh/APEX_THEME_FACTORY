@@ -4,7 +4,7 @@
 - Mode: `CONNECTED` (requires live browser session via Chrome DevTools MCP attached to app at `localhost:8181`).
 
 ## Protocol & Constraints
-- **Permitted Tools**: `chrome-devtools-mcp`, `tools/runtime_parity.py`, file reading/editing tools.
+- **Permitted Tools**: `chrome-devtools-mcp` (through `tools/chrome_devtools_client.py`), file reading/editing tools.
 - **Prohibited Writes**: Marking package "Verified" without full live contrast audit; modifying core Iris tokens outside `.app-theme-<name>` scope.
 - **Target Fixture**:
   - App 102 pages: 500 (Dashboard), 1402 (Interactive Report), 1410 (Interactive Grid), 1411 (Faceted Search), 1601 (Markdown/Percent), 1800 (Calendar), 1902 (JET Chart), 4000 (Buttons & Controls), 6303, 6304.

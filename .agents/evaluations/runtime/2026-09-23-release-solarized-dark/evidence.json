@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "theme": "solarized-dark",
+  "checks": [
+    {
+      "layer": "C",
+      "check": "database_installation",
+      "status": "PASS",
+      "artifact": "database_installation.json",
+      "artifactSha256": "05413633a94c60223db1b2fd9d1801be28cc64486e3dbe8976bed7b9bc5aca74",
+      "details": "Live SQLcl lifecycle on TF-CONSUMER-MINIMAL-9010, TF-CONSUMER-BUSINESS-9011 at commit 19029ef99b38"
+    },
+    {
+      "layer": "D",
+      "check": "browser_runtime_matrix",
+      "status": "PASS",
+      "artifact": "browser_runtime_matrix.json",
+      "artifactSha256": "15bb61ba876d4dd38c05884f41134c5dc0452105808cb084f9233f1c224c4b18",
+      "details": "8/8 consumer/width rows verified live at commit 19029ef99b38"
+    }
+  ]
+}

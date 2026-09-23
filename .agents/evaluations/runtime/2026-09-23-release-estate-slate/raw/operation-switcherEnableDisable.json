@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "estate-slate",
+  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
+  "packageSha256": "7f6ee79aaf3f3ffe7b2a25fae8b293aed1ad9e477a8225bf15c010c84afef9fb",
+  "capturedAt": "2026-09-23T13:16:07Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "switcherEnableDisable",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/minimal/packages/estate-slate-1.1.0/estate-slate-1.1.0 --with-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'estate-slate' v1.1.0\n  Staged Digest: fe86afe04b92ba2cf5701acfa2670675089f8170ca754fba6b51aa5d2791240a\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/minimal/backups/DEMO-9010/20260923T125459Z-before-estate-slate\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/minimal/packages/estate-slate-1.1.0/estate-slate-1.1.0 --without-switcher --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'estate-slate' v1.1.0\n  Staged Digest: f8422d1af052c868fdb96d36ecac8ae096316dda32b6bd9da1a4b252a7571d18\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/minimal/backups/DEMO-9010/20260923T125818Z-before-estate-slate\nType application ID 9010 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/business/packages/estate-slate-1.1.0/estate-slate-1.1.0 --with-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'estate-slate' v1.1.0\n  Staged Digest: e4c6ca8af561bf06bb2ea2b0527212e9a90508b7e5c28cdd0dc4227d7f897bc6\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/business/backups/DEMO-9011/20260923T130839Z-before-estate-slate\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/business/packages/estate-slate-1.1.0/estate-slate-1.1.0 --without-switcher --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'estate-slate' v1.1.0\n  Staged Digest: 4e219bd58765adc8bf742796ad95f9179b6ec9f322eb1558079f3470afcae7f3\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/estate-slate/business/backups/DEMO-9011/20260923T131133Z-before-estate-slate\nType application ID 9011 to import: \nResult: IMPORTED theme 'estate-slate' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

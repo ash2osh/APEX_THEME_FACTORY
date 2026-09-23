@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
+  "packageSha256": "9772193eddf6e9eeab08418e998af97823bf65160272b560d7e7ab248bdb96b3",
+  "capturedAt": "2026-09-23T11:58:09Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "install",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "34d9d2f835bf764e9d3daa3e506fa1b99e93389a30\",\n+        \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\": \"07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -0,0 +1,44 @@\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "minimal",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-MINIMAL-9010\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: 804f2764b7088dad2ff1d2a0a6c238a88d922966eb752077352422396e96dcf1\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T110036Z-before-carbon-volt\nType application ID 9010 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9010.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "STAGED_ONLY",
+      "stdoutTail": "fa1b99e93389a30\",\n+        \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\": \"07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96\"\n+      }\n+    }\n+  ]\n+}\n--- a/shared-components/static-files.apx\n+++ b/shared-components/static-files.apx\n@@ -33,3 +33,47 @@\n     charSet: utf-8\n )\n \n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/theme.css\" (\n+    mimeType: text/css\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/cover.jpg\" (\n+    mimeType: image/jpeg\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-bold.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-medium.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-regular.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/fonts/noto-kufi-arabic-semibold.woff2\" (\n+    mimeType: font/woff2\n+)\n+\n+file \"theme-factory/packages/carbon-volt/1.1.0/licenses/OFL.txt\" (\n+    mimeType: text/plain\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/theme-factory-runtime.js\" (\n+    mimeType: application/javascript\n+    charSet: utf-8\n+)\n+\n+file \"theme-factory/runtime/registry.json\" (\n+    mimeType: application/json\n+    charSet: utf-8\n+)\n\n\nStatus: STAGED_ONLY (dry-run, no database changes applied)\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "install --package-root /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/packages/carbon-volt-1.1.0/carbon-volt-1.1.0 --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "IMPORTED",
+      "stdoutTail": "\nTarget Application:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Alias:         TF-CONSUMER-BUSINESS-9011\n  Install:       theme 'carbon-volt' v1.1.0\n  Staged Digest: 61876099bb601d1a77b760ee17b7e66d3bb7ca8f1c88f8eed1a4258cb4958e91\n  Backup:        /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T113506Z-before-carbon-volt\nType application ID 9011 to import: \nResult: IMPORTED theme 'carbon-volt' v1.1.0 into application 9011.\nStatus: IMPORTED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

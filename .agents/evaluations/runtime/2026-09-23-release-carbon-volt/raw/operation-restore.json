@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "theme": "carbon-volt",
+  "gitCommit": "19029ef99b387caed13a5f4183a2d9af76069058",
+  "packageSha256": "9772193eddf6e9eeab08418e998af97823bf65160272b560d7e7ab248bdb96b3",
+  "capturedAt": "2026-09-23T11:58:09Z",
+  "evidenceType": "sqlcl-operation",
+  "operation": "restore",
+  "status": "PASS",
+  "steps": [
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T105832Z-before-carbon-volt --apply",
+      "appId": 9010,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   9e81825003240480c7df6ecff818db39b6d1a4a17286ec1c070f254bf4a5d2d9\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\n",
+      "stderrTail": "Error: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "minimal",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T105832Z-before-carbon-volt --discard-later-changes --apply",
+      "appId": 9010,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9010 (Theme Factory Minimal Consumer)\n  Workspace:     DEMO\n  Live Digest:   25e5fd5794917629011ec6bdf215e32e087dde0d1f224d939315f736dd27d5ac\n  Backup Digest: 174fd7439a640852a1456cf4598b8b0e695ce07a90cfc030210006038e8609d6\nWARNING: Application 9010 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9010 to restore: \nResult: RESTORED application 9010 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/minimal/backups/DEMO-9010/20260923T105832Z-before-carbon-volt.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T113313Z-before-carbon-volt --apply",
+      "appId": 9011,
+      "exitCode": 7,
+      "status": "",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   748ccd74c391dcbd0f37f38d5ac4915f5b08e9ddc5c009e8f4bc02f07050c372\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\n",
+      "stderrTail": "Error: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes; re-run with --discard-later-changes to accept that.\n"
+    },
+    {
+      "consumer": "business",
+      "command": "restore --backup /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T113313Z-before-carbon-volt --discard-later-changes --apply",
+      "appId": 9011,
+      "exitCode": 0,
+      "status": "RESTORED",
+      "stdoutTail": "\nRestore Preflight:\n  App ID:        9011 (Theme Factory Business Consumer)\n  Workspace:     DEMO\n  Live Digest:   e7cfe8590157a03bf6e9cfe222424a33025b7231b74003e39fe27560273fa3f1\n  Backup Digest: aea4203e8391cba359e71a8ff9a0b5cb5779b727199cf001fa279a6c91be4129\nWARNING: Application 9011 has changed since this backup's operation completed (live export digest differs from the recorded post-operation digest). Restoring would discard those later changes. Proceeding because --discard-later-changes was given.\nType application ID 9011 to restore: \nResult: RESTORED application 9011 from /tmp/claude-1000/-home-ash-projects-APEX-THEME-FACTORY/1c925099-efd0-43d6-a60a-a65eec00e937/scratchpad/batch1b/layer-c/carbon-volt/business/backups/DEMO-9011/20260923T113313Z-before-carbon-volt.\nStatus: RESTORED\n",
+      "stderrTail": ""
+    }
+  ],
+  "notes": []
+}

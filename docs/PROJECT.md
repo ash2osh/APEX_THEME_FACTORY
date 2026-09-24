@@ -43,7 +43,7 @@ APEX_THEME_FACTORY/
 ├── scripts/                  # theme.sh, apex-export / validate / import, apply-theme, sync-static, install-all-themes
 └── .agents/                  # skills and knowledge
     ├── skills/               # also exposed via .claude/skills and .agent/skills symlinks
-    └── knowledge/            # pitfalls + reference/ut-26.1: read-only copies of Core/Iris CSS, theme42.js, Font APEX
+    └── knowledge/            # pitfalls + reference/ut-26.1: local-only (gitignored) copies of Core/Iris CSS, theme42.js, Font APEX
 ```
 
 ## Tooling
@@ -54,7 +54,7 @@ APEX_THEME_FACTORY/
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
 | `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [README.md](../README.md#releasing-a-theme) |
-| `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and the UT/Iris CSS+JS into `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
+| `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and (`--reference` alone) the UT/Iris CSS+JS into the gitignored `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
 | External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
 | Codex PR review bot (`chatgpt-codex-connector`) | comments P-level findings on every pull request (verify each at runtime before acting); `@codex review` re-runs it | GitHub repo settings |

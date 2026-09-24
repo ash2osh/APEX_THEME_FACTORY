@@ -389,3 +389,9 @@ tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every 
 ```
 
 CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Third-party material (Oracle's reference-app export in `applications/ut/`, OFL fonts,
+Alpine.js, external skills) keeps its own terms; see [NOTICE.md](NOTICE.md). Oracle's Universal Theme CSS/JS is not
+redistributed: `scripts/fetch-vendor.sh --reference` fetches it locally from your own APEX instance.

@@ -2,7 +2,10 @@
 # Fetch third-party runtime libraries and Universal Theme reference assets.
 #   static-files/js/vendor/          -> shipped to app 102 as #APP_FILES# (runtime)
 #   .agents/knowledge/reference/     -> read-only copies of the UT/Iris CSS+JS the app loads, for
-#                                       offline token/selector discovery (spec §17). Never uploaded.
+#                                       offline token/selector discovery (spec §17). Never uploaded and
+#                                       never committed (Oracle-copyrighted; gitignored).
+#   scripts/fetch-vendor.sh              both
+#   scripts/fetch-vendor.sh --reference  reference assets only (leaves the vendored Alpine.js alone)
 set -euo pipefail
 source "$(dirname "$0")/_env.sh"
 
@@ -19,10 +22,12 @@ fetch() { # url dest
   curl -fsSL --max-time 60 "$1" -o "$2"
 }
 
-echo "Alpine.js $ALPINE_VERSION -> $VENDOR"
-fetch "https://cdn.jsdelivr.net/npm/alpinejs@$ALPINE_VERSION/dist/cdn.min.js" "$VENDOR/alpine.min.js"
-fetch "https://cdn.jsdelivr.net/npm/alpinejs@$ALPINE_VERSION/dist/cdn.js"     "$VENDOR/alpine.js"
-fetch "https://raw.githubusercontent.com/alpinejs/alpine/v$ALPINE_VERSION/LICENSE.md" "$VENDOR/alpine.LICENSE.md"
+if [[ "${1:-}" != "--reference" ]]; then
+  echo "Alpine.js $ALPINE_VERSION -> $VENDOR"
+  fetch "https://cdn.jsdelivr.net/npm/alpinejs@$ALPINE_VERSION/dist/cdn.min.js" "$VENDOR/alpine.min.js"
+  fetch "https://cdn.jsdelivr.net/npm/alpinejs@$ALPINE_VERSION/dist/cdn.js"     "$VENDOR/alpine.js"
+  fetch "https://raw.githubusercontent.com/alpinejs/alpine/v$ALPINE_VERSION/LICENSE.md" "$VENDOR/alpine.LICENSE.md"
+fi
 
 echo "Universal Theme $UT_VERSION reference assets from $APEX_ORIGIN -> $REF"
 fetch "$APEX_ORIGIN/i/themes/theme_42/$UT_VERSION/css/Core.min.css"          "$REF/Core.min.css"

@@ -36,3 +36,6 @@ Thumbs.db
 
 /dist/
 /theme-factory-backups/
+
+# Oracle-copyrighted Universal Theme / APEX assets: fetched locally by scripts/fetch-vendor.sh, never committed
+/.agents/knowledge/reference/ut-*/

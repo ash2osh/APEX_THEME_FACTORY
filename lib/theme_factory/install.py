@@ -85,7 +85,7 @@ def remove_staging_dir(staging_temp: Optional[Path]) -> None:
     """Delete a staging directory created by make_staging_dir, and nothing else.
 
     The path must still be a direct child of the system temp directory and carry the
-    Theme Factory prefix; anything else is left alone (spec §10). Set
+    Theme Factory prefix; anything else is left alone. Set
     THEME_FACTORY_KEEP_STAGING=1 to keep staged exports for inspection.
     """
     if staging_temp is None or os.environ.get("THEME_FACTORY_KEEP_STAGING") == "1":
@@ -99,6 +99,17 @@ def remove_staging_dir(staging_temp: Optional[Path]) -> None:
         and staging_temp.name.startswith("apex-theme-factory-")
     ):
         shutil.rmtree(staging_temp, ignore_errors=True)
+
+
+def assert_no_drift(sqlcl: SqlclClient, app_id: int, expected_digest: str, moment: str) -> None:
+    """Re-export the target and refuse (exit 4) unless it still matches `expected_digest`."""
+    drift_temp = make_staging_dir("apex-theme-factory-drift-")
+    try:
+        drift_dir = sqlcl.export_apexlang(app_id, drift_temp)
+        if canonical_digest(drift_dir) != expected_digest:
+            raise PackageError(f"Database drift detected on application {app_id} {moment}", exit_code=4)
+    finally:
+        shutil.rmtree(drift_temp, ignore_errors=True)
 
 
 def _record_post_digest(backup_dir: Path, digest: str) -> None:
@@ -220,17 +231,7 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
         raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
 
     # 8. Drift guard: fresh second export to check for DB state modification during staging
-    drift_temp = make_staging_dir("apex-theme-factory-drift-")
-    try:
-        drift_dir = sqlcl.export_apexlang(options.app_id, drift_temp)
-        drift_digest = canonical_digest(drift_dir)
-        if drift_digest != pre_digest:
-            raise PackageError(
-                f"Database drift detected on application {options.app_id} during staging",
-                exit_code=4,
-            )
-    finally:
-        shutil.rmtree(drift_temp, ignore_errors=True)
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "during staging")
 
     # 9. Dry-run mode (target untouched: post-operation state == pre-export state)
     if not options.apply:
@@ -284,6 +285,10 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
             staged_dir=staged_dir,
             message="Target untouched due to confirmation mismatch",
         )
+
+    # The confirmation prompt can wait indefinitely: check again right before the full replace
+    # so edits made while it was open are refused rather than overwritten.
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "while waiting for confirmation")
 
     # Import
     try:

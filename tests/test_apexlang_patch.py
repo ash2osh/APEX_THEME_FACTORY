@@ -185,6 +185,52 @@ class ApexLangPatchTests(unittest.TestCase):
         self.assertNotEqual(before, canonical_digest(root))
 
 
+class RuntimeEscapingTests(unittest.TestCase):
+    """Package and registry text reaches an inline <script> and APEXLang; it must not escape either."""
+
+    def test_script_json_cannot_close_the_script_or_form_a_substitution(self):
+        from lib.theme_factory.apexlang_runtime import script_json
+        rendered = script_json([{"title": "</script>&APP_USER."}])
+        self.assertNotIn("<", rendered)
+        self.assertNotIn("&", rendered)
+        self.assertEqual(json.loads(rendered), [{"title": "</script>&APP_USER."}])
+
+    def test_bootstrap_refuses_unsafe_default_theme(self):
+        from lib.theme_factory.apexlang_runtime import build_bootstrap_html
+        self.assertIn('defaultTheme: "iris"', build_bootstrap_html("iris", False, "[]"))
+        with self.assertRaises(PackageError):
+            build_bootstrap_html('x";alert(1);//', False, "[]")
+
+    def write_registry(self, payload: dict) -> Path:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        registry = tmp / "shared-components/static-files/theme-factory/runtime/registry.json"
+        registry.parent.mkdir(parents=True)
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        return tmp
+
+    def registry_theme(self, **overrides) -> dict:
+        theme = {"name": "linen", "title": "Linen", "version": "1.1.0", "className": "app-theme-linen",
+                 "stylesheetUrl": "#APP_FILES#theme-factory/packages/linen/1.1.0/theme.css", "files": {}}
+        theme.update(overrides)
+        return theme
+
+    def test_registry_default_must_be_iris_or_an_installed_theme(self):
+        from lib.theme_factory.apexlang import read_install_state
+        ok = self.write_registry({"themes": [self.registry_theme()], "defaultTheme": "linen"})
+        self.assertEqual(read_install_state(ok)[1], "linen")
+        for default in ('linen";alert(1);//', "cobalt-press"):
+            bad = self.write_registry({"themes": [self.registry_theme()], "defaultTheme": default})
+            with self.assertRaises(PackageError, msg=default):
+                read_install_state(bad)
+
+    def test_registry_title_is_validated(self):
+        from lib.theme_factory.apexlang import read_install_state
+        bad = self.write_registry({"themes": [self.registry_theme(title="Linen\n    )")], "defaultTheme": "linen"})
+        with self.assertRaises(PackageError):
+            read_install_state(bad)
+
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -15,6 +15,6 @@ Non-negotiables
 - Appearance = `static-files/css` (shared foundation + `--app-*` vocabulary aliasing Iris) plus theme packages in `sample-themes/<name>/css` scoped to `html.app-theme-<name>`; interaction = Alpine in `static-files/js/components`. Assemble with `scripts/sync-static.sh` before `apex-import`; default theme via `scripts/apply-theme.sh`. Deploy all themes to any consumer app with switcher via `scripts/install-all-themes.sh --app-id <ID> --apply`.
 - Portable theme assets stay inside `sample-themes/<name>/`: custom fonts are optional licensed WOFF2 files, external font URLs are forbidden, and every built ZIP contains exactly one theme.
 
-Skills live in `.agents/skills/` (router: `design-to-apex`). Knowledge, findings and evaluations are in `.agents/`.
+Skills live in `.agents/skills/` (router: `design-to-apex`). Reference knowledge (UT/Iris facts, pitfalls) is in `.agents/knowledge/`.
 Before theme, runtime or import work, skim **.agents/knowledge/pitfalls.md** (every trap met so far, with the fix).
 Component registry: docs/COMPONENTS.md. Tokens and conventions: docs/DESIGN_SYSTEM.md.

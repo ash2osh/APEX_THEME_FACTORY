@@ -82,6 +82,28 @@ class InstallerCliTests(unittest.TestCase):
         sql_calls = log.read_text(encoding="utf-8") if log.exists() else ""
         self.assertNotIn("apex import", sql_calls)
 
+    def test_apply_refuses_changes_made_while_confirming(self):
+        """The prompt can wait indefinitely; edits made meanwhile must be refused, not overwritten."""
+        from lib.theme_factory.errors import PackageError
+        from lib.theme_factory.install import InstallOptions, run_install
+        target = self.tmp / "target-app"
+        shutil.copytree(self.repo_root / "tests/fixtures/apexlang/minimal", target)
+        log = self.tmp / "sql.log"
+
+        def edit_while_prompting(prompt):
+            (target / "pages/p09999-edited-meanwhile.apx").write_text("page 9999 (\n    name: Edited\n)\n")
+            return "314"
+
+        options = InstallOptions(package_roots=(self.package_dir,), connection="demo", workspace="DEMO",
+                                 app_id=314, backup_dir=self.tmp / "b", apply=True)
+        with mock.patch.dict(os.environ, {"FAKE_SQL_FIXTURE_DIR": str(target), "FAKE_SQL_LOG": str(log)}), \
+                mock.patch("builtins.input", edit_while_prompting), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(PackageError) as caught:
+                run_install(options)
+        self.assertEqual(caught.exception.exit_code, 4)
+        self.assertIn("while waiting for confirmation", str(caught.exception))
+        self.assertNotIn("apex import", log.read_text(encoding="utf-8"))
+
     def test_packaged_install_wrapper_runs_outside_package_directory(self):
         result = subprocess.run(
             [

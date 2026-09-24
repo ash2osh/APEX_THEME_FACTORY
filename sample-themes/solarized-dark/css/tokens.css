@@ -74,8 +74,6 @@ html.app-theme-solarized-dark {
     --app-heading-scale: 1.125;
     --app-hover-transform: none;
     --app-motion-duration: 0ms;
-    --app-selected-treatment: underline;
-    --app-responsive-strategy: compress;
 
     /* focus ring: cyan halo (VS Code focusBorder) over the canvas */
     --app-focus-ring:       0 0 0 2px var(--sol-base03), 0 0 0 4px rgba(42, 161, 152, .6);

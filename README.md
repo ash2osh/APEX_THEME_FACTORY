@@ -197,7 +197,7 @@ Work in this repository. A theme lives in one folder and nothing outside it is t
 | Step | Command | Time |
 |---|---|---|
 | Create | `scripts/theme.sh new NAME --recipe FILE` | seconds |
-| Check (policy, contrast, fonts, packaging, uniqueness) | `scripts/theme.sh check NAME` | ~0.1 s |
+| Check (policy, shipped-token contrast, recipe drift, fonts, packaging, uniqueness, copied CSS) | `scripts/theme.sh check NAME` | ~0.2 s |
 | See it in app 102 | `scripts/sync-static.sh`, `scripts/apex-validate.sh`, `scripts/apex-import.sh` | ~6 min |
 | Release | `scripts/theme.sh release NAME` | ~5 min |
 
@@ -417,6 +417,8 @@ tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every 
 ```
 
 CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.
+Open live work (runtime unification, responsive audit) is planned step by step in
+[docs/ONLINE_WORK_PLAN.md](docs/ONLINE_WORK_PLAN.md).
 
 ## License
 

@@ -64,8 +64,6 @@ html.app-theme-carbon-volt {
     --app-heading-scale: 1.5;
     --app-hover-transform: translateX(2px);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: outline;
-    --app-responsive-strategy: compress;
 
     --app-focus-ring: 0 0 0 1px var(--cv-base03), 0 0 0 3px var(--cv-cyan);
     --app-focus-halo-color: rgba(56, 232, 255, .3);

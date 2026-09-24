@@ -62,8 +62,6 @@ html.app-theme-velvet-signal {
     --app-heading-scale: 1.5;
     --app-hover-transform: translateY(-2px);
     --app-motion-duration: 180ms;
-    --app-selected-treatment: fill;
-    --app-responsive-strategy: stack;
 
     --app-focus-ring: 0 0 0 2px var(--vs-base03), 0 0 0 5px var(--vs-violet);
     --app-focus-halo-color: rgba(156, 108, 255, .36);

@@ -14,9 +14,9 @@ from lib.theme_factory.css_bundle import build_theme_css
 from lib.theme_factory.css_policy import scan_package
 from lib.theme_factory.discovery import discover_themes
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.fingerprint import check_uniqueness
+from lib.theme_factory.fingerprint import _css_declarations, _parse_rgb, _resolve_color, check_uniqueness
 from lib.theme_factory.manifest import NAME_REGEX, ThemeManifest, load_manifest
-from lib.theme_factory.recipe import ThemeRecipe, load_recipe, validate_core_contrast
+from lib.theme_factory.recipe import ThemeRecipe, contrast_ratio, load_recipe, validate_core_contrast
 
 
 SEVERITY_ORDER = {"error": 0, "warning": 1, "info": 2}
@@ -146,6 +146,77 @@ def _font_provenance_issues(repo_root: Path, theme_root: Path, recipe: ThemeReci
     return issues
 
 
+# Text pairs every theme must pass as shipped (WCAG AA 4.5:1), read from css/tokens.css rather than the recipe.
+TOKEN_CONTRAST_PAIRS = (
+    ("--app-text-primary", "--app-surface-page"),
+    ("--app-text-primary", "--app-surface-card"),
+    ("--app-text-secondary", "--app-surface-page"),
+    ("--app-text-secondary", "--app-surface-card"),
+    ("--app-text-on-accent", "--app-color-primary"),
+)
+# Recipe palette anchor -> the token that carries it in css/tokens.css.
+RECIPE_TOKEN_ROLES = (
+    ("page", "page", "--app-surface-page"),
+    ("card", "card", "--app-surface-card"),
+    ("chrome", "chrome", "--app-surface-chrome"),
+    ("textPrimary", "text_primary", "--app-text-primary"),
+    ("textSecondary", "text_secondary", "--app-text-secondary"),
+    ("accent", "accent", "--app-color-primary"),
+    ("onAccent", "on_accent", "--app-text-on-accent"),
+    ("danger", "danger", "--app-color-danger"),
+)
+
+
+def _shipped_hex(name: str, declarations: dict[str, str]) -> str | None:
+    """The token's colour as #RRGGBB (any alpha is ignored), or None when it is not a literal colour."""
+    literal = _resolve_color(name, declarations)
+    channels = _parse_rgb(literal) if literal else None
+    return "#" + "".join(f"{round(value * 255):02X}" for value in channels) if channels else None
+
+
+def _token_issues(repo_root: Path, theme_root: Path, recipe: ThemeRecipe | None) -> list[CheckIssue]:
+    """Contrast of the colours the theme actually ships, and drift between its recipe and its tokens."""
+    tokens_path = theme_root / "css/tokens.css"
+    if not tokens_path.is_file():
+        return []
+    relative = _relative(repo_root, tokens_path)
+    declarations = _css_declarations(tokens_path.read_text(encoding="utf-8"))
+    issues: list[CheckIssue] = []
+    unresolved: set[str] = set()
+    for foreground, background in TOKEN_CONTRAST_PAIRS:
+        fg, bg = _shipped_hex(foreground, declarations), _shipped_hex(background, declarations)
+        if fg is None or bg is None:
+            unresolved.update(name for name, value in ((foreground, fg), (background, bg)) if value is None)
+            continue
+        ratio = contrast_ratio(fg, bg)
+        if ratio < 4.5:
+            issues.append(CheckIssue("error", "TOKEN_CONTRAST",
+                                     f"{foreground} on {background} is {ratio:.2f}:1 ({fg} on {bg}); AA needs 4.5:1",
+                                     relative))
+    if recipe is not None:
+        for anchor, field, token in RECIPE_TOKEN_ROLES:
+            shipped = _shipped_hex(token, declarations)
+            if shipped is None:
+                unresolved.add(token)
+                continue
+            expected = getattr(recipe.palette, field)
+            if shipped.casefold() != expected.casefold():
+                issues.append(CheckIssue("error", "RECIPE_DRIFT",
+                                         f"recipe palette.{anchor} is {expected} but {token} ships {shipped}; "
+                                         "update the recipe or the token so they agree", relative))
+    checked = {token for pair in TOKEN_CONTRAST_PAIRS for token in pair}
+    if recipe is not None:
+        checked |= {role[2] for role in RECIPE_TOKEN_ROLES}
+    # A theme that aliases Iris for every role (Linen) is a deliberate design, left to the live audit;
+    # only a partial mix is worth a note.
+    if unresolved and unresolved != checked:
+        issues.append(CheckIssue("info", "TOKENS_UNRESOLVED",
+                                 "not a literal colour in tokens.css (aliases Iris), so not checked here: "
+                                 + ", ".join(sorted(unresolved)) + "; the live release smoke audits contrast",
+                                 relative))
+    return issues
+
+
 def _sort_issues(issues: list[CheckIssue]) -> tuple[CheckIssue, ...]:
     return tuple(
         sorted(
@@ -210,6 +281,7 @@ def run_theme_checks(repo_root: Path, theme_name: str) -> CheckReport:
 
     issues.extend(_cover_issues(repo_root, theme_root, manifest))
     issues.extend(_font_provenance_issues(repo_root, theme_root, recipe))
+    issues.extend(_token_issues(repo_root, theme_root, recipe))
 
     try:
         roots = tuple(theme.root for theme in discover_themes(repo_root))

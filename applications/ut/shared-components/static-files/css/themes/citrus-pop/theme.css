@@ -86,8 +86,6 @@ html.app-theme-citrus-pop {
     --app-heading-scale: 1.5;
     --app-hover-transform: translateY(-2px);
     --app-motion-duration: 240ms;
-    --app-selected-treatment: fill;
-    --app-responsive-strategy: stack;
 
 /* @adapter light/tokens#1 prefix=cit - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
@@ -358,14 +356,14 @@ html.app-theme-citrus-pop {
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap {
     border-color: var(--cit-slate-200);
     box-shadow: var(--app-shadow-md);
-    transform: translateY(0);
-    transition: transform .18s ease, box-shadow .18s ease;
+    transform: none;
+    transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease;
 }
 
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover,
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
     box-shadow: var(--app-shadow-lg);
-    transform: translateY(-2px);
+    transform: var(--app-hover-transform);
 }
 /* identity: tangerine action pills with audited dark text */
 .app-theme-citrus-pop .apex-theme-iris .t-Button--hot { background: var(--cit-tangerine); color: var(--cit-hot-button-text); border-radius: var(--app-radius-lg); }

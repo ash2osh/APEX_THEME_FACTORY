@@ -86,8 +86,6 @@ html.app-theme-estate-slate {
     --app-heading-scale: 1.25;
     --app-hover-transform: translateX(2px);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: rail;
-    --app-responsive-strategy: reflow;
 
 /* @adapter light/tokens#1 prefix=est - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */

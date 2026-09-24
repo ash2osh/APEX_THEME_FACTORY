@@ -1,3 +1,4 @@
+/* @adapter light/reports#1 prefix=est - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -67,6 +68,7 @@
 .app-theme-estate-slate .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */
 
 /* identity: ruled data rows */
 .app-theme-estate-slate .apex-theme-iris .a-IRR-table tr,

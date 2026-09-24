@@ -107,6 +107,11 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     cover.add_argument("--json", action="store_true")
     cover.set_defaults(handler=_handle_cover)
 
+    adapters = subparsers.add_parser("adapters", help="Render shared adapter segments into theme CSS")
+    adapters.add_argument("--repo-root", type=Path, default=Path.cwd())
+    adapters.add_argument("--check", action="store_true", help="Report drift only; exit 1 on drift")
+    adapters.set_defaults(handler=_handle_adapters)
+
     release = subparsers.add_parser("release", help="Check, package, and smoke-test one theme live")
     release.add_argument("name")
     release.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -234,6 +239,11 @@ def _handle_check(args: argparse.Namespace) -> int:
     return 0 if report.status == "PASS" else 2
 
 
+
+
+def _handle_adapters(args: argparse.Namespace) -> int:
+    from lib.theme_factory.adapters import main as adapters_main
+    return adapters_main(["--repo-root", str(args.repo_root), *(["--check"] if args.check else [])])
 
 
 def _handle_release(args: argparse.Namespace) -> int:

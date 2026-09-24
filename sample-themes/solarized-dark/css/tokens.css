@@ -97,6 +97,7 @@ html.app-theme-solarized-dark {
        25 SVG text nodes passing AA — fills rgb(238,232,213) (base2, 5 nodes) and rgb(147,161,161) (base1,
        20 nodes), worst ratio 4.86:1 against the card. JET still resolves these once at bootstrap, which is
        why an import + reload is the only way to observe a change here. */
+/* @adapter dark/tokens#1 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --oj-core-text-color-primary: var(--app-text-primary);
     --oj-core-text-color-secondary: var(--app-text-secondary);
     --oj-heading-text-color: var(--app-text-emphasized);
@@ -105,6 +106,7 @@ html.app-theme-solarized-dark {
     --oj-core-divider-color: var(--app-border-color);
     --oj-core-focus-border-color: var(--sol-cyan);
 }
+/* @adapter-end dark/tokens#1 */
 
 /* Universal Theme / Iris tokens, overridden on the theme-style scope (body.apex-theme-iris, never :root) so
    every component modifier keeps precedence — see docs/DESIGN_SYSTEM.md §1. */
@@ -149,6 +151,7 @@ html.app-theme-solarized-dark {
     --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
     --ut-palette-primary-alt-text: var(--sol-cyan-text);
     --ut-palette-success-text: var(--sol-green);          /* 4.1:1 on cards: icons and large text only */
+/* @adapter dark/tokens#2 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-warning-text: var(--sol-yellow);
     --ut-palette-danger-text: var(--sol-red-text);
     --ut-palette-info-text: var(--sol-cyan);
@@ -156,8 +159,8 @@ html.app-theme-solarized-dark {
     /* Core.min.css declares the whole --a-palette-* atom family as var(--ut-palette-*) *on :root*, so it
        freezes to Iris' light literals (#00688c / #e4f1f7 / #fff) before the overrides above reach it
        (pitfalls.md §1.2). Every consumer is an element-scoped rule, so restating the chain here is enough.
-       Measured 2026-09-17 on p1410: selecting an Interactive Grid row painted its cells #e4f1f7 under base2
-       text — 1.06:1; with these fifteen lines the same cells take the package's shade and measure 8.17:1.
+       Measured 2026-09-17 on p1410 (first dark package): selecting an Interactive Grid row painted its cells
+       #e4f1f7 under light body text — 1.06:1; with these fifteen lines the cells took the package's shade: 8.17:1.
        Also feeds IRR/IG/Card View/Media List/Timeline/Comments selection, subtle badges, the date picker's
        current day and the report-controls error state. */
     --a-palette-primary: var(--ut-palette-primary);
@@ -178,8 +181,8 @@ html.app-theme-solarized-dark {
 
     /* Same mechanism: Core.min.css declares --a-base-link-text-color: var(--ut-link-text-color) on :root.
        The faceted-search text buttons (.a-FS-toggleOverflow / .a-FS-clearAll / .a-FS-clearButton) set
-       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: measured 2.39:1 on the card
-       (p1411, 2026-09-17); restated it measures 4.50:1. Hover/active fall back to this token in UT's own
+       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: 2.39:1 on the dark card
+       (first dark package, p1411, 2026-09-17); restated, they take the package's link colour (≥ 4.5:1). Hover/active fall back to this token in UT's own
        declarations, so one line covers all three states. */
     --a-base-link-text-color: var(--ut-link-text-color);
 
@@ -220,6 +223,7 @@ html.app-theme-solarized-dark {
     --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
     --ut-treeview-badge-background-color: var(--sol-cyan);
     --ut-treeview-badge-text-color: var(--app-text-on-accent);
+/* @adapter-end dark/tokens#2 */
 
     /* component atoms Iris declares with literal light colours on :root (checkbox/radio, chips, date picker,
        grid states, keyboard hints, popup LOV chips, report controls, search results, star rating, chat) */
@@ -249,6 +253,7 @@ html.app-theme-solarized-dark {
                             takes --a-palette-primary-shade as its background and --a-palette-primary as its
                             text: with the restatement above that pair is #4b9fda on the cyan wash = 3.47:1
                             (measured p1601, 2026-09-17), so the day's own text token is set explicitly */
+/* @adapter dark/tokens#3 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --a-datepicker-footer-background-color: var(--app-surface-card);
     --jui-datepicker-background-color: var(--app-surface-card);
     --jui-datepicker-border-color: var(--app-border-color);
@@ -284,7 +289,7 @@ html.app-theme-solarized-dark {
     --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
     --a-chat-user-primary-icon-background-color: var(--sol-cyan);   /* paired with the dark icon text above;
                                                                         was still Iris' :root-resolved #00688c
-                                                                        (4.75:1 dark-on-cyan vs. 2.4:1 before) */
+                                                                        (dark text on it failed AA) */
     --a-chat-user-secondary-text-color: var(--app-text-primary);
     --a-chat-user-secondary-icon-background-color: var(--sol-red);
     --a-chat-user-secondary-icon-text-color: #ffffff;
@@ -301,12 +306,14 @@ html.app-theme-solarized-dark {
     --a-treeview-node-focused-background-color: var(--app-surface-selected);
     --a-treeview-node-focused-text-color: var(--app-text-emphasized);
     --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--sol-cyan);
+/* @adapter-end dark/tokens#3 */
 
     /* wizard progress */
     --ut-wizard-header-background-color: var(--app-surface-chrome);
     --ut-wp-track-color: rgba(147, 161, 161, .3);
     --ut-wp-marker-color: var(--sol-base01);
 
+/* @adapter dark/tokens#4 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* list components that Core paints from their own tokens */
     --ut-comment-item-background-color: var(--app-surface-card);
     --ut-comment-chat-background-color: var(--app-surface-input);
@@ -316,3 +323,4 @@ html.app-theme-solarized-dark {
     --ut-cr-border-color: var(--app-border-color);
     --ut-timeline-type-background-color: var(--app-surface-card);
 }
+/* @adapter-end dark/tokens#4 */

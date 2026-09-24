@@ -1,6 +1,7 @@
 /* identity: offset sheets with paper-white cards */
 .app-theme-cobalt-press .apex-theme-iris .t-Region,
 .app-theme-cobalt-press .apex-theme-iris .t-CardsRegion { box-shadow: var(--app-shadow-md); border-radius: var(--app-radius-sm); }
+/* @adapter light/regions#1 prefix=cp - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Regions, cards, content blocks, breadcrumb title.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -15,7 +16,9 @@
     --ut-region-body-padding-x: var(--app-space-4);
     --ut-region-body-padding-y: var(--app-space-4);
 }
+/* @adapter-end light/regions#1 */
 
+/* @adapter light/regions#2 prefix=cp - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-cobalt-press .apex-theme-iris .t-Region-header {
     font-size: var(--app-text-md);
     font-weight: var(--app-font-weight-semibold);
@@ -71,6 +74,7 @@
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
+/* @adapter-end light/regions#2 */
 
 /* editorial-rule: mastheads and content cards use decisive ink rules, not soft decoration. */
 .app-theme-cobalt-press .apex-theme-iris .t-Region-header,

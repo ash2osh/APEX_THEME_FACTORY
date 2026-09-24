@@ -8,6 +8,7 @@ import struct
 import tempfile
 import time
 
+from lib.theme_factory.adapters import COPY_SHARE_WARNING, copied_block_share
 from lib.theme_factory.archive import build_package_from_root, verify_package
 from lib.theme_factory.css_bundle import build_theme_css
 from lib.theme_factory.css_policy import scan_package
@@ -224,6 +225,20 @@ def run_theme_checks(repo_root: Path, theme_name: str) -> CheckReport:
                 )
     except (PackageError, ValueError, OSError) as exc:
         issues.append(CheckIssue("error", "UNIQUENESS_FAILED", str(exc), _relative(repo_root, theme_root)))
+
+    if manifest is not None:
+        try:
+            others = [theme.root for theme in discover_themes(repo_root) if theme.root.resolve() != theme_root.resolve()]
+            share, source = copied_block_share(theme_root, others)
+            if share >= COPY_SHARE_WARNING:
+                issues.append(CheckIssue(
+                    "warning", "COPIED_CSS",
+                    f"{share:.0%} of this theme's own CSS is copied in blocks from {source}; share those rules "
+                    "through a theme-templates/adapters family (README: Shared adapter families) instead",
+                    _relative(repo_root, theme_root),
+                ))
+        except (PackageError, ValueError, OSError) as exc:
+            issues.append(CheckIssue("error", "COPY_CHECK_FAILED", str(exc), _relative(repo_root, theme_root)))
 
     if manifest is not None:
         try:

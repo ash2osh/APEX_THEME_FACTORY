@@ -3,6 +3,7 @@
    Media list, content rows, timeline, comments and links list need nothing here: Core paints them from the
    --ut-component-* / --ut-*-item-background-color tokens set in tokens.css. Scoped to .app-theme-solarized-dark. */
 
+/* @adapter dark/misc#1 prefix=sol - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-solarized-dark .apex-theme-iris {
     --ut-alert-box-shadow: none;
     --ut-badge-border-radius: var(--app-radius-sm);
@@ -12,7 +13,7 @@
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 
-    /* badges: solid accent fills with dark text (≥ 4.7:1); red keeps white (4.6:1). Subtle variants sit on
+    /* badges: solid accent fills with dark text (≥ 4.5:1); red keeps white text. Subtle variants sit on
        the translucent palette shades, so their text is the light body colour rather than the accent. */
     --ut-badge-background-color: var(--sol-cyan);
     --ut-badge-text-color: var(--app-text-on-accent);
@@ -41,14 +42,14 @@
     /* Faceted Search (p1411) */
     --a-fs-chart-background-color: var(--app-surface-card);
     --a-fs-chart-border-color: var(--app-border-color);   /* Iris: var(--ut-region-border-color) at :root —
-                                                               ~1.07:1 on the same card surface otherwise */
+                                                               near 1:1 on the same card surface otherwise */
     --a-fs-control-seperator-border-color: var(--app-border-color);
     --a-fs-filter-group-border-color: var(--app-border-color);
     --a-fs-filter-group-label-text-color: var(--app-text-secondary);
     --a-fs-toggle-background-color: var(--app-surface-input);
     --a-fs-toggle-text-color: var(--app-text-primary);
     --a-fs-toggle-border-color: var(--app-border-strong);   /* Iris resolves to --a-button-border-color
-                                                                 rgba(0,0,0,.075) at :root — ~1.06:1 on the
+                                                                 rgba(0,0,0,.075) at :root — near 1:1 on the
                                                                  dark toggle surface, boundary invisible */
 
     /* Percent Graph item type (p423, p1601) */
@@ -70,14 +71,14 @@
     --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
     --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
     --jui-tooltip-background-color: var(--app-surface-chrome);   /* Theme-Standard literal #fff otherwise —
-                                                                      light text on white was 1.08:1 */
+                                                                      light text on white is unreadable */
     --jui-tooltip-border-color: var(--app-border-color);
     --jui-tooltip-shadow: var(--app-shadow-dialog);
     --jui-tooltip-text-color: var(--app-text-emphasized);         /* .oj-dvt-datatip's base `color:` (outside
                                                                        the --oj-core-text-color-* classified
                                                                        spans the --ojet-tooltip-* atoms cover)
                                                                        was still Theme-Standard's literal
-                                                                       #000 — black-on-#00212b now that the
+                                                                       #000 — black on the dark chrome now that the
                                                                        background above is dark */
 }
 
@@ -85,10 +86,13 @@
 .app-theme-solarized-dark .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
     border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--sol-cyan));
 }
+/* @adapter-end dark/misc#1 */
 
 /* Code samples (Prism.js, loaded app-wide by application.apx): Prism's light token colours are 2.4–2.5:1 on
    the card. Solarized is a code palette — put code on the canvas surface, where the raw accents pass 4.5:1,
-   and tint the three that do not (magenta, orange, violet). Scoped to .app-theme-solarized-dark. */
+   and tint the three that do not (magenta, orange, violet). Measured on the canvas: comments 4.75, keywords
+   4.69, strings 4.75, functions 5.2, properties 4.68, numbers and entities 5.2:1. Scoped to .app-theme-solarized-dark. */
+/* @adapter dark/misc#2 prefix=sol - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-solarized-dark pre[class*="language-"],
 .app-theme-solarized-dark code[class*="language-"] {
     color: var(--sol-base1);
@@ -105,32 +109,32 @@
 .app-theme-solarized-dark .token.comment,
 .app-theme-solarized-dark .token.prolog,
 .app-theme-solarized-dark .token.doctype,
-.app-theme-solarized-dark .token.cdata { color: var(--sol-base0); font-style: italic; }   /* 4.75:1 */
+.app-theme-solarized-dark .token.cdata { color: var(--sol-base0); font-style: italic; }
 .app-theme-solarized-dark .token.punctuation,
 .app-theme-solarized-dark .token.operator { color: var(--sol-base1); }
 .app-theme-solarized-dark .token.keyword,
 .app-theme-solarized-dark .token.atrule,
-.app-theme-solarized-dark .token.important { color: var(--sol-green); }                    /* 4.69:1 */
+.app-theme-solarized-dark .token.important { color: var(--sol-green); }
 .app-theme-solarized-dark .token.string,
 .app-theme-solarized-dark .token.char,
 .app-theme-solarized-dark .token.attr-value,
-.app-theme-solarized-dark .token.inserted { color: var(--sol-cyan); }                      /* 4.75:1 */
+.app-theme-solarized-dark .token.inserted { color: var(--sol-cyan); }
 .app-theme-solarized-dark .token.function,
 .app-theme-solarized-dark .token.class-name,
-.app-theme-solarized-dark .token.builtin { color: var(--sol-blue-text); }                  /* 5.2:1 */
+.app-theme-solarized-dark .token.builtin { color: var(--sol-blue-text); }
 .app-theme-solarized-dark .token.property,
 .app-theme-solarized-dark .token.tag,
 .app-theme-solarized-dark .token.selector,
 .app-theme-solarized-dark .token.attr-name,
-.app-theme-solarized-dark .token.variable { color: var(--sol-yellow); }                    /* 4.68:1 */
+.app-theme-solarized-dark .token.variable { color: var(--sol-yellow); }
 .app-theme-solarized-dark .token.number,
 .app-theme-solarized-dark .token.boolean,
 .app-theme-solarized-dark .token.constant,
 .app-theme-solarized-dark .token.symbol,
-.app-theme-solarized-dark .token.regex { color: var(--sol-magenta-text); }                 /* 4.5:1 */
+.app-theme-solarized-dark .token.regex { color: var(--sol-magenta-text); }
 .app-theme-solarized-dark .token.entity,
 .app-theme-solarized-dark .token.url,
-.app-theme-solarized-dark .token.deleted { color: var(--sol-orange-text); }                /* 4.5:1 */
+.app-theme-solarized-dark .token.deleted { color: var(--sol-orange-text); }
 
 /* Reference-app demo surfaces. Some pages of app 102 style their own demo markup with literal light values in
    page inline CSS (p4000 Icons: input#P4000_SEARCH, .dm-Search-*, .dm-IconDialog-*; p6303/p6304 modifiers:
@@ -181,7 +185,7 @@
 }
 /* p6303/p6304 class-name tokens (.class, .class-value, .class-var, .class.tag) also appear outside the doc table */
 .app-theme-solarized-dark .apex-theme-iris .class {
-    color: var(--sol-magenta-text);               /* #9C27B0 is 2.1:1 on the card */
+    color: var(--sol-magenta-text);               /* the page's #9C27B0 fails 4.5:1 on a dark card */
 }
 .app-theme-solarized-dark .apex-theme-iris .class.tag {
     background-color: var(--app-surface-card);
@@ -189,10 +193,10 @@
 }
 .app-theme-solarized-dark .apex-theme-iris .class-value,
 .app-theme-solarized-dark .apex-theme-iris .class-var {
-    color: var(--sol-cyan-text);                  /* #008676 is 2.9:1 on the card */
+    color: var(--sol-cyan-text);                  /* the page's #008676 fails 4.5:1 on a dark card */
 }
 .app-theme-solarized-dark .apex-theme-iris .dm-Report--doc .class-desc {
-    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is 1.4:1 on the card */
+    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is near-invisible on a dark card */
 }
 .app-theme-solarized-dark .event-name,
 .app-theme-solarized-dark code.event-name {
@@ -205,9 +209,9 @@
 }
 
 /* Calendar (FullCalendar 5). UT gives default events a literal #2578cf background but colours their text
-   with --fc-event-text-color = --ut-palette-primary-contrast, which this package remaps to base03 for its
-   light primary: base03 on #2578cf is 3.3:1 (measured 2026-09-16, consumer 9011 page 3). Put default events
-   on the package primary so the contrast pair holds (base03 on --sol-blue-text = 5.2:1). */
+   with --fc-event-text-color = --ut-palette-primary-contrast, which a dark package remaps to a dark colour
+   for its light primary: dark text on #2578cf failed AA (3.3:1 where first measured, 2026-09-16).
+   Put default events on the package primary so the primary / primary-contrast pair holds. */
 .app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default,
 .app-theme-solarized-dark .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
     background-color: var(--app-color-primary);
@@ -219,9 +223,9 @@
 }
 
 /* Map (p1906, p1601 map item). MapLibre's attribution bar paints its own translucent white plate and takes
-   its text colour by inheritance, so the package's base2 body text landed on it: measured 2.57:1 on p1906,
-   2026-09-17. Give the plate the package overlay so the inherited text has a dark ground: 12.25:1 for both
-   the text and its links, measured with this rule injected. The zoom control group keeps MapLibre's white
+   its text colour by inheritance, so the package's light body text landed on it (2.57:1 where first measured,
+   p1906, 2026-09-17). Give the plate the package overlay so the inherited text has a dark ground (12.25:1
+   for the text and its links there, measured with this rule injected). The zoom control group keeps MapLibre's white
    chrome on purpose (it is an opaque light patch, not a contrast failure) — its glyphs are
    dark SVG images that are not themable from CSS. */
 .app-theme-solarized-dark .maplibregl-ctrl-attrib {
@@ -268,3 +272,4 @@
 .app-theme-solarized-dark .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
     color: var(--app-text-on-accent);
 }
+/* @adapter-end dark/misc#2 */

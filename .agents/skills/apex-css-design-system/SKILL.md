@@ -25,6 +25,11 @@ Scoped, token-based, source-controlled CSS that restyles Universal Theme without
 Iris' literal `:root` tokens (`--ut-region-*`, `--ut-field-label-text-color`, `--a-checkbox-*`, …) — see
 `sample-themes/solarized-dark/README.md`. Grep atoms in all four files of `.agents/knowledge/reference/ut-26.1/`.
 
+**Adapter fences.** Lines between `/* @adapter <family>/<file>#N … */` and `/* @adapter-end … */` are rendered
+from `theme-templates/adapters/<family>/<file>.css.tmpl` and shared by every theme of that family. Never edit
+them in place: change the template (use `__NAME__` / `__PREFIX__`), run `scripts/theme.sh adapters`, and check
+every member theme. A rule for one theme goes outside the fences.
+
 ## Writing a rule
 1. Inspect the runtime element (`chrome-devtools-mcp`): real class list, winning rule, specificity.
 2. Prototype in DevTools; measure.

@@ -1,6 +1,7 @@
 /* identity: editorial rules and vermilion annotation rows */
 .app-theme-cobalt-press .apex-theme-iris .a-IRR-table tr,
 .app-theme-cobalt-press .apex-theme-iris .a-GV-table tr { border-block-end: 2px solid var(--app-border-color); }
+/* @adapter light/reports#1 prefix=cp - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -70,6 +71,7 @@
 .app-theme-cobalt-press .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */
 
 .app-theme-cobalt-press .apex-theme-iris .a-GV-header,
 .app-theme-cobalt-press .apex-theme-iris .a-IRR-header,

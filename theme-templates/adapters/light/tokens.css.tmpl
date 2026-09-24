@@ -1,0 +1,41 @@
+/* Shared light-family adapter rules for css/tokens.css - rendered into estate-slate, citrus-pop, cobalt-press.
+   Placeholders: __NAME__ = theme name, __PREFIX__ = private palette prefix. After editing, run
+   scripts/theme.sh adapters (the offline gate fails while any theme is out of date). */
+
+/* @segment 1 */
+    /* Focus ring */
+    --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--__PREFIX__-amber);
+
+    /* Type */
+    --app-font-family-body:    "ThemeFactory-__NAME__-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-heading: "ThemeFactory-__NAME__-body", system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --app-font-weight-semibold: 600;
+}
+
+/* Universal Theme / Iris overrides on the theme-style scope */
+.app-theme-__NAME__ .apex-theme-iris {
+    --ut-body-background-color: var(--app-surface-page);
+    --ut-body-text-color: var(--app-text-primary);
+    --ut-component-background-color: var(--app-surface-card);
+    --ut-component-text-default-color: var(--app-text-primary);
+    --ut-component-text-title-color: var(--app-text-emphasized);
+    --ut-component-text-subtitle-color: var(--app-text-primary);
+    --ut-component-text-muted-color: var(--app-text-secondary);
+    --ut-component-border-color: var(--app-border-color);
+    --ut-component-inner-border-color: var(--app-border-color);
+    --ut-component-highlight-background-color: var(--app-surface-hover);
+
+    --ut-border-radius-sm: var(--app-radius-sm);
+    --ut-border-radius-md: var(--app-radius-md);
+    --ut-border-radius-lg: var(--app-radius-lg);
+
+/* @segment 2 */
+    --ut-palette-danger: var(--app-color-danger);
+    --ut-palette-danger-contrast: var(--app-text-on-accent);
+    --ut-palette-danger-shade: var(--__PREFIX__-ruby-shade);
+
+    --ut-palette-info: var(--app-color-info);
+    --ut-palette-info-contrast: var(--app-text-on-accent);
+    --ut-palette-info-shade: var(--__PREFIX__-cyan-shade);
+}

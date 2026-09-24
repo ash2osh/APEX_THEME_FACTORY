@@ -4,6 +4,7 @@
    Atoms --jui-dialog-* / --a-menu-* are declared on :root by Core/Iris → override on body; the dialog chrome
    and menus live directly under body, so no element rules are needed. Scoped to .app-theme-solarized-dark. */
 
+/* @adapter dark/dialogs#1 prefix=sol - generated from theme-templates/adapters/dark/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-solarized-dark .apex-theme-iris {
     --jui-dialog-border-radius: var(--app-radius-lg);
     --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
@@ -35,8 +36,8 @@
     --a-menu-sep-border-color: var(--app-border-color);
     --a-menu-accel-text-color: var(--app-text-primary);             /* keyboard-accelerator hint text */
     --a-menu-default-accel-text-color: var(--app-text-primary);
-    --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* base1 was only 4.23:1 on the focused
-                                                                         hover bg #004052; base3 is 10.49:1 */
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* secondary text can fall under 4.5:1 on
+                                                                         the focused hover surface */
     --a-menu-callout-border-color: var(--app-border-color);
 }
 
@@ -52,3 +53,4 @@
     background-color: var(--app-surface-chrome);
     border-top: 1px solid var(--app-border-color);
 }
+/* @adapter-end dark/dialogs#1 */

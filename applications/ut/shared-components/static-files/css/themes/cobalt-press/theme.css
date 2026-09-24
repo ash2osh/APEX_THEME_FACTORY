@@ -81,9 +81,8 @@ html.app-theme-cobalt-press {
     --app-heading-scale: 1.375;
     --app-hover-transform: translateX(2px);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: underline;
-    --app-responsive-strategy: reflow;
 
+/* @adapter light/tokens#1 prefix=cp - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cp-amber);
 
@@ -110,6 +109,7 @@ html.app-theme-cobalt-press {
     --ut-border-radius-sm: var(--app-radius-sm);
     --ut-border-radius-md: var(--app-radius-md);
     --ut-border-radius-lg: var(--app-radius-lg);
+/* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
     --ut-link-text-color: var(--app-color-primary);
@@ -128,6 +128,7 @@ html.app-theme-cobalt-press {
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--cp-ruby-shade);
 
+/* @adapter light/tokens#2 prefix=cp - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-contrast: var(--app-text-on-accent);
     --ut-palette-danger-shade: var(--cp-ruby-shade);
@@ -136,6 +137,7 @@ html.app-theme-cobalt-press {
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--cp-cyan-shade);
 }
+/* @adapter-end light/tokens#2 */
 /* identity: editorial rules, black ink chrome, and deliberate sheet alignment */
 .app-theme-cobalt-press .apex-theme-iris .t-Header { border-block-end: 2px solid var(--app-color-primary); }
 .app-theme-cobalt-press .apex-theme-iris .t-Body-title { letter-spacing: .05em; border-block-end: 1px solid var(--app-border-color); }
@@ -157,6 +159,7 @@ html.app-theme-cobalt-press {
     --ut-header-menubar-item-split-icon-color: var(--app-text-chrome-muted);
 }
 
+/* @adapter light/shell#1 prefix=cp - generated from theme-templates/adapters/light/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-cobalt-press .apex-theme-iris .t-Header-logo-link {
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-chrome);
@@ -259,9 +262,11 @@ html.app-theme-cobalt-press {
     line-height: 3rem;
     font-size: 1.5rem;
 }
+/* @adapter-end light/shell#1 */
 /* identity: offset sheets with paper-white cards */
 .app-theme-cobalt-press .apex-theme-iris .t-Region,
 .app-theme-cobalt-press .apex-theme-iris .t-CardsRegion { box-shadow: var(--app-shadow-md); border-radius: var(--app-radius-sm); }
+/* @adapter light/regions#1 prefix=cp - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Regions, cards, content blocks, breadcrumb title.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -276,7 +281,9 @@ html.app-theme-cobalt-press {
     --ut-region-body-padding-x: var(--app-space-4);
     --ut-region-body-padding-y: var(--app-space-4);
 }
+/* @adapter-end light/regions#1 */
 
+/* @adapter light/regions#2 prefix=cp - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-cobalt-press .apex-theme-iris .t-Region-header {
     font-size: var(--app-text-md);
     font-weight: var(--app-font-weight-semibold);
@@ -332,6 +339,7 @@ html.app-theme-cobalt-press {
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
+/* @adapter-end light/regions#2 */
 
 /* editorial-rule: mastheads and content cards use decisive ink rules, not soft decoration. */
 .app-theme-cobalt-press .apex-theme-iris .t-Region-header,
@@ -347,6 +355,7 @@ html.app-theme-cobalt-press {
 }
 /* identity: cobalt underline directives and editorial action hierarchy */
 .app-theme-cobalt-press .apex-theme-iris .t-Button--primary { background: transparent; color: var(--app-color-primary); border-block-end: 3px solid var(--app-color-primary); }
+/* @adapter light/buttons#1 prefix=cp - generated from theme-templates/adapters/light/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Buttons.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -374,7 +383,7 @@ html.app-theme-cobalt-press {
     --a-button-active-shadow: none;
 }
 
-/* Hot button: champagne amber directive action */
+/* Hot button: the directive accent action */
 .app-theme-cobalt-press .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--app-text-on-accent);
@@ -407,6 +416,7 @@ html.app-theme-cobalt-press {
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+/* @adapter-end light/buttons#1 */
 /* identity: outlined inputs read as printed form fields */
 .app-theme-cobalt-press .apex-theme-iris .apex-item-text,
 .app-theme-cobalt-press .apex-theme-iris .apex-item-select,
@@ -421,7 +431,8 @@ html.app-theme-cobalt-press {
     --a-field-input-focus-border-color: var(--app-color-primary);
 }
 
-/* Stacked / inline labels: 13px, medium, slate-600 */
+/* @adapter light/forms#1 prefix=cp - generated from theme-templates/adapters/light/forms.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Stacked / inline labels: 13px, medium, secondary text */
 .app-theme-cobalt-press .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
     font-size: var(--app-text-sm);
     font-weight: var(--app-font-weight-medium);
@@ -436,9 +447,11 @@ html.app-theme-cobalt-press {
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
+/* @adapter-end light/forms#1 */
 /* identity: editorial rules and vermilion annotation rows */
 .app-theme-cobalt-press .apex-theme-iris .a-IRR-table tr,
 .app-theme-cobalt-press .apex-theme-iris .a-GV-table tr { border-block-end: 2px solid var(--app-border-color); }
+/* @adapter light/reports#1 prefix=cp - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -508,6 +521,7 @@ html.app-theme-cobalt-press {
 .app-theme-cobalt-press .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */
 
 .app-theme-cobalt-press .apex-theme-iris .a-GV-header,
 .app-theme-cobalt-press .apex-theme-iris .a-IRR-header,
@@ -516,6 +530,7 @@ html.app-theme-cobalt-press {
 }
 /* identity: offset shadows make dialogs feel like stacked sheets */
 .app-theme-cobalt-press .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }
+/* @adapter light/dialogs#1 prefix=cp - generated from theme-templates/adapters/light/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -543,7 +558,9 @@ html.app-theme-cobalt-press {
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+/* @adapter-end light/dialogs#1 */
 /* identity: cobalt underline tabs and vermilion marks */
+/* @adapter light/misc#1 prefix=cp - generated from theme-templates/adapters/light/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Alerts, badges, tabs — status pills and indicator badges.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -556,6 +573,7 @@ html.app-theme-cobalt-press {
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
+/* @adapter-end light/misc#1 */
 
 /* Reference-app demo surfaces: use the package's semantic fills and explicit text pairs for FullCalendar. */
 .app-theme-cobalt-press .apex-theme-iris .fc .fc-event.apex-cal-green,

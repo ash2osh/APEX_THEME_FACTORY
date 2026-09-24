@@ -7,7 +7,8 @@
   sample-themes/<name>/theme.json           -> …/css/themes/<name>/theme.json  (read by the switcher and page 405)
   sample-themes/<name>/preview/cover.jpg    -> …/css/themes/<name>/cover.jpg
 
-Also regenerates the @themes block in static-files/css/app.css, registers every synced file in
+Also regenerates the @themes block in static-files/css/app.css and the THEMES allow-list in the two page-0
+bootstrap regions (applications/ut/pages/p00000-global-page.apx), registers every synced file in
 static-files.apx, and prunes export files under css/ and js/ that no longer have a source.
 Sources are the only editable copies. check=True reports drift and writes nothing.
 """
@@ -24,6 +25,9 @@ from lib.theme_factory.manifest import load_manifest
 from lib.theme_factory.static_files import file_block
 
 THEMES_BLOCK_RE = re.compile(r"/\* @themes:start \*/.*?/\* @themes:end \*/", re.S)
+PAGE_ZERO = Path("applications/ut/pages/p00000-global-page.apx")
+# Both page-0 bootstrap regions (full pages and dialog templates) carry the same allow-list.
+PAGE_ZERO_THEMES_RE = re.compile(r"var THEMES = '[a-z0-9 -]*';")
 
 
 @dataclass
@@ -121,6 +125,20 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
             report.drift.append("static-files/css/app.css: @themes block")
         else:
             app_css.write_text(new_css, encoding="utf-8")
+
+    # (1b) page-0 allow-list: a stored or #theme= name that is not installed falls back to the default
+    page_zero = root / PAGE_ZERO
+    if page_zero.is_file():
+        current_p0 = page_zero.read_text(encoding="utf-8")
+        allow = "var THEMES = ' " + " ".join(themes) + " ';"
+        new_p0, count = PAGE_ZERO_THEMES_RE.subn(lambda _match: allow, current_p0)
+        if count != 2:
+            raise ValueError(f"{PAGE_ZERO}: expected the THEMES list in 2 bootstrap regions, found {count}")
+        if new_p0 != current_p0:
+            if check:
+                report.drift.append(f"{PAGE_ZERO.as_posix()}: THEMES allow-list")
+            else:
+                page_zero.write_text(new_p0, encoding="utf-8")
 
     # (2) desired export content
     wanted: dict[str, bytes] = {}

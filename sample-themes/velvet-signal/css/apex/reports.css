@@ -3,9 +3,10 @@
 .app-theme-velvet-signal .apex-theme-iris .a-GV-table td { padding-block: var(--app-space-4); }
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    IRR and IG cells are painted from the shared --a-gv-* atoms on :root (consumed by /i/app_ui/css/Core);
-   classic reports from --ut-report-*. Header row on the side-bar surface (#00212b), solid hover surface.
+   classic reports from --ut-report-*. Header row on the side-bar surface, solid hover surface.
    All rules scoped to .app-theme-velvet-signal. */
 
+/* @adapter dark/reports#1 prefix=vs - generated from theme-templates/adapters/dark/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-velvet-signal .apex-theme-iris {
     /* header row: chrome surface, 13px/600, 40px */
     --a-gv-header-background-color: var(--app-surface-chrome);
@@ -16,7 +17,7 @@
     --a-gv-header-cell-border-color: var(--app-border-color);
     --a-gv-header-cell-padding-x: .75rem;
 
-    /* body: 13px, 40px rows, hairline row separators, solid hover surface (body text 9.2:1 on it) */
+    /* body: 13px, 40px rows, hairline row separators, solid hover surface (body text must stay ≥ 4.5:1 on it) */
     --a-gv-font-size: var(--app-text-sm);
     --a-gv-cell-height: 2.5rem;
     --a-gv-cell-border-color: var(--app-border-color);
@@ -177,3 +178,4 @@
 .app-theme-velvet-signal .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end dark/reports#1 */

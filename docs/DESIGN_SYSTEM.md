@@ -139,6 +139,13 @@ in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a 
 | `--app-font-weight-medium` / `-semibold` | `500` / `var(--a-base-font-weight-semibold, 500)` | Iris resolves semibold to 500 |
 | `--app-text-xs … 2xl` | `12 / 13 / 14 / 17 / 20 / 24 px` | 1.2 ratio on a 14px base |
 | `--app-space-1 … 8` | `.25 .5 .75 1 1.5 2 rem` | Iris has no spacing scale; literal |
+| `--app-space-unit` / `--app-density-scale` / `--app-heading-scale` | `.5rem` / `1` / `1.25` | recipe rhythm axes; generated themes scale control height and region titles by them |
+| `--app-hover-transform` / `--app-hover-shadow` / `--app-motion-duration` | `none` / `none` / `0ms` | recipe interaction axes; the only way a theme may move or animate |
+
+**Reduced motion.** The foundation zeroes `--app-motion-duration` and `--app-hover-transform` under
+`prefers-reduced-motion: reduce` with `:root:root[class*="app-theme-"]` (0,3,0), which outranks every theme's
+`html.app-theme-<name>` scope. It only works because themes animate through those two tokens: never write a
+literal transition duration or `transform: translate…` in a theme (a test enforces it).
 
 ### 3.2 Theme deltas
 
@@ -204,6 +211,8 @@ Declarative: `application.apx` → `css.fileUrls: #APP_FILES#css/app.css`; navig
 
 Universal Theme breakpoints are the reference; check every change at 1440, 1024, 768, 375 px
 (spec §45). Iris navigation: side nav `--ut-nav-width: 15rem`, header `--ut-header-height: 3.5rem`.
+The eight shipped themes have no `@media` rules of their own yet; the audit and the recipe-driven
+`responsive.css` are planned in [ONLINE_WORK_PLAN.md](ONLINE_WORK_PLAN.md) (they need the running app).
 
 ## 7. Registry of reusable visual patterns
 

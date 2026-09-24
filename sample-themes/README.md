@@ -29,6 +29,9 @@ package appears in both as soon as it is imported — nothing to register by han
   `App.theme.use('<name>')` from `static-files/js/app.js`; `'none'` = bare Iris, choosing the app default clears
   the stored value. `#theme=<name>` in the URL hash still works for links (`#theme=default` clears, `#theme=none`
   = bare Iris; query parameters are rejected by session-state protection). `App.theme.current()` reads the class.
+- Only installed packages are accepted: the bootstrap checks the stored or `#theme=` name against its `THEMES`
+  list, which `scripts/sync-static.sh` keeps in step with `sample-themes/`. A typo or a removed package is dropped
+  from storage and the app default is used.
 - The Universal Theme *theme style* switcher (Vita / Redwood) was removed from app 102 on 2026-09-14; the theme
   style is Iris for every package and nothing in the app references another style.
 - The app **default** is the `DEFAULT` literal in the page-0 regions, set by `scripts/apply-theme.sh <name>`,

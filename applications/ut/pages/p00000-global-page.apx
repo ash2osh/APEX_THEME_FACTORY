@@ -14,15 +14,21 @@ page 0 (
                    pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
                    Query parameters are not usable here (session-state protection rejects unknown ones).
                    The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
-                   scripts/apply-theme.sh. */
+                   scripts/apply-theme.sh, THEMES (installed packages) by scripts/sync-static.sh. A stored name
+                   that is not installed (a typo, a removed package) is dropped; 'none' means bare Iris. */
                 (function () {
                     var DEFAULT = 'linen';
+                    var THEMES = ' carbon-volt citrus-pop cobalt-press estate-slate-dark estate-slate linen solarized-dark velvet-signal ';
                     var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
                     try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
                     try {
                         if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
                         else if (m) { localStorage.setItem('app.theme', m[1]); }
                         t = localStorage.getItem('app.theme');
+                        if (t && t !== 'none' && THEMES.indexOf(' ' + t + ' ') === -1) {
+                            localStorage.removeItem('app.theme');
+                            t = null;
+                        }
                     } catch (e) {}
                     if (!t || !ok.test(t)) { t = DEFAULT; }
                     document.documentElement.classList.add('app-theme-' + t);
@@ -57,15 +63,21 @@ page 0 (
                    pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
                    Query parameters are not usable here (session-state protection rejects unknown ones).
                    The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
-                   scripts/apply-theme.sh. */
+                   scripts/apply-theme.sh, THEMES (installed packages) by scripts/sync-static.sh. A stored name
+                   that is not installed (a typo, a removed package) is dropped; 'none' means bare Iris. */
                 (function () {
                     var DEFAULT = 'linen';
+                    var THEMES = ' carbon-volt citrus-pop cobalt-press estate-slate-dark estate-slate linen solarized-dark velvet-signal ';
                     var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
                     try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
                     try {
                         if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
                         else if (m) { localStorage.setItem('app.theme', m[1]); }
                         t = localStorage.getItem('app.theme');
+                        if (t && t !== 'none' && THEMES.indexOf(' ' + t + ' ') === -1) {
+                            localStorage.removeItem('app.theme');
+                            t = null;
+                        }
                     } catch (e) {}
                     if (!t || !ok.test(t)) { t = DEFAULT; }
                     document.documentElement.classList.add('app-theme-' + t);

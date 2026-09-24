@@ -23,6 +23,7 @@
     background-color: var(--cit-tangerine);
 }
 
+/* @adapter light/shell#1 prefix=cit - generated from theme-templates/adapters/light/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-citrus-pop .apex-theme-iris .t-Header-logo-link {
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-chrome);
@@ -125,3 +126,4 @@
     line-height: 3rem;
     font-size: 1.5rem;
 }
+/* @adapter-end light/shell#1 */

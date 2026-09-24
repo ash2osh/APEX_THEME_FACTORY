@@ -6,6 +6,7 @@
 set -euo pipefail
 source "$(dirname "$0")/_env.sh"
 name="${1:?usage: apply-theme.sh <theme-name>  (see sample-themes/)}"
+[[ "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || { echo "invalid theme name: $name" >&2; exit 1; }
 json="$ROOT/sample-themes/$name/theme.json"
 [[ -f "$json" ]] || { echo "no such theme: $json" >&2; exit 1; }
 python3 - "$ROOT" "$name" "$json" <<'PY'

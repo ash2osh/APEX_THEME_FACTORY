@@ -33,6 +33,10 @@ page paints. Remove it and you are back to stock Iris, byte for byte.
 | **Python 3.10+** | Checked by the wrapper before it runs. The package bundles its own `lib/`, so there is nothing to `pip install`. |
 | Your APEX **workspace name** and **app ID** | You will type the app ID to confirm before anything is written. |
 
+> **Checksums prove integrity, not origin.** `checksums.sha256` catches a damaged or partially edited package,
+> but anyone can rebuild a package with matching checksums. Install only packages from a source you trust, and
+> compare the ZIP's SHA-256 with the one the publisher lists (`sha256sum <name>-<version>.zip`).
+
 No SQLcl? Every package also ships `MANUAL-INSTALL.md` with the App Builder click-path. See
 [Installing by hand](#installing-by-hand).
 
@@ -54,9 +58,10 @@ The extracted folder is self-contained — `install.sh`, `uninstall.sh`, the CSS
 ./install.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
 ```
 
-Nothing is written. It exports your app, applies the change to a staging copy, compiles it, and prints exactly
-what *would* change — which files are added, whether a bootstrap region is created, and whether it found an
-existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat.
+Nothing is written to the database. It exports your app, applies the change to a staging copy, compiles it, and
+prints exactly what *would* change — which files are added, whether a bootstrap region is created, and whether it found an
+existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat and leaves
+nothing behind; only `--apply` writes a backup.
 
 ### 3. Apply
 
@@ -139,8 +144,8 @@ duplicating.
 |---|---|
 | `0` | Success (or a completed dry run) |
 | `3` | Refused before touching anything — wrong APEX version, unsafe target, or an ownership conflict |
-| `4` | Refused — the application changed in the database while staging (someone else edited it); nothing written |
-| `5` | Export, compile or import failed (the target is unchanged, or restored) |
+| `4` | Refused — the application changed in the database while staging or while the confirmation prompt was open (someone else edited it); nothing written |
+| `5` | Export, compile or import failed. Export and compile never touch the target; if `apex import` itself failed, check the app and [restore](#undo-an-install-restore) from the backup if needed — there is no automatic rollback |
 | `6` | Imported, but the post-import check found the result is not what was staged — **read the message** |
 | `7` | Cancelled at the confirmation prompt; target untouched |
 
@@ -192,7 +197,7 @@ Work in this repository. A theme lives in one folder and nothing outside it is t
 | Step | Command | Time |
 |---|---|---|
 | Create | `scripts/theme.sh new NAME --recipe FILE` | seconds |
-| Check (policy, contrast, fonts, packaging, uniqueness) | `scripts/theme.sh check NAME` | ~0.1 s |
+| Check (policy, shipped-token contrast, recipe drift, fonts, packaging, uniqueness, copied CSS) | `scripts/theme.sh check NAME` | ~0.2 s |
 | See it in app 102 | `scripts/sync-static.sh`, `scripts/apex-validate.sh`, `scripts/apex-import.sh` | ~6 min |
 | Release | `scripts/theme.sh release NAME` | ~5 min |
 
@@ -305,6 +310,28 @@ scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jp
 Capture uses a private background tab and per-tab emulation, snapshots and restores the browser's theme selection,
 and refuses console or network errors. Keep only the curated 960 px JPEG; iteration screenshots belong under ignored `scratch/`.
 
+### Shared adapter families
+
+Themes that share a lot of Universal Theme plumbing (dark themes restating the same Iris atoms, for example)
+share it through a **family template** rather than copies. `theme-templates/adapters/<family>/<file>.css.tmpl`
+holds numbered segments; each member theme carries the rendered text between fences in its own
+`css/tokens.css` or `css/apex/<file>.css`:
+
+```css
+/* @adapter dark/shell#1 prefix=cv - generated from theme-templates/adapters/dark/shell.css.tmpl; ... */
+...shared rules, with __NAME__ and __PREFIX__ filled in for this theme...
+/* @adapter-end dark/shell#1 */
+```
+
+- Families today: **dark**: solarized-dark, carbon-volt, velvet-signal. **light**: estate-slate, citrus-pop, cobalt-press.
+- Change shared rules in the template, then run `scripts/theme.sh adapters`. `tests/run-offline.sh` fails while any
+  fenced block differs from its template (`scripts/theme.sh adapters --check`), so a hand edit inside a fence
+  cannot slip through.
+- Everything outside the fences is the theme's own CSS, in its original order. Packages stay self-contained:
+  the rendered CSS is committed in every theme.
+- `scripts/theme.sh check` warns `COPIED_CSS` when 65 % or more of a theme's own CSS is copied in blocks from
+  another theme: share it through a family instead.
+
 ### The one trap that will bite you
 
 Iris declares many of its colour atoms **on `:root`** as `var(--ut-*)` chains. A `var()` chain resolves where
@@ -364,7 +391,8 @@ static-files/css/       shared foundation: --app-* roles, reset, app.css entry
 static-files/js/        app.js (App.theme helper), Alpine components, vendor
 applications/ut/        APEXLang export of the reference app (app 102) — generated + source
 scripts/                theme.sh, export / validate / import, sync-static, apply-theme, install-all-themes
-lib/theme_factory/      installer, uninstaller, packager, recipe/scaffold, checks
+theme-templates/        neutral scaffold, component profiles, adapters/ (shared family segments)
+lib/theme_factory/      installer, uninstaller, packager, recipe/scaffold, checks, adapters
 tools/                  release smoke, browser check, cover capture, Chrome MCP daemon
 docs/                   spec, design system, components, tooling guides
 .agents/                agent skills and knowledge (pitfalls)
@@ -373,6 +401,7 @@ docs/                   spec, design system, components, tooling guides
 | Script | What it does |
 |---|---|
 | `scripts/theme.sh new / font / check / cover / release …` | Scaffold, fonts, checks, covers, release |
+| `scripts/theme.sh adapters [--check]` | Render shared adapter segments into member themes (check: drift only) |
 | `scripts/apex-export.sh` | Refresh `applications/ut/` from app 102 |
 | `scripts/apex-validate.sh` | Compile-check the APEXLang source (read-only) |
 | `scripts/apex-import.sh` | Validate, then validate + import (asks first; full replace) |
@@ -388,3 +417,11 @@ tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every 
 ```
 
 CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.
+Open live work (runtime unification, responsive audit) is planned step by step in
+[docs/ONLINE_WORK_PLAN.md](docs/ONLINE_WORK_PLAN.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Third-party material (Oracle's reference-app export in `applications/ut/`, OFL fonts,
+Alpine.js, external skills) keeps its own terms; see [NOTICE.md](NOTICE.md). Oracle's Universal Theme CSS/JS is not
+redistributed: `scripts/fetch-vendor.sh --reference` fetches it locally from your own APEX instance.

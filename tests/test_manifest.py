@@ -176,7 +176,7 @@ class ManifestTests(unittest.TestCase):
                 load_manifest(root / "theme.json", root)
 
     def test_non_woff2_font_file_in_fonts_directory_fails(self):
-        # TrueType/OpenType (or any stray file) under fonts/ is rejected before packaging, per spec §4.2
+        # TrueType/OpenType (or any stray file) under fonts/ is rejected before packaging
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "custom-font"
             shutil.copytree(Path("tests/fixtures/packages/custom-font"), root)
@@ -398,6 +398,35 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(manifest.name, "font-theme")
         self.assertEqual(len(manifest.fonts), 3)
         self.assertEqual(len(manifest.font_asset_files()), 7)
+
+
+    def test_title_must_be_safe_for_apexlang_and_script(self):
+        raw = json.loads(Path("tests/fixtures/packages/valid-basic/theme.json").read_text(encoding="utf-8"))
+        root = self.write_package(raw)
+        manifest_path = root / "theme.json"
+        for title in ("Estate Slate Dark", "Linen 2", "Café Noir", "O'Neil"):
+            raw["title"] = title
+            manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+            self.assertEqual(load_manifest(manifest_path, root).title, title)
+        for title in ("</script><script>alert(1)</script>", "R&D.", "Two\nlines", " padded",
+                      "x" * 65, "Label (x)", "a: b", 'say "hi"', ""):
+            raw["title"] = title
+            manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+            with self.assertRaises(PackageError, msg=title):
+                load_manifest(manifest_path, root)
+
+    def test_navigation_menu_style_must_be_a_tree_nav_option(self):
+        raw = json.loads(Path("tests/fixtures/packages/valid-basic/theme.json").read_text(encoding="utf-8"))
+        root = self.write_package(raw)
+        manifest_path = root / "theme.json"
+        raw["templateOptions"] = {"navigationMenuStyle": "t-TreeNav--styleB"}
+        manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+        self.assertEqual(load_manifest(manifest_path, root).navigation_menu_style, "t-TreeNav--styleB")
+        for style in ("t-TreeNav--styleB\n        cssClasses: evil", "styleB", "t-TreeNav--a]"):
+            raw["templateOptions"] = {"navigationMenuStyle": style}
+            manifest_path.write_text(json.dumps(raw), encoding="utf-8")
+            with self.assertRaisesRegex(PackageError, "navigationMenuStyle", msg=style):
+                load_manifest(manifest_path, root)
 
 
 if __name__ == "__main__":

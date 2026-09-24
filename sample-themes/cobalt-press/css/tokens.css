@@ -78,9 +78,8 @@ html.app-theme-cobalt-press {
     --app-heading-scale: 1.375;
     --app-hover-transform: translateX(2px);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: underline;
-    --app-responsive-strategy: reflow;
 
+/* @adapter light/tokens#1 prefix=cp - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cp-amber);
 
@@ -107,6 +106,7 @@ html.app-theme-cobalt-press {
     --ut-border-radius-sm: var(--app-radius-sm);
     --ut-border-radius-md: var(--app-radius-md);
     --ut-border-radius-lg: var(--app-radius-lg);
+/* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
     --ut-link-text-color: var(--app-color-primary);
@@ -125,6 +125,7 @@ html.app-theme-cobalt-press {
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--cp-ruby-shade);
 
+/* @adapter light/tokens#2 prefix=cp - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-contrast: var(--app-text-on-accent);
     --ut-palette-danger-shade: var(--cp-ruby-shade);
@@ -133,3 +134,4 @@ html.app-theme-cobalt-press {
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--cp-cyan-shade);
 }
+/* @adapter-end light/tokens#2 */

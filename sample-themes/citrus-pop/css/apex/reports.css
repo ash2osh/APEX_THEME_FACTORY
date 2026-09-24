@@ -1,6 +1,7 @@
 /* identity: spacious reports with teal structural rules */
 .app-theme-citrus-pop .apex-theme-iris .a-IRR-table td,
 .app-theme-citrus-pop .apex-theme-iris .a-GV-table td { padding-block: var(--app-space-4); }
+/* @adapter light/reports#1 prefix=cit - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -70,3 +71,4 @@
 .app-theme-citrus-pop .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */

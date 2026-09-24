@@ -184,6 +184,25 @@ The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
 - [ ] Each strategy looks right at 768 and 600 px on the pages above, and nothing changes at 1024 px and up
 - [ ] Release smoke PASS for one theme of each strategy (it covers 1440 and 375)
 
+#### Live Verification Measurements (commit `e352fc7`)
+
+| Theme | Width | Page | Measured Values (Raw JSON) | Status | Notes |
+|---|---|---|---|---|---|
+| `linen` | 768 | 1601 (Forms) | `{"page":"page-1600 app-UT app-theme-linen","width":768,"theme":"app-theme-linen","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"wrap","buttonPadY":"7px","buttonHeight":32,"inputPadY":"25px","counts":{"regionHeaders":6,"buttonRegions":0,"buttons":11,"inputs":3}}` | PARTIAL | `regionHeaderWrap: "wrap"` PASS; button regions = 0 on 1601 |
+| `linen` | 768 | 1250 (Button Container) | `{"page":"page-1250 app-UT app-theme-linen","width":768,"theme":"app-theme-linen","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"wrap","buttonRegionAreas":"\"button-left button-right\" \"button-content button-content\"","buttonPadY":"7px","buttonHeight":32,"counts":{"regionHeaders":2,"buttonRegions":2,"buttons":17,"inputs":0}}` | PASS | `regionHeaderWrap: "wrap"`, `buttonRegionAreas` 2 rows |
+| `linen` | 1024 | 1601 (Forms) | `{"page":"page-1600 app-UT app-theme-linen","width":1024,"theme":"app-theme-linen","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"nowrap","buttonPadY":"7px","buttonHeight":32,"inputPadY":"25px","counts":{"regionHeaders":6,"buttonRegions":0,"buttons":11,"inputs":3}}` | PASS | `regionHeaderWrap: "nowrap"` |
+| `linen` | 1024 | 1250 (Button Container) | `{"page":"page-1250 app-UT app-theme-linen","width":1024,"theme":"app-theme-linen","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"nowrap","buttonRegionAreas":"\"button-left button-content button-right\"","buttonPadY":"7px","buttonHeight":32,"counts":{"regionHeaders":2,"buttonRegions":2,"buttons":17,"inputs":0}}` | PASS | `regionHeaderWrap: "nowrap"`, `buttonRegionAreas` 1 row |
+| `solarized-dark` | 768 | 1601 (Forms) | `{"page":"page-1600 app-UT app-theme-solarized-dark","width":768,"theme":"app-theme-solarized-dark","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"nowrap","buttonPadY":"7px","buttonHeight":32,"inputPadY":"25px","counts":{"regionHeaders":6,"buttonRegions":0,"buttons":11,"inputs":3}}` | MISMATCH | First btn is `.t-Button--headerTree` (pad 7px); first inp is floating (pad 25px) |
+| `solarized-dark` | 1024 | 1601 (Forms) | `{"page":"page-1600 app-UT app-theme-solarized-dark","width":1024,"theme":"app-theme-solarized-dark","newCssLoaded":false,"newCssLoadedDeep":true,"regionHeaderWrap":"nowrap","buttonPadY":"7px","buttonHeight":32,"inputPadY":"25px","counts":{"regionHeaders":6,"buttonRegions":0,"buttons":11,"inputs":3}}` | MISMATCH | Same element selection mismatch on 1601 |
+| `solarized-dark` | 768 | 406 (Theme Lab) | `{"page":"page-406 app-UT app-theme-solarized-dark oj-agent-os-linux oj-agent-browser-chrome","width":768,"theme":"app-theme-solarized-dark","newCssLoaded":false,"buttonPadY":"7px","buttonHeight":32,"inputPadY":"3px","counts":{"regionHeaders":0,"buttonRegions":0,"buttons":16,"inputs":4}}` | MISMATCH | Body btn: padY 5px, height 30px; inp: padY 3px, height 24px; vars: `--a-button-padding-y: .375rem` (6px), `--a-field-input-padding-y: .25rem` (4px). UT Iris formula subtracts 1px border. |
+| `solarized-dark` | 1024 | 406 (Theme Lab) | `{"page":"page-406 app-UT app-theme-solarized-dark oj-agent-os-linux oj-agent-browser-chrome","width":1024,"theme":"app-theme-solarized-dark","newCssLoaded":false,"buttonPadY":"7px","buttonHeight":32,"inputPadY":"6px","counts":{"regionHeaders":0,"buttonRegions":0,"buttons":16,"inputs":4}}` | MISMATCH | Body btn: padY 8px, height 36px; inp: padY 6px, height 30px; vars: `--a-button-padding-y: .5625rem` (9px), `--a-field-input-padding-y: .4375rem` (7px). UT Iris formula subtracts 1px border. |
+| `citrus-pop` | 700 | 405 (Themes Gallery) | `{"page":"page-405 app-UT app-theme-citrus-pop","width":700,"theme":"app-theme-citrus-pop","gridSelector":"a-CardView-items a-CardView-items--grid3col ","gridTemplateColumns":"652.8px","cardCount":9}` | PASS | Single-track column (652.8px), cards stacked vertically |
+| `citrus-pop` | 1024 | 405 (Themes Gallery) | `{"page":"page-405 app-UT app-theme-citrus-pop","width":1024,"theme":"app-theme-citrus-pop","gridSelector":"a-CardView-items a-CardView-items--grid3col ","gridTemplateColumns":"314.925px 314.938px 314.925px","cardCount":9}` | PASS | Multi-track (3 columns: 314.925px each) |
+
+*Root font size: 16px. Horizontal scroll: none (`scrollWidth 753 <= innerWidth 768`). Console: clean (no JS errors).*
+*Checkboxes left unticked per verification rule: solarized-dark computed padding differs from expected table strings due to UT's 1px border subtraction formula and selector collision with navbar header button; flat newCssLoaded check returns false due to `@import` nesting.*
+
+
 
 ---
 

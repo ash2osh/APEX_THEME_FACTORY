@@ -1,7 +1,6 @@
 """Uninstall and backup restore operations for APEX Theme Factory."""
 
 from dataclasses import dataclass
-import datetime
 import json
 import os
 from pathlib import Path
@@ -32,8 +31,13 @@ from lib.theme_factory.errors import PackageError
 from lib.theme_factory.install import (
     CANCELLED_EXIT_CODE,
     OperationReport,
+    UNKNOWN_POST_DIGEST,
     _record_post_digest,
     assert_no_drift,
+    create_backup,
+    export_after_import,
+    keep_or_remove_staging,
+    utc_stamp,
     make_staging_dir,
     remove_staging_dir,
     require_supported_apex_version,
@@ -199,20 +203,22 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
 
 def run_uninstall(options: UninstallOptions) -> OperationReport:
     staging: list[Path] = []
+    state: dict = {}
     try:
-        report = _run_uninstall(options, staging)
+        report = _run_uninstall(options, staging, state)
     except Exception:
-        for path in staging:
-            remove_staging_dir(path)
+        keep_or_remove_staging(staging, state)
         raise
     if report.status != "IMPORTED_POSTCHECK_FAILED":
         for path in staging:
             remove_staging_dir(path)
         report = OperationReport(report.status, report.exit_code, report.backup_dir, None, report.message)
+    else:
+        print(f"Staged export kept for inspection: {report.staged_dir}")
     return report
 
 
-def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
+def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> OperationReport:
     validate_theme_name(options.theme_name)
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
@@ -250,33 +256,20 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
             message="Theme not found in target",
         )
 
-    # Create immutable backup
-    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    if options.backup_dir:
-        base_dir = options.backup_dir.resolve() / f"{options.workspace}-{options.app_id}"
-    else:
-        base_dir = Path("./theme-factory-backups").resolve() / f"{options.workspace}-{options.app_id}"
-
-    backup_dir = base_dir / f"{now}-before-uninstall-{options.theme_name}"
-    count = 1
-    while backup_dir.exists():
-        backup_dir = base_dir / f"{now}-before-uninstall-{options.theme_name}-{count}"
-        count += 1
-
-    backup_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(staged_dir, backup_dir / "apexlang", dirs_exist_ok=True)
-
-    target_json = {
-        "appId": target_meta.app_id,
-        "alias": target_meta.alias,
-        "name": target_meta.name,
-        "workspace": target_meta.workspace,
-        "apexVersion": target_meta.apex_version,
-        "uninstalledTheme": options.theme_name,
-        "timestamp": now,
-        "preExportDigest": pre_digest,
-    }
-    (backup_dir / "target.json").write_text(json.dumps(target_json, indent=2), encoding="utf-8")
+    # Immutable backup of the untouched export (apply only: a dry run writes nothing lasting)
+    backup_dir = None
+    if options.apply:
+        backup_dir = create_backup(
+            options.backup_dir, options.workspace, options.app_id, f"uninstall-{options.theme_name}", staged_dir, {
+                "appId": target_meta.app_id,
+                "alias": target_meta.alias,
+                "name": target_meta.name,
+                "workspace": target_meta.workspace,
+                "apexVersion": target_meta.apex_version,
+                "uninstalledTheme": options.theme_name,
+                "timestamp": utc_stamp(),
+                "preExportDigest": pre_digest,
+            })
 
     # Mutate staged export
     plan_and_apply_uninstall(staged_dir, options.theme_name)
@@ -294,18 +287,17 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
 
     # Dry-run (target untouched: post-operation state == pre-export state)
     if not options.apply:
-        _record_post_digest(backup_dir, pre_digest)
         print(f"\nUninstall Summary:")
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
         print(f"  Theme:     {options.theme_name}")
-        print(f"  Backup:    {backup_dir}")
+        print("  Backup:    none (dry run; --apply writes one before importing)")
         print("\nStatus: STAGED_ONLY (dry-run, no database changes applied)")
         return OperationReport(
             status="STAGED_ONLY",
             exit_code=0,
-            backup_dir=backup_dir,
-            staged_dir=staged_dir,
+            backup_dir=None,
+            staged_dir=None,
             message="Dry-run uninstall completed",
         )
 
@@ -337,11 +329,16 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
     try:
         sqlcl.import_apexlang(staged_dir, options.workspace, options.app_id)
     except PackageError as exc:
+        state["imported"] = True  # a failed import may still have replaced part of the application
+        _record_post_digest(backup_dir, UNKNOWN_POST_DIGEST)
         raise PackageError(f"Import failed during uninstall: {exc}", exit_code=5) from exc
+    state["imported"] = True
 
+    # The post-operation digest is recorded before any comparison (see install.py).
     post_temp = make_staging_dir(prefix="apex-theme-factory-uninstall-post-")
     try:
-        post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
+        post_dir = export_after_import(sqlcl, options.app_id, post_temp, backup_dir)
+        _record_post_digest(backup_dir, canonical_digest(post_dir))
         post_projection = theme_factory_projection(post_dir)
         if post_projection != staged_projection:
             differing = sorted(key for key in staged_projection if staged_projection[key] != post_projection.get(key))
@@ -360,10 +357,8 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
                 status="IMPORTED_POSTCHECK_FAILED", exit_code=6, backup_dir=backup_dir,
                 staged_dir=staged_dir, message="Uninstall imported but postcheck verification failed",
             )
-        post_digest = canonical_digest(post_dir)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
-    _record_post_digest(backup_dir, post_digest)
 
     print(f"\nResult: UNINSTALLED theme '{options.theme_name}' from application {options.app_id}.")
     print("Status: UNINSTALLED")
@@ -421,11 +416,18 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     # it since, and restoring would silently discard those changes.
     post_operation_digest = metadata.get("postOperationDigest")
     if isinstance(post_operation_digest, str) and live_digest not in (post_operation_digest, backup_digest):
-        message = (
-            f"Application {options.app_id} has changed since this backup's operation completed "
-            "(live export digest differs from the recorded post-operation digest). Restoring would "
-            "discard those later changes; re-run with --discard-later-changes to accept that."
-        )
+        if post_operation_digest == UNKNOWN_POST_DIGEST:
+            message = (
+                f"The operation this backup preceded did not finish cleanly, so it is unknown whether application "
+                f"{options.app_id} changed since. Restoring may discard later changes; re-run with "
+                "--discard-later-changes to accept that."
+            )
+        else:
+            message = (
+                f"Application {options.app_id} has changed since this backup's operation completed "
+                "(live export digest differs from the recorded post-operation digest). Restoring would "
+                "discard those later changes; re-run with --discard-later-changes to accept that."
+            )
         if not options.discard_later_changes:
             raise PackageError(message, exit_code=7)
         print(f"WARNING: {message.split('; re-run')[0]}. Proceeding because --discard-later-changes was given.")

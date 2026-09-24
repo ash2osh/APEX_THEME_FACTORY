@@ -10,6 +10,11 @@ from lib.theme_factory.checks import run_theme_checks
 from lib.theme_factory.errors import PackageError
 
 
+def workspace_name(value: str) -> str:
+    """APEX workspace names are upper case; accept `demo` as `DEMO`."""
+    return value.strip().upper()
+
+
 def register_package_commands(subparsers: argparse._SubParsersAction) -> None:
     package = subparsers.add_parser("package", help="Build single-theme ZIP package")
     package.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -31,7 +36,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     install.add_argument("--package-root", type=Path, required=True, action="append",
                          help="Package directory; repeat to install several in one transaction (last = default)")
     install.add_argument("--connection", required=True)
-    install.add_argument("--workspace", required=True)
+    install.add_argument("--workspace", required=True, type=workspace_name)
     install.add_argument("--app-id", type=int, required=True)
     switcher = install.add_mutually_exclusive_group()
     switcher.add_argument("--with-switcher", action="store_true")
@@ -47,7 +52,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     source.add_argument("--theme")
     source.add_argument("--package-root", type=Path)
     uninstall.add_argument("--connection", required=True)
-    uninstall.add_argument("--workspace", required=True)
+    uninstall.add_argument("--workspace", required=True, type=workspace_name)
     uninstall.add_argument("--app-id", type=int, required=True)
     uninstall.add_argument("--backup-dir", type=Path, default=None)
     uninstall.add_argument("--apply", action="store_true")
@@ -55,7 +60,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
 
     restore = subparsers.add_parser("restore", help="Restore application from backup")
     restore.add_argument("--connection", required=True)
-    restore.add_argument("--workspace", required=True)
+    restore.add_argument("--workspace", required=True, type=workspace_name)
     restore.add_argument("--app-id", type=int, required=True)
     restore.add_argument("--backup", type=Path, required=True)
     restore.add_argument("--apply", action="store_true")
@@ -107,7 +112,7 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     release.add_argument("--repo-root", type=Path, default=Path.cwd())
     release.add_argument("--offline", action="store_true", help="Stop after check + package (no database, no browser)")
     release.add_argument("--connection", default="docker-demo")
-    release.add_argument("--workspace", default="DEMO")
+    release.add_argument("--workspace", default="DEMO", type=workspace_name)
     release.add_argument("--app-id", type=int, default=9010, help="Disposable consumer app (default 9010)")
     release.add_argument("--url", help="Consumer page to check (default: the 9010 home page)")
     release.set_defaults(handler=_handle_release)

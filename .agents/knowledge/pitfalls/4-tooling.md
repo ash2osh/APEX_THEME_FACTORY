@@ -50,8 +50,8 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
      JET paints SVG text with `fill`, and `<text>` is not reached usefully by a body text-node walk — so
      p1902, with **24 of 25** chart labels at 1.46–1.62:1, reported **clean** on every pass before 2026-09-17.
      Fixed by querying `svg text, svg tspan` explicitly and scoring `fill`
-     (`tools/browser_matrix.py::_contrast_function`, regression test
-     `tests/test_browser_matrix.py::ContrastInstrumentTests`).
+     (now `tools/browser_check.py::_contrast_function`, regression test
+     `tests/test_browser_check.py::ContrastInstrumentTests`).
   2. *The scan ran somewhere else.* A probe pointed at the wrong tab/page returns `{svgTextNodes: 0,
      failures: 0}` — **byte-identical in shape to a genuine pass**. Hit live on 2026-09-17: a chart probe ran
      against the previous page because the tab had moved on.
@@ -102,7 +102,7 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - **Force the face, then judge that.** `await document.fonts.load('<weight> <style> 16px "<family>"', 'Ag0')`
   and require every returned `FontFace` to report `status === 'loaded'`. That answers the question the evidence
   actually claims — *is this face installed and usable from the package* — instead of *did this page happen to
-  use it*. `tools/browser_matrix.py::page_snippet()` does this since `c88ce9d`.
+  use it*. `tools/browser_check.py::page_snippet()` does this (introduced in `c88ce9d` in the since-removed `browser_matrix.py`).
 - **Read `performance.getEntriesByType('resource')` after the forced loads, never before.** The request only
   exists once the load is forced, and `requestUrl` is what stops `document.fonts.check()` passing on a
   system fallback with the same name. Order matters: probe, then harvest.

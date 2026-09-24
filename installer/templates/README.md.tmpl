@@ -43,10 +43,10 @@ The automated installer defaults to a non-destructive dry-run:
 In dry-run mode:
 1. SQLcl connects and preflights target metadata.
 2. The application is exported into staging and checked for theme compatibility.
-3. An immutable backup is stored under `./theme-factory-backups/`.
-4. Staged APEXLang patches are created and validated via `apex validate`.
-5. Database drift is checked against a second fresh export.
-6. A unified diff is printed with status `STAGED_ONLY`. No changes are applied to the live database.
+3. Staged APEXLang patches are created and validated via `apex validate`.
+4. Database drift is checked against a second fresh export.
+5. A unified diff is printed with status `STAGED_ONLY`. Nothing is written to the database and no backup is kept;
+   `--apply` writes an immutable backup under `./theme-factory-backups/` before it imports.
 
 ---
 
@@ -109,7 +109,7 @@ Ownership is stored in data APEX keeps: the Page 0 regions carry Static IDs `the
 - `2`: Package integrity failure or argument error
 - `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 / Iris)
 - `4`: Database drift detected during staging or while the confirmation prompt was open; nothing imported
-- `5`: APEXLang validation or SQLcl import failure
+- `5`: APEXLang validation or SQLcl import failure (no automatic rollback: if the import itself failed, check the app and restore from the backup)
 - `6`: Post-import verification check failed (the import happened; inspect the printed differences, then uninstall or restore)
 - `7`: Operation cancelled at the confirmation prompt, or a restore refused because the application changed after the backed-up operation (re-run with `--discard-later-changes` to accept losing those changes)
 

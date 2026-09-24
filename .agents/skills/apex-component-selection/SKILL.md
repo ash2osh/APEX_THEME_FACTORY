@@ -32,6 +32,6 @@ Every visual element gets a semantic mapping first; appearance comes second (spe
 Never replace IG, IR, native items, Select List, Popup LOV, validations, dialogs, page submit, forms, navigation, standard buttons to mimic a design. Style them (`apex-css-design-system`).
 
 ## Before choosing custom
-- Search `docs/COMPONENTS.md` and `static-files/css/components/`.
+- Search `docs/COMPONENTS.md` and `static-files/css/` (shared components go in `static-files/css/components/`, created with the first one).
 - Check app 102 reference pages (1201 Regions, 1202 Alert, 1100 Pages) for a native look that is close.
 - Write the component contract (COMPONENTS.md template) before code.

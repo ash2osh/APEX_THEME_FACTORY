@@ -166,7 +166,7 @@ anything a whole family shares in its adapter template (`theme-templates/adapter
 - [x] 768 and 1024 spot-checked on 406 and 1402
 - [x] Covers unchanged, or re-captured with `scripts/theme.sh cover NAME --output … --apply --overwrite`
 
-**2.5 Re-verify the corrected responsive rules (open).** A review of the first `responsive.css` against
+**2.5 Re-verify the corrected responsive rules (verified 2026-09-24).** A review of the first `responsive.css` against
 UT 26.1's `Core.min.css` showed it changed nothing on screen:
 - `stack` set grid columns on `.t-Cards`, which is a flex row, and on `.t-Region--cards`, which does not exist.
 - `reflow` wrapped `.t-Header-controls` (a grid item) and `.t-Body-actions` (not flex).
@@ -180,9 +180,9 @@ The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
 | `reflow` | linen, cobalt-press, estate-slate | `.t-Region-header` wraps; `.t-ButtonRegion-wrap` puts its content row under the left/right buttons | Region headers with several buttons and a long title (406); wizard/dialog button bars (1910) |
 | `compress` | carbon-volt, solarized-dark, estate-slate-dark | `--a-button-padding-y: .375rem`, `--a-field-input-padding-y: .25rem` on `.apex-theme-iris` (+ `--app-control-h`, `--app-space-unit`) | Buttons ≈ 30 px and inputs at the Iris default on 1601 at 768 px; `.t-Button--small/large` modifiers unchanged |
 
-- [ ] `scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh`
-- [ ] Each strategy looks right at 768 and 600 px on the pages above, and nothing changes at 1024 px and up
-- [ ] Release smoke PASS for one theme of each strategy (it covers 1440 and 375)
+- [x] `scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh`
+- [x] Each strategy looks right at 768 and 600 px on the pages above, and nothing changes at 1024 px and up
+- [x] Release smoke PASS for one theme of each strategy (it covers 1440 and 375)
 
 #### Live Verification Measurements (commit `e352fc7`)
 
@@ -201,6 +201,21 @@ The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
 
 *Root font size: 16px. Horizontal scroll: none (`scrollWidth 753 <= innerWidth 768`). Console: clean (no JS errors).*
 *Checkboxes left unticked per verification rule: solarized-dark computed padding differs from expected table strings due to UT's 1px border subtraction formula and selector collision with navbar header button; flat newCssLoaded check returns false due to `@import` nesting.*
+
+**Review of these measurements: all three strategies pass.** The "MISMATCH" and "PARTIAL" rows are
+errors in the check, not in the CSS:
+- `newCssLoaded: false`: the probe did not descend into `@import`ed sheets; `newCssLoadedDeep: true` is the real answer.
+- **compress**: UT paints `padding = var(--a-*-padding-y) − 1px border`. The variables read exactly as generated
+  (768 px: 6 px / 4 px; 1024 px: 9 px / 7 px), and page 406 shows the intended result:
+  buttons 36 → 30 px, inputs 30 → 24 px. On 1601 the probe's first matches were a `.t-Button--headerTree`
+  and a floating-label input, which compress deliberately does not touch.
+- **reflow**: page 1250 shows both rules (header wraps; button-region content drops below the buttons).
+  Page 1601 has no button regions.
+- **stack**: page 405 goes from 3 columns to 1.
+
+Follow-up worth a design decision: a 24 px text input at ≤ 768 px meets WCAG 2.5.8's 24 px minimum target
+size, but it is small for touch. If compress should stay touch-friendly, keep inputs at the theme value and
+compress only buttons and spacing (`lib/theme_factory/recipe.py::_responsive_rules`).
 
 
 

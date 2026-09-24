@@ -35,7 +35,7 @@ class ResponsiveRuleTests(unittest.TestCase):
         css = self.render("compress")
         self.assertIn("html.app-theme-linen .apex-theme-iris {", css)
         self.assertIn("--a-button-padding-y: .375rem;", css)
-        self.assertIn("--a-field-input-padding-y: .25rem;", css)
+        self.assertNotIn("--a-field-input-padding-y", css)
         self.assertIn("--app-control-h: calc(2.25rem * 0.875);", css)
         self.assertNotIn("calc(var(", css)                 # no self-referencing custom property
 

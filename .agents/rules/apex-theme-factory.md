@@ -5,7 +5,8 @@ description: Mandatory Oracle APEX Theme Factory architecture and safety boundar
 
 # APEX Theme Factory workspace rule
 
-- Read `docs/AGENT_SPEC.md`, `docs/PROJECT.md`, and `.agents/knowledge/pitfalls.md` before theme, runtime, or import work.
+- Before theme, runtime, or import work read `docs/AGENT_SPEC.md` §1–§14 and §75–§79 (the rest is reference),
+  `docs/PROJECT.md`, and the `.agents/knowledge/pitfalls.md` index.
 - Target only APEX 26.1.x, Universal Theme 42, and the Iris light style. Never switch styles or use Theme Roller.
 - Runtime truth comes from Chrome DevTools via the `chrome-devtools-mcp` server attached to the user's running Chrome.
 - Reach it only through the project daemon: `python3 tools/chrome_devtools_client.py <tool> '<json-args>'`. Never call a

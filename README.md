@@ -348,17 +348,11 @@ scripts/theme.sh release midnight --offline  # check + package only, seconds
 
 It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the Chrome
 MCP daemon (`python3 tools/chrome_mcp_daemon.py`, never a direct MCP call — each new connection raises a
-consent prompt) and a clean 9010. If 9010 already carries packages, it refuses; reset it with:
+consent prompt) and a clean 9010. If 9010 already carries packages, it refuses. Create or reset 9010 with:
 
 ```bash
-sql -S -name docker-demo <<SQL
-whenever sqlerror exit failure
-apex import -input $PWD/tests/live/consumer-apps/minimal -workspace DEMO -id 9010 -alias TF-CONSUMER-MINIMAL-9010 -name "Theme Factory Minimal Consumer"
-exit
-SQL
+scripts/reset-consumer.sh      # re-imports tests/live/consumer-apps/minimal as app 9010 (asks first)
 ```
-
-(No 9010 yet? `scripts/provision-consumer-fixtures.sh --connection docker-demo --workspace DEMO` creates it.)
 
 ---
 
@@ -385,6 +379,7 @@ docs/                   spec, design system, components, tooling guides
 | `scripts/sync-static.sh [--check]` | Assemble `static-files/` + `sample-themes/*/css` into the export |
 | `scripts/apply-theme.sh <name>` | Set the app's default theme |
 | `scripts/install-all-themes.sh` | Install several themes into any consumer app |
+| `scripts/reset-consumer.sh` | Create or reset the release test app 9010 |
 
 ## Verification
 

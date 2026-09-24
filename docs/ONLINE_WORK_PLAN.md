@@ -170,8 +170,12 @@ anything a whole family shares in its adapter template (`theme-templates/adapter
 - [ ] **Oracle files in git history.** `HEAD` no longer tracks them; old commits still contain them. Options:
   make the repo private, or rewrite history (`git filter-repo --path .agents/knowledge/reference/ut-26.1
   --invert-paths`, then force-push `main`; every clone must re-clone).
-- [ ] **Team repo branch `claude/hopeful-ride-eu60f9`**: 3 unmerged commits from 2026-09-24 (an SQLcl
-  wrong-target fix and a dev-database release proposal). It was left in place: merge it, or delete it.
+- [ ] **Leftover branches** (this cloud session may not delete branches). All their work is in `main`:
+  - factory: `claude/determined-hawking-v3qviv` (PR #8, merged)
+  - team: `claude/determined-hawking-v3qviv` (PR #2), `claude/hopeful-ride-eu60f9` (PR #1, squash-merged)
+  - team: `codex/p1-remediation-flow-simplification` shares no history with `main` and was last touched
+    2026-09-10. Keep a tag first if you want it: `git fetch origin codex/p1-remediation-flow-simplification && git push origin FETCH_HEAD:refs/tags/archive/codex-p1-remediation`
+  - delete with `git push origin --delete <branch>`, or the trash icon on GitHub's Branches page
 - [ ] **Uniqueness warnings** that predate the audit: cobalt-press ↔ estate-slate (STRUCTURAL_SIMILARITY 0.889),
   carbon-volt ↔ estate-slate-dark (PROFILE_SIMILARITY). Accept them, or differentiate the themes.
 

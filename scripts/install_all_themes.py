@@ -31,7 +31,7 @@ def parse_args(argv=None):
     )
     parser.add_argument("--app-id", type=int, required=True, help="Target APEX application ID (required)")
     parser.add_argument("--connection", default="docker-demo", help="SQLcl saved connection name (default: docker-demo)")
-    parser.add_argument("--workspace", default="DEMO", help="Target APEX workspace name (default: DEMO)")
+    parser.add_argument("--workspace", default="DEMO", type=lambda value: value.strip().upper(), help="Target APEX workspace name (default: DEMO)")
     parser.add_argument(
         "--themes",
         default=",".join(default_themes),

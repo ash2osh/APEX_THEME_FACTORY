@@ -1,5 +1,6 @@
 /* identity: offset shadows make dialogs feel like stacked sheets */
 .app-theme-cobalt-press .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }
+/* @adapter light/dialogs#1 prefix=cp - generated from theme-templates/adapters/light/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-cobalt-press .apex-theme-iris. */
 
@@ -27,3 +28,4 @@
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+/* @adapter-end light/dialogs#1 */

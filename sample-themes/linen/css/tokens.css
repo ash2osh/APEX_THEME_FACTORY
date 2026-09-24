@@ -16,9 +16,7 @@ html.app-theme-linen {
     --app-heading-scale: 1.375;
     --app-hover-transform: none;
     --app-motion-duration: 120ms;
-    --app-selected-treatment: underline;
-    --app-responsive-strategy: reflow;
 
-    /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; Oracle Sans has a true 600 */
+    /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; the system UI stack has a true 600 */
     --app-font-weight-semibold: 600;
 }

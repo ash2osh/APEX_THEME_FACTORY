@@ -1,7 +1,12 @@
 # Reference assets (read-only)
 
 Byte-for-byte copies of the CSS/JS that the running app loads, fetched from the local APEX instance
-by `scripts/fetch-vendor.sh` (versions and SHA-256 in `ut-26.1/MANIFEST.txt`).
+by `scripts/fetch-vendor.sh --reference` (versions and SHA-256 in `ut-26.1/MANIFEST.txt`).
+
+**Local only.** These files are Oracle-copyrighted, so `ut-*/` is gitignored and never committed. A fresh
+clone has only this README: run `scripts/fetch-vendor.sh --reference` against your APEX instance (default
+`http://localhost:8181`, override with `APEX_ORIGIN`). Without an instance, read the same files in Chrome
+DevTools (Sources panel) or use the Chrome DevTools MCP daemon.
 
 Purpose: offline **token and selector discovery** (spec §17, skill `apex-ut-dom-knowledge`) —
 `grep` these instead of guessing a `--ut-*` / `--a-*` name or a `.t-*` class. They are the

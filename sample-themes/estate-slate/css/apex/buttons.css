@@ -1,3 +1,4 @@
+/* @adapter light/buttons#1 prefix=est - generated from theme-templates/adapters/light/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Buttons.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -25,7 +26,7 @@
     --a-button-active-shadow: none;
 }
 
-/* Hot button: champagne amber directive action */
+/* Hot button: the directive accent action */
 .app-theme-estate-slate .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--app-text-on-accent);
@@ -58,6 +59,7 @@
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+/* @adapter-end light/buttons#1 */
 
 /* identity: crisp outlined operations */
 .app-theme-estate-slate .apex-theme-iris .t-Button--primary {

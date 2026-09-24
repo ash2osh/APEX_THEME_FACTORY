@@ -37,6 +37,15 @@ def validate_workspace(workspace: str) -> None:
         )
 
 
+def sqlcl_path(path: Path) -> str:
+    """A resolved path safe to embed in a double-quoted SQLcl argument: no quote, no line break,
+    no control character, so a path can never end the argument or start a new SQLcl command."""
+    text = str(Path(path).resolve())
+    if any(ch == '"' or not ch.isprintable() for ch in text):
+        raise PackageError(f"Unsupported path for SQLcl (quote or control character): {text!r}")
+    return text
+
+
 def validate_app_id(app_id: int) -> None:
     if not isinstance(app_id, int) or app_id <= 0:
         raise PackageError(f"Application ID must be a positive integer, got: {app_id}")
@@ -125,7 +134,7 @@ class SqlclClient:
 
     def export_apexlang(self, app_id: int, dest_dir: Path) -> Path:
         validate_app_id(app_id)
-        dest_dir = dest_dir.resolve()
+        dest_dir = Path(sqlcl_path(dest_dir))
         dest_dir.mkdir(parents=True, exist_ok=True)
 
         script = "\n".join([
@@ -157,7 +166,7 @@ class SqlclClient:
 
     def validate(self, apexlang_dir: Path, workspace: str) -> None:
         validate_workspace(workspace)
-        apexlang_dir = apexlang_dir.resolve()
+        apexlang_dir = Path(sqlcl_path(apexlang_dir))
 
         script = "\n".join([
             "whenever sqlerror exit failure",
@@ -182,7 +191,7 @@ class SqlclClient:
     def import_apexlang(self, apexlang_dir: Path, workspace: str, confirmed_app_id: int) -> None:
         validate_workspace(workspace)
         validate_app_id(confirmed_app_id)
-        apexlang_dir = apexlang_dir.resolve()
+        apexlang_dir = Path(sqlcl_path(apexlang_dir))
         # `whenever sqlerror` does not stop the script after a failed `apex validate` (probe
         # 2026-09-23: three compile errors, the next statement still ran, exit 0), so refuse
         # here first; the import session still validates in-session.

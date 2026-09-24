@@ -38,14 +38,14 @@ fi
 
 # A failed `apex validate` does not stop a SQLcl script (pitfalls §4.4), so gate on its text first.
 out=$(sql -S -name "$conn" <<SQL
-apex validate -input $SRC -workspace $workspace
+apex validate -input "$SRC" -workspace "$workspace"
 exit
 SQL
 )
 grep -qi "validation.*successful" <<<"$out" || { echo "$out" >&2; echo "reset-consumer: validation failed - nothing imported" >&2; exit 1; }
 sql -S -name "$conn" <<SQL
 whenever sqlerror exit failure
-apex import -input $SRC -workspace $workspace -id $app_id -alias $alias -name "Theme Factory Minimal Consumer"
+apex import -input "$SRC" -workspace "$workspace" -id $app_id -alias $alias -name "Theme Factory Minimal Consumer"
 exit
 SQL
 echo "CONSUMER app=$app_id alias=$alias status=RESET"

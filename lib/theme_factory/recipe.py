@@ -530,9 +530,11 @@ def axis_css_values(recipe: ThemeRecipe) -> dict[str, str]:
     responsive_tokens = ""
     responsive_hooks = ""
     if recipe.responsive.strategy == "compress":
+        # From the recipe's literals: a custom property that reads itself is a cycle, and the browser then
+        # treats it as unset (controls lost their min-height on narrow screens).
         responsive_tokens = (
-            "--app-control-height: calc(var(--app-control-height) * 0.875);\n"
-            "    --app-space-unit: calc(var(--app-space-unit) * 0.875);"
+            f"--app-control-h: calc({recipe.geometry.control_height} * 0.875);\n"
+            f"    --app-space-unit: calc({space_unit} * 0.875);"
         )
     elif recipe.responsive.strategy == "reflow":
         responsive_hooks = (
@@ -623,9 +625,6 @@ def render_tokens(recipe: ThemeRecipe) -> str:
         f"  --app-hover-transform: {axis['hover_transform']};",
         f"  --app-hover-shadow: {axis['hover_shadow']};",
         f"  --app-motion-duration: {axis['motion_duration']};",
-        f"  --app-selected-treatment: {axis['selected_treatment']};",
-        f"  --app-responsive-strategy: {axis['responsive_strategy']};",
-        "  --app-control-height: var(--app-control-h);",
         f"  --app-shadow-card: {shadow};",
         f"  --app-focus-color: {focus.color};",
         f"  --app-focus-width: {focus.width};",

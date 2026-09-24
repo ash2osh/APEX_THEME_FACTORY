@@ -85,7 +85,7 @@ def remove_staging_dir(staging_temp: Optional[Path]) -> None:
     """Delete a staging directory created by make_staging_dir, and nothing else.
 
     The path must still be a direct child of the system temp directory and carry the
-    Theme Factory prefix; anything else is left alone (spec §10). Set
+    Theme Factory prefix; anything else is left alone. Set
     THEME_FACTORY_KEEP_STAGING=1 to keep staged exports for inspection.
     """
     if staging_temp is None or os.environ.get("THEME_FACTORY_KEEP_STAGING") == "1":
@@ -101,6 +101,54 @@ def remove_staging_dir(staging_temp: Optional[Path]) -> None:
         shutil.rmtree(staging_temp, ignore_errors=True)
 
 
+def assert_no_drift(sqlcl: SqlclClient, app_id: int, expected_digest: str, moment: str) -> None:
+    """Re-export the target and refuse (exit 4) unless it still matches `expected_digest`."""
+    drift_temp = make_staging_dir("apex-theme-factory-drift-")
+    try:
+        drift_dir = sqlcl.export_apexlang(app_id, drift_temp)
+        if canonical_digest(drift_dir) != expected_digest:
+            raise PackageError(f"Database drift detected on application {app_id} {moment}", exit_code=4)
+    finally:
+        shutil.rmtree(drift_temp, ignore_errors=True)
+
+
+# Recorded when the import ran but the application could not be exported again: a later restore
+# can then never prove "no later changes" and asks for --discard-later-changes.
+UNKNOWN_POST_DIGEST = "unknown"
+
+
+def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, label: str,
+                  staged_dir: Path, metadata: dict) -> Path:
+    """Copy the untouched export to <root>/<WS>-<ID>/<timestamp>-before-<label>/ with target.json."""
+    now = metadata["timestamp"]
+    root = (backup_root or Path("./theme-factory-backups")).resolve() / f"{workspace}-{app_id}"
+    backup_dir = root / f"{now}-before-{label}"
+    count = 1
+    while backup_dir.exists():
+        backup_dir = root / f"{now}-before-{label}-{count}"
+        count += 1
+    backup_dir.mkdir(parents=True)
+    shutil.copytree(staged_dir, backup_dir / "apexlang")
+    # Unknown until the operation ends one way or another: any path that exits without recording the real
+    # post-operation digest (drift refused, import failed, an exception) leaves a backup restore will not
+    # apply without --discard-later-changes.
+    metadata = {**metadata, "postOperationDigest": UNKNOWN_POST_DIGEST}
+    (backup_dir / "target.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    return backup_dir
+
+
+def export_after_import(sqlcl: SqlclClient, app_id: int, dest: Path, backup_dir: Path) -> Path:
+    try:
+        return sqlcl.export_apexlang(app_id, dest)
+    except PackageError as exc:
+        _record_post_digest(backup_dir, UNKNOWN_POST_DIGEST)
+        raise PackageError(f"Imported, but the post-import export failed: {exc}", exit_code=6) from exc
+
+
+def utc_stamp() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
 def _record_post_digest(backup_dir: Path, digest: str) -> None:
     """Remember what the application looked like right after this operation so a later
     restore can tell whether unrelated changes happened in between."""
@@ -110,18 +158,30 @@ def _record_post_digest(backup_dir: Path, digest: str) -> None:
     target_json.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
+def keep_or_remove_staging(staging: list, state: dict) -> None:
+    """After an import the staged export is evidence of what was sent: keep it on any failure."""
+    if state.get("imported"):
+        for path in staging:
+            print(f"Staged export kept for inspection: {path}", file=sys.stderr)
+        return
+    for path in staging:
+        remove_staging_dir(path)
+
+
 def run_install(options: InstallOptions) -> OperationReport:
     staging: list[Path] = []
+    state: dict = {}
     try:
-        report = _run_install(options, staging)
+        report = _run_install(options, staging, state)
     except Exception:
-        for path in staging:
-            remove_staging_dir(path)
+        keep_or_remove_staging(staging, state)
         raise
     if report.status != "IMPORTED_POSTCHECK_FAILED":
         for path in staging:
             remove_staging_dir(path)
         report = OperationReport(report.status, report.exit_code, report.backup_dir, None, report.message)
+    else:
+        print(f"Staged export kept for inspection: {report.staged_dir}")
     return report
 
 
@@ -132,7 +192,7 @@ def _describe(manifests: list[ThemeManifest]) -> str:
     return f"themes {listed} (default '{manifests[-1].name}')"
 
 
-def _run_install(options: InstallOptions, staging: list) -> OperationReport:
+def _run_install(options: InstallOptions, staging: list, state: dict) -> OperationReport:
     # 1. Verify every package before touching the target; the last one listed becomes the default.
     package_roots = tuple(Path(root).resolve() for root in options.package_roots)
     if not package_roots:
@@ -170,37 +230,21 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
 
     pre_digest = canonical_digest(staged_dir)
 
-    # 5. Create immutable backup and target.json
-    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    if options.backup_dir:
-        base_dir = options.backup_dir.resolve() / f"{options.workspace}-{options.app_id}"
-    else:
-        base_dir = Path("./theme-factory-backups").resolve() / f"{options.workspace}-{options.app_id}"
-
-    backup_dir = base_dir / f"{now}-before-{label}"
-    count = 1
-    while backup_dir.exists():
-        backup_dir = base_dir / f"{now}-before-{label}-{count}"
-        count += 1
-
-    backup_dir.mkdir(parents=True, exist_ok=True)
-
-    backup_apexlang = backup_dir / "apexlang"
-    shutil.copytree(staged_dir, backup_apexlang, dirs_exist_ok=True)
-
-    target_json = {
-        "appId": target_meta.app_id,
-        "alias": target_meta.alias,
-        "name": target_meta.name,
-        "workspace": target_meta.workspace,
-        "apexVersion": target_meta.apex_version,
-        "theme": manifest.name,
-        "themeVersion": manifest.version,
-        "themes": [{"name": item.name, "version": item.version} for item in manifests],
-        "timestamp": now,
-        "preExportDigest": pre_digest,
-    }
-    (backup_dir / "target.json").write_text(json.dumps(target_json, indent=2), encoding="utf-8")
+    # 5. Immutable backup of the untouched export (apply only: a dry run writes nothing lasting)
+    backup_dir = None
+    if options.apply:
+        backup_dir = create_backup(options.backup_dir, options.workspace, options.app_id, label, staged_dir, {
+            "appId": target_meta.app_id,
+            "alias": target_meta.alias,
+            "name": target_meta.name,
+            "workspace": target_meta.workspace,
+            "apexVersion": target_meta.apex_version,
+            "theme": manifest.name,
+            "themeVersion": manifest.version,
+            "themes": [{"name": item.name, "version": item.version} for item in manifests],
+            "timestamp": utc_stamp(),
+            "preExportDigest": pre_digest,
+        })
 
     # 6. Plan and apply one staged patch per package, in the order given
     diffs = []
@@ -220,36 +264,24 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
         raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
 
     # 8. Drift guard: fresh second export to check for DB state modification during staging
-    drift_temp = make_staging_dir("apex-theme-factory-drift-")
-    try:
-        drift_dir = sqlcl.export_apexlang(options.app_id, drift_temp)
-        drift_digest = canonical_digest(drift_dir)
-        if drift_digest != pre_digest:
-            raise PackageError(
-                f"Database drift detected on application {options.app_id} during staging",
-                exit_code=4,
-            )
-    finally:
-        shutil.rmtree(drift_temp, ignore_errors=True)
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "during staging")
 
     # 9. Dry-run mode (target untouched: post-operation state == pre-export state)
     if not options.apply:
-        _record_post_digest(backup_dir, pre_digest)
         print(f"\nTarget Summary:")
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
         print(f"  Alias:     {target_meta.alias}")
         print(f"  Install:   {_describe(manifests)}")
         print(f"  Switcher:  {options.switcher_mode}")
-        print(f"  Backup:    {backup_dir}")
-        print(f"  Staged:    {staged_dir}")
+        print("  Backup:    none (dry run; --apply writes one before importing)")
         print("\nUnified Diff:\n" + "\n".join(diffs))
         print("\nStatus: STAGED_ONLY (dry-run, no database changes applied)")
         return OperationReport(
             status="STAGED_ONLY",
             exit_code=0,
-            backup_dir=backup_dir,
-            staged_dir=staged_dir,
+            backup_dir=None,
+            staged_dir=None,
             message="Dry-run completed successfully",
         )
 
@@ -285,16 +317,26 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
             message="Target untouched due to confirmation mismatch",
         )
 
+    # The confirmation prompt can wait indefinitely: check again right before the full replace
+    # so edits made while it was open are refused rather than overwritten.
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "while waiting for confirmation")
+
     # Import
     try:
         sqlcl.import_apexlang(staged_dir, options.workspace, options.app_id)
     except PackageError as exc:
+        state["imported"] = True  # a failed import may still have replaced part of the application
+        _record_post_digest(backup_dir, UNKNOWN_POST_DIGEST)
         raise PackageError(f"APEX import failed: {exc}", exit_code=5) from exc
+    state["imported"] = True
 
-    # Post-check
+    # Post-check. The post-operation digest is recorded before any comparison, so restore's
+    # "later changes" guard works even when the check below fails.
     post_temp = make_staging_dir("apex-theme-factory-post-")
     try:
-        post_dir = sqlcl.export_apexlang(options.app_id, post_temp)
+        post_dir = export_after_import(sqlcl, options.app_id, post_temp, backup_dir)
+        post_digest = canonical_digest(post_dir)
+        _record_post_digest(backup_dir, post_digest)
         post_projection = theme_factory_projection(post_dir)
         if post_projection != staged_projection:
             differing = sorted(key for key in staged_projection if staged_projection[key] != post_projection.get(key))
@@ -331,10 +373,8 @@ def _run_install(options: InstallOptions, staging: list) -> OperationReport:
         for item in manifests:
             verify_package_ownership(post_dir, installed[item.name])
         verify_runtime_ownership(post_dir, read_registry_document(post_dir))
-        post_digest = canonical_digest(post_dir)
     finally:
         shutil.rmtree(post_temp, ignore_errors=True)
-    _record_post_digest(backup_dir, post_digest)
 
     print(f"\nResult: IMPORTED {_describe(manifests)} into application {options.app_id}.")
     print("Status: IMPORTED")

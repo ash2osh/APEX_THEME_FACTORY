@@ -40,6 +40,20 @@ class ThemeCliTests(unittest.TestCase):
         self.assertEqual(passed[0], 0)
         self.assertEqual(failed[0], 2)
 
+    def test_names_that_could_leave_sample_themes_are_refused(self):
+        with patch("lib.theme_factory.font_pipeline.install_font") as install:
+            code, _, stderr = self.invoke(
+                "font", "add", "../escape", "--repo-root", str(self.repo), "--family", "X",
+                "--metadata-url", "https://example.invalid/m", "--source-revision", "abc", "--weights", "400",
+            )
+        self.assertEqual(code, 2)
+        self.assertIn("must match", stderr)
+        install.assert_not_called()
+        code, _, stderr = self.invoke("package", "--repo-root", str(self.repo), "--theme", "../x",
+                                      "--output-dir", str(self.repo / "dist"))
+        self.assertEqual(code, 2)
+        self.assertIn("must match", stderr)
+
     def test_check_json_writes_exactly_one_document(self):
         with patch("lib.theme_factory.cli.run_theme_checks", return_value=self.report("PASS")):
             code, stdout, stderr = self.invoke(

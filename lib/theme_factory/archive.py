@@ -12,10 +12,11 @@ import tempfile
 import zipfile
 from typing import Dict
 
+from lib.theme_factory.apexlang_runtime import script_json
 from lib.theme_factory.css_bundle import build_theme_css
 from lib.theme_factory.css_policy import scan_package
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import ThemeManifest, load_manifest
+from lib.theme_factory.manifest import NAME_REGEX, ThemeManifest, load_manifest
 
 FIXED_DATETIME = (1980, 1, 1, 0, 0, 0)
 REQUIRED_PACKAGE_FILES = frozenset({
@@ -155,7 +156,7 @@ def build_package_from_root(
                 "APP_ID": "&APP_ID.",
                 "DEFAULT_THEME": manifest.name,
                 "SWITCHER_ENABLED": "false",
-                "THEMES_JSON": json.dumps([
+                "THEMES_JSON": script_json([
                     {"name": manifest.name, "title": manifest.title, "className": manifest.class_name}
                 ]),
             },
@@ -212,6 +213,8 @@ def build_package_from_root(
 
 def build_package(repo_root: Path, theme_name: str, output_dir: Path) -> Path:
     """Convenience wrapper for packaging named theme from sample-themes/."""
+    if not isinstance(theme_name, str) or not NAME_REGEX.fullmatch(theme_name):
+        raise PackageError(f"Theme name '{theme_name}' must match {NAME_REGEX.pattern}")
     return build_package_from_root(repo_root, repo_root / f"sample-themes/{theme_name}", output_dir)
 
 

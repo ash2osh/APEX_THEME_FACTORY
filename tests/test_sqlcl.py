@@ -126,3 +126,12 @@ class SqlclTests(unittest.TestCase):
         client = SqlclClient("secret_conn")
         # Ensure string representation doesn't expose sensitive info if any
         self.assertEqual(str(client), "SqlclClient(connection='secret_conn')")
+
+
+class SqlclPathTests(unittest.TestCase):
+    def test_paths_that_could_break_out_of_a_quoted_argument_are_refused(self):
+        from lib.theme_factory.sqlcl import sqlcl_path
+        self.assertTrue(sqlcl_path(Path("/tmp/backups/DEMO-1")).endswith("DEMO-1"))
+        for bad in ('/tmp/x" -overwrite-files', "/tmp/x\napex import -input /evil", "/tmp/x\rb"):
+            with self.assertRaises(PackageError, msg=repr(bad)):
+                sqlcl_path(Path(bad))

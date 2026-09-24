@@ -47,12 +47,16 @@
         if (!menu.length) {
           return;
         }
-        menu.menu("option", "items", [{
-          type: "radioGroup",
-          get: window.ApexThemeFactory.current,
-          set: window.ApexThemeFactory.use,
-          choices: window.ApexThemeFactory.choices()
-        }]);
+        try {
+          menu.menu("option", "items", [{
+            type: "radioGroup",
+            get: window.ApexThemeFactory.current,
+            set: window.ApexThemeFactory.use,
+            choices: window.ApexThemeFactory.choices()
+          }]);
+        } catch (e) {
+          /* menu widget not created on this page (e.g. a dialog); the plain list entries still work */
+        }
       });
   }
 }(window, document, window.apex));

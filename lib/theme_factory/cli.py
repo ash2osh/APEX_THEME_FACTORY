@@ -112,6 +112,11 @@ def register_workshop_commands(subparsers: argparse._SubParsersAction) -> None:
     adapters.add_argument("--check", action="store_true", help="Report drift only; exit 1 on drift")
     adapters.set_defaults(handler=_handle_adapters)
 
+    responsive = subparsers.add_parser("responsive", help="Render responsive CSS from theme recipes")
+    responsive.add_argument("--repo-root", type=Path, default=Path.cwd())
+    responsive.add_argument("--check", action="store_true", help="Report drift only; exit 1 on drift")
+    responsive.set_defaults(handler=_handle_responsive)
+
     release = subparsers.add_parser("release", help="Check, package, and smoke-test one theme live")
     release.add_argument("name")
     release.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -253,6 +258,11 @@ def _handle_check(args: argparse.Namespace) -> int:
 def _handle_adapters(args: argparse.Namespace) -> int:
     from lib.theme_factory.adapters import main as adapters_main
     return adapters_main(["--repo-root", str(args.repo_root), *(["--check"] if args.check else [])])
+
+
+def _handle_responsive(args: argparse.Namespace) -> int:
+    from lib.theme_factory.responsive import main as responsive_main
+    return responsive_main(["--repo-root", str(args.repo_root), *(["--check"] if args.check else [])])
 
 
 def _handle_release(args: argparse.Namespace) -> int:

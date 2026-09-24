@@ -69,7 +69,8 @@ approved Chrome session, so they run locally through `scripts/theme.sh release N
 - ~~Static files upload path~~ decided 2026-09-13: `scripts/sync-static.sh` assembles `static-files/css|js/**` and
   `sample-themes/*/css/**` into `applications/ut/shared-components/static-files/` (registering `file` entries,
   pruning stale ones); the app references `#APP_FILES#css/app.css` and `#APP_FILES#js/app.js`. Theme *linen*
-  is the default in app 102; visitors switch with the nav-bar **Theme** menu or page 405 *Themes* (both discover
+  is the default in app 102 (declared in `applications/ut/theme-factory.json`); visitors switch with the nav-bar **Theme** menu or page 405 *Themes* (both discover
   packages from `css/themes/<name>/theme.json` in the static files) — see `sample-themes/README.md`.
 - Known: APEX session-state protection rejects unknown query parameters on friendly URLs, so runtime switches
-  use the URL hash. Page 0 can only address Standard-template slots; they map to other templates by position.
+  use the URL hash (`#theme=<name>|default|iris`). Storage is namespaced per application (`localStorage['apex.themeFactory.' + appId]`).
+  Page 0 can only address Standard-template slots; they map to other templates by position.

@@ -1,0 +1,10 @@
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-estate-slate-dark. */
+
+@media (max-width: 768px) {
+  html.app-theme-estate-slate-dark {
+    --app-control-h: calc(2.25rem * 0.875);
+        --app-space-unit: calc(0.375rem * 0.875);
+  }
+}

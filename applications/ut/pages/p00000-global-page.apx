@@ -7,33 +7,60 @@ page 0 (
         source {
             htmlCode:
                 ```html
+                <!-- APEX_THEME_FACTORY_MANAGED:BOOTSTRAP -->
                 <script>
-                /* APEX Theme Factory: pick the active theme package before the page paints.
-                   All packages are loaded by #APP_FILES#css/app.css; each is scoped to html.app-theme-<name>.
-                   Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
-                   pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
-                   Query parameters are not usable here (session-state protection rejects unknown ones).
-                   The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
-                   scripts/apply-theme.sh, THEMES (installed packages) by scripts/sync-static.sh. A stored name
-                   that is not installed (a typo, a removed package) is dropped; 'none' means bare Iris. */
-                (function () {
-                    var DEFAULT = 'linen';
-                    var THEMES = ' carbon-volt citrus-pop cobalt-press estate-slate-dark estate-slate linen solarized-dark velvet-signal ';
-                    var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
-                    try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
+                window.APEX_THEME_FACTORY_CONFIG = {
+                  appId: &APP_ID.,
+                  defaultTheme: "linen",
+                  switcherEnabled: true,
+                  themes: [{"name": "carbon-volt", "title": "Carbon Volt", "className": "app-theme-carbon-volt"}, {"name": "citrus-pop", "title": "Citrus Pop", "className": "app-theme-citrus-pop"}, {"name": "cobalt-press", "title": "Cobalt Press", "className": "app-theme-cobalt-press"}, {"name": "estate-slate-dark", "title": "Estate Slate Dark", "className": "app-theme-estate-slate-dark"}, {"name": "estate-slate", "title": "Estate Slate", "className": "app-theme-estate-slate"}, {"name": "linen", "title": "Linen", "className": "app-theme-linen"}, {"name": "solarized-dark", "title": "Solarized Dark", "className": "app-theme-solarized-dark"}, {"name": "velvet-signal", "title": "Velvet Signal", "className": "app-theme-velvet-signal"}]
+                };
+                (function (doc, config) {
+                  "use strict";
+                  var root = doc.documentElement;
+                  var key = "apex.themeFactory." + config.appId;
+                  var allowed = ["iris"].concat(config.themes.map(function (theme) { return theme.name; }));
+                  var selected = config.defaultTheme;
+                  if (config.switcherEnabled) {
                     try {
-                        if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
-                        else if (m) { localStorage.setItem('app.theme', m[1]); }
-                        t = localStorage.getItem('app.theme');
-                        if (t && t !== 'none' && THEMES.indexOf(' ' + t + ' ') === -1) {
-                            localStorage.removeItem('app.theme');
-                            t = null;
+                      var legacy = window.localStorage.getItem("app.theme");
+                      if (legacy) {
+                        if (!window.localStorage.getItem(key)) {
+                          var migrated = legacy === "none" ? "iris" : legacy;
+                          if (allowed.indexOf(migrated) !== -1) {
+                            window.localStorage.setItem(key, migrated);
+                          }
                         }
-                    } catch (e) {}
-                    if (!t || !ok.test(t)) { t = DEFAULT; }
-                    document.documentElement.classList.add('app-theme-' + t);
-                    document.documentElement.setAttribute('data-app-theme-default', DEFAULT); /* read by App.theme */
-                })();
+                        window.localStorage.removeItem("app.theme");
+                      }
+                      var match = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(window.location.hash);
+                      if (match) {
+                        var hashTheme = match[1];
+                        if (hashTheme === "default") {
+                          window.localStorage.removeItem(key);
+                        } else {
+                          if (hashTheme === "none") { hashTheme = "iris"; }
+                          if (allowed.indexOf(hashTheme) !== -1) {
+                            window.localStorage.setItem(key, hashTheme);
+                          }
+                        }
+                      }
+                      selected = window.localStorage.getItem(key) || selected;
+                      if (allowed.indexOf(selected) === -1) {
+                        window.localStorage.removeItem(key);
+                        selected = config.defaultTheme;
+                      }
+                    } catch (e) {
+                      selected = config.defaultTheme;
+                    }
+                  }
+                  Array.prototype.slice.call(root.classList).forEach(function (name) {
+                    if (name.indexOf("app-theme-") === 0) { root.classList.remove(name); }
+                  });
+                  if (selected !== "iris") { root.classList.add("app-theme-" + selected); }
+                  root.dataset.appThemeDefault = config.defaultTheme;
+                  root.dataset.appThemeCurrent = selected;
+                }(document, window.APEX_THEME_FACTORY_CONFIG));
                 </script>
                 ```
         }
@@ -56,33 +83,60 @@ page 0 (
                 <!-- Page 0 may only use Standard-template slots; APEX maps them by position number, and
                      breadcrumbBar = #REGION_POSITION_01# = the first position of the Modal Dialog, Drawer and
                      Wizard Modal Dialog templates (those have no banner slot). Idempotent with region "theme". -->
+                <!-- APEX_THEME_FACTORY_MANAGED:BOOTSTRAP -->
                 <script>
-                /* APEX Theme Factory: pick the active theme package before the page paints.
-                   All packages are loaded by #APP_FILES#css/app.css; each is scoped to html.app-theme-<name>.
-                   Switch with the URL hash — #theme=<name> stores the choice in localStorage (reaches dialog
-                   pages too), #theme=default clears it — or App.theme.use('<name>') from js/app.js.
-                   Query parameters are not usable here (session-state protection rejects unknown ones).
-                   The navigation-bar "Theme" menu and page 405 call App.theme.use(); DEFAULT is maintained by
-                   scripts/apply-theme.sh, THEMES (installed packages) by scripts/sync-static.sh. A stored name
-                   that is not installed (a typo, a removed package) is dropped; 'none' means bare Iris. */
-                (function () {
-                    var DEFAULT = 'linen';
-                    var THEMES = ' carbon-volt citrus-pop cobalt-press estate-slate-dark estate-slate linen solarized-dark velvet-signal ';
-                    var ok = /^[a-z0-9-]{1,40}$/, t = null, m = null;
-                    try { m = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(location.hash); } catch (e) {}
+                window.APEX_THEME_FACTORY_CONFIG = {
+                  appId: &APP_ID.,
+                  defaultTheme: "linen",
+                  switcherEnabled: true,
+                  themes: [{"name": "carbon-volt", "title": "Carbon Volt", "className": "app-theme-carbon-volt"}, {"name": "citrus-pop", "title": "Citrus Pop", "className": "app-theme-citrus-pop"}, {"name": "cobalt-press", "title": "Cobalt Press", "className": "app-theme-cobalt-press"}, {"name": "estate-slate-dark", "title": "Estate Slate Dark", "className": "app-theme-estate-slate-dark"}, {"name": "estate-slate", "title": "Estate Slate", "className": "app-theme-estate-slate"}, {"name": "linen", "title": "Linen", "className": "app-theme-linen"}, {"name": "solarized-dark", "title": "Solarized Dark", "className": "app-theme-solarized-dark"}, {"name": "velvet-signal", "title": "Velvet Signal", "className": "app-theme-velvet-signal"}]
+                };
+                (function (doc, config) {
+                  "use strict";
+                  var root = doc.documentElement;
+                  var key = "apex.themeFactory." + config.appId;
+                  var allowed = ["iris"].concat(config.themes.map(function (theme) { return theme.name; }));
+                  var selected = config.defaultTheme;
+                  if (config.switcherEnabled) {
                     try {
-                        if (m && m[1] === 'default') { localStorage.removeItem('app.theme'); }
-                        else if (m) { localStorage.setItem('app.theme', m[1]); }
-                        t = localStorage.getItem('app.theme');
-                        if (t && t !== 'none' && THEMES.indexOf(' ' + t + ' ') === -1) {
-                            localStorage.removeItem('app.theme');
-                            t = null;
+                      var legacy = window.localStorage.getItem("app.theme");
+                      if (legacy) {
+                        if (!window.localStorage.getItem(key)) {
+                          var migrated = legacy === "none" ? "iris" : legacy;
+                          if (allowed.indexOf(migrated) !== -1) {
+                            window.localStorage.setItem(key, migrated);
+                          }
                         }
-                    } catch (e) {}
-                    if (!t || !ok.test(t)) { t = DEFAULT; }
-                    document.documentElement.classList.add('app-theme-' + t);
-                    document.documentElement.setAttribute('data-app-theme-default', DEFAULT); /* read by App.theme */
-                })();
+                        window.localStorage.removeItem("app.theme");
+                      }
+                      var match = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(window.location.hash);
+                      if (match) {
+                        var hashTheme = match[1];
+                        if (hashTheme === "default") {
+                          window.localStorage.removeItem(key);
+                        } else {
+                          if (hashTheme === "none") { hashTheme = "iris"; }
+                          if (allowed.indexOf(hashTheme) !== -1) {
+                            window.localStorage.setItem(key, hashTheme);
+                          }
+                        }
+                      }
+                      selected = window.localStorage.getItem(key) || selected;
+                      if (allowed.indexOf(selected) === -1) {
+                        window.localStorage.removeItem(key);
+                        selected = config.defaultTheme;
+                      }
+                    } catch (e) {
+                      selected = config.defaultTheme;
+                    }
+                  }
+                  Array.prototype.slice.call(root.classList).forEach(function (name) {
+                    if (name.indexOf("app-theme-") === 0) { root.classList.remove(name); }
+                  });
+                  if (selected !== "iris") { root.classList.add("app-theme-" + selected); }
+                  root.dataset.appThemeDefault = config.defaultTheme;
+                  root.dataset.appThemeCurrent = selected;
+                }(document, window.APEX_THEME_FACTORY_CONFIG));
                 </script>
                 ```
         }

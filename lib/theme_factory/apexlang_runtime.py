@@ -18,9 +18,42 @@ def script_json(value) -> str:
             .replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026"))
 
 
-def build_bootstrap_html(default_theme: str, switcher_enabled: bool, themes_json_str: str) -> str:
+def build_bootstrap_html(
+    default_theme: str,
+    switcher_enabled: bool,
+    themes_json_str: str,
+    hash_links: bool = False,
+    legacy_key: Optional[str] = None,
+) -> str:
     if default_theme != "iris" and NAME_REGEX.fullmatch(str(default_theme)) is None:
         raise PackageError(f"Unsafe default theme name '{default_theme}'")
+    extras = ""
+    if legacy_key:
+        extras += f"""
+      var legacy = window.localStorage.getItem({json.dumps(legacy_key)});
+      if (legacy) {{
+        if (!window.localStorage.getItem(key)) {{
+          var migrated = legacy === "none" ? "iris" : legacy;
+          if (allowed.indexOf(migrated) !== -1) {{
+            window.localStorage.setItem(key, migrated);
+          }}
+        }}
+        window.localStorage.removeItem({json.dumps(legacy_key)});
+      }}"""
+    if hash_links:
+        extras += """
+      var match = /(?:^#|&)theme=([a-z0-9-]{1,40})(?:&|$)/.exec(window.location.hash);
+      if (match) {
+        var hashTheme = match[1];
+        if (hashTheme === "default") {
+          window.localStorage.removeItem(key);
+        } else {
+          if (hashTheme === "none") { hashTheme = "iris"; }
+          if (allowed.indexOf(hashTheme) !== -1) {
+            window.localStorage.setItem(key, hashTheme);
+          }
+        }
+      }"""
     return f"""{MARKER_HTML}
 <script>
 window.APEX_THEME_FACTORY_CONFIG = {{
@@ -36,7 +69,7 @@ window.APEX_THEME_FACTORY_CONFIG = {{
   var allowed = ["iris"].concat(config.themes.map(function (theme) {{ return theme.name; }}));
   var selected = config.defaultTheme;
   if (config.switcherEnabled) {{
-    try {{
+    try {{{extras}
       selected = window.localStorage.getItem(key) || selected;
       if (allowed.indexOf(selected) === -1) {{
         window.localStorage.removeItem(key);
@@ -60,7 +93,13 @@ def _indent(text: str, prefix: str) -> str:
     return "\n".join(prefix + line if line.strip() else line for line in text.splitlines())
 
 
-def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: list) -> str:
+def build_bootstrap_regions(
+    default_theme: str,
+    switcher_enabled: bool,
+    themes: list,
+    hash_links: bool = False,
+    legacy_key: Optional[str] = None,
+) -> str:
     """Generate APEXLang for the two owned Page 0 bootstrap regions (standard + dialog slots)."""
     themes_data = [
         {
@@ -71,7 +110,14 @@ def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: 
         for t in themes
     ]
     bootstrap_html = _indent(
-        build_bootstrap_html(default_theme, switcher_enabled, script_json(themes_data)), " " * 16
+        build_bootstrap_html(
+            default_theme,
+            switcher_enabled,
+            script_json(themes_data),
+            hash_links=hash_links,
+            legacy_key=legacy_key,
+        ),
+        " " * 16,
     )
 
     def region(identifier: str, name: str, sequence: int, slot: str) -> str:

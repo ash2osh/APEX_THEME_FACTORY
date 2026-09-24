@@ -37,6 +37,7 @@ app UT (
         fileUrls: [
             #APP_FILES#demo/demo.js
             #PRISMJS_DIRECTORY#prism#MIN#.js
+            #APP_FILES#js/theme-factory-runtime.js
             #APP_FILES#js/app.js
             #APP_FILES#js/components/themeFactoryDisclosure.js
             #APP_FILES#js/vendor/alpine.min.js

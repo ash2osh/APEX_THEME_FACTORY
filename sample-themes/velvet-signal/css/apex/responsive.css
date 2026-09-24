@@ -1,0 +1,8 @@
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-velvet-signal. */
+
+@media (max-width: 768px) {
+  html.app-theme-velvet-signal .t-Cards,
+  html.app-theme-velvet-signal .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }
+}

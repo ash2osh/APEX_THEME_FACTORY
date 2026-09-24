@@ -19,6 +19,7 @@ EXPECTED_MODULES = {
     "misc.css",
     "regions.css",
     "reports.css",
+    "responsive.css",
     "shell.css",
 }
 

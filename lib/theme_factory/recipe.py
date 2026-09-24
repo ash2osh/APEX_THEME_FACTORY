@@ -687,3 +687,33 @@ def render_tokens(recipe: ThemeRecipe) -> str:
         ])
     lines.extend(["}", ""])
     return "\n".join(lines)
+
+
+def render_responsive_css(recipe: ThemeRecipe) -> str:
+    """Render the responsive stylesheet for a theme from its recipe declarations."""
+    name = recipe.identity.name
+    axis = axis_css_values(recipe)
+    compact_at = recipe.responsive.compact_controls_at
+    lines = [
+        GENERATED_CSS_MARKER,
+        "/* generated-from: theme.recipe.json */",
+        f"/* Responsive rules for html.app-theme-{name}. */",
+        "",
+    ]
+    if compact_at > 0:
+        media_rules = []
+        if axis["responsive_tokens"]:
+            tokens = "\n    ".join(axis["responsive_tokens"].splitlines())
+            media_rules.append(f"  html.app-theme-{name} {{\n    {tokens}\n  }}")
+        if axis["responsive_hooks"]:
+            hooks = axis["responsive_hooks"].replace("__NAME__", name)
+            indented_hooks = "\n  ".join(hooks.splitlines())
+            media_rules.append(f"  {indented_hooks}")
+
+        if media_rules:
+            lines.append(f"@media (max-width: {compact_at}px) {{")
+            lines.append("\n\n".join(media_rules))
+            lines.append("}")
+            lines.append("")
+    return "\n".join(lines)
+

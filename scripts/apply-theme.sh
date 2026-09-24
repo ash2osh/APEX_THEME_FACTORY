@@ -12,12 +12,10 @@ json="$ROOT/sample-themes/$name/theme.json"
 python3 - "$ROOT" "$name" "$json" <<'PY'
 import json,re,sys
 root,name,jp=sys.argv[1:4]; th=json.load(open(jp))
-p=f"{root}/applications/ut/pages/p00000-global-page.apx"; s=open(p).read()
-s2,n=re.subn(r"var DEFAULT = '[a-z0-9-]*';", f"var DEFAULT = '{name}';", s)
-# Page 0 emits the bootstrap in both the Standard-template banner slot and the first
-# dialog-template slot. Keep both fallbacks aligned so full pages and dialog iframes
-# cannot resolve different defaults.
-assert n==2, f"expected 2 page-0 theme regions, found {n}"; open(p,'w').write(s2)
+tf_path=f"{root}/applications/ut/theme-factory.json"
+with open(tf_path, "w", encoding="utf-8") as f:
+    json.dump({"defaultTheme": name}, f, indent=2)
+    f.write("\n")
 nav=th.get("templateOptions",{}).get("navigationMenuStyle")  # schema v1 key (see schemas/theme-package.schema.json)
 if nav:
     p=f"{root}/applications/ut/application.apx"; s=open(p).read()

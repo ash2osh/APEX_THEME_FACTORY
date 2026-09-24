@@ -24,17 +24,16 @@ package appears in both as soon as it is imported — nothing to register by han
 - Page 0 regions "Theme" (slot `banner`, standard pages) and "Theme (dialog…)" (slot `breadcrumbBar` =
   `#REGION_POSITION_01#`, the first position of the Modal Dialog / Drawer / Wizard templates) emit one inline
   script that adds `app-theme-<name>` to `<html>` before content paints — also inside dialog iframes.
-- Choice, per browser (`localStorage['app.theme']`): the navigation-bar **Theme** menu (list `navigation-bar`,
+- Choice, per browser (`localStorage['apex.themeFactory.' + appId]`): the navigation-bar **Theme** menu (list `navigation-bar`,
   one radio entry per package + *Iris (no theme package)*, active one checked) or the cards on page 405 — both call
-  `App.theme.use('<name>')` from `static-files/js/app.js`; `'none'` = bare Iris, choosing the app default clears
-  the stored value. `#theme=<name>` in the URL hash still works for links (`#theme=default` clears, `#theme=none`
-  = bare Iris; query parameters are rejected by session-state protection). `App.theme.current()` reads the class.
-- Only installed packages are accepted: the bootstrap checks the stored or `#theme=` name against its `THEMES`
-  list, which `scripts/sync-static.sh` keeps in step with `sample-themes/`. A typo or a removed package is dropped
-  from storage and the app default is used.
+  `ApexThemeFactory.use('<name>')` (with `App.theme.use` retained as wrapper); `'iris'` (or `'none'`) = bare Iris, choosing `'default'`
+  clears the stored value. Legacy `app.theme` choices are migrated automatically on first load. `#theme=<name>` in the URL hash works
+  for links (`#theme=default` clears, `#theme=none` or `#theme=iris` = bare Iris; query parameters are rejected by session-state protection).
+- Only installed packages are accepted: the bootstrap validates against `config.themes`, which `scripts/sync-static.sh` keeps in step
+  with `sample-themes/`. A typo or a removed package is dropped from storage and the app default is used.
 - The Universal Theme *theme style* switcher (Vita / Redwood) was removed from app 102 on 2026-09-14; the theme
   style is Iris for every package and nothing in the app references another style.
-- The app **default** is the `DEFAULT` literal in the page-0 regions, set by `scripts/apply-theme.sh <name>`,
+- The app **default** is recorded in `applications/ut/theme-factory.json`, set by `scripts/apply-theme.sh <name>`,
   which also applies the theme's `templateOptions` (e.g. nav Style B) to `application.apx`. Declarative
   options are per-default-theme only; the live switch changes CSS alone.
 

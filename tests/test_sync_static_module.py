@@ -16,6 +16,7 @@ class SyncStaticTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, tmp)
         self.root = tmp / "repo"
         shutil.copytree(REPO / "static-files", self.root / "static-files")
+        shutil.copytree(REPO / "installer", self.root / "installer")
         for name in THEMES:
             shutil.copytree(REPO / "sample-themes" / name, self.root / "sample-themes" / name)
         shared = self.root / "applications/ut/shared-components"
@@ -36,24 +37,59 @@ class SyncStaticTests(unittest.TestCase):
         self.assertIn("@font-face", (self.dst / "css/themes/cobalt-press/theme.css").read_text(encoding="utf-8"))
         self.assertFalse((self.dst / "js/vendor/alpine.js").exists())
         self.assertTrue((self.dst / "js/vendor/alpine.min.js").is_file())
+        self.assertTrue((self.dst / "js/theme-factory-runtime.js").is_file())
         registered = self.apx.read_text(encoding="utf-8")
         self.assertIn(file_block("css/themes/cobalt-press/theme.css"), registered)
         font = next((self.dst / "css/themes/cobalt-press/fonts").glob("*.woff2")).name
         self.assertIn(file_block(f"css/themes/cobalt-press/fonts/{font}"), registered)
+        self.assertIn(file_block("js/theme-factory-runtime.js"), registered)
         self.assertIn('file "icons/app-icon.png"', registered)
 
     def write_page_zero(self, regions: int = 2) -> Path:
         page = self.root / "applications/ut/pages/p00000-global-page.apx"
         page.parent.mkdir(parents=True, exist_ok=True)
-        page.write_text("page 0 (\n" + "    var DEFAULT = 'linen';\n    var THEMES = '';\n" * regions + ")\n",
-                        encoding="utf-8")
+        blocks = []
+        if regions >= 1:
+            blocks.append("""    region theme (
+        name: Theme
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <script>old</script>
+                ```
+        }
+        layout {
+            sequence: 15
+            slot: banner
+        }
+    )""")
+        if regions >= 2:
+            blocks.append("""    region theme_dialog (
+        name: Theme (dialog, drawer, wizard pages)
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                <script>old</script>
+                ```
+        }
+        layout {
+            sequence: 1
+            slot: breadcrumbBar
+        }
+    )""")
+        page.write_text("page 0 (\n" + "\n\n".join(blocks) + "\n)\n", encoding="utf-8")
         return page
 
     def test_page_zero_allow_list_tracks_the_installed_themes(self):
         page = self.write_page_zero()
-        self.assertTrue(any("THEMES allow-list" in item for item in sync(self.root, check=True).drift))
+        self.assertTrue(any("bootstrap regions" in item for item in sync(self.root, check=True).drift))
         sync(self.root)
-        self.assertEqual(page.read_text(encoding="utf-8").count("var THEMES = ' cobalt-press linen ';"), 2)
+        content = page.read_text(encoding="utf-8")
+        self.assertEqual(content.count("window.APEX_THEME_FACTORY_CONFIG ="), 2)
+        self.assertIn('"cobalt-press"', content)
+        self.assertIn('"linen"', content)
         self.assertEqual(sync(self.root, check=True).drift, [])
 
     def test_page_zero_with_an_unexpected_region_count_is_refused(self):

@@ -129,6 +129,10 @@ def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, labe
         count += 1
     backup_dir.mkdir(parents=True)
     shutil.copytree(staged_dir, backup_dir / "apexlang")
+    # Unknown until the operation ends one way or another: any path that exits without recording the real
+    # post-operation digest (drift refused, import failed, an exception) leaves a backup restore will not
+    # apply without --discard-later-changes.
+    metadata = {**metadata, "postOperationDigest": UNKNOWN_POST_DIGEST}
     (backup_dir / "target.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     return backup_dir
 

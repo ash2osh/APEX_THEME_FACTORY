@@ -103,6 +103,9 @@ class InstallerCliTests(unittest.TestCase):
         self.assertEqual(caught.exception.exit_code, 4)
         self.assertIn("while waiting for confirmation", str(caught.exception))
         self.assertNotIn("apex import", log.read_text(encoding="utf-8"))
+        # the backup taken before the refusal must not look restorable over the concurrent edits
+        backup = json.loads(next((self.tmp / "b").rglob("target.json")).read_text(encoding="utf-8"))
+        self.assertEqual(backup["postOperationDigest"], "unknown")
 
     def test_dry_run_leaves_no_backup_behind(self):
         backups = self.tmp / "dry-backups"

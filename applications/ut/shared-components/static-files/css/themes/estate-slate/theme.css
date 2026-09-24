@@ -627,7 +627,14 @@ html.app-theme-estate-slate {
 .app-theme-estate-slate .apex-theme-iris .class-var {
     color: var(--app-text-primary);
 }
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-estate-slate. */
 
+@media (max-width: 768px) {
+  html.app-theme-estate-slate .t-Header-controls,
+  html.app-theme-estate-slate .t-Body-actions { flex-wrap: wrap; }
+}
 
 /* ==========================================================================
    Theme Custom Fonts (@font-face)

@@ -475,3 +475,8 @@ file "css/pages/theme-lab.css" (
     mimeType: text/css
     charSet: utf-8
 )
+
+file "js/theme-factory-runtime.js" (
+    mimeType: application/javascript
+    charSet: utf-8
+)

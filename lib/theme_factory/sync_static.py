@@ -17,17 +17,25 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass, field
+import json
 from pathlib import Path
 import re
 
+from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json, _indent
 from lib.theme_factory.css_bundle import flatten_css, render_font_css
 from lib.theme_factory.manifest import load_manifest
 from lib.theme_factory.static_files import file_block
 
 THEMES_BLOCK_RE = re.compile(r"/\* @themes:start \*/.*?/\* @themes:end \*/", re.S)
 PAGE_ZERO = Path("applications/ut/pages/p00000-global-page.apx")
-# Both page-0 bootstrap regions (full pages and dialog templates) carry the same allow-list.
-PAGE_ZERO_THEMES_RE = re.compile(r"var THEMES = '[a-z0-9 -]*';")
+PAGE_ZERO_THEME_RE = re.compile(
+    r"(region theme \(\n(?:[^\n]*\n)*?        source \{\n            htmlCode:\n                ```html\n).*?(\n                ```\n        \}\n        layout \{\n            sequence: 15)",
+    re.S,
+)
+PAGE_ZERO_DIALOG_RE = re.compile(
+    r"(region theme_dialog \(\n(?:[^\n]*\n)*?        source \{\n            htmlCode:\n                ```html\n).*?(\n                ```\n        \}\n        layout \{\n            sequence: 1)",
+    re.S,
+)
 
 
 @dataclass
@@ -126,19 +134,64 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
         else:
             app_css.write_text(new_css, encoding="utf-8")
 
-    # (1b) page-0 allow-list: a stored or #theme= name that is not installed falls back to the default
+    # (1b) page-0 bootstrap regions
     page_zero = root / PAGE_ZERO
     if page_zero.is_file():
         current_p0 = page_zero.read_text(encoding="utf-8")
-        allow = "var THEMES = ' " + " ".join(themes) + " ';"
-        new_p0, count = PAGE_ZERO_THEMES_RE.subn(lambda _match: allow, current_p0)
-        if count != 2:
-            raise ValueError(f"{PAGE_ZERO}: expected the THEMES list in 2 bootstrap regions, found {count}")
+        if not PAGE_ZERO_THEME_RE.search(current_p0) or not PAGE_ZERO_DIALOG_RE.search(current_p0):
+            raise ValueError(f"{PAGE_ZERO}: expected both theme and theme_dialog bootstrap regions")
+        tf_json = root / "applications/ut/theme-factory.json"
+        default_theme = "linen"
+        if tf_json.is_file():
+            try:
+                data = json.loads(tf_json.read_text(encoding="utf-8"))
+                default_theme = data.get("defaultTheme", default_theme)
+            except Exception:
+                pass
+        themes_data = []
+        for name in themes:
+            manifest_path = root / "sample-themes" / name / "theme.json"
+            if manifest_path.is_file():
+                m = load_manifest(manifest_path, manifest_path.parent)
+                themes_data.append({"name": m.name, "title": m.title, "className": m.class_name})
+            else:
+                themes_data.append({"name": name, "title": name.replace("-", " ").title(), "className": f"app-theme-{name}"})
+        boot = build_bootstrap_html(
+            default_theme,
+            True,
+            script_json(themes_data),
+            hash_links=True,
+            legacy_key="app.theme",
+        )
+        indented_boot = _indent(boot, " " * 16)
+        dialog_comment = (
+            " " * 16
+            + "<!-- Page 0 may only use Standard-template slots; APEX maps them by position number, and\n"
+            + " " * 21
+            + "breadcrumbBar = #REGION_POSITION_01# = the first position of the Modal Dialog, Drawer and\n"
+            + " " * 21
+            + "Wizard Modal Dialog templates (those have no banner slot). Idempotent with region \"theme\". -->\n"
+        )
+        indented_dialog_boot = dialog_comment + indented_boot
+        new_p0 = PAGE_ZERO_THEME_RE.sub(lambda m: m.group(1) + indented_boot + m.group(2), current_p0)
+        new_p0 = PAGE_ZERO_DIALOG_RE.sub(lambda m: m.group(1) + indented_dialog_boot + m.group(2), new_p0)
         if new_p0 != current_p0:
             if check:
-                report.drift.append(f"{PAGE_ZERO.as_posix()}: THEMES allow-list")
+                report.drift.append(f"{PAGE_ZERO.as_posix()}: bootstrap regions")
             else:
                 page_zero.write_text(new_p0, encoding="utf-8")
+
+    # (1c) runtime script in static-files/js
+    runtime_src = root / "installer/theme-factory-runtime.js"
+    runtime_dst = source / "js/theme-factory-runtime.js"
+    if runtime_src.is_file():
+        runtime_bytes = runtime_src.read_bytes()
+        if not runtime_dst.is_file() or runtime_dst.read_bytes() != runtime_bytes:
+            if check:
+                report.drift.append("static-files/js/theme-factory-runtime.js")
+            else:
+                runtime_dst.parent.mkdir(parents=True, exist_ok=True)
+                runtime_dst.write_bytes(runtime_bytes)
 
     # (2) desired export content
     wanted: dict[str, bytes] = {}

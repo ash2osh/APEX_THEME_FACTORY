@@ -1,0 +1,8 @@
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-cobalt-press. */
+
+@media (max-width: 768px) {
+  html.app-theme-cobalt-press .t-Header-controls,
+  html.app-theme-cobalt-press .t-Body-actions { flex-wrap: wrap; }
+}

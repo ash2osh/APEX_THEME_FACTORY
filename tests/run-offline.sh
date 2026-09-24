@@ -8,6 +8,7 @@ bash -n scripts/*.sh installer/*.sh tests/*.sh
 python3 -m unittest discover -s tests -t . -p 'test_*.py'
 scripts/check-agent-layout.sh
 python3 -m lib.theme_factory.adapters --repo-root . --check
+python3 -m lib.theme_factory.responsive --repo-root . --check
 python3 -m lib.theme_factory.sync_static --repo-root . --check
 
 tmp="$(mktemp -d)"

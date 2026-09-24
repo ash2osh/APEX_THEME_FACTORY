@@ -201,6 +201,12 @@ class RuntimeEscapingTests(unittest.TestCase):
         with self.assertRaises(PackageError):
             build_bootstrap_html('x";alert(1);//', False, "[]")
 
+    def test_bootstrap_opt_in_features(self):
+        from lib.theme_factory.apexlang_runtime import build_bootstrap_html
+        html = build_bootstrap_html("linen", True, "[]", hash_links=True, legacy_key="app.theme")
+        self.assertIn('window.localStorage.getItem("app.theme")', html)
+        self.assertIn("theme=([a-z0-9-]{1,40})", html)
+
     def write_registry(self, payload: dict) -> Path:
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp)

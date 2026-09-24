@@ -5,17 +5,18 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 ## 4. Tooling (Chrome DevTools MCP, SQLcl)
 
 ### 4.1 Shared browser state
-- Every APEX tab shares `localStorage['app.theme']`: navigating *your* tab to `…#theme=x` rewrites the theme
+- Every APEX tab shares `localStorage['apex.themeFactory.' + appId]`: navigating *your* tab to `…#theme=x` rewrites the theme
   for the user's other tabs on their next reload. For captures swap the class in the DOM
   (`document.documentElement.className = … 'app-theme-x'`) instead.
+- Legacy key `app.theme` is migrated automatically on first page load and then removed.
 - `resize_page` resizes the **shared Chrome window**; use `emulate {viewport:'1440x900x1'}` (per tab).
 - Work in your own tab (`new_page … background:true`), hide `#apexDevToolbar` with a `<style>` for captures,
   close the tab when done.
 
 ### 4.2 Same-document hash navigation does not reload
 - `navigate_page` to the current URL + `#theme=…` is a hash change; the page-0 bootstrap does not run.
-  `App.theme.use()` therefore reloads explicitly (and strips a stale `#theme=` first, because page 0 would
-  re-apply it).
+  `ApexThemeFactory.use()` (or `App.theme.use()`) therefore reloads explicitly (and strips a stale `#theme=` first,
+  because page 0 would otherwise re-apply it).
 
 ### 4.3 The contrast audit finds what screenshots miss
 - The 40-line `evaluate_script` in `docs/CHROME_DEVTOOLS_MCP.md` (every visible text node vs its blended

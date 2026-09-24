@@ -60,6 +60,7 @@ CSS_MODULES = {
     "reports.css",
     "dialogs.css",
     "misc.css",
+    "responsive.css",
 }
 
 

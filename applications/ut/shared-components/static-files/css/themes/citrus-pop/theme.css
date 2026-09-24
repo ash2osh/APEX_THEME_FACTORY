@@ -635,7 +635,14 @@ html.app-theme-citrus-pop {
 .app-theme-citrus-pop .apex-theme-iris .class-var {
     color: var(--app-text-primary);
 }
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-citrus-pop. */
 
+@media (max-width: 768px) {
+  html.app-theme-citrus-pop .t-Cards,
+  html.app-theme-citrus-pop .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }
+}
 
 /* ==========================================================================
    Theme Custom Fonts (@font-face)

@@ -24,13 +24,33 @@
       return list.concat([{ label: "Iris", value: "iris" }]);
     },
     use: function (name) {
-      if (!config.switcherEnabled || allowed.indexOf(name) === -1) {
+      if (!config.switcherEnabled) {
+        return false;
+      }
+      if (name === "default") {
+        try {
+          window.localStorage.removeItem(key);
+        } catch (e) {}
+        if (/(?:^#|&)theme=/.test(window.location.hash)) {
+          try {
+            window.history.replaceState(null, "", window.location.pathname + window.location.search);
+          } catch (e) {}
+        }
+        window.location.reload();
+        return true;
+      }
+      if (allowed.indexOf(name) === -1) {
         return false;
       }
       try {
         window.localStorage.setItem(key, name);
       } catch (e) {
         /* storage may be disabled in private browsing */
+      }
+      if (/(?:^#|&)theme=/.test(window.location.hash)) {
+        try {
+          window.history.replaceState(null, "", window.location.pathname + window.location.search);
+        } catch (e) {}
       }
       window.location.reload();
       return true;
@@ -42,7 +62,7 @@
       .off("theme42ready.apexThemeFactory")
       .on("theme42ready.apexThemeFactory", function () {
         var $ = apex.jQuery;
-        var button = $(".t-NavigationBar-item.theme-factory-managed-switcher [data-menu]").first();
+        var button = $(".t-NavigationBar-item.theme-factory-managed-switcher [data-menu], .t-NavigationBar-item.app-theme-switcher [data-menu]").first();
         var menu = button.length ? $("#" + button.attr("data-menu")) : $();
         if (!menu.length) {
           return;

@@ -13,7 +13,7 @@ window.APEX_THEME_FACTORY_CONFIG = {
   var allowed = ["iris"].concat(config.themes.map(function (theme) { return theme.name; }));
   var selected = config.defaultTheme;
   if (config.switcherEnabled) {
-    try {
+    try {__EXTRA_CHECKS__
       selected = window.localStorage.getItem(key) || selected;
       if (allowed.indexOf(selected) === -1) {
         window.localStorage.removeItem(key);

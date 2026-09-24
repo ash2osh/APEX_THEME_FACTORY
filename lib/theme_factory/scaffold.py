@@ -19,6 +19,7 @@ from lib.theme_factory.recipe import (
     axis_css_values,
     render_manifest,
     render_tokens,
+    render_responsive_css,
 )
 
 
@@ -207,6 +208,8 @@ def _render_neutral_tree(repo_root: Path, destination: Path, recipe: ThemeRecipe
         target.parent.mkdir(parents=True, exist_ok=True)
         if relative.as_posix() == "css/tokens.css.tmpl":
             content = render_tokens(recipe)
+        elif relative.as_posix() == "css/apex/responsive.css.tmpl":
+            content = render_responsive_css(recipe)
         else:
             content = _render(source.read_text(encoding="utf-8"), replacements)
         target.write_text(content, encoding="utf-8")

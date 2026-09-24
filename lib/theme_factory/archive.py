@@ -159,6 +159,7 @@ def build_package_from_root(
                 "THEMES_JSON": script_json([
                     {"name": manifest.name, "title": manifest.title, "className": manifest.class_name}
                 ]),
+                "EXTRA_CHECKS": "",
             },
         )
         replacements = {

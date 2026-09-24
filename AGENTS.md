@@ -14,6 +14,19 @@ Non-negotiables
 - Declarative source = `applications/ut/` (APEXLang, app 102, workspace DEMO) via SQLcl `docker-demo`; see docs/APEXLANG_ROUNDTRIP.md. Import only when the user asks.
 - Appearance = `static-files/css` (shared foundation + `--app-*` vocabulary aliasing Iris) plus theme packages in `sample-themes/<name>/css` scoped to `html.app-theme-<name>`; interaction = Alpine in `static-files/js/components`. Assemble with `scripts/sync-static.sh` before `apex-import`; default theme via `scripts/apply-theme.sh`. Deploy all themes to any consumer app with switcher via `scripts/install-all-themes.sh --app-id <ID> --apply`.
 - Portable theme assets stay inside `sample-themes/<name>/`: custom fonts are optional licensed WOFF2 files, external font URLs are forbidden, and every built ZIP contains exactly one theme.
+- Generated files are never hand-edited; change the source and regenerate. Lines between `/* @adapter … */` fences
+  come from `theme-templates/adapters/` (`scripts/theme.sh adapters`); `css/apex/responsive.css` from the theme's
+  recipe (`scripts/theme.sh responsive`); `static-files/js/theme-factory-runtime.js`, the page-0 bootstrap regions and
+  `applications/ut/shared-components/static-files/**` from `installer/theme-factory-runtime.js`, `sample-themes/`
+  and `applications/ut/theme-factory.json` (`scripts/sync-static.sh`; default theme via `scripts/apply-theme.sh`).
+- `tests/run-offline.sh` must end with `OFFLINE status=PASS` before every commit you push.
+- Before `sync-static.sh` + `apex-import.sh`, `git pull`: `--check` compares only your checkout, so a stale tree
+  imports stale CSS while every check passes (pitfalls §5.8).
+- `.agents/knowledge/reference/ut-*/` (Core/Iris CSS, theme42.js) is Oracle-copyrighted and local-only: fetch it with
+  `scripts/fetch-vendor.sh --reference`; never commit it or copy it into a theme.
+- A theme colour change edits `css/tokens.css` and `theme.recipe.json` together (`theme.sh check` fails on
+  `RECIPE_DRIFT`); themes move or animate only through `--app-motion-duration` / `--app-hover-transform`, so
+  reduced motion keeps working.
 
 Skills live in `.agents/skills/` (router: `design-to-apex`). Reference knowledge (UT/Iris facts, pitfalls) is in `.agents/knowledge/`.
 Before theme, runtime or import work, skim **.agents/knowledge/pitfalls.md** (every trap met so far, with the fix).

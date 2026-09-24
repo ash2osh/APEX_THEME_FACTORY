@@ -42,3 +42,13 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   packages, and re-imports that clean export when it finishes. Met 2026-09-23: 9010/9011 held linen 1.0.0 and
   solarized-dark 1.1.0 (stale `dist/` ZIPs the old `install-all-themes` fallback picked up) and every lifecycle
   check failed. Clear leftovers with `scripts/reset-consumer.sh`.
+
+### 5.8 A passing `sync-static --check` does not mean you deploy what is on `main`
+- `--check` compares the export with *your* checkout. On 2026-09-24 a live verification imported app 102 from a tree
+  that predated the fix under test and measured a selector that no longer existed on `main`, with every gate green.
+  `git pull` (and confirm `git log -1` is the commit you mean to test) before `sync-static.sh` and `apex-import.sh`.
+
+### 5.9 Cloud sessions may leave `claude/…` branches they cannot delete
+- A claude.ai cloud session pushes to its own `claude/<name>` branch and is not allowed to delete branches, so one can
+  reappear after its work is merged. Its content is always already in `main`. Both repos have *Automatically delete
+  head branches* on; delete any leftover with `git push origin --delete <branch>`.

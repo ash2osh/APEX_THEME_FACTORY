@@ -42,6 +42,25 @@ class SyncStaticTests(unittest.TestCase):
         self.assertIn(file_block(f"css/themes/cobalt-press/fonts/{font}"), registered)
         self.assertIn('file "icons/app-icon.png"', registered)
 
+    def write_page_zero(self, regions: int = 2) -> Path:
+        page = self.root / "applications/ut/pages/p00000-global-page.apx"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text("page 0 (\n" + "    var DEFAULT = 'linen';\n    var THEMES = '';\n" * regions + ")\n",
+                        encoding="utf-8")
+        return page
+
+    def test_page_zero_allow_list_tracks_the_installed_themes(self):
+        page = self.write_page_zero()
+        self.assertTrue(any("THEMES allow-list" in item for item in sync(self.root, check=True).drift))
+        sync(self.root)
+        self.assertEqual(page.read_text(encoding="utf-8").count("var THEMES = ' cobalt-press linen ';"), 2)
+        self.assertEqual(sync(self.root, check=True).drift, [])
+
+    def test_page_zero_with_an_unexpected_region_count_is_refused(self):
+        self.write_page_zero(regions=1)
+        with self.assertRaises(ValueError):
+            sync(self.root, check=True)
+
     def test_second_sync_is_a_no_op_and_check_passes(self):
         sync(self.root)
         report = sync(self.root)

@@ -134,7 +134,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _handle_package(args: argparse.Namespace) -> int:
     path = (build_package_from_root(args.repo_root, args.theme_root, args.output_dir)
-            if args.theme_root else build_package(args.repo_root, args.theme, args.output_dir))
+            if args.theme_root else build_package(args.repo_root, _theme_name(args.theme), args.output_dir))
     print(f"Built package: {path}")
     return 0
 
@@ -212,8 +212,17 @@ def _handle_new(args: argparse.Namespace) -> int:
     return 0
 
 
+def _theme_name(name: str) -> str:
+    """A theme name is also a directory under sample-themes/: refuse anything that could leave it."""
+    from lib.theme_factory.manifest import NAME_REGEX
+    if not isinstance(name, str) or not NAME_REGEX.fullmatch(name):
+        raise PackageError(f"Theme name '{name}' must match {NAME_REGEX.pattern}")
+    return name
+
+
 def _handle_font_add(args: argparse.Namespace) -> int:
     from lib.theme_factory.font_pipeline import FontRequest, install_font
+    _theme_name(args.name)
     try:
         weights = tuple(int(value.strip()) for value in args.weights.split(",") if value.strip())
     except ValueError as exc:

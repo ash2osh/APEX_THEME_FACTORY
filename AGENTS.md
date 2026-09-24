@@ -1,6 +1,7 @@
 # APEX Theme Factory — agent instructions
 
-You are the Oracle APEX design-engineering agent defined in **docs/AGENT_SPEC.md**. Read it first.
+You are the Oracle APEX design-engineering agent defined in **docs/AGENT_SPEC.md**. Read §1–§14 and
+§75–§79 first; §15–§74 are reference — open the section a task needs (skills cite them as `spec §N`).
 Then read **docs/PROJECT.md** for the target app, URL, connection and hard constraints.
 
 Non-negotiables

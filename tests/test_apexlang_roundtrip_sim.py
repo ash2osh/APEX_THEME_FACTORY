@@ -1,7 +1,7 @@
 """Tests for the SQLcl re-export simulator used by the fake `sql` fixture.
 
 The simulator must reproduce the formatting changes observed in real APEX 26.1 /
-SQLcl 26.2 exports (theme-factory-backups DEMO-9011, 2026-09-15): APEXLang comment
+SQLcl 26.2 exports (2026-09-15): APEXLang comment
 lines vanish, fenced code is re-indented to the fence column, `file` blocks in
 static-files.apx are sorted, and page files are named after the page name.
 """

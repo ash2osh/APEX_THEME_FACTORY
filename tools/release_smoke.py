@@ -42,8 +42,8 @@ def assert_pristine(export_dir: Path) -> None:
     if installed:
         listed = ", ".join(f"{package.name} {package.version}" for package in installed)
         raise PackageError(
-            f"The consumer app already has Theme Factory packages ({listed}); re-import "
-            "tests/live/consumer-apps/minimal over it first (README: Releasing a theme)"
+            f"The consumer app already has Theme Factory packages ({listed}); "
+            "run scripts/reset-consumer.sh first"
         )
 
 
@@ -103,8 +103,7 @@ def run_release(
     report = checks(repo_root, theme)
     if report.status != "PASS":
         out(f"RELEASE theme={theme} status=FAIL step=check")
-        for issue in report.issues:
-            out(f"  {issue}")
+        out(report.to_human())
         return 1
     zip_path = build(repo_root, theme, repo_root / "dist" / theme)
     verify(zip_path)

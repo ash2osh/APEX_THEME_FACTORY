@@ -40,4 +40,4 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - `scripts/theme.sh release NAME` exports consumer 9010 first, refuses it if it already carries Theme Factory
   packages, and re-imports that clean export when it finishes. Met 2026-09-23: 9010/9011 held linen 1.0.0 and
   solarized-dark 1.1.0 (stale `dist/` ZIPs the old `install-all-themes` fallback picked up) and every lifecycle
-  check failed. Clear leftovers by re-importing `tests/live/consumer-apps/minimal` (README, Releasing a theme).
+  check failed. Clear leftovers with `scripts/reset-consumer.sh`.

@@ -12,8 +12,8 @@ from tools.browser_check import RowCapture
 
 def capture(consumer: str, width: int, **overrides) -> RowCapture:
     page = {
-        "url": "http://localhost:8181/ords/r/demo/tf-consumer-business-9011/home",
-        "appId": "9011", "appAlias": "TF-CONSUMER-BUSINESS-9011", "pageId": "1", "apexVersion": "26.1.4",
+        "url": "http://localhost:8181/ords/r/demo/tf-consumer-minimal-9010/home",
+        "appId": "9010", "appAlias": "TF-CONSUMER-MINIMAL-9010", "pageId": "1", "apexVersion": "26.1.4",
         "browserVersion": "Chrome/140.0.7339.81",
         "bodyClasses": ["t-PageBody", "apex-theme-iris"], "htmlClasses": ["app-theme-linen"],
         "cssUrls": ["x.css"], "javascriptUrls": ["y.js"], "loadedUrls": ["x.css", "y.js"],

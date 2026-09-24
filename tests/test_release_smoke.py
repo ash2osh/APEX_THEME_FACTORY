@@ -13,6 +13,9 @@ class FakeReport:
     status: str
     issues: tuple = ()
 
+    def to_human(self):
+        return f"THEME_CHECK status={self.status}"
+
 
 @dataclass
 class FakeInstall:

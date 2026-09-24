@@ -92,6 +92,7 @@ html.app-theme-estate-slate {
     --app-selected-treatment: rail;
     --app-responsive-strategy: reflow;
 
+/* @adapter light/tokens#1 prefix=est - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--est-amber);
 
@@ -118,6 +119,7 @@ html.app-theme-estate-slate {
     --ut-border-radius-sm: var(--app-radius-sm);
     --ut-border-radius-md: var(--app-radius-md);
     --ut-border-radius-lg: var(--app-radius-lg);
+/* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
     --ut-link-text-color: var(--app-color-primary);
@@ -136,6 +138,7 @@ html.app-theme-estate-slate {
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--est-amber-shade);
 
+/* @adapter light/tokens#2 prefix=est - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-contrast: var(--app-text-on-accent);
     --ut-palette-danger-shade: var(--est-ruby-shade);
@@ -144,6 +147,7 @@ html.app-theme-estate-slate {
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--est-cyan-shade);
 }
+/* @adapter-end light/tokens#2 */
 /* Page shell — header, side navigation, title bar, footer.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -162,6 +166,7 @@ html.app-theme-estate-slate {
     --ut-header-menubar-item-split-icon-color: var(--app-text-chrome-muted);
 }
 
+/* @adapter light/shell#1 prefix=est - generated from theme-templates/adapters/light/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-estate-slate .apex-theme-iris .t-Header-logo-link {
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-chrome);
@@ -264,6 +269,7 @@ html.app-theme-estate-slate {
     line-height: 3rem;
     font-size: 1.5rem;
 }
+/* @adapter-end light/shell#1 */
 
 /* identity: champagne section markers and rail selection */
 .app-theme-estate-slate .apex-theme-iris .t-Region-header::before {
@@ -279,6 +285,7 @@ html.app-theme-estate-slate {
     border-inline-start: 3px solid var(--app-color-primary);
     background: var(--app-surface-selected);
 }
+/* @adapter light/regions#1 prefix=est - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Regions, cards, content blocks, breadcrumb title.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -293,12 +300,14 @@ html.app-theme-estate-slate {
     --ut-region-body-padding-x: var(--app-space-4);
     --ut-region-body-padding-y: var(--app-space-4);
 }
+/* @adapter-end light/regions#1 */
 
 /* identity: metric-strip regions create a formal property-operation hierarchy */
 .app-theme-estate-slate .apex-theme-iris .t-MetricCard,
 .app-theme-estate-slate .apex-theme-iris .t-ContentBlock--region { border-inline-start: 3px solid var(--app-color-primary); }
 .app-theme-estate-slate .apex-theme-iris .t-MetricCard .t-MetricCard-value { letter-spacing: -.02em; }
 
+/* @adapter light/regions#2 prefix=est - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-estate-slate .apex-theme-iris .t-Region-header {
     font-size: var(--app-text-md);
     font-weight: var(--app-font-weight-semibold);
@@ -354,6 +363,8 @@ html.app-theme-estate-slate {
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
+/* @adapter-end light/regions#2 */
+/* @adapter light/buttons#1 prefix=est - generated from theme-templates/adapters/light/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Buttons.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -381,7 +392,7 @@ html.app-theme-estate-slate {
     --a-button-active-shadow: none;
 }
 
-/* Hot button: champagne amber directive action */
+/* Hot button: the directive accent action */
 .app-theme-estate-slate .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--app-text-on-accent);
@@ -414,6 +425,7 @@ html.app-theme-estate-slate {
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+/* @adapter-end light/buttons#1 */
 
 /* identity: crisp outlined operations */
 .app-theme-estate-slate .apex-theme-iris .t-Button--primary {
@@ -431,7 +443,8 @@ html.app-theme-estate-slate {
     --a-field-input-focus-border-color: var(--app-color-primary);
 }
 
-/* Stacked / inline labels: 13px, medium, slate-600 */
+/* @adapter light/forms#1 prefix=est - generated from theme-templates/adapters/light/forms.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Stacked / inline labels: 13px, medium, secondary text */
 .app-theme-estate-slate .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
     font-size: var(--app-text-sm);
     font-weight: var(--app-font-weight-medium);
@@ -446,11 +459,13 @@ html.app-theme-estate-slate {
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
+/* @adapter-end light/forms#1 */
 
 /* identity: outlined form borders */
 .app-theme-estate-slate .apex-theme-iris .apex-item-text,
 .app-theme-estate-slate .apex-theme-iris .apex-item-select,
 .app-theme-estate-slate .apex-theme-iris .apex-item-textarea { border: 1px solid var(--app-border-strong); }
+/* @adapter light/reports#1 prefix=est - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -520,10 +535,12 @@ html.app-theme-estate-slate {
 .app-theme-estate-slate .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */
 
 /* identity: ruled data rows */
 .app-theme-estate-slate .apex-theme-iris .a-IRR-table tr,
 .app-theme-estate-slate .apex-theme-iris .a-GV-table tr { border-block-end: 1px solid var(--app-border-color); }
+/* @adapter light/dialogs#1 prefix=est - generated from theme-templates/adapters/light/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -551,9 +568,11 @@ html.app-theme-estate-slate {
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+/* @adapter-end light/dialogs#1 */
 
 /* identity: layered dialogs separate formal decision surfaces */
 .app-theme-estate-slate .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }
+/* @adapter light/misc#1 prefix=est - generated from theme-templates/adapters/light/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Alerts, badges, tabs — status pills and indicator badges.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -566,6 +585,7 @@ html.app-theme-estate-slate {
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
+/* @adapter-end light/misc#1 */
 
 /* Reference-app demo surfaces: use the package's semantic fills and explicit text pairs for FullCalendar. */
 .app-theme-estate-slate .apex-theme-iris .fc .fc-event.apex-cal-green,

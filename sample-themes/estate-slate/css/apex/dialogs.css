@@ -1,3 +1,4 @@
+/* @adapter light/dialogs#1 prefix=est - generated from theme-templates/adapters/light/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-estate-slate .apex-theme-iris. */
 
@@ -25,6 +26,7 @@
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+/* @adapter-end light/dialogs#1 */
 
 /* identity: layered dialogs separate formal decision surfaces */
 .app-theme-estate-slate .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); }

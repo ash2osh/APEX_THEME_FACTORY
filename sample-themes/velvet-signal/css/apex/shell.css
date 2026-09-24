@@ -10,6 +10,7 @@
 /* ---- Header: title-bar surface, hairline bottom, clear controls, no accent strip ------------ */
 .app-theme-velvet-signal .apex-theme-iris .t-Header {
     --ut-header-strip-size: 3px;
+/* @adapter dark/shell#1 prefix=vs - generated from theme-templates/adapters/dark/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-header-background-color: var(--app-surface-subtle);
     --ut-header-text-color: var(--app-text-emphasized);
     --ut-header-border-color: var(--app-border-color);
@@ -32,17 +33,17 @@
     --a-button-border-radius: var(--app-radius-sm);
 }
 
-/* ---- Side navigation: side-bar surface, selection pill (#005a6f) with light text ----------- */
+/* ---- Side navigation: side-bar surface, selection pill with light text ----------- */
 .app-theme-velvet-signal .apex-theme-iris .t-Body-nav {
     --ut-body-nav-background-color: var(--app-surface-chrome);
-    --ut-body-nav-text-color: var(--app-text-secondary);            /* base1 on #00212b: 6.3:1 */
+    --ut-body-nav-text-color: var(--app-text-secondary);            /* ≥ 4.5:1 on the side bar */
     --ut-body-nav-border-color: var(--app-border-color);
     --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-strong);
     --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
 }
 .app-theme-velvet-signal .apex-theme-iris .t-Body-nav .t-TreeNav {
     --a-treeview-node-selected-background-color: var(--app-surface-selected);
-    --a-treeview-node-selected-text-color: var(--app-text-emphasized);   /* 7.2:1 on the pill */
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);   /* ≥ 4.5:1 on the pill */
     --a-treeview-node-focused-background-color: var(--app-surface-selected);
     --a-treeview-node-focused-text-color: var(--app-text-emphasized);
     --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--vs-cyan);
@@ -109,7 +110,7 @@
     color: var(--app-text-emphasized);
 }
 .app-theme-velvet-signal .apex-theme-iris .t-HeroRegion-icon {
-    color: var(--vs-cyan);                             /* graphic: 4.1:1 on cards (≥ 3:1) */
+    color: var(--vs-cyan);                             /* graphic: ≥ 3:1 on cards */
 }
 
 /* ---- Footer: hairline separator, muted text ------------------------------------------------ */
@@ -117,6 +118,7 @@
     border-top-color: var(--app-border-color);
     color: var(--app-text-secondary);
 }
+/* @adapter-end dark/shell#1 */
 
 .app-theme-velvet-signal .apex-theme-iris .t-Body-title {
     margin: var(--app-space-3);

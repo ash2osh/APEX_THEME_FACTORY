@@ -1,0 +1,66 @@
+/* Shared dark-family adapter rules for css/apex/forms.css - rendered into solarized-dark, carbon-volt, velvet-signal.
+   Placeholders: __NAME__ = theme name, __PREFIX__ = private palette prefix. After editing, run
+   scripts/theme.sh adapters (the offline gate fails while any theme is out of date). */
+
+/* @segment 1 */
+.app-theme-__NAME__ .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-radius-sm);
+    --a-field-input-padding-y: .4375rem;                /* stacked/inline items → ~36px */
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-hover-background-color: var(--app-surface-input);   /* Iris literal #fff otherwise */
+    --a-field-input-text-color: var(--app-text-emphasized);
+    --a-field-input-border-color: var(--app-border-strong);        /* ≥ 3:1 on cards (WCAG 1.4.11) */
+    --a-field-input-hover-border-color: var(--app-border-strong);
+    --a-field-input-focus-border-color: var(--__PREFIX__-cyan);
+    --a-field-input-focus-background-color: var(--app-surface-input);
+    --a-field-placeholder-text-color: var(--app-text-secondary);   /* needs ≥ 4.5:1 on the input surface */
+    --a-field-placeholder-opacity: 1;
+    --a-chip-border-color: var(--app-border-strong);
+
+    /* File Drop (p1601, p423) */
+    --a-filedrop-border-color: var(--app-border-strong);
+    --a-filedrop-focus-border-color: var(--__PREFIX__-cyan);
+    --a-filedrop-heading-text-color: var(--app-text-emphasized);
+    --a-filedrop-text-color: var(--app-text-secondary);
+    --a-filedrop-icon-action-background-color: var(--app-surface-hover);   /* not in Iris — widget CSS
+                                                                               fallback is #fff; the 16px
+                                                                               action glyph inherits
+                                                                               --a-filedrop-text-color, which
+                                                                               is unreadable on that fallback */
+    --a-filedrop-icon-action-border-color: var(--app-border-strong);
+
+    /* Markdown Editor (p1601) */
+    --a-mdeditor-background-color: var(--app-surface-input);
+    --a-mdeditor-border-color: var(--app-border-strong);
+    --a-mdeditor-focus-border-color: var(--__PREFIX__-cyan);
+
+    /* Combo Box (p1601) */
+    --a-combo-select-item-selected-background-color: var(--app-surface-selected);
+}
+
+/* Stacked / inline labels: 13px, medium, secondary text (≥ 4.5:1) */
+.app-theme-__NAME__ .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Floating labels are 11px on the highlight surface: body colour at rest, light while active (the cyan focus
+   border already marks focus; 11px accent-coloured text risks falling under 4.5:1 there) */
+.app-theme-__NAME__ .apex-theme-iris .t-Form-fieldContainer--floatingLabel .t-Form-label {
+    color: var(--app-text-primary);
+}
+.app-theme-__NAME__ .apex-theme-iris .t-Form-fieldContainer--floatingLabel.is-active .t-Form-label {
+    color: var(--app-text-emphasized);
+}
+
+/* Focus halo (soft cyan) on the native item types */
+.app-theme-__NAME__ .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-__NAME__ .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-__NAME__ .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-__NAME__ .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px var(--app-focus-halo-color);
+    border-color: var(--__PREFIX__-cyan);
+    outline: none;
+}

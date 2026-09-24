@@ -89,6 +89,7 @@ html.app-theme-estate-slate {
     --app-selected-treatment: rail;
     --app-responsive-strategy: reflow;
 
+/* @adapter light/tokens#1 prefix=est - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--est-amber);
 
@@ -115,6 +116,7 @@ html.app-theme-estate-slate {
     --ut-border-radius-sm: var(--app-radius-sm);
     --ut-border-radius-md: var(--app-radius-md);
     --ut-border-radius-lg: var(--app-radius-lg);
+/* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
     --ut-link-text-color: var(--app-color-primary);
@@ -133,6 +135,7 @@ html.app-theme-estate-slate {
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--est-amber-shade);
 
+/* @adapter light/tokens#2 prefix=est - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-contrast: var(--app-text-on-accent);
     --ut-palette-danger-shade: var(--est-ruby-shade);
@@ -141,3 +144,4 @@ html.app-theme-estate-slate {
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--est-cyan-shade);
 }
+/* @adapter-end light/tokens#2 */

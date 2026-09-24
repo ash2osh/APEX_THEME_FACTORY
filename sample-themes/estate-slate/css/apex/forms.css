@@ -8,7 +8,8 @@
     --a-field-input-focus-border-color: var(--app-color-primary);
 }
 
-/* Stacked / inline labels: 13px, medium, slate-600 */
+/* @adapter light/forms#1 prefix=est - generated from theme-templates/adapters/light/forms.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Stacked / inline labels: 13px, medium, secondary text */
 .app-theme-estate-slate .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
     font-size: var(--app-text-sm);
     font-weight: var(--app-font-weight-medium);
@@ -23,6 +24,7 @@
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
+/* @adapter-end light/forms#1 */
 
 /* identity: outlined form borders */
 .app-theme-estate-slate .apex-theme-iris .apex-item-text,

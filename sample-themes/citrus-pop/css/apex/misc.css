@@ -1,4 +1,5 @@
 /* identity: playful pills, teal structure, and tangerine action states */
+/* @adapter light/misc#1 prefix=cit - generated from theme-templates/adapters/light/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Alerts, badges, tabs — status pills and indicator badges.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -11,6 +12,7 @@
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
+/* @adapter-end light/misc#1 */
 
 /* Reference-app demo surfaces: use the package's semantic fills and explicit text pairs for FullCalendar. */
 .app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-green,

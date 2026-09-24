@@ -89,6 +89,7 @@ html.app-theme-citrus-pop {
     --app-selected-treatment: fill;
     --app-responsive-strategy: stack;
 
+/* @adapter light/tokens#1 prefix=cit - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px var(--cit-amber);
 
@@ -115,6 +116,7 @@ html.app-theme-citrus-pop {
     --ut-border-radius-sm: var(--app-radius-sm);
     --ut-border-radius-md: var(--app-radius-md);
     --ut-border-radius-lg: var(--app-radius-lg);
+/* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
     --ut-link-text-color: var(--cit-teal-text);
@@ -133,6 +135,7 @@ html.app-theme-citrus-pop {
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--cit-tangerine-shade);
 
+/* @adapter light/tokens#2 prefix=cit - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-contrast: var(--app-text-on-accent);
     --ut-palette-danger-shade: var(--cit-ruby-shade);
@@ -141,6 +144,7 @@ html.app-theme-citrus-pop {
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--cit-cyan-shade);
 }
+/* @adapter-end light/tokens#2 */
 /* identity: pill navigation, pale aqua canvas, and teal structure */
 .app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
 .app-theme-citrus-pop .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
@@ -166,6 +170,7 @@ html.app-theme-citrus-pop {
     background-color: var(--cit-tangerine);
 }
 
+/* @adapter light/shell#1 prefix=cit - generated from theme-templates/adapters/light/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-citrus-pop .apex-theme-iris .t-Header-logo-link {
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-chrome);
@@ -268,10 +273,12 @@ html.app-theme-citrus-pop {
     line-height: 3rem;
     font-size: 1.5rem;
 }
+/* @adapter-end light/shell#1 */
 /* identity: buoyant card lift with generous playful spacing */
 .app-theme-citrus-pop .apex-theme-iris .t-Region,
 .app-theme-citrus-pop .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease; }
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover { transform: var(--app-hover-transform); box-shadow: var(--app-shadow-md); }
+/* @adapter light/regions#1 prefix=cit - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Regions, cards, content blocks, breadcrumb title.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -286,7 +293,9 @@ html.app-theme-citrus-pop {
     --ut-region-body-padding-x: var(--app-space-4);
     --ut-region-body-padding-y: var(--app-space-4);
 }
+/* @adapter-end light/regions#1 */
 
+/* @adapter light/regions#2 prefix=cit - generated from theme-templates/adapters/light/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
 .app-theme-citrus-pop .apex-theme-iris .t-Region-header {
     font-size: var(--app-text-md);
     font-weight: var(--app-font-weight-semibold);
@@ -342,6 +351,7 @@ html.app-theme-citrus-pop {
     --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
 }
+/* @adapter-end light/regions#2 */
 
 /* buoyant-card: rounded white islands lift gently above the aqua canvas. */
 .app-theme-citrus-pop .apex-theme-iris .t-Region,
@@ -359,6 +369,7 @@ html.app-theme-citrus-pop {
 }
 /* identity: tangerine action pills with audited dark text */
 .app-theme-citrus-pop .apex-theme-iris .t-Button--hot { background: var(--cit-tangerine); color: var(--cit-hot-button-text); border-radius: var(--app-radius-lg); }
+/* @adapter light/buttons#1 prefix=cit - generated from theme-templates/adapters/light/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Buttons.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -386,7 +397,7 @@ html.app-theme-citrus-pop {
     --a-button-active-shadow: none;
 }
 
-/* Hot button: champagne amber directive action */
+/* Hot button: the directive accent action */
 .app-theme-citrus-pop .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary) {
     --a-button-background-color: var(--app-color-primary);
     --a-button-text-color: var(--app-text-on-accent);
@@ -419,6 +430,7 @@ html.app-theme-citrus-pop {
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+/* @adapter-end light/buttons#1 */
 
 /* pill-control: friendly actions use full capsules; hot actions carry the citrus signal. */
 .app-theme-citrus-pop .apex-theme-iris .t-Button {
@@ -443,7 +455,8 @@ html.app-theme-citrus-pop {
     --a-field-input-focus-border-color: var(--app-color-primary);
 }
 
-/* Stacked / inline labels: 13px, medium, slate-600 */
+/* @adapter light/forms#1 prefix=cit - generated from theme-templates/adapters/light/forms.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Stacked / inline labels: 13px, medium, secondary text */
 .app-theme-citrus-pop .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
     font-size: var(--app-text-sm);
     font-weight: var(--app-font-weight-medium);
@@ -458,9 +471,11 @@ html.app-theme-citrus-pop {
     box-shadow: 0 0 0 3px var(--app-accent-shade);
     outline: none;
 }
+/* @adapter-end light/forms#1 */
 /* identity: spacious reports with teal structural rules */
 .app-theme-citrus-pop .apex-theme-iris .a-IRR-table td,
 .app-theme-citrus-pop .apex-theme-iris .a-GV-table td { padding-block: var(--app-space-4); }
+/* @adapter light/reports#1 prefix=cit - generated from theme-templates/adapters/light/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Reports — Interactive Report (a-IRR), Interactive Grid (a-IG / a-GV), classic report (t-Report).
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -530,8 +545,10 @@ html.app-theme-citrus-pop {
 .app-theme-citrus-pop .apex-theme-iris .t-Report-cell {
     font-variant-numeric: tabular-nums;
 }
+/* @adapter-end light/reports#1 */
 /* identity: layered dialogs with buoyant rounded surfaces */
 .app-theme-citrus-pop .apex-theme-iris .ui-dialog { box-shadow: var(--app-shadow-dialog); border-radius: var(--app-radius-lg); }
+/* @adapter light/dialogs#1 prefix=cit - generated from theme-templates/adapters/light/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Modal dialogs and popup menus.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -559,7 +576,9 @@ html.app-theme-citrus-pop {
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+/* @adapter-end light/dialogs#1 */
 /* identity: playful pills, teal structure, and tangerine action states */
+/* @adapter light/misc#1 prefix=cit - generated from theme-templates/adapters/light/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
 /* Alerts, badges, tabs — status pills and indicator badges.
    Scoped to .app-theme-citrus-pop .apex-theme-iris. */
 
@@ -572,6 +591,7 @@ html.app-theme-citrus-pop {
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
+/* @adapter-end light/misc#1 */
 
 /* Reference-app demo surfaces: use the package's semantic fills and explicit text pairs for FullCalendar. */
 .app-theme-citrus-pop .apex-theme-iris .fc .fc-event.apex-cal-green,

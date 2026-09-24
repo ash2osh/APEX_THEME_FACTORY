@@ -1256,11 +1256,19 @@ html.app-theme-velvet-signal {
 /* @adapter-end dark/misc#2 */
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
-/* Responsive rules for html.app-theme-velvet-signal. */
+/* Responsive rules for html.app-theme-velvet-signal: strategy stack, at 768px and below. */
 
 @media (max-width: 768px) {
-  html.app-theme-velvet-signal .t-Cards,
-  html.app-theme-velvet-signal .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }
+  /* stack: multi-column cards become one column */
+  html.app-theme-velvet-signal .t-Cards--cols,
+  html.app-theme-velvet-signal .t-Cards--2cols,
+  html.app-theme-velvet-signal .t-Cards--3cols,
+  html.app-theme-velvet-signal .t-Cards--4cols,
+  html.app-theme-velvet-signal .t-Cards--5cols,
+  html.app-theme-velvet-signal .a-CardView-items--grid2col,
+  html.app-theme-velvet-signal .a-CardView-items--grid3col,
+  html.app-theme-velvet-signal .a-CardView-items--grid4col,
+  html.app-theme-velvet-signal .a-CardView-items--grid5col { grid-template-columns: 1fr; }
 }
 
 /* ==========================================================================

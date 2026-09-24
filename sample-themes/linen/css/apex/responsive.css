@@ -1,8 +1,12 @@
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
-/* Responsive rules for html.app-theme-linen. */
+/* Responsive rules for html.app-theme-linen: strategy reflow, at 768px and below. */
 
 @media (max-width: 768px) {
-  html.app-theme-linen .t-Header-controls,
-  html.app-theme-linen .t-Body-actions { flex-wrap: wrap; }
+  /* reflow: header buttons wrap under the title; button-region content moves below its buttons */
+  html.app-theme-linen .t-Region-header { flex-wrap: wrap; }
+  html.app-theme-linen .t-ButtonRegion-wrap {
+    grid-template-areas: "button-left button-right" "button-content button-content";
+    grid-template-columns: 1fr auto;
+  }
 }

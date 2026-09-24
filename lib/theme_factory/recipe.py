@@ -527,25 +527,6 @@ def axis_css_values(recipe: ThemeRecipe) -> dict[str, str]:
         if recipe.interaction.hover == "glow" else "none"
     )
     motion_duration = {"none": "0ms", "precise": "120ms", "smooth": "180ms", "buoyant": "240ms"}[recipe.interaction.motion]
-    responsive_tokens = ""
-    responsive_hooks = ""
-    if recipe.responsive.strategy == "compress":
-        # From the recipe's literals: a custom property that reads itself is a cycle, and the browser then
-        # treats it as unset (controls lost their min-height on narrow screens).
-        responsive_tokens = (
-            f"--app-control-h: calc({recipe.geometry.control_height} * 0.875);\n"
-            f"    --app-space-unit: calc({space_unit} * 0.875);"
-        )
-    elif recipe.responsive.strategy == "reflow":
-        responsive_hooks = (
-            "html.app-theme-__NAME__ .t-Header-controls,\n"
-            "html.app-theme-__NAME__ .t-Body-actions { flex-wrap: wrap; }"
-        )
-    else:
-        responsive_hooks = (
-            "html.app-theme-__NAME__ .t-Cards,\n"
-            "html.app-theme-__NAME__ .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }"
-        )
     return {
         "density_scale": density_scale,
         "space_unit": space_unit,
@@ -556,8 +537,6 @@ def axis_css_values(recipe: ThemeRecipe) -> dict[str, str]:
         "selected_treatment": recipe.interaction.selected,
         "responsive_strategy": recipe.responsive.strategy,
         "compact_at": str(recipe.responsive.compact_controls_at),
-        "responsive_tokens": responsive_tokens,
-        "responsive_hooks": responsive_hooks,
     }
 
 
@@ -689,31 +668,59 @@ def render_tokens(recipe: ThemeRecipe) -> str:
     return "\n".join(lines)
 
 
+def _responsive_rules(recipe: ThemeRecipe) -> list[str]:
+    """Rules for one recipe strategy, each aimed at markup Universal Theme 26.1 actually renders
+    (checked against its Core.min.css; see docs/DESIGN_SYSTEM.md, Responsive)."""
+    scope = f"html.app-theme-{recipe.identity.name}"
+    strategy = recipe.responsive.strategy
+    if strategy == "compress":
+        space_unit = axis_css_values(recipe)["space_unit"]
+        # Scale the recipe's literals: a custom property that reads itself is a cycle (the browser drops it).
+        # Buttons and inputs size from padding atoms that every theme sets on .apex-theme-iris; size modifiers
+        # (.t-Button--small, .t-Form--large, ...) set them on the element and keep winning.
+        return [
+            "/* compress: tighter controls and spacing */",
+            f"{scope} {{",
+            f"  --app-control-h: calc({recipe.geometry.control_height} * 0.875);",
+            f"  --app-space-unit: calc({space_unit} * 0.875);",
+            "}",
+            f"{scope} .apex-theme-iris {{",
+            "  --a-button-padding-y: .375rem;",
+            "  --a-field-input-padding-y: .25rem;",
+            "}",
+        ]
+    if strategy == "reflow":
+        # .t-Region-header is a non-wrapping flex row; .t-ButtonRegion-wrap is a one-row grid
+        # (left | content | right). Let header buttons drop under the title, content under the buttons.
+        return [
+            "/* reflow: header buttons wrap under the title; button-region content moves below its buttons */",
+            f"{scope} .t-Region-header {{ flex-wrap: wrap; }}",
+            f"{scope} .t-ButtonRegion-wrap {{",
+            '  grid-template-areas: "button-left button-right" "button-content button-content";',
+            "  grid-template-columns: 1fr auto;",
+            "}",
+        ]
+    # stack: UT's column modifiers are grids that keep two or more columns from 480px up.
+    selectors = [f"{scope} .t-Cards--{cols}" for cols in ("cols", "2cols", "3cols", "4cols", "5cols")]
+    selectors += [f"{scope} .a-CardView-items--grid{cols}col" for cols in (2, 3, 4, 5)]
+    return (["/* stack: multi-column cards become one column */"]
+            + [f"{selector}," for selector in selectors[:-1]]
+            + [f"{selectors[-1]} {{ grid-template-columns: 1fr; }}"])
+
+
 def render_responsive_css(recipe: ThemeRecipe) -> str:
-    """Render the responsive stylesheet for a theme from its recipe declarations."""
+    """Render css/apex/responsive.css (imported last by css/theme.css) from the recipe's strategy."""
     name = recipe.identity.name
-    axis = axis_css_values(recipe)
     compact_at = recipe.responsive.compact_controls_at
     lines = [
         GENERATED_CSS_MARKER,
         "/* generated-from: theme.recipe.json */",
-        f"/* Responsive rules for html.app-theme-{name}. */",
+        f"/* Responsive rules for html.app-theme-{name}: strategy {recipe.responsive.strategy}, "
+        f"at {compact_at}px and below. */",
         "",
     ]
     if compact_at > 0:
-        media_rules = []
-        if axis["responsive_tokens"]:
-            tokens = "\n    ".join(axis["responsive_tokens"].splitlines())
-            media_rules.append(f"  html.app-theme-{name} {{\n    {tokens}\n  }}")
-        if axis["responsive_hooks"]:
-            hooks = axis["responsive_hooks"].replace("__NAME__", name)
-            indented_hooks = "\n  ".join(hooks.splitlines())
-            media_rules.append(f"  {indented_hooks}")
-
-        if media_rules:
-            lines.append(f"@media (max-width: {compact_at}px) {{")
-            lines.append("\n\n".join(media_rules))
-            lines.append("}")
-            lines.append("")
+        lines.append(f"@media (max-width: {compact_at}px) {{")
+        lines.extend(f"  {line}" for line in _responsive_rules(recipe))
+        lines.extend(["}", ""])
     return "\n".join(lines)
-

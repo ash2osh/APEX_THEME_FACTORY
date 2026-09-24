@@ -1,10 +1,15 @@
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
-/* Responsive rules for html.app-theme-carbon-volt. */
+/* Responsive rules for html.app-theme-carbon-volt: strategy compress, at 768px and below. */
 
 @media (max-width: 768px) {
+  /* compress: tighter controls and spacing */
   html.app-theme-carbon-volt {
     --app-control-h: calc(2.125rem * 0.875);
-        --app-space-unit: calc(0.375rem * 0.875);
+    --app-space-unit: calc(0.375rem * 0.875);
+  }
+  html.app-theme-carbon-volt .apex-theme-iris {
+    --a-button-padding-y: .375rem;
+    --a-field-input-padding-y: .25rem;
   }
 }

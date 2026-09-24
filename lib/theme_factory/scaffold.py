@@ -173,8 +173,6 @@ def _replacements(recipe: ThemeRecipe) -> dict[str, str]:
         "__SELECTED_TREATMENT__": axis["selected_treatment"],
         "__RESPONSIVE_STRATEGY__": axis["responsive_strategy"],
         "__COMPACT_AT__": axis["compact_at"],
-        "__RESPONSIVE_TOKENS__": axis["responsive_tokens"],
-        "__RESPONSIVE_HOOKS__": axis["responsive_hooks"].replace("__NAME__", identity.name),
         "__BORDER_WIDTH__": border_width,
         "__SHADOW__": shadow,
         "__BODY_INTERNAL__": body_internal,

@@ -21,21 +21,53 @@ import json
 from pathlib import Path
 import re
 
-from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json, _indent
+from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json
 from lib.theme_factory.css_bundle import flatten_css, render_font_css
 from lib.theme_factory.manifest import load_manifest
 from lib.theme_factory.static_files import file_block
 
 THEMES_BLOCK_RE = re.compile(r"/\* @themes:start \*/.*?/\* @themes:end \*/", re.S)
 PAGE_ZERO = Path("applications/ut/pages/p00000-global-page.apx")
-PAGE_ZERO_THEME_RE = re.compile(
-    r"(region theme \(\n(?:[^\n]*\n)*?        source \{\n            htmlCode:\n                ```html\n).*?(\n                ```\n        \}\n        layout \{\n            sequence: 15)",
-    re.S,
+THEME_FACTORY_JSON = Path("applications/ut/theme-factory.json")
+FENCE_OPEN_RE = re.compile(r"^(?P<indent>[ \t]*)```html[ \t]*$", re.M)
+FENCE_CLOSE_RE = re.compile(r"^[ \t]*```[ \t]*$", re.M)
+DIALOG_NOTE = (
+    "<!-- Page 0 may only use Standard-template slots; APEX maps them by position number, and\n"
+    "     breadcrumbBar = #REGION_POSITION_01# = the first position of the Modal Dialog, Drawer and\n"
+    "     Wizard Modal Dialog templates (those have no banner slot). Idempotent with region \"theme\". -->\n"
 )
-PAGE_ZERO_DIALOG_RE = re.compile(
-    r"(region theme_dialog \(\n(?:[^\n]*\n)*?        source \{\n            htmlCode:\n                ```html\n).*?(\n                ```\n        \}\n        layout \{\n            sequence: 1)",
-    re.S,
-)
+
+
+def _replace_region_html(text: str, region: str, html: str) -> str:
+    """Replace the ```html block of `region <name> (` in an APEXLang page, wherever the export puts
+    it: found by region name and fences, not by indentation or property order."""
+    heads = list(re.finditer(rf"^[ \t]*region {re.escape(region)} \([ \t]*$", text, re.M))
+    if len(heads) != 1:
+        raise ValueError(f"{PAGE_ZERO}: expected one region '{region}', found {len(heads)}")
+    start = heads[0].end()
+    next_region = re.compile(r"^[ \t]*region [A-Za-z0-9_]+ \(", re.M).search(text, start)
+    limit = next_region.start() if next_region else len(text)
+    opening = FENCE_OPEN_RE.search(text, start, limit)
+    closing = FENCE_CLOSE_RE.search(text, opening.end(), limit) if opening else None
+    if not opening or not closing:
+        raise ValueError(f"{PAGE_ZERO}: region '{region}' has no ```html source block")
+    body = "\n".join(opening["indent"] + line if line.strip() else line for line in html.splitlines())
+    return text[:opening.end()] + "\n" + body + "\n" + text[closing.start():]
+
+
+def _default_theme(root: Path, themes: list[str]) -> str:
+    """The app default from applications/ut/theme-factory.json (written by scripts/apply-theme.sh)."""
+    path = root / THEME_FACTORY_JSON
+    try:
+        default = json.loads(path.read_text(encoding="utf-8"))["defaultTheme"]
+    except FileNotFoundError:
+        raise ValueError(f"{THEME_FACTORY_JSON} is missing: run scripts/apply-theme.sh <theme>") from None
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ValueError(f"{THEME_FACTORY_JSON} must be JSON with a \"defaultTheme\" string: {exc}") from None
+    if default != "iris" and default not in themes:
+        raise ValueError(f"{THEME_FACTORY_JSON}: default theme '{default}' is not installed "
+                         f"(sample-themes: {', '.join(themes)})")
+    return default
 
 
 @dataclass
@@ -138,43 +170,19 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
     page_zero = root / PAGE_ZERO
     if page_zero.is_file():
         current_p0 = page_zero.read_text(encoding="utf-8")
-        if not PAGE_ZERO_THEME_RE.search(current_p0) or not PAGE_ZERO_DIALOG_RE.search(current_p0):
-            raise ValueError(f"{PAGE_ZERO}: expected both theme and theme_dialog bootstrap regions")
-        tf_json = root / "applications/ut/theme-factory.json"
-        default_theme = "linen"
-        if tf_json.is_file():
-            try:
-                data = json.loads(tf_json.read_text(encoding="utf-8"))
-                default_theme = data.get("defaultTheme", default_theme)
-            except Exception:
-                pass
         themes_data = []
         for name in themes:
-            manifest_path = root / "sample-themes" / name / "theme.json"
-            if manifest_path.is_file():
-                m = load_manifest(manifest_path, manifest_path.parent)
-                themes_data.append({"name": m.name, "title": m.title, "className": m.class_name})
-            else:
-                themes_data.append({"name": name, "title": name.replace("-", " ").title(), "className": f"app-theme-{name}"})
+            manifest = load_manifest(root / "sample-themes" / name / "theme.json", root / "sample-themes" / name)
+            themes_data.append({"name": manifest.name, "title": manifest.title, "className": manifest.class_name})
         boot = build_bootstrap_html(
-            default_theme,
+            _default_theme(root, themes),
             True,
             script_json(themes_data),
             hash_links=True,
             legacy_key="app.theme",
         )
-        indented_boot = _indent(boot, " " * 16)
-        dialog_comment = (
-            " " * 16
-            + "<!-- Page 0 may only use Standard-template slots; APEX maps them by position number, and\n"
-            + " " * 21
-            + "breadcrumbBar = #REGION_POSITION_01# = the first position of the Modal Dialog, Drawer and\n"
-            + " " * 21
-            + "Wizard Modal Dialog templates (those have no banner slot). Idempotent with region \"theme\". -->\n"
-        )
-        indented_dialog_boot = dialog_comment + indented_boot
-        new_p0 = PAGE_ZERO_THEME_RE.sub(lambda m: m.group(1) + indented_boot + m.group(2), current_p0)
-        new_p0 = PAGE_ZERO_DIALOG_RE.sub(lambda m: m.group(1) + indented_dialog_boot + m.group(2), new_p0)
+        new_p0 = _replace_region_html(current_p0, "theme", boot)
+        new_p0 = _replace_region_html(new_p0, "theme_dialog", DIALOG_NOTE + boot)
         if new_p0 != current_p0:
             if check:
                 report.drift.append(f"{PAGE_ZERO.as_posix()}: bootstrap regions")

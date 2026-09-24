@@ -45,7 +45,12 @@ class SyncStaticTests(unittest.TestCase):
         self.assertIn(file_block("js/theme-factory-runtime.js"), registered)
         self.assertIn('file "icons/app-icon.png"', registered)
 
+    def write_default(self, text: str = '{"defaultTheme": "linen"}\n') -> None:
+        (self.root / "applications/ut").mkdir(parents=True, exist_ok=True)
+        (self.root / "applications/ut/theme-factory.json").write_text(text, encoding="utf-8")
+
     def write_page_zero(self, regions: int = 2) -> Path:
+        self.write_default()
         page = self.root / "applications/ut/pages/p00000-global-page.apx"
         page.parent.mkdir(parents=True, exist_ok=True)
         blocks = []
@@ -91,6 +96,34 @@ class SyncStaticTests(unittest.TestCase):
         self.assertIn('"cobalt-press"', content)
         self.assertIn('"linen"', content)
         self.assertEqual(sync(self.root, check=True).drift, [])
+
+    def test_regions_are_found_by_name_whatever_the_export_order_or_indent(self):
+        page = self.write_page_zero()
+        sync(self.root)
+        expected = page.read_text(encoding="utf-8")
+        # an export that reorders properties, renumbers sequences and re-indents must still sync in place
+        shuffled = (expected.replace("sequence: 15", "sequence: 40").replace("sequence: 1\n", "sequence: 7\n")
+                    .replace("        name: Theme\n", "        name: Theme\n        advanced {\n            htmlDomId: t\n        }\n"))
+        page.write_text(shuffled, encoding="utf-8")
+        self.assertEqual(sync(self.root, check=True).drift, [])
+        page.write_text(shuffled.replace("window.APEX_THEME_FACTORY_CONFIG", "window.STALE", 1), encoding="utf-8")
+        sync(self.root)
+        self.assertEqual(page.read_text(encoding="utf-8").count("window.APEX_THEME_FACTORY_CONFIG ="), 2)
+        self.assertIn("sequence: 40", page.read_text(encoding="utf-8"))
+
+    def test_default_theme_must_be_readable_and_installed(self):
+        self.write_page_zero()
+        for text, message in (("{not json", "must be JSON"), ('{"defaultTheme": "velvet-signal"}', "not installed"),
+                              ("{}", "must be JSON")):
+            self.write_default(text)
+            with self.assertRaisesRegex(ValueError, message):
+                sync(self.root, check=True)
+        (self.root / "applications/ut/theme-factory.json").unlink()
+        with self.assertRaisesRegex(ValueError, "apply-theme.sh"):
+            sync(self.root, check=True)
+        self.write_default('{"defaultTheme": "iris"}')
+        sync(self.root)
+        self.assertIn('defaultTheme: "iris"', (self.root / "applications/ut/pages/p00000-global-page.apx").read_text())
 
     def test_page_zero_with_an_unexpected_region_count_is_refused(self):
         self.write_page_zero(regions=1)

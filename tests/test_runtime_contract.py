@@ -108,6 +108,45 @@ console.log(JSON.stringify({{ storage, classes: Array.from(classList), dataset }
         res = subprocess.run(["node", "-e", runner], capture_output=True, text=True, check=True)
         return json.loads(res.stdout)
 
+    def _use_in_node(self, name: str, storage: dict, hash_str: str = "") -> dict:
+        """Load the runtime with a config (default linen), call ApexThemeFactory.use(name)."""
+        import json, subprocess
+        runtime = (Path(__file__).resolve().parent.parent / "installer/theme-factory-runtime.js").read_text(encoding="utf-8")
+        runner = f"""
+const storage = {json.dumps(storage)};
+let reloaded = false, replaced = null;
+globalThis.window = {{
+  APEX_THEME_FACTORY_CONFIG: {{ appId: 102, defaultTheme: "linen", switcherEnabled: true,
+    themes: [{{ name: "linen", title: "Linen" }}, {{ name: "cobalt-press", title: "Cobalt Press" }}] }},
+  location: {{ hash: {json.dumps(hash_str)}, pathname: "/p", search: "", reload: () => {{ reloaded = true; }} }},
+  history: {{ replaceState: (a, b, url) => {{ replaced = url; }} }},
+  localStorage: {{
+    getItem: (k) => Object.prototype.hasOwnProperty.call(storage, k) ? storage[k] : null,
+    setItem: (k, v) => {{ storage[k] = String(v); }},
+    removeItem: (k) => {{ delete storage[k]; }}
+  }}
+}};
+globalThis.document = {{ documentElement: {{ dataset: {{}} }} }};
+{runtime}
+const result = window.ApexThemeFactory.use({json.dumps(name)});
+console.log(JSON.stringify({{ result, storage, reloaded, replaced }}));
+"""
+        res = subprocess.run(["node", "-e", runner], capture_output=True, text=True, check=True)
+        return json.loads(res.stdout)
+
+    def test_runtime_use_stores_choices_and_forgets_the_app_default(self):
+        key = "apex.themeFactory.102"
+        picked = self._use_in_node("cobalt-press", {}, "#theme=linen")
+        self.assertEqual((picked["result"], picked["storage"].get(key), picked["reloaded"]), (True, "cobalt-press", True))
+        self.assertEqual(picked["replaced"], "/p")  # a #theme= hash would re-apply itself on reload
+        # choosing the app default forgets the stored choice, so later default changes still reach the visitor
+        for name in ("linen", "default"):
+            chosen = self._use_in_node(name, {key: "cobalt-press"})
+            self.assertTrue(chosen["result"])
+            self.assertNotIn(key, chosen["storage"], name)
+        refused = self._use_in_node("typo", {key: "cobalt-press"})
+        self.assertEqual((refused["result"], refused["storage"][key], refused["reloaded"]), (False, "cobalt-press", False))
+
     def test_bootstrap_node_execution_cases(self):
         from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json
         themes = [

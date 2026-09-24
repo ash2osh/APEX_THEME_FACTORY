@@ -676,8 +676,9 @@ def _responsive_rules(recipe: ThemeRecipe) -> list[str]:
     if strategy == "compress":
         space_unit = axis_css_values(recipe)["space_unit"]
         # Scale the recipe's literals: a custom property that reads itself is a cycle (the browser drops it).
-        # Buttons and inputs size from padding atoms that every theme sets on .apex-theme-iris; size modifiers
-        # (.t-Button--small, .t-Form--large, ...) set them on the element and keep winning.
+        # Buttons size from padding atoms that every theme sets on .apex-theme-iris; size modifiers
+        # (.t-Button--small, .t-Button--large, ...) set them on the element and keep winning.
+        # Text inputs keep the theme's own padding so they stay touch-friendly (>=30px).
         return [
             "/* compress: tighter controls and spacing */",
             f"{scope} {{",
@@ -686,7 +687,6 @@ def _responsive_rules(recipe: ThemeRecipe) -> list[str]:
             "}",
             f"{scope} .apex-theme-iris {{",
             "  --a-button-padding-y: .375rem;",
-            "  --a-field-input-padding-y: .25rem;",
             "}",
         ]
     if strategy == "reflow":

@@ -178,7 +178,7 @@ The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
 |---|---|---|---|
 | `stack` | citrus-pop, velvet-signal | `.t-Cards--{cols,2cols…5cols}` and `.a-CardView-items--grid{2…5}col` → one column | Page 405 gallery and a Cards region at 600–768 px: one card per row (UT itself keeps 2+ columns from 480 px) |
 | `reflow` | linen, cobalt-press, estate-slate | `.t-Region-header` wraps; `.t-ButtonRegion-wrap` puts its content row under the left/right buttons | Region headers with several buttons and a long title (406); wizard/dialog button bars (1910) |
-| `compress` | carbon-volt, solarized-dark, estate-slate-dark | `--a-button-padding-y: .375rem`, `--a-field-input-padding-y: .25rem` on `.apex-theme-iris` (+ `--app-control-h`, `--app-space-unit`) | Buttons ≈ 30 px and inputs at the Iris default on 1601 at 768 px; `.t-Button--small/large` modifiers unchanged |
+| `compress` | carbon-volt, solarized-dark, estate-slate-dark | `--a-button-padding-y: .375rem` on `.apex-theme-iris` (+ `--app-control-h`, `--app-space-unit`); inputs keep theme size | Buttons ≈ 30 px; inputs retain theme padding (≥ 30 px, touch-friendly); `.t-Button--small/large` modifiers unchanged |
 
 - [x] `scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh`
 - [x] Each strategy looks right at 768 and 600 px on the pages above, and nothing changes at 1024 px and up
@@ -213,9 +213,11 @@ errors in the check, not in the CSS:
   Page 1601 has no button regions.
 - **stack**: page 405 goes from 3 columns to 1.
 
-Follow-up worth a design decision: a 24 px text input at ≤ 768 px meets WCAG 2.5.8's 24 px minimum target
-size, but it is small for touch. If compress should stay touch-friendly, keep inputs at the theme value and
-compress only buttons and spacing (`lib/theme_factory/recipe.py::_responsive_rules`).
+Decided 2026-09-24: inputs keep the theme size for touch friendliness.
+- **compress inputs live verification (2026-09-24)** on page 406 (`solarized-dark`):
+  - 1024px: `{"width":1024,"theme":"app-theme-solarized-dark","compressCssLoaded":true,"button":{"id":"B19609960886662538","cls":"t-Button ","padTop":"8px","height":36},"input":{"id":"P406_REQUIRED","padTop":"6px","height":30},"rootFont":"16px","noHScroll":true}`
+  - 768px: `{"width":768,"theme":"app-theme-solarized-dark","compressCssLoaded":true,"button":{"id":"B19609960886662538","cls":"t-Button ","padTop":"5px","height":30},"input":{"id":"P406_REQUIRED","padTop":"6px","height":30},"rootFont":"16px","noHScroll":true}`
+  Buttons compress 36 → 30 px (padTop 8 → 5 px); inputs stay touch-sized at 30 px (padTop 6 px) across both widths.
 
 
 

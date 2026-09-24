@@ -218,8 +218,9 @@ fails on drift. Every rule targets markup UT 26.1 actually renders:
   to one column. Plain `.t-Cards` is a flex row, so grid columns there do nothing.
 - **`reflow`**: `.t-Region-header` (a non-wrapping flex row) wraps, and `.t-ButtonRegion-wrap` (grid
   left / content / right) moves its content under the buttons.
-- **`compress`**: `--a-button-padding-y` and `--a-field-input-padding-y` shrink on `.apex-theme-iris`, where
-  every theme sets them. Size modifiers set them on the element and still win.
+- **`compress`**: `--a-button-padding-y` shrinks on `.apex-theme-iris` (along with `--app-control-h` and
+  `--app-space-unit`), where every theme sets it; text inputs keep each theme's own padding so they stay
+  touch-friendly (≥ 30 px). Size modifiers set them on the element and still win.
 
 ## 7. Registry of reusable visual patterns
 

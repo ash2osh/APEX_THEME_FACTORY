@@ -12,6 +12,7 @@ import tempfile
 import zipfile
 from typing import Dict
 
+from lib.theme_factory.apexlang_runtime import script_json
 from lib.theme_factory.css_bundle import build_theme_css
 from lib.theme_factory.css_policy import scan_package
 from lib.theme_factory.errors import PackageError
@@ -155,7 +156,7 @@ def build_package_from_root(
                 "APP_ID": "&APP_ID.",
                 "DEFAULT_THEME": manifest.name,
                 "SWITCHER_ENABLED": "false",
-                "THEMES_JSON": json.dumps([
+                "THEMES_JSON": script_json([
                     {"name": manifest.name, "title": manifest.title, "className": manifest.class_name}
                 ]),
             },

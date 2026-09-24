@@ -7,7 +7,7 @@ import re
 from typing import Dict, List, Optional, Tuple
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX
+from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX, validate_title
 from lib.theme_factory.apexlang_model import InstalledPackage, TargetExport
 from lib.theme_factory.apexlang_parser import (
     SWITCHER_ENTRY_PREFIX, _find_matching_brace, _is_bootstrap_identity,
@@ -240,13 +240,15 @@ def read_install_state(export_dir: Path) -> Tuple[List[InstalledPackage], str, b
                 raise ValueError("theme files are not an object")
             packages.append(InstalledPackage(
                 name=name,
-                title=package_data["title"],
+                title=validate_title(package_data["title"], "registry theme title"),
                 version=version,
                 class_name=class_name,
                 stylesheet_url=stylesheet_url,
                 files=dict(files),
             ))
         default_theme = data.get("defaultTheme", "iris")
+        if default_theme != "iris" and default_theme not in {package.name for package in packages}:
+            raise ValueError("default theme is neither 'iris' nor an installed theme")
         switcher_enabled = bool(data.get("switcherEnabled", False))
         return packages, default_theme, switcher_enabled
     except (ValueError, TypeError, KeyError) as exc:

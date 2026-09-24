@@ -33,6 +33,7 @@ from lib.theme_factory.install import (
     CANCELLED_EXIT_CODE,
     OperationReport,
     _record_post_digest,
+    assert_no_drift,
     make_staging_dir,
     remove_staging_dir,
     require_supported_apex_version,
@@ -289,17 +290,7 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
         raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
 
     # Drift guard
-    drift_temp = make_staging_dir(prefix="apex-theme-factory-drift-")
-    try:
-        drift_dir = sqlcl.export_apexlang(options.app_id, drift_temp)
-        drift_digest = canonical_digest(drift_dir)
-        if drift_digest != pre_digest:
-            raise PackageError(
-                f"Database drift detected on application {options.app_id} during staging",
-                exit_code=4,
-            )
-    finally:
-        shutil.rmtree(drift_temp, ignore_errors=True)
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "during staging")
 
     # Dry-run (target untouched: post-operation state == pre-export state)
     if not options.apply:
@@ -340,6 +331,8 @@ def _run_uninstall(options: UninstallOptions, staging: list) -> OperationReport:
             staged_dir=staged_dir,
             message="Target untouched due to confirmation mismatch",
         )
+
+    assert_no_drift(sqlcl, options.app_id, pre_digest, "while waiting for confirmation")
 
     try:
         sqlcl.import_apexlang(staged_dir, options.workspace, options.app_id)
@@ -464,6 +457,8 @@ def run_restore(options: RestoreOptions) -> OperationReport:
             staged_dir=None,
             message="Restore cancelled by user",
         )
+
+    assert_no_drift(sqlcl, options.app_id, live_digest, "while waiting for confirmation")
 
     try:
         sqlcl.import_apexlang(apexlang_path, options.workspace, options.app_id)

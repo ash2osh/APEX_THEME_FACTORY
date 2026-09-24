@@ -49,7 +49,7 @@ page 409 (
                   -- apex.server.plugin, whose success handler assigns regions[0].result. htp.p output is
                   -- written to the response stream ahead of the JSON envelope, so the parse fails, result is
                   -- null and apexafterrefresh never fires — the region can then never be refreshed.
-                  -- Verified live twice on 2026-09-16 (.agents/findings/pending/2026-09-16-dynamic-content-htp-p-cannot-refresh.md).
+                  -- Verified live twice on 2026-09-16 (.agents/knowledge/pitfalls.md §2.7).
                   return '<div x-data="themeFactoryDisclosure(''P409_DISCLOSURE_OPEN'')">'
                       || '  <button type="button" x-on:click="toggle" x-bind:aria-expanded="open.toString()" aria-controls="theme_factory_disclosure_panel">Toggle details</button>'
                       || '  <div id="theme_factory_disclosure_panel" x-show="open" x-cloak>Refresh-safe Alpine content</div>'

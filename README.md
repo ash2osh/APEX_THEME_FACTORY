@@ -54,9 +54,10 @@ The extracted folder is self-contained — `install.sh`, `uninstall.sh`, the CSS
 ./install.sh --connection <SAVED_CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
 ```
 
-Nothing is written. It exports your app, applies the change to a staging copy, compiles it, and prints exactly
-what *would* change — which files are added, whether a bootstrap region is created, and whether it found an
-existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat.
+Nothing is written to the database. It exports your app, applies the change to a staging copy, compiles it, and
+prints exactly what *would* change — which files are added, whether a bootstrap region is created, and whether it found an
+existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat; each one
+leaves a backup folder under `./theme-factory-backups/` that you can delete.
 
 ### 3. Apply
 
@@ -139,8 +140,8 @@ duplicating.
 |---|---|
 | `0` | Success (or a completed dry run) |
 | `3` | Refused before touching anything — wrong APEX version, unsafe target, or an ownership conflict |
-| `4` | Refused — the application changed in the database while staging (someone else edited it); nothing written |
-| `5` | Export, compile or import failed (the target is unchanged, or restored) |
+| `4` | Refused — the application changed in the database while staging or while the confirmation prompt was open (someone else edited it); nothing written |
+| `5` | Export, compile or import failed. Export and compile never touch the target; if `apex import` itself failed, check the app and [restore](#undo-an-install-restore) from the backup if needed — there is no automatic rollback |
 | `6` | Imported, but the post-import check found the result is not what was staged — **read the message** |
 | `7` | Cancelled at the confirmation prompt; target untouched |
 

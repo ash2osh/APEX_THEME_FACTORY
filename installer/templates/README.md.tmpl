@@ -108,7 +108,7 @@ Ownership is stored in data APEX keeps: the Page 0 regions carry Static IDs `the
 - `0`: Success (or clean dry-run preview)
 - `2`: Package integrity failure or argument error
 - `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 / Iris)
-- `4`: Database drift detected during staging
+- `4`: Database drift detected during staging or while the confirmation prompt was open; nothing imported
 - `5`: APEXLang validation or SQLcl import failure
 - `6`: Post-import verification check failed (the import happened; inspect the printed differences, then uninstall or restore)
 - `7`: Operation cancelled at the confirmation prompt, or a restore refused because the application changed after the backed-up operation (re-run with `--discard-later-changes` to accept losing those changes)

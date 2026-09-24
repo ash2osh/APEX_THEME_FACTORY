@@ -3,13 +3,24 @@
 import json
 from typing import Optional
 
+from lib.theme_factory.errors import PackageError
+from lib.theme_factory.manifest import NAME_REGEX
 from lib.theme_factory.apexlang_parser import (
     BOOTSTRAP_REGION_IDS, MARKER_HTML, SWITCHER_ENTRY_PREFIX,
     SWITCHER_ITEM_CLASS, SWITCHER_PARENT_ID,
 )
 
 
+def script_json(value) -> str:
+    """JSON for inline <script> in an APEX region: `<`, `>` and `&` are escaped so a value can
+    neither close the script element nor form an APEX substitution string (&ITEM.)."""
+    return (json.dumps(value)
+            .replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026"))
+
+
 def build_bootstrap_html(default_theme: str, switcher_enabled: bool, themes_json_str: str) -> str:
+    if default_theme != "iris" and NAME_REGEX.fullmatch(str(default_theme)) is None:
+        raise PackageError(f"Unsafe default theme name '{default_theme}'")
     return f"""{MARKER_HTML}
 <script>
 window.APEX_THEME_FACTORY_CONFIG = {{
@@ -60,7 +71,7 @@ def build_bootstrap_regions(default_theme: str, switcher_enabled: bool, themes: 
         for t in themes
     ]
     bootstrap_html = _indent(
-        build_bootstrap_html(default_theme, switcher_enabled, json.dumps(themes_data)), " " * 16
+        build_bootstrap_html(default_theme, switcher_enabled, script_json(themes_data)), " " * 16
     )
 
     def region(identifier: str, name: str, sequence: int, slot: str) -> str:

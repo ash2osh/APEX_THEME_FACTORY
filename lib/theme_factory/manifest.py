@@ -14,6 +14,11 @@ FONT_NAME_REGEX = re.compile(r"^[A-Za-z][A-Za-z0-9 _-]{0,63}$")
 FONT_FILE_REGEX = re.compile(r"^fonts/[a-z0-9]+(?:-[a-z0-9]+)*\.woff2$")
 LICENSE_FILE_REGEX = re.compile(r"^licenses/[A-Za-z0-9][A-Za-z0-9._-]*$")
 APEX_COMPATIBILITY = ">=26.1.0 <26.2.0"
+NAV_STYLE_REGEX = re.compile(r"^t-TreeNav--[A-Za-z0-9_-]+$")
+TITLE_MAX_LENGTH = 64
+# A title is written verbatim into an APEXLang `label:` line and into the page-0 bootstrap
+# <script>, so markup, APEX substitution (&ITEM.), APEXLang structure and line breaks are refused.
+TITLE_FORBIDDEN_CHARS = frozenset('<>&"\\`{}()[]#@$:;')
 
 GENERIC_FONT_FAMILIES = {
     "serif", "sans-serif", "monospace", "system-ui", "ui-serif", "ui-sans-serif", "ui-monospace"
@@ -56,6 +61,24 @@ class ThemeManifest:
         font_files = {face.file for role in self.fonts.values() for face in role.faces}
         licenses = {role.license for role in self.fonts.values()}
         return tuple(sorted({*font_files, *licenses}))
+
+
+def validate_title(title: Any, where: str = "title") -> str:
+    """Return a title that is safe to render into APEXLang and the bootstrap script."""
+    if not isinstance(title, str) or not title.strip():
+        raise PackageError(f"{where} must be a non-empty string")
+    if title != title.strip() or len(title) > TITLE_MAX_LENGTH:
+        raise PackageError(f"{where} must be at most {TITLE_MAX_LENGTH} characters without surrounding spaces")
+    bad = sorted({ch for ch in title if ch in TITLE_FORBIDDEN_CHARS or not ch.isprintable()})
+    if bad:
+        raise PackageError(f"{where} contains unsupported characters: {' '.join(repr(ch) for ch in bad)}")
+    return title
+
+
+def validate_navigation_menu_style(style: Any, where: str = "templateOptions/navigationMenuStyle") -> str:
+    if not isinstance(style, str) or not NAV_STYLE_REGEX.fullmatch(style):
+        raise PackageError(f"{where} must match {NAV_STYLE_REGEX.pattern}")
+    return style
 
 
 def _check_allowed_keys(obj: dict[str, Any], allowed: set[str], path: str) -> None:
@@ -102,9 +125,7 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     if package_root.name != name and package_root.name != f"{name}-{version}":
         raise PackageError(f"name '{name}' does not match package directory '{package_root.name}'")
 
-    title = raw["title"]
-    if not isinstance(title, str) or not title.strip():
-        raise PackageError("title must be a non-empty string")
+    title = validate_title(raw["title"])
 
     tagline = raw["tagline"]
     if not isinstance(tagline, str) or not tagline.strip():
@@ -148,8 +169,8 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
             raise PackageError("templateOptions must be an object")
         _check_allowed_keys(opts, {"navigationMenuStyle"}, "templateOptions")
         nav_style = opts.get("navigationMenuStyle")
-        if nav_style is not None and (not isinstance(nav_style, str) or not nav_style.strip()):
-            raise PackageError("templateOptions/navigationMenuStyle must be a non-empty string")
+        if nav_style is not None:
+            validate_navigation_menu_style(nav_style)
 
     # assets
     assets = raw["assets"]
@@ -287,7 +308,7 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
         if path.is_file()
     } if fonts_root.exists() else set()
     # Only declared WOFF2 faces may live under fonts/: TTF/OTF or any stray file is refused
-    # rather than silently left out of the package (spec §4.2).
+    # rather than silently left out of the package.
     non_woff2 = sorted(path for path in actual_font_files if not path.endswith(".woff2"))
     if non_woff2:
         raise PackageError(f"unsupported font file '{non_woff2[0]}': only declared .woff2 faces may live under fonts/")

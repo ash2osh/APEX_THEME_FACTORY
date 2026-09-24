@@ -19,6 +19,6 @@ html.app-theme-linen {
     --app-selected-treatment: underline;
     --app-responsive-strategy: reflow;
 
-    /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; Oracle Sans has a true 600 */
+    /* Iris' --a-base-font-weight-semibold resolves to 500 at runtime; the system UI stack has a true 600 */
     --app-font-weight-semibold: 600;
 }

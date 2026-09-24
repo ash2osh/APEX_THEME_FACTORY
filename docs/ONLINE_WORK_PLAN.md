@@ -145,7 +145,7 @@ the navigation drawer open.
 | Theme | Width | Page | Finding | Fix (own CSS / recipe block) |
 |---|---|---|---|---|
 | All 8 themes | 1440, 1024, 768, 375 | 500, 1402, 1910 | 0 horizontal scroll; layout clean; dialog responsive | Verified passing with standard UT grid & Iris tokens |
-| All 8 themes | 1024, 768 | 406 | IG toolbar and specimen table contained within region view | Handled via recipe responsive block |
+| All 8 themes | 1024, 768 | 406 | IG toolbar and specimen table contained within region view | Native UT behaviour (the first generated responsive rules had no effect; see 2.5) |
 | All 8 themes | 375 | 1601 | RDS tab strip expands as horizontal touch-swipe carousel (`scroll: false`) | Native UT mobile design pattern |
 | All 8 themes | 375 | All | Nav drawer open contrast exceeds WCAG AA (>5.5:1 dark, >7:1 light) | Passing |
 
@@ -166,14 +166,40 @@ anything a whole family shares in its adapter template (`theme-templates/adapter
 - [x] 768 and 1024 spot-checked on 406 and 1402
 - [x] Covers unchanged, or re-captured with `scripts/theme.sh cover NAME --output … --apply --overwrite`
 
+**2.5 Re-verify the corrected responsive rules (open).** A review of the first `responsive.css` against
+UT 26.1's `Core.min.css` showed it changed nothing on screen:
+- `stack` set grid columns on `.t-Cards`, which is a flex row, and on `.t-Region--cards`, which does not exist.
+- `reflow` wrapped `.t-Header-controls` (a grid item) and `.t-Body-actions` (not flex).
+- `compress` shrank `--app-control-h`, which the hand-written themes never read.
+
+The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
+
+| Strategy | Themes | Rules at ≤ 768 px | What to look at |
+|---|---|---|---|
+| `stack` | citrus-pop, velvet-signal | `.t-Cards--{cols,2cols…5cols}` and `.a-CardView-items--grid{2…5}col` → one column | Page 405 gallery and a Cards region at 600–768 px: one card per row (UT itself keeps 2+ columns from 480 px) |
+| `reflow` | linen, cobalt-press, estate-slate | `.t-Region-header` wraps; `.t-ButtonRegion-wrap` puts its content row under the left/right buttons | Region headers with several buttons and a long title (406); wizard/dialog button bars (1910) |
+| `compress` | carbon-volt, solarized-dark, estate-slate-dark | `--a-button-padding-y: .375rem`, `--a-field-input-padding-y: .25rem` on `.apex-theme-iris` (+ `--app-control-h`, `--app-space-unit`) | Buttons ≈ 30 px and inputs at the Iris default on 1601 at 768 px; `.t-Button--small/large` modifiers unchanged |
+
+- [ ] `scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh`
+- [ ] Each strategy looks right at 768 and 600 px on the pages above, and nothing changes at 1024 px and up
+- [ ] Release smoke PASS for one theme of each strategy (it covers 1440 and 375)
+
 
 ---
 
 ## Stage 3: decisions only you can make
 
-- [x] **Oracle files in git history.** `HEAD` no longer tracks them. History preserved safely in current repo state; no action needed on HEAD.
-- [x] **Leftover branches.** Kept only `main`. Deleted remote branch `claude/determined-hawking-v3qviv` on `origin`; pruned remote tracking references. Only `main` exists.
-- [x] **Uniqueness warnings.** All 8 themes pass author checks (`issues=0`), packaging, and verification.
+- [x] **Oracle files in git history.** Decision: history is not rewritten. `HEAD` no longer tracks the files, but
+  the repository is public, so they stay downloadable from commits before `1052881`. Revisit if that matters.
+- [ ] **Leftover branches.**
+  - Factory: only `main` ✔ (it comes back after any new cloud-session push; delete it again once that PR merges).
+  - Team repo still has `claude/determined-hawking-v3qviv`, `claude/hopeful-ride-eu60f9` and
+    `codex/p1-remediation-flow-simplification`. Run this inside that repo:
+    `git push origin --delete claude/determined-hawking-v3qviv claude/hopeful-ride-eu60f9 codex/p1-remediation-flow-simplification`
+  - Turn on *Settings → General → Automatically delete head branches* in both repos.
+- [x] **Uniqueness warnings accepted.** All 8 themes pass, but 4 warnings stay by decision:
+  carbon-volt ↔ estate-slate-dark (PROFILE_SIMILARITY) and cobalt-press ↔ estate-slate (STRUCTURAL_SIMILARITY 0.889).
+  They are warnings, not errors; differentiate the themes if they should read as distinct products.
 
 
 ---
@@ -185,5 +211,6 @@ anything a whole family shares in its adapter template (`theme-templates/adapter
 | Reduced-motion rule | `static-files/css/foundation/tokens.css` (end of file) |
 | Shipped-token contrast and recipe-drift check | `lib/theme_factory/checks.py::_token_issues` |
 | Adapter families | `theme-templates/adapters/`, `lib/theme_factory/adapters.py`, `scripts/theme.sh adapters` |
-| Page-0 allow-list (replaced in Stage 1) | `lib/theme_factory/sync_static.py` step 1b |
+| Page-0 bootstrap and default theme | `lib/theme_factory/sync_static.py` step 1b, `applications/ut/theme-factory.json` |
+| Responsive rules per strategy | `lib/theme_factory/recipe.py::_responsive_rules`; regenerate with `scripts/theme.sh responsive` (`--check` for drift) |
 | Release smoke | `tools/release_smoke.py`, `tools/browser_check.py` |

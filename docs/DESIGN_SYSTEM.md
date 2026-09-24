@@ -211,8 +211,15 @@ Declarative: `application.apx` → `css.fileUrls: #APP_FILES#css/app.css`; navig
 
 Universal Theme breakpoints are the reference; check every change at 1440, 1024, 768, 375 px
 (spec §45). Iris navigation: side nav `--ut-nav-width: 15rem`, header `--ut-header-height: 3.5rem`.
-The eight shipped themes have no `@media` rules of their own yet; the audit and the recipe-driven
-`responsive.css` are planned in [ONLINE_WORK_PLAN.md](ONLINE_WORK_PLAN.md) (they need the running app).
+Each theme's breakpoint rules live in one generated file, `css/apex/responsive.css` (imported last), rendered
+from its recipe's `responsive.strategy` at `compactControlsAt` px and below. Never hand-edit it: regenerate with `scripts/theme.sh responsive`; the offline gate
+fails on drift. Every rule targets markup UT 26.1 actually renders:
+- **`stack`**: the grid column modifiers `.t-Cards--{cols,2cols…5cols}` and `.a-CardView-items--grid{2…5}col` go
+  to one column. Plain `.t-Cards` is a flex row, so grid columns there do nothing.
+- **`reflow`**: `.t-Region-header` (a non-wrapping flex row) wraps, and `.t-ButtonRegion-wrap` (grid
+  left / content / right) moves its content under the buttons.
+- **`compress`**: `--a-button-padding-y` and `--a-field-input-padding-y` shrink on `.apex-theme-iris`, where
+  every theme sets them. Size modifiers set them on the element and still win.
 
 ## 7. Registry of reusable visual patterns
 

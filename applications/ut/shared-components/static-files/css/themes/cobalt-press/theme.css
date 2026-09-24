@@ -619,11 +619,15 @@ html.app-theme-cobalt-press {
 }
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
-/* Responsive rules for html.app-theme-cobalt-press. */
+/* Responsive rules for html.app-theme-cobalt-press: strategy reflow, at 768px and below. */
 
 @media (max-width: 768px) {
-  html.app-theme-cobalt-press .t-Header-controls,
-  html.app-theme-cobalt-press .t-Body-actions { flex-wrap: wrap; }
+  /* reflow: header buttons wrap under the title; button-region content moves below its buttons */
+  html.app-theme-cobalt-press .t-Region-header { flex-wrap: wrap; }
+  html.app-theme-cobalt-press .t-ButtonRegion-wrap {
+    grid-template-areas: "button-left button-right" "button-content button-content";
+    grid-template-columns: 1fr auto;
+  }
 }
 
 /* ==========================================================================

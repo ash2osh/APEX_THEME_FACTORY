@@ -148,12 +148,14 @@ class ThemeScaffoldTests(unittest.TestCase):
         # CSS cannot branch on a keyword stored in a custom property: these stay generator inputs only
         self.assertNotIn("--app-selected-treatment", tokens)
         misc = (theme_root / "css/apex/misc.css").read_text(encoding="utf-8")
-        self.assertIn("@media (max-width: 768px)", misc)
+        responsive = (theme_root / "css/apex/responsive.css").read_text(encoding="utf-8")
+        self.assertNotIn("max-width", misc)  # responsive.css is the one source of breakpoint rules
+        self.assertIn("@media (max-width: 768px)", responsive)
         self.assertNotIn("--app-responsive-strategy", tokens)
         # compress scales the recipe's own values; a property that reads itself would be a cycle (unset)
-        self.assertIn("--app-control-h: calc(", misc)
-        self.assertNotIn("calc(var(--app-control", misc)
-        self.assertNotIn("calc(var(--app-space-unit)", misc)
+        self.assertIn("--app-control-h: calc(", responsive)
+        self.assertNotIn("calc(var(--app-control", responsive)
+        self.assertNotIn("calc(var(--app-space-unit)", responsive)
         buttons = (theme_root / "css/apex/buttons.css").read_text(encoding="utf-8")
         self.assertIn("calc(var(--app-control-h) * var(--app-density-scale))", buttons)
         self.assertIn("prefers-reduced-motion: reduce", misc)

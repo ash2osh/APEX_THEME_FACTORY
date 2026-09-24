@@ -1,8 +1,16 @@
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
-/* Responsive rules for html.app-theme-citrus-pop. */
+/* Responsive rules for html.app-theme-citrus-pop: strategy stack, at 768px and below. */
 
 @media (max-width: 768px) {
-  html.app-theme-citrus-pop .t-Cards,
-  html.app-theme-citrus-pop .t-Region--cards .t-Cards-body { grid-template-columns: 1fr; }
+  /* stack: multi-column cards become one column */
+  html.app-theme-citrus-pop .t-Cards--cols,
+  html.app-theme-citrus-pop .t-Cards--2cols,
+  html.app-theme-citrus-pop .t-Cards--3cols,
+  html.app-theme-citrus-pop .t-Cards--4cols,
+  html.app-theme-citrus-pop .t-Cards--5cols,
+  html.app-theme-citrus-pop .a-CardView-items--grid2col,
+  html.app-theme-citrus-pop .a-CardView-items--grid3col,
+  html.app-theme-citrus-pop .a-CardView-items--grid4col,
+  html.app-theme-citrus-pop .a-CardView-items--grid5col { grid-template-columns: 1fr; }
 }

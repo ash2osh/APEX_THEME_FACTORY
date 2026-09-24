@@ -27,7 +27,8 @@
       if (!config.switcherEnabled) {
         return false;
       }
-      if (name === "default") {
+      /* Choosing the app default forgets the stored choice, so the visitor follows later default changes. */
+      if (name === "default" || name === config.defaultTheme) {
         try {
           window.localStorage.removeItem(key);
         } catch (e) {}

@@ -70,4 +70,23 @@
     --app-space-4: 1rem;
     --app-space-6: 1.5rem;
     --app-space-8: 2rem;
+
+    /* rhythm and interaction (recipe axes) — Iris has no equivalent, so the defaults change nothing:
+       unit spacing, no density or heading change, no hover movement, no animated transitions */
+    --app-space-unit:      .5rem;
+    --app-density-scale:   1;
+    --app-heading-scale:   1.25;
+    --app-hover-transform: none;
+    --app-hover-shadow:    none;
+    --app-motion-duration: 0ms;
+}
+
+/* Reduced motion (WCAG 2.3.3): themes animate only through --app-motion-duration and move only through
+   --app-hover-transform, so zeroing both here stops every theme's motion when the visitor asks for less.
+   :root:root[class*="app-theme-"] (0,3,0) outranks each theme's html.app-theme-<name> scope (0,1,1). */
+@media (prefers-reduced-motion: reduce) {
+    :root:root[class*="app-theme-"] {
+        --app-motion-duration: 0ms;
+        --app-hover-transform: none;
+    }
 }

@@ -144,10 +144,17 @@ class ThemeScaffoldTests(unittest.TestCase):
         self.assertIn("--app-heading-scale: 1.5", tokens)
         self.assertIn("--app-hover-transform: translateX(2px)", tokens)
         self.assertIn("--app-motion-duration: 120ms", tokens)
-        self.assertIn("--app-selected-treatment: outline", tokens)
+        # CSS cannot branch on a keyword stored in a custom property: these stay generator inputs only
+        self.assertNotIn("--app-selected-treatment", tokens)
         misc = (theme_root / "css/apex/misc.css").read_text(encoding="utf-8")
         self.assertIn("@media (max-width: 768px)", misc)
-        self.assertIn("--app-responsive-strategy: compress", tokens)
+        self.assertNotIn("--app-responsive-strategy", tokens)
+        # compress scales the recipe's own values; a property that reads itself would be a cycle (unset)
+        self.assertIn("--app-control-h: calc(", misc)
+        self.assertNotIn("calc(var(--app-control", misc)
+        self.assertNotIn("calc(var(--app-space-unit)", misc)
+        buttons = (theme_root / "css/apex/buttons.css").read_text(encoding="utf-8")
+        self.assertIn("calc(var(--app-control-h) * var(--app-density-scale))", buttons)
         self.assertIn("prefers-reduced-motion: reduce", misc)
 
     def test_collision_leaves_existing_directory_byte_identical(self):

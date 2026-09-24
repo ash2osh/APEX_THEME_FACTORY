@@ -87,8 +87,6 @@ html.app-theme-estate-slate-dark {
     --app-hover-transform: none;
     --app-hover-shadow: 0 0 0 3px var(--app-focus-halo-color);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: rail;
-    --app-responsive-strategy: compress;
 
     /* Focus ring */
     --app-focus-ring: 0 0 0 2px var(--est-dark-canvas), 0 0 0 4px var(--est-dark-amber);

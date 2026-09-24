@@ -82,12 +82,12 @@
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap {
     border-color: var(--cit-slate-200);
     box-shadow: var(--app-shadow-md);
-    transform: translateY(0);
-    transition: transform .18s ease, box-shadow .18s ease;
+    transform: none;
+    transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease;
 }
 
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:hover,
 .app-theme-citrus-pop .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
     box-shadow: var(--app-shadow-lg);
-    transform: translateY(-2px);
+    transform: var(--app-hover-transform);
 }

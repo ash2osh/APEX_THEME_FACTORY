@@ -78,8 +78,6 @@ html.app-theme-cobalt-press {
     --app-heading-scale: 1.375;
     --app-hover-transform: translateX(2px);
     --app-motion-duration: 120ms;
-    --app-selected-treatment: underline;
-    --app-responsive-strategy: reflow;
 
 /* @adapter light/tokens#1 prefix=cp - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */

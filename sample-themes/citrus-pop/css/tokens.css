@@ -83,8 +83,6 @@ html.app-theme-citrus-pop {
     --app-heading-scale: 1.5;
     --app-hover-transform: translateY(-2px);
     --app-motion-duration: 240ms;
-    --app-selected-treatment: fill;
-    --app-responsive-strategy: stack;
 
 /* @adapter light/tokens#1 prefix=cit - generated from theme-templates/adapters/light/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     /* Focus ring */

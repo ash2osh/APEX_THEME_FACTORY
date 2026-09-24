@@ -3,7 +3,7 @@
 set -euo pipefail
 source "$(dirname "$0")/_env.sh"
 out=$(sql -S -name "$CONN" <<SQL
-apex validate -input $APP_DIR -workspace $WORKSPACE
+apex validate -input "$APP_DIR" -workspace "$WORKSPACE"
 SQL
 )
 echo "$out"

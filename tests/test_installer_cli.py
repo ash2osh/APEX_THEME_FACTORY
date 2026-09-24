@@ -104,6 +104,62 @@ class InstallerCliTests(unittest.TestCase):
         self.assertIn("while waiting for confirmation", str(caught.exception))
         self.assertNotIn("apex import", log.read_text(encoding="utf-8"))
 
+    def test_dry_run_leaves_no_backup_behind(self):
+        backups = self.tmp / "dry-backups"
+        result = self.run_cli(self.package_dir, "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+                              "--backup-dir", str(backups))
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertFalse(backups.exists(), list(backups.rglob("*")) if backups.exists() else None)
+        self.assertNotIn("Staged:", result.stdout)
+
+    def test_lowercase_workspace_is_accepted(self):
+        from lib.theme_factory.cli import build_parser
+        args = build_parser().parse_args(["install", "--package-root", "x", "--connection", "demo",
+                                          "--workspace", "demo", "--app-id", "1"])
+        self.assertEqual(args.workspace, "DEMO")
+
+    def test_failed_post_import_export_still_arms_the_restore_guard(self):
+        """Import ran, re-export failed: the backup must say so, staging must survive, restore must refuse."""
+        from lib.theme_factory.errors import PackageError
+        from lib.theme_factory.install import InstallOptions, run_install
+        from lib.theme_factory.sqlcl import SqlclClient
+        from lib.theme_factory.uninstall import RestoreOptions, run_restore
+        real_export, real_import = SqlclClient.export_apexlang, SqlclClient.import_apexlang
+        imported = []
+
+        def export(client, app_id, dest):
+            if imported:
+                raise PackageError("simulated export failure after import")
+            return real_export(client, app_id, dest)
+
+        def do_import(client, *args):
+            real_import(client, *args)
+            imported.append(True)
+
+        stderr = io.StringIO()
+        options = InstallOptions(package_roots=(self.package_dir,), connection="demo", workspace="DEMO",
+                                 app_id=314, backup_dir=self.tmp / "b", apply=True, assume_yes=True)
+        with mock.patch.object(SqlclClient, "export_apexlang", export), \
+                mock.patch.object(SqlclClient, "import_apexlang", do_import), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+            with self.assertRaises(PackageError) as caught:
+                run_install(options)
+        self.assertEqual(caught.exception.exit_code, 6)
+        backup = next((self.tmp / "b").rglob("target.json")).parent
+        self.assertEqual(json.loads((backup / "target.json").read_text(encoding="utf-8"))["postOperationDigest"],
+                         "unknown")
+        kept = [line.split(": ", 1)[1] for line in stderr.getvalue().splitlines() if "kept for inspection" in line]
+        self.assertTrue(kept and all(Path(path).is_dir() for path in kept), stderr.getvalue())
+        for path in kept:
+            shutil.rmtree(path, ignore_errors=True)
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(PackageError) as refused:
+                run_restore(RestoreOptions(connection="demo", workspace="DEMO", app_id=314, backup_dir=backup,
+                                           apply=True))
+        self.assertEqual(refused.exception.exit_code, 7)
+        self.assertIn("did not finish cleanly", str(refused.exception))
+
     def test_packaged_install_wrapper_runs_outside_package_directory(self):
         result = subprocess.run(
             [

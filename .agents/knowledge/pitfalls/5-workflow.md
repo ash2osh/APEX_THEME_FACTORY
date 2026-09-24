@@ -28,13 +28,14 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - The same applies to the extracted package root: derive it from the ZIP's basename, never re-spell the version.
 
 ### 5.6 `pkill` on a wrapper shell orphans the Python process doing the work
-- Killing `pipeline.sh` leaves its in-flight `browser_matrix.py` / `live_matrix.py` child reparented to init and
-  still running — still driving the shared Chrome tab and still writing into the evidence root. Met 2026-09-17:
-  the replacement run's installs raced the orphan's Layer D capture for ~90 seconds.
-- Kill the worker, not just its shell: check `pgrep -af "browser_matrix|live_matrix|theme_factory.cli"` after any
-  `pkill`, and wait for an in-flight `install`/`uninstall` to finish before stopping a pipeline, so no consumer app
-  is left half-imported. (The bracket trick from §5.x still applies — `pipeline1[8].sh` so the pattern does not
-  match the `pkill` command line itself.)
+- Killing a wrapper shell (`scripts/theme.sh release …`, met 2026-09-17 with the since-removed release pipeline)
+  leaves its in-flight Python child (`python3 -m lib.theme_factory.cli`, `tools/release_smoke.py`) reparented to
+  init and still running — still driving the shared Chrome tab and still importing into the consumer app. The
+  replacement run's installs raced the orphan for ~90 seconds.
+- Kill the worker, not just its shell: check `pgrep -af "theme_factory.cli|release_smoke|browser_check"` after any
+  `pkill`, and wait for an in-flight `install`/`uninstall` to finish before stopping a run, so no consumer app
+  is left half-imported. (Bracket one character, e.g. `release_smok[e]`, so the pattern does not match the
+  `pkill` command line itself.)
 
 ### 5.7 The live smoke needs a clean consumer app
 - `scripts/theme.sh release NAME` exports consumer 9010 first, refuses it if it already carries Theme Factory

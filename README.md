@@ -33,6 +33,10 @@ page paints. Remove it and you are back to stock Iris, byte for byte.
 | **Python 3.10+** | Checked by the wrapper before it runs. The package bundles its own `lib/`, so there is nothing to `pip install`. |
 | Your APEX **workspace name** and **app ID** | You will type the app ID to confirm before anything is written. |
 
+> **Checksums prove integrity, not origin.** `checksums.sha256` catches a damaged or partially edited package,
+> but anyone can rebuild a package with matching checksums. Install only packages from a source you trust, and
+> compare the ZIP's SHA-256 with the one the publisher lists (`sha256sum <name>-<version>.zip`).
+
 No SQLcl? Every package also ships `MANUAL-INSTALL.md` with the App Builder click-path. See
 [Installing by hand](#installing-by-hand).
 
@@ -56,8 +60,8 @@ The extracted folder is self-contained — `install.sh`, `uninstall.sh`, the CSS
 
 Nothing is written to the database. It exports your app, applies the change to a staging copy, compiles it, and
 prints exactly what *would* change — which files are added, whether a bootstrap region is created, and whether it found an
-existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat; each one
-leaves a backup folder under `./theme-factory-backups/` that you can delete.
+existing Theme Factory install to upgrade. **Read this before applying.** A dry run is safe to repeat and leaves
+nothing behind; only `--apply` writes a backup.
 
 ### 3. Apply
 

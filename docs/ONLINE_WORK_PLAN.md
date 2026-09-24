@@ -191,12 +191,10 @@ The generator (`lib/theme_factory/recipe.py::_responsive_rules`) now emits:
 
 - [x] **Oracle files in git history.** Decision: history is not rewritten. `HEAD` no longer tracks the files, but
   the repository is public, so they stay downloadable from commits before `1052881`. Revisit if that matters.
-- [ ] **Leftover branches.**
-  - Factory: only `main` ✔ (it comes back after any new cloud-session push; delete it again once that PR merges).
-  - Team repo still has `claude/determined-hawking-v3qviv`, `claude/hopeful-ride-eu60f9` and
-    `codex/p1-remediation-flow-simplification`. Run this inside that repo:
-    `git push origin --delete claude/determined-hawking-v3qviv claude/hopeful-ride-eu60f9 codex/p1-remediation-flow-simplification`
-  - Turn on *Settings → General → Automatically delete head branches* in both repos.
+- [ ] **Leftover branches.** Only `claude/determined-hawking-v3qviv` remains, in both repos. Its content is
+  always already in `main`: cloud sessions recreate it, and they are not allowed to delete branches. Delete it
+  in each repo after a cloud session ends (`git push origin --delete claude/determined-hawking-v3qviv`), and turn
+  on *Settings → General → Automatically delete head branches*.
 - [x] **Uniqueness warnings accepted.** All 8 themes pass, but 4 warnings stay by decision:
   carbon-volt ↔ estate-slate-dark (PROFILE_SIMILARITY) and cobalt-press ↔ estate-slate (STRUCTURAL_SIMILARITY 0.889).
   They are warnings, not errors; differentiate the themes if they should read as distinct products.

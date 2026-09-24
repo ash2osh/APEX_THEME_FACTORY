@@ -27,6 +27,7 @@ work; read a layer file when one of its headings touches the task.
 - **§1.9** Where a colour comes from when no rule seems to set it
 - **§1.10** A scripted `:root` literal-extraction pass can silently drop tokens
 - **§1.11** Fixing a themed *text* atom without its paired *background* atom is a half-fix
+- **§1.12** A layout rule must match the layout UT actually uses on that element
 
 ## 2. APEX JavaScript and widgets — [pitfalls/2-apex-javascript-widgets.md](pitfalls/2-apex-javascript-widgets.md)
 - **§2.1** Navigation-bar menus are built by theme42 on `apexreadyend`; `theme42ready` fires on **window**
@@ -58,6 +59,9 @@ work; read a layer file when one of its headings touches the task.
 - **§4.4** SQLcl / DB
 - **§4.5** In an agent-driven tab, `requestAnimationFrame` runs ~1×/s — don't call rAF-deferred UI a defect
 - **§4.6** A `@font-face` is only downloaded when something renders text in it
+- **§4.7** Computed padding is the padding atom minus the border
+- **§4.8** `document.styleSheets` does not list rules from `@import`ed files
+- **§4.9** "First matching element" probes pick the wrong element
 
 ## 5. Workflow — [pitfalls/5-workflow.md](pitfalls/5-workflow.md)
 - **§5.1** Another agent may be editing the same tree
@@ -65,3 +69,5 @@ work; read a layer file when one of its headings touches the task.
 - **§5.5** Hardcoding a package version in a helper script silently skips a theme
 - **§5.6** `pkill` on a wrapper shell orphans the Python process doing the work
 - **§5.7** The live smoke needs a clean consumer app
+- **§5.8** A passing `sync-static --check` does not mean you deploy what is on `main`
+- **§5.9** Cloud sessions may leave `claude/…` branches they cannot delete

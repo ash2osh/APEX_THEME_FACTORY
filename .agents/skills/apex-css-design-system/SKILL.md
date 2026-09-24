@@ -46,3 +46,6 @@ Verify each class on the live DOM first — names differ across UT versions.
 - Putting theme CSS in `static-files/css/` — it is neither scoped to the theme class nor synced as a package.
 - Putting page CSS in Page Designer "Inline CSS" instead of the repo file.
 - Proposing Google Fonts, external font URLs, or unlicensed fonts (fonts must be package-local licensed WOFF2 files; Font APEX icons untouched).
+- A literal transition duration or `transform: translate…` in a theme: use `var(--app-motion-duration)` and
+  `var(--app-hover-transform)`, which the foundation zeroes under `prefers-reduced-motion` (a test enforces it).
+- Writing a layout property without checking how UT lays the element out (flex vs grid; pitfalls §1.12).

@@ -129,3 +129,14 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - **Fix:** when overriding any `*-text-color`/`*-icon-color` atom to something other than the package's default
   body text colour (i.e. you're clearly targeting a *filled* surface, not plain text-on-card), grep for the
   sibling `*-background-color` atom in the same family and confirm it's set too, in the same change.
+
+### 1.12 A layout rule must match the layout UT actually uses on that element
+- **Symptom (2026-09-24):** the first generated `responsive.css` passed every check and changed nothing on screen.
+  It set `grid-template-columns` on `.t-Cards` (a flex row; only the `.t-Cards--{cols,2cols…5cols}` modifiers are
+  grids), `flex-wrap` on `.t-Header-controls` (a grid item, not a flex container) and on `.t-Body-actions` (not
+  flex), and targeted `.t-Region--cards` (no such class in UT 26.1).
+- **Fix:** before writing a layout property, grep the element's own rule in
+  `.agents/knowledge/reference/ut-26.1/Core.min.css` (and `app_ui-Core.min.css` for widgets such as
+  `.a-CardView-items`) and confirm its `display`; then verify the computed value live at the target width. Working
+  targets: `.t-Region-header` (non-wrapping flex row), `.t-ButtonRegion-wrap` (one-row grid left/content/right),
+  `.a-CardView-items--grid{2…5}col` (grid).

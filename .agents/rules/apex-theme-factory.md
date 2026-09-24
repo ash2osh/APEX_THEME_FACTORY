@@ -15,4 +15,10 @@ description: Mandatory Oracle APEX Theme Factory architecture and safety boundar
 - Declarative source is `applications/ut/` in APEXLang. Import only when the user asks.
 - Appearance belongs in shared `static-files/css` plus scoped `sample-themes/<name>/css`; interaction belongs in `static-files/js/components`.
 - Portable packages contain one theme. Custom fonts must be package-local licensed WOFF2 files; external font URLs are forbidden.
+- Never hand-edit generated files: `@adapter`-fenced CSS (`scripts/theme.sh adapters`), `css/apex/responsive.css`
+  (`scripts/theme.sh responsive`), the page-0 bootstrap, `static-files/js/theme-factory-runtime.js` and the app-102
+  static-file copies (`scripts/sync-static.sh`).
+- `tests/run-offline.sh` must pass before a push; `git pull` before `sync-static.sh` and `apex-import.sh`.
+- `.agents/knowledge/reference/ut-*/` is Oracle-copyrighted and local-only (`scripts/fetch-vendor.sh --reference`); never commit it.
+- A theme colour change updates `tokens.css` and `theme.recipe.json` together; motion only through the motion tokens.
 - Use `.agents/skills/design-to-apex/SKILL.md` as the design-work router and load only the focused skills it names.

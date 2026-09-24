@@ -9,6 +9,8 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   for the user's other tabs on their next reload. For captures swap the class in the DOM
   (`document.documentElement.className = … 'app-theme-x'`) instead.
 - Legacy key `app.theme` is migrated automatically on first page load and then removed.
+- Setting that key to pick a theme for a measurement (`localStorage.setItem('apex.themeFactory.102', …)` + reload)
+  switches the user's other tabs too. Read the old value first and restore it (or remove the key) when done.
 - `resize_page` resizes the **shared Chrome window**; use `emulate {viewport:'1440x900x1'}` (per tab).
 - Work in your own tab (`new_page … background:true`), hide `#apexDevToolbar` with a `<style>` for captures,
   close the tab when done.
@@ -110,3 +112,18 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - The inverse failure is worth naming too. A check can be wrong in the *pessimistic* direction, and that is
   still a defect — it cost a 50-minute re-capture and briefly looked like a broken theme. "The gate said no"
   is not the same as "the artifact is bad": confirm which, live, before changing either one.
+
+### 4.7 Computed padding is the padding atom minus the border
+- UT paints `padding-block: calc(var(--a-button-padding-y) - var(--a-button-border-width, 1px))` (inputs likewise with
+  `--a-field-input-*`). A `.375rem` (6px) atom reads `paddingTop: "5px"` in `getComputedStyle`. Compare against
+  `atom − 1px`, or read the custom property itself, before calling a value wrong (met 2026-09-24, step 2.5).
+
+### 4.8 `document.styleSheets` does not list rules from `@import`ed files
+- app 102 loads themes through `@import` in `app.css`; a top-level scan of `sheet.cssRules` only sees
+  `CSSImportRule`s and reports a rule missing that is live. Recurse: `rule.styleSheet && scan(rule.styleSheet)`.
+
+### 4.9 "First matching element" probes pick the wrong element
+- On most pages the first `.t-Button` is the header's `.t-Button--headerTree` (menu toggle) and the first
+  `.apex-item-text` can be a floating-label field (`paddingTop` ≈ 25px). Scope probes to `.t-Body-content`, exclude
+  `.t-Button--headerTree` / `--small` / `--large` / `--tiny` / `--noUI` and
+  `.t-Form-fieldContainer--floatingLabel`, and record the element id you measured.

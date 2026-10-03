@@ -1,5 +1,8 @@
 from pathlib import Path
+import shutil
 import unittest
+
+NODE_BIN = shutil.which("node") or shutil.which("node.exe")
 
 
 class RuntimeContractTests(unittest.TestCase):
@@ -105,7 +108,7 @@ globalThis.location = win.location;
 {js}
 console.log(JSON.stringify({{ storage, classes: Array.from(classList), dataset }}));
 """
-        res = subprocess.run(["node", "-e", runner], capture_output=True, text=True, check=True)
+        res = subprocess.run([NODE_BIN, "-e", runner], capture_output=True, text=True, check=True)
         return json.loads(res.stdout)
 
     def _use_in_node(self, name: str, storage: dict, hash_str: str = "") -> dict:
@@ -131,9 +134,10 @@ globalThis.document = {{ documentElement: {{ dataset: {{}} }} }};
 const result = window.ApexThemeFactory.use({json.dumps(name)});
 console.log(JSON.stringify({{ result, storage, reloaded, replaced }}));
 """
-        res = subprocess.run(["node", "-e", runner], capture_output=True, text=True, check=True)
+        res = subprocess.run([NODE_BIN, "-e", runner], capture_output=True, text=True, check=True)
         return json.loads(res.stdout)
 
+    @unittest.skipUnless(NODE_BIN, "node is not installed")
     def test_runtime_use_stores_choices_and_forgets_the_app_default(self):
         key = "apex.themeFactory.102"
         picked = self._use_in_node("cobalt-press", {}, "#theme=linen")
@@ -147,6 +151,7 @@ console.log(JSON.stringify({{ result, storage, reloaded, replaced }}));
         refused = self._use_in_node("typo", {key: "cobalt-press"})
         self.assertEqual((refused["result"], refused["storage"][key], refused["reloaded"]), (False, "cobalt-press", False))
 
+    @unittest.skipUnless(NODE_BIN, "node is not installed")
     def test_bootstrap_node_execution_cases(self):
         from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json
         themes = [

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -12,6 +13,24 @@ from unittest import mock
 
 from lib.theme_factory.archive import build_package_from_root, extract_package, render_template
 from scripts import install_all_themes
+
+
+def find_bash() -> str:
+    if sys.platform == "win32":
+        for b in [shutil.which("bash"), shutil.which("bash.exe")]:
+            if b and "system32" not in b.lower():
+                return b
+        git = shutil.which("git")
+        if git:
+            for parent in Path(git).resolve().parents:
+                for rel in ("bin/bash.exe", "usr/bin/bash.exe"):
+                    cand = parent / rel
+                    if cand.exists():
+                        return str(cand)
+        for cand in [r"C:\Program Files\Git\bin\bash.exe", r"C:\Program Files\Git\usr\bin\bash.exe"]:
+            if Path(cand).exists():
+                return cand
+    return "bash"
 
 
 class InstallerCliTests(unittest.TestCase):
@@ -42,10 +61,10 @@ class InstallerCliTests(unittest.TestCase):
 
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.tmp)
+        self.addCleanup(shutil.rmtree, self.tmp, True)
         self.fake_bin = str((Path(__file__).resolve().parent / "fixtures/bin").resolve())
         self.orig_path = os.environ.get("PATH", "")
-        os.environ["PATH"] = f"{self.fake_bin}:{self.orig_path}"
+        os.environ["PATH"] = f"{self.fake_bin}{os.pathsep}{self.orig_path}"
         # keep the fake SQLcl state and default backups inside this test's temp dir
         os.environ["FAKE_SQL_STATE_FILE"] = str(self.tmp / "fake-sql-state.txt")
 
@@ -59,7 +78,7 @@ class InstallerCliTests(unittest.TestCase):
         if log:
             env["FAKE_SQL_LOG"] = str(log)
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args,
+            [sys.executable, "-m", "lib.theme_factory.cli", "install", "--package-root", str(package), *args,
              *([] if "--backup-dir" in args else ["--backup-dir", str(self.tmp / "default-backups")])],
             input=stdin,
             text=True,
@@ -164,9 +183,10 @@ class InstallerCliTests(unittest.TestCase):
         self.assertIn("did not finish cleanly", str(refused.exception))
 
     def test_packaged_install_wrapper_runs_outside_package_directory(self):
+        script_path = (self.package_dir / "install.sh").as_posix() if sys.platform == "win32" else str(self.package_dir / "install.sh")
         result = subprocess.run(
             [
-                "bash", str(self.package_dir / "install.sh"),
+                find_bash(), script_path,
                 "--connection", "demo",
                 "--workspace", "DEMO",
                 "--app-id", "314",
@@ -452,9 +472,10 @@ class InstallerCliTests(unittest.TestCase):
         )
         shim.chmod(0o755)
         env = os.environ.copy()
-        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+        script_path = (self.package_dir / "install.sh").as_posix() if sys.platform == "win32" else str(self.package_dir / "install.sh")
         result = subprocess.run(
-            ["bash", str(self.package_dir / "install.sh"), "--connection", "demo", "--workspace", "DEMO", "--app-id", "314"],
+            [find_bash(), script_path, "--connection", "demo", "--workspace", "DEMO", "--app-id", "314"],
             cwd=self.tmp, text=True, capture_output=True, env=env, check=False,
         )
         self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
@@ -467,7 +488,7 @@ class InstallerCliTests(unittest.TestCase):
             env["FAKE_SQL_LOG"] = str(log)
         roots = [arg for path in package_dirs for arg in ("--package-root", str(path))]
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", "install", *roots,
+            [sys.executable, "-m", "lib.theme_factory.cli", "install", *roots,
              "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
              "--backup-dir", str(self.tmp / "b"), *extra],
             input=stdin, text=True, capture_output=True, env=env, check=False,

@@ -1,138 +1,179 @@
-#!/usr/bin/env bash
-set -euo pipefail
-input="$(cat /dev/stdin)"
-if [ -n "${FAKE_SQL_LOG:-}" ]; then
-  printf 'argv=%q\nstdin=%s\n' "$*" "$input" >>"$FAKE_SQL_LOG"
-fi
-export_dir=""
-if [[ "$input" =~ -dir[[:space:]]+\"([^\"]+)\" ]]; then
-  export_dir="${BASH_REMATCH[1]}"
-elif [[ "$input" =~ -dir[[:space:]]+([^[:space:]]+) ]]; then
-  export_dir="${BASH_REMATCH[1]}"
-fi
+#!/usr/bin/env python3
+"""Fake SQLcl executable for testing.
 
-state_file="${FAKE_SQL_STATE_FILE:-/tmp/fake_sql_imported_${USER:-default}.txt}"
-fixture_bin="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-fixture_root="${FAKE_SQL_FIXTURE_DIR:-$(cd "$fixture_bin/.." && pwd)/apexlang/${FAKE_SQL_FIXTURE:-minimal}}"
+Emulates SQLcl commands used by Theme Factory (export, import, validate, queries)
+without requiring a live Oracle Database or Java SQLcl installation.
+"""
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
 
-# Re-exports of an imported application go through the SQLcl formatting simulator so
-# tests see real export shapes (no APEXLang comments, re-indented fences, sorted files).
-reexport() {
-  cp -R "$(cat "$state_file")" "$1"
-  python3 "$fixture_bin/apexlang_roundtrip.py" "$1"
-}
 
-# An import copies the staged tree into a persistent store (the installer deletes its
-# staging directory afterwards, like a real target keeps the application, not the files).
-if [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+\"([^\"]+)\" ]] || [[ "$input" =~ apex[[:space:]]+import[[:space:]]+-input[[:space:]]+([^[:space:]]+) ]]; then
-  imported_dir="${BASH_REMATCH[1]}"
-  store="${state_file}.d"
-  rm -rf "$store"
-  cp -R "$imported_dir" "$store"
-  echo "$store" > "$state_file"
-fi
+def normalize_path(p: str) -> Path:
+    if not p:
+        return Path(p)
+    if sys.platform == "win32" and re.match(r"^/[a-zA-Z](/|$)", p):
+        p = f"{p[1]}:{p[2:]}"
+    return Path(p)
 
-case "${FAKE_SQL_MODE:-success}" in
-  success)
-    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
-      mkdir -p "$export_dir"
-      if [ -f "$state_file" ] && [ -d "$(cat "$state_file")" ]; then
-        reexport "$export_dir/fixture-app"
-      else
-        cp -R "$fixture_root" "$export_dir/fixture-app"
-      fi
-    fi
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
-    fi
-    # `apex validate -input <dir>`: apply the compiler checks the real SQLcl would
-    if [[ "$input" =~ apex[[:space:]]+validate[[:space:]]+-input[[:space:]]+\"([^\"]+)\" ]] || [[ "$input" =~ apex[[:space:]]+validate[[:space:]]+-input[[:space:]]+([^[:space:]]+) ]]; then
-      if ! python3 "$fixture_bin/apexlang_lint.py" "${BASH_REMATCH[1]}"; then
-        exit 1
-      fi
-    fi
-    if [[ "$input" == *"between 9000 and 9099"* ]] || [[ "$input" == *"CONSUMER_OCCUPIED_QUERY"* ]]; then
-      if [ -n "${FAKE_SQL_OCCUPIED_IDS:-}" ]; then
-        IFS=',' read -ra ADDR <<< "$FAKE_SQL_OCCUPIED_IDS"
-        for id in "${ADDR[@]}"; do
-          printf '%s|%s\n' "$id" "OCCUPIED_APP_$id"
-        done
-      fi
-    elif [[ "$input" == *"CONSUMER_EXISTING_QUERY"* ]] || [[ "$input" == *"from apex_applications where application_id in"* ]]; then
-      if [ -n "${FAKE_SQL_EXISTING_APPS:-}" ]; then
-        IFS=',' read -ra APPS <<< "$FAKE_SQL_EXISTING_APPS"
-        for app in "${APPS[@]}"; do
-          IFS=':' read -r aid aalias <<< "$app"
-          printf '%s|%s\n' "$aid" "$aalias"
-        done
-      fi
-    elif [[ "$input" == *"count(*)"* ]] && [[ "$input" == *"apex_applications"* ]]; then
-      printf '0\n'
-    elif [[ "$input" == *"apex_applications"* ]] && [[ "$input" != *"THEME_FACTORY_TARGET="* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
-    fi
-    printf '%s\n' 'Validation completed successfully.'
-    ;;
-  validation-warning)
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
-    fi
-    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
-      mkdir -p "$export_dir"
-      cp -R "$fixture_root" "$export_dir/fixture-app"
-    fi
-    if [[ "$input" == *"apex validate"* ]]; then
-      printf '%s\n' 'WARNING fixture validation warning'
-    fi
-    ;;
-  export-two-aliases)
-    if [ -n "$export_dir" ]; then
-      mkdir -p "$export_dir"
-      cp -R "$fixture_root" "$export_dir/one"
-      cp -R "$fixture_root" "$export_dir/two"
-    fi
-    ;;
-  connection-failure)
-    printf '%s\n' 'ORA-17820: network adapter error' >&2
-    exit 1
-    ;;
-  import-failure)
-    printf '%s\n' 'ERROR import failed' >&2
-    exit 1
-    ;;
-  postcheck-fail)
-    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
-      mkdir -p "$export_dir"
-      cp -R "$fixture_root" "$export_dir/fixture-app"
-    fi
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
-    fi
-    printf '%s\n' 'Validation completed successfully.'
-    ;;
-  postcheck-diverge)
-    if [[ "$input" == *"apex export"* ]] && [ -n "$export_dir" ]; then
-      mkdir -p "$export_dir"
-      if [ -f "$state_file" ] && [ -d "$(cat "$state_file")" ]; then
-        reexport "$export_dir/fixture-app"
-        printf '\nfile "divergence.css" (\n    mimeType: text/css\n    charSet: utf-8\n)\n' >> "$export_dir/fixture-app/shared-components/static-files.apx"
-      else
-        cp -R "$fixture_root" "$export_dir/fixture-app"
-      fi
-    fi
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}'
-    fi
-    printf '%s\n' 'Validation completed successfully.'
-    ;;
-  unsupported-apex)
-    if [[ "$input" == *"THEME_FACTORY_TARGET="* ]] || [[ "$input" == *"apex_applications"* ]]; then
-      printf '%s\n' 'THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.2.0"}'
-    fi
-    printf '%s\n' 'Validation completed successfully.'
-    ;;
-  *)
-    printf 'unknown FAKE_SQL_MODE=%s\n' "${FAKE_SQL_MODE:-}" >&2
-    exit 2
-    ;;
-esac
+
+def main() -> None:
+    input_data = sys.stdin.read()
+    fake_log = os.environ.get("FAKE_SQL_LOG")
+    if fake_log:
+        with open(fake_log, "a", encoding="utf-8") as f:
+            args_str = " ".join(sys.argv[1:])
+            f.write(f"argv={args_str}\nstdin={input_data}\n")
+
+    export_dir = ""
+    m_dir = re.search(r'-dir\s+"([^"]+)"', input_data) or re.search(r'-dir\s+(\S+)', input_data)
+    if m_dir:
+        export_dir = str(normalize_path(m_dir.group(1)))
+
+    default_state = Path(tempfile.gettempdir()) / f"fake_sql_imported_{os.environ.get('USER', 'default')}.txt"
+    state_file = Path(os.environ.get("FAKE_SQL_STATE_FILE", default_state))
+    fixture_bin = Path(__file__).resolve().parent
+    fixture_root_default = fixture_bin.parent / "apexlang" / os.environ.get("FAKE_SQL_FIXTURE", "minimal")
+    fixture_root = Path(os.environ.get("FAKE_SQL_FIXTURE_DIR", fixture_root_default))
+
+    def reexport(dest: Path) -> None:
+        stored = normalize_path(state_file.read_text(encoding="utf-8").strip())
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(stored, dest)
+        subprocess.run([sys.executable, str(fixture_bin / "apexlang_roundtrip.py"), str(dest)], check=True)
+
+    m_imp = re.search(r'apex\s+import\s+-input\s+"([^"]+)"', input_data) or re.search(r'apex\s+import\s+-input\s+(\S+)', input_data)
+    if m_imp:
+        imported_dir = normalize_path(m_imp.group(1))
+        store = Path(f"{state_file}.d")
+        if store.exists():
+            shutil.rmtree(store)
+        shutil.copytree(imported_dir, store)
+        state_file.parent.mkdir(parents=True, exist_ok=True)
+        state_file.write_text(str(store), encoding="utf-8")
+
+    mode = os.environ.get("FAKE_SQL_MODE", "success")
+
+    if mode == "success":
+        if "apex export" in input_data and export_dir:
+            ed = Path(export_dir)
+            ed.mkdir(parents=True, exist_ok=True)
+            target = ed / "fixture-app"
+            if state_file.is_file() and Path(state_file.read_text(encoding="utf-8").strip()).is_dir():
+                reexport(target)
+            else:
+                if target.exists():
+                    shutil.rmtree(target)
+                shutil.copytree(fixture_root, target)
+
+        if "THEME_FACTORY_TARGET=" in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
+
+        m_val = re.search(r'apex\s+validate\s+-input\s+"([^"]+)"', input_data) or re.search(r'apex\s+validate\s+-input\s+(\S+)', input_data)
+        if m_val:
+            val_dir = m_val.group(1)
+            ret = subprocess.run([sys.executable, str(fixture_bin / "apexlang_lint.py"), val_dir])
+            if ret.returncode != 0:
+                sys.exit(1)
+
+        if "between 9000 and 9099" in input_data or "CONSUMER_OCCUPIED_QUERY" in input_data:
+            occupied = os.environ.get("FAKE_SQL_OCCUPIED_IDS")
+            if occupied:
+                for aid in occupied.split(","):
+                    aid = aid.strip()
+                    if aid:
+                        sys.stdout.write(f"{aid}|OCCUPIED_APP_{aid}\n")
+        elif "CONSUMER_EXISTING_QUERY" in input_data or "from apex_applications where application_id in" in input_data:
+            existing = os.environ.get("FAKE_SQL_EXISTING_APPS")
+            if existing:
+                for app in existing.split(","):
+                    app = app.strip()
+                    if app and ":" in app:
+                        aid, aalias = app.split(":", 1)
+                        sys.stdout.write(f"{aid}|{aalias}\n")
+        elif "count(*)" in input_data and "apex_applications" in input_data:
+            sys.stdout.write("0\n")
+        elif "apex_applications" in input_data and "THEME_FACTORY_TARGET=" not in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
+
+        sys.stdout.write("Validation completed successfully.\n")
+
+    elif mode == "validation-warning":
+        if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
+        if "apex export" in input_data and export_dir:
+            ed = Path(export_dir)
+            ed.mkdir(parents=True, exist_ok=True)
+            target = ed / "fixture-app"
+            if target.exists():
+                shutil.rmtree(target)
+            shutil.copytree(fixture_root, target)
+        if "apex validate" in input_data:
+            sys.stdout.write("WARNING fixture validation warning\n")
+
+    elif mode == "export-two-aliases":
+        if export_dir:
+            ed = Path(export_dir)
+            ed.mkdir(parents=True, exist_ok=True)
+            for sub in ("one", "two"):
+                target = ed / sub
+                if target.exists():
+                    shutil.rmtree(target)
+                shutil.copytree(fixture_root, target)
+
+    elif mode == "connection-failure":
+        sys.stderr.write("ORA-17820: network adapter error\n")
+        sys.exit(1)
+
+    elif mode == "import-failure":
+        sys.stderr.write("ERROR import failed\n")
+        sys.exit(1)
+
+    elif mode == "postcheck-fail":
+        if "apex export" in input_data and export_dir:
+            ed = Path(export_dir)
+            ed.mkdir(parents=True, exist_ok=True)
+            target = ed / "fixture-app"
+            if target.exists():
+                shutil.rmtree(target)
+            shutil.copytree(fixture_root, target)
+        if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
+        sys.stdout.write("Validation completed successfully.\n")
+
+    elif mode == "postcheck-diverge":
+        if "apex export" in input_data and export_dir:
+            ed = Path(export_dir)
+            ed.mkdir(parents=True, exist_ok=True)
+            target = ed / "fixture-app"
+            if state_file.is_file() and Path(state_file.read_text(encoding="utf-8").strip()).is_dir():
+                reexport(target)
+                files_apx = target / "shared-components" / "static-files.apx"
+                with open(files_apx, "a", encoding="utf-8") as f:
+                    f.write('\nfile "divergence.css" (\n    mimeType: text/css\n    charSet: utf-8\n)\n')
+            else:
+                if target.exists():
+                    shutil.rmtree(target)
+                shutil.copytree(fixture_root, target)
+        if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
+        sys.stdout.write("Validation completed successfully.\n")
+
+    elif mode == "unsupported-apex":
+        if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.2.0"}\n')
+        sys.stdout.write("Validation completed successfully.\n")
+
+    else:
+        sys.stderr.write(f"unknown FAKE_SQL_MODE={mode}\n")
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()

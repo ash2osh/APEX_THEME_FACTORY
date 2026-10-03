@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 from typing import Optional
 
@@ -66,8 +67,12 @@ class SqlclClient:
 
     def _run_script(self, script: str) -> SqlclResult:
         try:
+            path_env = self.env.get("PATH") if self.env else None
+            sql_bin = shutil.which("sql", path=path_env)
+            if not sql_bin:
+                raise FileNotFoundError("SQLcl executable 'sql' not found in PATH")
             res = subprocess.run(
-                ["sql", "-S", "-name", self.connection],
+                [sql_bin, "-S", "-name", self.connection],
                 input=script,
                 text=True,
                 capture_output=True,

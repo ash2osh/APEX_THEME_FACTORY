@@ -7,7 +7,12 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from PIL import Image
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    Image = None  # type: ignore
+    HAS_PIL = False
 
 from lib.theme_factory.checks import CheckIssue, CheckReport
 from lib.theme_factory.cli import run_cli
@@ -63,6 +68,7 @@ class FakeClient:
         return _text_result("ok")
 
 
+@unittest.skipUnless(HAS_PIL, "Pillow is not installed")
 class ThemeCoverTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()

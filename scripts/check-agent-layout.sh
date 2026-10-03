@@ -15,6 +15,28 @@ errors = []
 def add_error(rel_path: str, msg: str):
     errors.append((rel_path, msg))
 
+def check_link(link_path: Path, expected: Path, name: str, missing_msg: str, wrong_msg_fmt: str) -> bool:
+    is_text = link_path.is_file() and not link_path.is_symlink()
+    if not link_path.is_symlink() and not is_text:
+        add_error(name, missing_msg)
+        return False
+    try:
+        if link_path.is_symlink():
+            target = link_path.resolve()
+        else:
+            text = link_path.read_text(encoding="utf-8").strip()
+            if not text or "\n" in text or len(text) > 500:
+                add_error(name, missing_msg)
+                return False
+            target = (link_path.parent / text).resolve()
+        if not expected.exists() or target != expected.resolve():
+            add_error(name, wrong_msg_fmt.format(target=target, expected=expected.resolve()))
+            return False
+        return True
+    except Exception as e:
+        add_error(name, f"broken symlink: {e}")
+        return False
+
 # 1. AGENTS.md
 agents_md = root / "AGENTS.md"
 if not agents_md.exists() or not agents_md.is_file():
@@ -28,15 +50,7 @@ else:
 
 # 2. CLAUDE.md
 claude_md = root / "CLAUDE.md"
-if not claude_md.is_symlink():
-    add_error("CLAUDE.md", "missing or not a symlink")
-else:
-    try:
-        target = claude_md.resolve()
-        if not agents_md.exists() or target != agents_md.resolve():
-            add_error("CLAUDE.md", f"symlink resolves to {target}, expected AGENTS.md")
-    except Exception as e:
-        add_error("CLAUDE.md", f"broken symlink: {e}")
+check_link(claude_md, agents_md, "CLAUDE.md", "missing or not a symlink", "symlink resolves to {target}, expected AGENTS.md")
 
 # 3. .agents/rules/apex-theme-factory.md
 rule_path = root / ".agents/rules/apex-theme-factory.md"
@@ -69,16 +83,7 @@ else:
 
 # 4. .agent/skills legacy compatibility symlink
 legacy_link = root / ".agent/skills"
-if not legacy_link.is_symlink():
-    add_error(".agent/skills", "missing or not a symlink")
-else:
-    try:
-        target = legacy_link.resolve()
-        expected = (root / ".agents/skills").resolve()
-        if target != expected:
-            add_error(".agent/skills", f"symlink resolves to {target}, expected .agents/skills")
-    except Exception as e:
-        add_error(".agent/skills", f"broken symlink: {e}")
+check_link(legacy_link, root / ".agents/skills", ".agent/skills", "missing or not a symlink", "symlink resolves to {target}, expected .agents/skills")
 
 # 5. Canonical skills in .agents/skills/
 skills_dir = root / ".agents/skills"
@@ -139,16 +144,8 @@ if not claude_skills_dir.exists() or not claude_skills_dir.is_dir():
 else:
     for skill_name, skill_path in sorted(discovered_skills.items()):
         link_path = claude_skills_dir / skill_name
-        if not link_path.is_symlink():
-            add_error(f".claude/skills/{skill_name}", "missing symlink")
-        else:
-            try:
-                if link_path.resolve() != skill_path.resolve():
-                    add_error(f".claude/skills/{skill_name}", f"resolves to {link_path.resolve()}, expected {skill_path.resolve()}")
-                else:
-                    claude_link_count += 1
-            except Exception as e:
-                add_error(f".claude/skills/{skill_name}", f"broken symlink: {e}")
+        if check_link(link_path, skill_path, f".claude/skills/{skill_name}", "missing symlink", "resolves to {target}, expected {expected}"):
+            claude_link_count += 1
 
 # 7. Documentation path drift in .agents/README.md
 readme_path = root / ".agents/README.md"

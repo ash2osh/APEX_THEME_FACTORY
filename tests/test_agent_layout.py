@@ -1,9 +1,29 @@
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+
+def find_bash() -> str:
+    if sys.platform == "win32":
+        for b in [shutil.which("bash"), shutil.which("bash.exe")]:
+            if b and "system32" not in b.lower():
+                return b
+        git = shutil.which("git")
+        if git:
+            for parent in Path(git).resolve().parents:
+                for rel in ("bin/bash.exe", "usr/bin/bash.exe"):
+                    cand = parent / rel
+                    if cand.exists():
+                        return str(cand)
+        for cand in [r"C:\Program Files\Git\bin\bash.exe", r"C:\Program Files\Git\usr\bin\bash.exe"]:
+            if Path(cand).exists():
+                return cand
+    return "bash"
+
 
 REQUIRED_PROJECT_PHRASES = (
     "APEX 26.1.x", "Universal Theme 42", "Iris", "Chrome DevTools",
@@ -15,7 +35,7 @@ REQUIRED_PROJECT_PHRASES = (
 class AgentLayoutTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.tmp)
+        self.addCleanup(shutil.rmtree, self.tmp, True)
         (self.tmp / ".agents/skills/design-to-apex").mkdir(parents=True)
         (self.tmp / ".agents/rules").mkdir(parents=True)
         (self.tmp / ".claude/skills").mkdir(parents=True)
@@ -63,8 +83,10 @@ class AgentLayoutTests(unittest.TestCase):
         )
 
     def run_check(self):
+        script = (self.tmp / "scripts/check-agent-layout.sh").as_posix() if sys.platform == "win32" else str(self.tmp / "scripts/check-agent-layout.sh")
+        target_dir = self.tmp.as_posix() if sys.platform == "win32" else str(self.tmp)
         return subprocess.run(
-            ["bash", str(self.tmp / "scripts/check-agent-layout.sh"), str(self.tmp)],
+            [find_bash(), script, target_dir],
             text=True,
             capture_output=True,
             check=False,

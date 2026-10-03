@@ -287,6 +287,9 @@ class ChromeMcpDaemon:
             self.pending.clear()
         for waiter in waiters:
             waiter.put({"jsonrpc": "2.0", "error": {"code": -32000, "message": "chrome-devtools-mcp closed its response stream"}})
+        if not self.stopping.is_set():
+            self._log("chrome-devtools-mcp exited; shutting down daemon")
+            self.shutdown()
 
     def call_tool(self, tool_name: str, arguments: dict) -> dict:
         if tool_name not in ALLOWED_TOOLS:
@@ -296,6 +299,7 @@ class ChromeMcpDaemon:
         waiter: "queue.Queue[dict]" = queue.Queue(maxsize=1)
         with self.lock:
             if not self.proc or self.proc.poll() is not None:
+                self.shutdown()
                 raise RuntimeError("chrome-devtools-mcp process is not running")
             self.request_id += 1
             request_id = self.request_id

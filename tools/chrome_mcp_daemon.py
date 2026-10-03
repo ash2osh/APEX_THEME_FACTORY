@@ -12,13 +12,15 @@ import json
 import os
 from pathlib import Path
 import queue
+import shutil
 import signal
 import socket
 import stat
 import subprocess
 import sys
+import tempfile
 import threading
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple, Union
 
 ALLOWED_TOOLS = frozenset({
     "click", "close_page", "drag", "emulate", "evaluate_script", "fill", "fill_form",
@@ -33,22 +35,68 @@ CLIENT_IO_TIMEOUT = 10.0
 MAX_REQUEST_BYTES = 1024 * 1024
 
 
-def default_socket_path() -> Path:
+def is_tcp_address(addr: Union[str, Path]) -> bool:
+    addr_str = str(addr)
+    if addr_str.startswith("tcp://"):
+        return True
+    if addr_str.isdigit():
+        return True
+    if ":" in addr_str:
+        # Check for Windows drive letter like C:\ or D:\
+        if len(addr_str) >= 2 and addr_str[1] == ":" and addr_str[0].isalpha():
+            rest = addr_str[2:]
+            if ":" in rest:
+                parts = rest.rsplit(":", 1)
+                return parts[1].isdigit()
+            return False
+        parts = addr_str.rsplit(":", 1)
+        if len(parts) == 2 and parts[1].isdigit():
+            return True
+    return False
+
+
+def parse_tcp_address(addr: Union[str, Path]) -> Tuple[str, int]:
+    addr_str = str(addr)
+    if addr_str.startswith("tcp://"):
+        addr_str = addr_str[6:]
+    if addr_str.isdigit():
+        return ("127.0.0.1", int(addr_str))
+    parts = addr_str.rsplit(":", 1)
+    host = parts[0] or "127.0.0.1"
+    port = int(parts[1])
+    return (host, port)
+
+
+def default_socket_path() -> Union[str, Path]:
     override = os.environ.get("THEME_FACTORY_CHROME_MCP_SOCKET")
     if override:
+        if is_tcp_address(override):
+            return override
         return Path(override)
     runtime = os.environ.get("XDG_RUNTIME_DIR")
-    base = Path(runtime) if runtime else Path(f"/tmp/apex-theme-factory-{os.getuid()}")
+    if runtime:
+        base = Path(runtime)
+    elif hasattr(os, "getuid"):
+        base = Path(f"/tmp/apex-theme-factory-{os.getuid()}")
+    else:
+        user = os.environ.get("USERNAME") or os.environ.get("USER") or "user"
+        base = Path(tempfile.gettempdir()) / f"apex-theme-factory-{user}"
     return base / "chrome-mcp/chrome-mcp.sock"
 
 
-def prepare_socket_path(path: Path) -> Path:
-    path = path.expanduser().absolute()
+def prepare_socket_path(path: Union[str, Path]) -> Path:
+    path = Path(path).expanduser().absolute()
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    os.chmod(path.parent, 0o700)
+    try:
+        os.chmod(path.parent, 0o700)
+    except OSError:
+        pass
     if path.exists() or path.is_symlink():
         info = path.lstat()
-        if info.st_uid != os.getuid() or not stat.S_ISSOCK(info.st_mode):
+        if hasattr(os, "getuid") and hasattr(info, "st_uid"):
+            if info.st_uid != os.getuid():
+                raise RuntimeError(f"Refusing to replace unsafe socket path: {path}")
+        if hasattr(stat, "S_ISSOCK") and not stat.S_ISSOCK(info.st_mode):
             raise RuntimeError(f"Refusing to replace unsafe socket path: {path}")
         probe = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         probe.settimeout(0.25)
@@ -57,20 +105,41 @@ def prepare_socket_path(path: Path) -> Path:
         except ConnectionRefusedError:
             pass
         except OSError as exc:
-            raise RuntimeError(f"Refusing to replace ambiguous socket path {path}: {exc}") from exc
+            if getattr(exc, "winerror", None) == 10061 or "refused" in str(exc).lower():
+                pass
+            else:
+                raise RuntimeError(f"Refusing to replace ambiguous socket path {path}: {exc}") from exc
         else:
             raise RuntimeError(f"Chrome MCP daemon is already listening on {path}")
         finally:
             probe.close()
-        path.unlink()
+        try:
+            path.unlink()
+        except OSError as exc:
+            raise RuntimeError(f"Failed to unlink stale socket path {path}: {exc}") from exc
     return path
+
+
+def _resolve_command(executable: str) -> list[str]:
+    """Resolve executable path and wrapper commands across Linux, macOS, and Windows."""
+    if executable.endswith(".py"):
+        which = shutil.which(executable) or executable
+        return [sys.executable, str(which)]
+
+    which = shutil.which(executable)
+    target = which or executable
+    if sys.platform == "win32":
+        target_str = str(target)
+        if target_str.lower().endswith((".cmd", ".bat")):
+            return ["cmd.exe", "/c", target_str]
+    return [str(target)]
 
 
 class ChromeMcpDaemon:
     def __init__(
         self,
         executable: Optional[str] = None,
-        socket_path: Optional[Path] = None,
+        socket_path: Optional[Union[str, Path]] = None,
         request_timeout: float = DEFAULT_REQUEST_TIMEOUT,
     ):
         self.executable = executable or os.environ.get("THEME_FACTORY_CHROME_MCP_EXECUTABLE", "chrome-devtools-mcp")
@@ -188,46 +257,70 @@ class ChromeMcpDaemon:
             )
 
     # ------------------------------------------------------------------ lifecycle
-    def start(self) -> None:
-        socket_path = prepare_socket_path(self.socket_path)
-        self.socket_path = socket_path
-        self._install_signal_handlers()
+    def _start_mcp_child(self) -> None:
         self._log("Starting persistent chrome-devtools-mcp process...")
+        cmd = _resolve_command(self.executable) + ["--autoConnect"]
         self.proc = subprocess.Popen(
-            [self.executable, "--autoConnect"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, text=True, bufsize=1,
         )
         self.stderr_thread = threading.Thread(target=self._drain_stderr, name="mcp-stderr")
         self.stderr_thread.start()
-        try:
-            self.request_id += 1
-            self._write({
-                "jsonrpc": "2.0", "id": self.request_id, "method": "initialize",
-                "params": {"protocolVersion": "2024-11-05", "capabilities": {},
-                           "clientInfo": {"name": "apex-theme-factory", "version": "1.0"}},
-            })
-            response = self._read_response(self.request_id)
-            if response.get("error") or response.get("id") != self.request_id:
-                raise RuntimeError(f"chrome-devtools-mcp initialization failed: {response}")
-            self._write({"jsonrpc": "2.0", "method": "notifications/initialized"})
-            self.reader_thread = threading.Thread(target=self._dispatch_responses, name="mcp-stdout")
-            self.reader_thread.start()
+        self.request_id += 1
+        self._write({
+            "jsonrpc": "2.0", "id": self.request_id, "method": "initialize",
+            "params": {"protocolVersion": "2024-11-05", "capabilities": {},
+                       "clientInfo": {"name": "apex-theme-factory", "version": "1.0"}},
+        })
+        response = self._read_response(self.request_id)
+        if response.get("error") or response.get("id") != self.request_id:
+            raise RuntimeError(f"chrome-devtools-mcp initialization failed: {response}")
+        self._write({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        self.reader_thread = threading.Thread(target=self._dispatch_responses, name="mcp-stdout")
+        self.reader_thread.start()
 
-            self.server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            self.server_sock.bind(str(socket_path))
-            os.chmod(socket_path, 0o600)
-            bound = socket_path.lstat()
-            self.socket_identity = (bound.st_dev, bound.st_ino)
-            self.server_sock.listen(10)
-            self._log(f"Daemon listening on {socket_path}")
-            while not self.stopping.is_set():
+    def start(self) -> None:
+        self._install_signal_handlers()
+        if is_tcp_address(self.socket_path):
+            host, port = parse_tcp_address(self.socket_path)
+            self._start_mcp_child()
+            try:
+                self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.server_sock.bind((host, port))
+                self.server_sock.listen(10)
+                self._log(f"Daemon listening on tcp://{host}:{port}")
+                while not self.stopping.is_set():
+                    try:
+                        connection, _ = self.server_sock.accept()
+                    except OSError:
+                        break  # socket closed by shutdown()
+                    threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
+            finally:
+                self.close()
+        else:
+            socket_path = prepare_socket_path(self.socket_path)
+            self.socket_path = socket_path
+            self._start_mcp_child()
+            try:
+                self.server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                self.server_sock.bind(str(socket_path))
                 try:
-                    connection, _ = self.server_sock.accept()
+                    os.chmod(socket_path, 0o600)
                 except OSError:
-                    break  # socket closed by shutdown()
-                threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
-        finally:
-            self.close()
+                    pass
+                bound = socket_path.lstat()
+                self.socket_identity = (bound.st_dev, bound.st_ino)
+                self.server_sock.listen(10)
+                self._log(f"Daemon listening on {socket_path}")
+                while not self.stopping.is_set():
+                    try:
+                        connection, _ = self.server_sock.accept()
+                    except OSError:
+                        break  # socket closed by shutdown()
+                    threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
+            finally:
+                self.close()
 
     def _install_signal_handlers(self) -> None:
         if threading.current_thread() is not threading.main_thread():
@@ -237,9 +330,17 @@ class ChromeMcpDaemon:
             self._log(f"Received signal {signum}; shutting down")
             self.shutdown()
 
-        for signum in (signal.SIGTERM, signal.SIGINT, getattr(signal, "SIGHUP", None)):
-            if signum is not None:
+        signals_to_catch = [signal.SIGTERM, signal.SIGINT]
+        for sig_name in ("SIGHUP", "SIGBREAK"):
+            sig = getattr(signal, sig_name, None)
+            if sig is not None:
+                signals_to_catch.append(sig)
+
+        for signum in signals_to_catch:
+            try:
                 signal.signal(signum, _stop)
+            except (ValueError, OSError):
+                pass
 
     def shutdown(self) -> None:
         """Ask the accept loop to stop; safe to call from a signal handler or another thread."""
@@ -305,19 +406,25 @@ class ChromeMcpDaemon:
                 if stream:
                     stream.close()
         self.proc = None
-        try:
-            info = self.socket_path.lstat()
-            identity = (info.st_dev, info.st_ino)
-            if (
-                self.socket_identity is not None
-                and identity == self.socket_identity
-                and info.st_uid == os.getuid()
-                and stat.S_ISSOCK(info.st_mode)
-            ):
-                self.socket_path.unlink()
-        except FileNotFoundError:
-            pass
-        self.socket_identity = None
+        if self.socket_identity is not None and not is_tcp_address(self.socket_path):
+            try:
+                sock_p = Path(self.socket_path)
+                info = sock_p.lstat()
+                identity = (info.st_dev, info.st_ino)
+                is_owner = (
+                    not hasattr(os, "getuid")
+                    or not hasattr(info, "st_uid")
+                    or info.st_uid == os.getuid()
+                )
+                is_socket = (
+                    not hasattr(stat, "S_ISSOCK")
+                    or stat.S_ISSOCK(info.st_mode)
+                )
+                if identity == self.socket_identity and is_owner and is_socket:
+                    sock_p.unlink()
+            except (FileNotFoundError, OSError):
+                pass
+            self.socket_identity = None
 
 
 if __name__ == "__main__":

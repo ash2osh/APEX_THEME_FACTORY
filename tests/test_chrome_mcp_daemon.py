@@ -2,13 +2,19 @@ import json
 import os
 from pathlib import Path
 import socket
+import sys
 import tempfile
 import unittest
 from io import StringIO
 from types import SimpleNamespace
 
-from tools.chrome_mcp_daemon import ChromeMcpDaemon, prepare_socket_path
-from tools.chrome_devtools_client import ensure_daemon_running
+from unittest.mock import patch
+
+from tools.chrome_mcp_daemon import (
+    ChromeMcpDaemon, prepare_socket_path, is_tcp_address, parse_tcp_address,
+    default_socket_path, _resolve_command,
+)
+from tools.chrome_devtools_client import ChromeDevToolsClient, ensure_daemon_running
 
 
 class ChromeMcpDaemonTests(unittest.TestCase):
@@ -200,5 +206,135 @@ class ChromeMcpDaemonLifecycleTests(unittest.TestCase):
             self.assertFalse(socket_path.exists())
 
 
+class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
+    FAKE = str(Path(__file__).resolve().parent / "fixtures/mcp/fake_mcp_server.py")
+
+    def test_tcp_address_detection_and_parsing(self):
+        self.assertTrue(is_tcp_address("127.0.0.1:9223"))
+        self.assertEqual(parse_tcp_address("127.0.0.1:9223"), ("127.0.0.1", 9223))
+
+        self.assertTrue(is_tcp_address("tcp://127.0.0.1:9223"))
+        self.assertEqual(parse_tcp_address("tcp://127.0.0.1:9223"), ("127.0.0.1", 9223))
+
+        self.assertTrue(is_tcp_address("9223"))
+        self.assertEqual(parse_tcp_address("9223"), ("127.0.0.1", 9223))
+
+        self.assertTrue(is_tcp_address("localhost:9000"))
+        self.assertEqual(parse_tcp_address("localhost:9000"), ("localhost", 9000))
+
+        # File paths should not be detected as TCP addresses
+        self.assertFalse(is_tcp_address(Path("/tmp/chrome.sock")))
+        self.assertFalse(is_tcp_address("/tmp/chrome.sock"))
+        self.assertFalse(is_tcp_address(r"C:\Users\User\AppData\Local\Temp\chrome.sock"))
+        self.assertFalse(is_tcp_address("C:/Users/User/AppData/Local/Temp/chrome.sock"))
+
+    def test_default_socket_path_override(self):
+        with patch.dict(os.environ, {"THEME_FACTORY_CHROME_MCP_SOCKET": "127.0.0.1:9223"}):
+            self.assertEqual(default_socket_path(), "127.0.0.1:9223")
+
+        with patch.dict(os.environ, {"THEME_FACTORY_CHROME_MCP_SOCKET": "/custom/path.sock"}):
+            self.assertEqual(default_socket_path(), Path("/custom/path.sock"))
+
+    def test_default_socket_path_windows_fallback(self):
+        env = os.environ.copy()
+        env.pop("THEME_FACTORY_CHROME_MCP_SOCKET", None)
+        env.pop("XDG_RUNTIME_DIR", None)
+        env["USERNAME"] = "testuser"
+        with patch.dict(os.environ, env, clear=True):
+            with patch("os.getuid", create=True) as mock_getuid:
+                del mock_getuid  # ensure hasattr(os, "getuid") is False
+                with patch("os.path.exists", return_value=True):
+                    # temporarily remove getuid attribute from os module
+                    orig_getuid = getattr(os, "getuid", None)
+                    try:
+                        if hasattr(os, "getuid"):
+                            delattr(os, "getuid")
+                        path = default_socket_path()
+                        self.assertIn("apex-theme-factory-testuser", str(path))
+                    finally:
+                        if orig_getuid is not None:
+                            os.getuid = orig_getuid
+
+    def test_resolve_command(self):
+        # Python script
+        resolved_py = _resolve_command(self.FAKE)
+        self.assertEqual(resolved_py[0], sys.executable)
+        self.assertEqual(resolved_py[1], self.FAKE)
+
+        # Windows .cmd script simulation
+        with patch("sys.platform", "win32"):
+            with patch("shutil.which", return_value=r"C:\Users\test\npm\chrome-devtools-mcp.cmd"):
+                resolved_cmd = _resolve_command("chrome-devtools-mcp")
+                self.assertEqual(resolved_cmd, ["cmd.exe", "/c", r"C:\Users\test\npm\chrome-devtools-mcp.cmd"])
+
+        # POSIX binary
+        with patch("sys.platform", "linux"):
+            with patch("shutil.which", return_value="/usr/bin/chrome-devtools-mcp"):
+                resolved_bin = _resolve_command("chrome-devtools-mcp")
+                self.assertEqual(resolved_bin, ["/usr/bin/chrome-devtools-mcp"])
+
+    def test_prepare_socket_path_without_getuid(self):
+        with tempfile.TemporaryDirectory() as temp:
+            target = Path(temp) / "service/chrome.sock"
+            orig_getuid = getattr(os, "getuid", None)
+            try:
+                if hasattr(os, "getuid"):
+                    delattr(os, "getuid")
+                path = prepare_socket_path(target)
+                self.assertEqual(path, target)
+            finally:
+                if orig_getuid is not None:
+                    os.getuid = orig_getuid
+
+    def test_tcp_loopback_client_daemon_communication(self):
+        import threading
+        import time
+
+        # Find a free ephemeral port
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", 0))
+            free_port = probe.getsockname()[1]
+
+        tcp_addr = f"127.0.0.1:{free_port}"
+        os.environ["FAKE_MCP_MODE"] = "echo"
+        daemon = ChromeMcpDaemon(executable=self.FAKE, socket_path=tcp_addr, request_timeout=2.0)
+        thread = threading.Thread(target=daemon.start, daemon=True)
+        thread.start()
+        try:
+            # Wait for TCP server to listen
+            deadline = time.time() + 5.0
+            ready = False
+            while time.time() < deadline:
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
+                        conn.settimeout(0.2)
+                        conn.connect(("127.0.0.1", free_port))
+                        ready = True
+                        break
+                except OSError:
+                    time.sleep(0.05)
+            self.assertTrue(ready, "TCP daemon never became ready")
+
+            client = ChromeDevToolsClient(socket_path=tcp_addr, response_timeout=2.0)
+            res = client.call_tool("list_pages")
+            self.assertEqual(res["echo"]["name"], "list_pages")
+        finally:
+            daemon.shutdown()
+            thread.join(timeout=5)
+
+    def test_ensure_daemon_running_spawns_process_with_windows_flags(self):
+        mock_proc = SimpleNamespace(poll=lambda: None)
+        with patch("sys.platform", "win32"):
+            with patch("tools.chrome_devtools_client._can_connect", side_effect=[False, True]):
+                with patch("subprocess.Popen", return_value=mock_proc) as mock_popen:
+                    path = ensure_daemon_running(Path("/tmp/test.sock"), auto_spawn=True)
+                    self.assertEqual(path, Path("/tmp/test.sock"))
+                    mock_popen.assert_called_once()
+                    _, kwargs = mock_popen.call_args
+                    self.assertIn("creationflags", kwargs)
+                    self.assertNotIn("start_new_session", kwargs)
+
+
 if __name__ == "__main__":
     unittest.main()
+

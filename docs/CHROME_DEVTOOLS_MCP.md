@@ -36,19 +36,20 @@ Then call the allowlisted MCP tools through:
 python3 tools/chrome_devtools_client.py list_pages
 ```
 
-The daemon keeps one MCP/Chrome session open. Its default socket is
-`$XDG_RUNTIME_DIR/chrome-mcp/chrome-mcp.sock` (or `/tmp/apex-theme-factory-<uid>/chrome-mcp/chrome-mcp.sock`),
-with a private `0700` directory and `0600` socket. Set `THEME_FACTORY_CHROME_MCP_SOCKET` only when deliberately
-connecting to a known existing project daemon. The client does not silently spawn a daemon; a missing or failed
-daemon is reported as an error. Do not start a second daemon while the first owns the approved Chrome session:
-a second `chrome-devtools-mcp --autoConnect` instance may never answer while the first holds the connection.
+The daemon keeps one MCP/Chrome session open across Linux, macOS, and Windows:
+- **Linux & macOS**: Default socket is `$XDG_RUNTIME_DIR/chrome-mcp/chrome-mcp.sock` (or `/tmp/apex-theme-factory-<uid>/chrome-mcp/chrome-mcp.sock`), with a private `0700` directory and `0600` socket.
+- **Windows**: Default socket is `%TEMP%/apex-theme-factory-<user>/chrome-mcp/chrome-mcp.sock` (via Windows 10/11 `AF_UNIX`).
+- **TCP loopback (all platforms)**: Set `THEME_FACTORY_CHROME_MCP_SOCKET` to `127.0.0.1:<port>` or `tcp://127.0.0.1:<port>` (e.g. `127.0.0.1:9223`) to run over localhost TCP instead of UNIX sockets if preferred.
+
+Set `THEME_FACTORY_CHROME_MCP_SOCKET` only when deliberately connecting to a known existing project daemon. The client does not silently spawn a daemon; a missing or failed daemon is reported as an error. Do not start a second daemon while the first owns the approved Chrome session: a second `chrome-devtools-mcp --autoConnect` instance may never answer while the first holds the connection.
 
 Lifecycle guarantees (verified by `tests/test_chrome_mcp_daemon.py`):
 - Requests are correlated by JSON-RPC id through a reader thread; a call the MCP never answers fails with a
   timeout error after `THEME_FACTORY_CHROME_MCP_TIMEOUT` seconds (default 60) and does **not** block later clients.
-- `SIGTERM`/`SIGINT`/`SIGHUP` stop the accept loop, terminate the MCP child, join the reader threads and unlink
+- `SIGTERM`/`SIGINT`/`SIGHUP`/`SIGBREAK` stop the accept loop, terminate the MCP child, join the reader threads and unlink
   the socket only if it is still the one this daemon created. A stale socket left by a crash is replaced on the
   next start after a connection probe confirms nothing is listening.
+- Child process execution cross-platform: resolves npm wrappers (`.cmd`/`.bat`) and Python scripts correctly across Windows, macOS, and Linux.
 - The tool allowlist is the chrome-devtools-mcp tool set (mutating tools included — the socket is same-uid
   private); `take_heapsnapshot` and unknown names are refused without being forwarded.
 - `THEME_FACTORY_CHROME_MCP_EXECUTABLE` overrides the MCP binary (used by the tests with a fake server).

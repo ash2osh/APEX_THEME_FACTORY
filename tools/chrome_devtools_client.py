@@ -7,32 +7,62 @@ import socket
 import subprocess
 import sys
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 try:
-    from tools.chrome_mcp_daemon import ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path
+    from tools.chrome_mcp_daemon import (
+        ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
+        is_tcp_address, parse_tcp_address,
+    )
 except ModuleNotFoundError:  # direct execution from tools/
-    from chrome_mcp_daemon import ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path
+    from chrome_mcp_daemon import (
+        ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
+        is_tcp_address, parse_tcp_address,
+    )
 
 
-def _can_connect(socket_path: Path) -> bool:
+def _can_connect(socket_path: Union[str, Path]) -> bool:
     try:
-        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
-            connection.settimeout(0.5)
-            connection.connect(str(socket_path))
-        return True
+        if is_tcp_address(socket_path):
+            host, port = parse_tcp_address(socket_path)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
+                connection.settimeout(0.5)
+                connection.connect((host, port))
+            return True
+        else:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+                connection.settimeout(0.5)
+                connection.connect(str(socket_path))
+            return True
     except OSError:
         return False
 
 
-def ensure_daemon_running(socket_path: Optional[Path] = None, auto_spawn: bool = False) -> Path:
+def ensure_daemon_running(
+    socket_path: Optional[Union[str, Path]] = None,
+    auto_spawn: bool = False,
+) -> Union[str, Path]:
     path = socket_path or default_socket_path()
     if _can_connect(path):
         return path
     if not auto_spawn:
         raise RuntimeError(f"Chrome MCP daemon is not running at {path}; start tools/chrome_mcp_daemon.py explicitly")
     command = [sys.executable, str(Path(__file__).with_name("chrome_mcp_daemon.py"))]
-    process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    if sys.platform == "win32":
+        creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=creationflags,
+        )
+    else:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
     for _ in range(50):
         if process.poll() is not None:
             raise RuntimeError(f"Chrome MCP daemon failed to start (exit {process.returncode})")
@@ -46,7 +76,7 @@ def ensure_daemon_running(socket_path: Optional[Path] = None, auto_spawn: bool =
 class ChromeDevToolsClient:
     def __init__(
         self,
-        socket_path: Optional[Path] = None,
+        socket_path: Optional[Union[str, Path]] = None,
         auto_spawn: bool = False,
         response_timeout: float = DEFAULT_REQUEST_TIMEOUT + 10.0,
     ):
@@ -54,13 +84,24 @@ class ChromeDevToolsClient:
         # slightly longer than the daemon's own request timeout so its error reaches us first
         self.response_timeout = response_timeout
 
+    def _create_connection(self) -> socket.socket:
+        if is_tcp_address(self.socket_path):
+            host, port = parse_tcp_address(self.socket_path)
+            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            conn.settimeout(self.response_timeout)
+            conn.connect((host, port))
+            return conn
+        else:
+            conn = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            conn.settimeout(self.response_timeout)
+            conn.connect(str(self.socket_path))
+            return conn
+
     def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> Any:
         if name not in ALLOWED_TOOLS:
             raise ValueError(f"Chrome MCP tool is not allowed: {name!r}")
         ensure_daemon_running(self.socket_path)
-        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
-            connection.settimeout(self.response_timeout)
-            connection.connect(str(self.socket_path))
+        with self._create_connection() as connection:
             connection.sendall((json.dumps({"name": name, "arguments": arguments or {}}) + "\n").encode("utf-8"))
             data = b""
             try:

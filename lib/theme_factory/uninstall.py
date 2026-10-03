@@ -102,7 +102,7 @@ def _remove_theme_from_static_files(static_files_apx: Path, prefix: str) -> None
         if static_dir.exists() and not any(path.is_file() for path in static_dir.rglob("*")):
             shutil.rmtree(static_dir)
         return
-    static_files_apx.write_text(new_content, encoding="utf-8")
+    static_files_apx.write_text(new_content, encoding="utf-8", newline="\n")
 
 
 def _remove_theme_from_app_css(app_apx: Path, theme_name: str) -> None:
@@ -111,7 +111,7 @@ def _remove_theme_from_app_css(app_apx: Path, theme_name: str) -> None:
     content = app_apx.read_text(encoding="utf-8")
     target = inspect_export(app_apx.parent)
     remaining = [url for url in target.css_urls if f"theme-factory/packages/{theme_name}/" not in url]
-    app_apx.write_text(set_file_urls(content, "css", remaining), encoding="utf-8")
+    app_apx.write_text(set_file_urls(content, "css", remaining), encoding="utf-8", newline="\n")
 
 
 def _remove_runtime_from_app(app_apx: Path) -> None:
@@ -120,7 +120,7 @@ def _remove_runtime_from_app(app_apx: Path) -> None:
     content = app_apx.read_text(encoding="utf-8")
     target = inspect_export(app_apx.parent)
     remaining = [url for url in target.javascript_urls if url != RUNTIME_JS_URL]
-    app_apx.write_text(set_file_urls(content, "javaScript", remaining), encoding="utf-8")
+    app_apx.write_text(set_file_urls(content, "javaScript", remaining), encoding="utf-8", newline="\n")
 
 
 def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> None:
@@ -131,7 +131,7 @@ def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> Non
     if regions_code:
         last_paren = text.rfind(")")
         text = text[:last_paren].rstrip() + "\n" + regions_code + "\n)\n"
-    target.page_zero_file.write_text(text, encoding="utf-8")
+    target.page_zero_file.write_text(text, encoding="utf-8", newline="\n")
 
 
 def _rewrite_navigation(target: TargetExport, entries_code: Optional[str]) -> None:
@@ -140,7 +140,7 @@ def _rewrite_navigation(target: TargetExport, entries_code: Optional[str]) -> No
     text = strip_switcher_entries(target.navigation_file.read_text(encoding="utf-8"))
     if entries_code and target.navigation_list_alias:
         text = insert_switcher_entries(text, target.navigation_list_alias, entries_code)
-    target.navigation_file.write_text(text, encoding="utf-8")
+    target.navigation_file.write_text(text, encoding="utf-8", newline="\n")
 
 
 def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
@@ -192,7 +192,7 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
     new_default = choose_fallback(reg.get("defaultTheme"), [t["name"] for t in themes])
     reg["defaultTheme"] = new_default
     switcher_enabled = bool(reg.get("switcherEnabled", False))
-    registry_file.write_text(json.dumps(reg, indent=2) + "\n", encoding="utf-8")
+    registry_file.write_text(json.dumps(reg, indent=2) + "\n", encoding="utf-8", newline="\n")
     remaining = [
         {"name": t["name"], "title": t.get("title", t["name"]), "className": t.get("className", f"app-theme-{t['name']}")}
         for t in themes

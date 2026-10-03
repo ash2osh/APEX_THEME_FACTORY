@@ -367,7 +367,7 @@ def apply_patch(patch: InstallPatch) -> None:
     for rel_path, content in patch.after_files.items():
         dst = patch.export_dir / rel_path
         dst.parent.mkdir(parents=True, exist_ok=True)
-        dst.write_text(content, encoding="utf-8")
+        dst.write_text(content, encoding="utf-8", newline="\n")
 
     # 2. Perform staged copies
     for src, dst in patch.staged_copies:

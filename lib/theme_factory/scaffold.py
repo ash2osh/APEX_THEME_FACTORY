@@ -210,7 +210,7 @@ def _render_neutral_tree(repo_root: Path, destination: Path, recipe: ThemeRecipe
             content = render_responsive_css(recipe)
         else:
             content = _render(source.read_text(encoding="utf-8"), replacements)
-        target.write_text(content, encoding="utf-8")
+        target.write_text(content, encoding="utf-8", newline="\n")
 
     for profile_type, owner in PROFILE_OWNERS.items():
         profile = getattr(recipe.components, profile_type)
@@ -349,7 +349,7 @@ def regenerate_owned_files(theme_root: Path, recipe: ThemeRecipe) -> ScaffoldRes
         current_manifest = load_manifest(theme_root / "theme.json", theme_root)
         (staged_theme / "theme.json").write_text(
             render_manifest(recipe, _manifest_font_specs(current_manifest)),
-            encoding="utf-8",
+            encoding="utf-8", newline="\n",
         )
         _validate_rendered(
             repo_root,

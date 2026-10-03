@@ -140,7 +140,7 @@ def sync(repo_root: Path, check: bool = False) -> AdapterReport:
         if rendered != text:
             drift.append(css_path.relative_to(repo_root).as_posix())
             if not check:
-                css_path.write_text(rendered, encoding="utf-8")
+                css_path.write_text(rendered, encoding="utf-8", newline="\n")
     return AdapterReport(files, segments, tuple(drift))
 
 

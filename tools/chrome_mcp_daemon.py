@@ -141,6 +141,61 @@ def _resolve_command(executable: str) -> list[str]:
     return [str(target)]
 
 
+def _assign_to_job_object(proc: subprocess.Popen) -> Optional[Any]:
+    """On Windows, assign process to a Job Object configured to kill children when the parent closes."""
+    if sys.platform != "win32":
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class IO_COUNTERS(ctypes.Structure):
+            _fields_ = [
+                ("ReadOperationCount", ctypes.c_uint64),
+                ("WriteOperationCount", ctypes.c_uint64),
+                ("OtherOperationCount", ctypes.c_uint64),
+                ("ReadTransferCount", ctypes.c_uint64),
+                ("WriteTransferCount", ctypes.c_uint64),
+                ("OtherTransferCount", ctypes.c_uint64),
+            ]
+
+        class JOBOBJECT_BASIC_LIMIT_INFORMATION(ctypes.Structure):
+            _fields_ = [
+                ("PerProcessUserTimeLimit", ctypes.c_int64),
+                ("PerJobUserTimeLimit", ctypes.c_int64),
+                ("LimitFlags", wintypes.DWORD),
+                ("MinimumWorkingSetSize", ctypes.c_size_t),
+                ("MaximumWorkingSetSize", ctypes.c_size_t),
+                ("ActiveProcessLimit", wintypes.DWORD),
+                ("Affinity", ctypes.c_size_t),
+                ("PriorityClass", wintypes.DWORD),
+                ("SchedulingClass", wintypes.DWORD),
+            ]
+
+        class JOBOBJECT_EXTENDED_LIMIT_INFORMATION(ctypes.Structure):
+            _fields_ = [
+                ("BasicLimitInformation", JOBOBJECT_BASIC_LIMIT_INFORMATION),
+                ("IoInfo", IO_COUNTERS),
+                ("ProcessMemoryLimit", ctypes.c_size_t),
+                ("JobMemoryLimit", ctypes.c_size_t),
+                ("PeakProcessMemoryLimit", ctypes.c_size_t),
+                ("PeakJobMemoryLimit", ctypes.c_size_t),
+            ]
+
+        kernel32 = ctypes.windll.kernel32
+        job = kernel32.CreateJobObjectW(None, None)
+        if not job:
+            return None
+        info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
+        info.BasicLimitInformation.LimitFlags = 0x2000  # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+        kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info))
+        if hasattr(proc, "_handle") and proc._handle:
+            kernel32.AssignProcessToJobObject(job, int(proc._handle))
+        return job
+    except Exception:
+        return None
+
+
 class ChromeMcpDaemon:
     def __init__(
         self,
@@ -152,6 +207,7 @@ class ChromeMcpDaemon:
         self.socket_path = socket_path or default_socket_path()
         self.request_timeout = request_timeout
         self.proc: Optional[subprocess.Popen] = None
+        self.job_handle: Optional[Any] = None
         self.lock = threading.Lock()            # serialises writes to the MCP stdin and id allocation
         self.request_id = 0
         self.pending: Dict[int, "queue.Queue[dict]"] = {}
@@ -271,6 +327,7 @@ class ChromeMcpDaemon:
             stderr=subprocess.PIPE, text=True, bufsize=1,
             encoding="utf-8", errors="replace",
         )
+        self.job_handle = _assign_to_job_object(self.proc)
         self.stderr_thread = threading.Thread(target=self._drain_stderr, name="mcp-stderr")
         self.stderr_thread.start()
         self.request_id += 1
@@ -437,6 +494,13 @@ class ChromeMcpDaemon:
                 if stream:
                     stream.close()
         self.proc = None
+        if self.job_handle:
+            try:
+                import ctypes
+                ctypes.windll.kernel32.CloseHandle(self.job_handle)
+            except Exception:
+                pass
+            self.job_handle = None
         if self.socket_identity is not None and not is_tcp_address(self.socket_path):
             try:
                 sock_p = Path(self.socket_path)

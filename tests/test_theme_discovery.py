@@ -48,7 +48,7 @@ class ThemeDiscoveryTests(unittest.TestCase):
         bad = self.root / "sample-themes" / "bad"
         bad.mkdir()
         (bad / "theme.json").write_text('{"schemaVersion":1}', encoding="utf-8")
-        with self.assertRaisesRegex(PackageError, "bad/theme.json"):
+        with self.assertRaisesRegex(PackageError, r"bad[/\\]theme\.json"):
             discover_themes(self.root)
 
     def test_directory_without_manifest_is_ignored(self):

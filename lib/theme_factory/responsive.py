@@ -35,7 +35,7 @@ def sync_responsive(repo_root: Path, check: bool = False) -> list[str]:
                 drift.append(f"{name}: css/apex/responsive.css")
             else:
                 responsive_file.parent.mkdir(parents=True, exist_ok=True)
-                responsive_file.write_text(expected_css, encoding="utf-8")
+                responsive_file.write_text(expected_css, encoding="utf-8", newline="\n")
 
         theme_css_path = theme_dir / "css/theme.css"
         if theme_css_path.is_file():
@@ -49,7 +49,7 @@ def sync_responsive(repo_root: Path, check: bool = False) -> list[str]:
                 else:
                     cleaned_lines = [line for line in content.splitlines() if RESPONSIVE_IMPORT not in line]
                     cleaned_text = "\n".join(cleaned_lines).rstrip() + f"\n{RESPONSIVE_IMPORT}\n"
-                    theme_css_path.write_text(cleaned_text, encoding="utf-8")
+                    theme_css_path.write_text(cleaned_text, encoding="utf-8", newline="\n")
 
     return drift
 

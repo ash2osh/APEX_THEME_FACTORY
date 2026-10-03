@@ -96,23 +96,23 @@ def build_package_from_root(
 
         # 1. theme.json
         (staging / "theme.json").write_text(
-            (theme_root / "theme.json").read_text(encoding="utf-8"), encoding="utf-8"
+            (theme_root / "theme.json").read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
         )
 
         # 2. theme.css
-        (staging / "theme.css").write_text(theme_css_content, encoding="utf-8")
+        (staging / "theme.css").write_text(theme_css_content, encoding="utf-8", newline="\n")
 
         # 3. theme-factory-runtime.js
         runtime_src = repo_root / "installer/theme-factory-runtime.js"
         (staging / "theme-factory-runtime.js").write_text(
-            runtime_src.read_text(encoding="utf-8"), encoding="utf-8"
+            runtime_src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
         )
 
         # 4. install.sh & uninstall.sh
         for sh_name in ("install.sh", "uninstall.sh"):
             sh_src = repo_root / f"installer/{sh_name}"
             sh_dst = staging / sh_name
-            sh_dst.write_text(sh_src.read_text(encoding="utf-8"), encoding="utf-8")
+            sh_dst.write_text(sh_src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
             sh_dst.chmod(0o755)
 
         # 5. Bundled lib/theme_factory/*.py
@@ -120,7 +120,7 @@ def build_package_from_root(
         lib_staging.mkdir(parents=True)
         lib_src = repo_root / "lib/theme_factory"
         for py_file in lib_src.glob("*.py"):
-            (lib_staging / py_file.name).write_text(py_file.read_text(encoding="utf-8"), encoding="utf-8")
+            (lib_staging / py_file.name).write_text(py_file.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
 
         # 6. preview/cover.jpg
         cover_staging = staging / "preview"
@@ -147,7 +147,7 @@ def build_package_from_root(
                 if font_src.exists():
                     shutil.copy(font_src, font_dst)
 
-        (licenses_staging / "THIRD_PARTY.md").write_text("\n".join(third_party_lines) + "\n", encoding="utf-8")
+        (licenses_staging / "THIRD_PARTY.md").write_text("\n".join(third_party_lines) + "\n", encoding="utf-8", newline="\n")
 
         # 8. Render README.md and MANUAL-INSTALL.md
         bootstrap = render_template(
@@ -174,11 +174,11 @@ def build_package_from_root(
 
         readme_tmpl = repo_root / "installer/templates/README.md.tmpl"
         if readme_tmpl.exists():
-            (staging / "README.md").write_text(render_template(readme_tmpl, replacements), encoding="utf-8")
+            (staging / "README.md").write_text(render_template(readme_tmpl, replacements), encoding="utf-8", newline="\n")
 
         manual_tmpl = repo_root / "installer/templates/MANUAL-INSTALL.md.tmpl"
         if manual_tmpl.exists():
-            (staging / "MANUAL-INSTALL.md").write_text(render_template(manual_tmpl, replacements), encoding="utf-8")
+            (staging / "MANUAL-INSTALL.md").write_text(render_template(manual_tmpl, replacements), encoding="utf-8", newline="\n")
 
         leaked_source = sorted(path for path in SOURCE_ONLY_THEME_FILES if (staging / path).exists())
         if leaked_source:
@@ -193,7 +193,7 @@ def build_package_from_root(
                     h = calculate_sha256(file_path.read_bytes())
                     checksum_lines.append(f"{h}  {rel}")
 
-        (staging / "checksums.sha256").write_text("\n".join(checksum_lines) + "\n", encoding="utf-8")
+        (staging / "checksums.sha256").write_text("\n".join(checksum_lines) + "\n", encoding="utf-8", newline="\n")
 
         # 10. Build ZIP file deterministically
         zip_path = output_dir / f"{pkg_folder_name}.zip"

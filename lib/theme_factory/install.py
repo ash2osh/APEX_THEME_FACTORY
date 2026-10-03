@@ -133,7 +133,7 @@ def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, labe
     # post-operation digest (drift refused, import failed, an exception) leaves a backup restore will not
     # apply without --discard-later-changes.
     metadata = {**metadata, "postOperationDigest": UNKNOWN_POST_DIGEST}
-    (backup_dir / "target.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    (backup_dir / "target.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8", newline="\n")
     return backup_dir
 
 
@@ -155,7 +155,7 @@ def _record_post_digest(backup_dir: Path, digest: str) -> None:
     target_json = backup_dir / "target.json"
     data = json.loads(target_json.read_text(encoding="utf-8"))
     data["postOperationDigest"] = digest
-    target_json.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    target_json.write_text(json.dumps(data, indent=2), encoding="utf-8", newline="\n")
 
 
 def keep_or_remove_staging(staging: list, state: dict) -> None:

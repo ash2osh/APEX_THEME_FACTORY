@@ -527,10 +527,10 @@ def install_font(
             ],
         }
         staged_recipe = validation_root / "theme.recipe.json"
-        staged_recipe.write_text(json.dumps(raw_recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        staged_recipe.write_text(json.dumps(raw_recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         updated_recipe = load_recipe(staged_recipe)
         staged_manifest = validation_root / "theme.json"
-        staged_manifest.write_text(render_manifest(updated_recipe, {"body": role}), encoding="utf-8")
+        staged_manifest.write_text(render_manifest(updated_recipe, {"body": role}), encoding="utf-8", newline="\n")
         load_manifest(staged_manifest, validation_root)
 
         readme = (theme_root / "README.md").read_text(encoding="utf-8")
@@ -540,7 +540,7 @@ def install_font(
                 readme,
                 _provenance_section(request, metadata, source_filename, installed_faces),
             ),
-            encoding="utf-8",
+            encoding="utf-8", newline="\n",
         )
 
         target_fonts = theme_root / "fonts"

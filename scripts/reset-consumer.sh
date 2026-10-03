@@ -28,7 +28,8 @@ exit
 SQL
 )
 current_alias=$(grep -E "^[[:space:]]*$app_id\|" <<<"$existing" | head -1 | cut -d'|' -f2 | tr -d '[:space:]' || true)
-if [[ -n "$current_alias" && "${current_alias^^}" != "$alias" ]]; then
+# tr, not ${var^^}: macOS ships bash 3.2
+if [[ -n "$current_alias" && "$(tr '[:lower:]' '[:upper:]' <<<"$current_alias")" != "$alias" ]]; then
   echo "reset-consumer: app $app_id is $current_alias, not $alias - refusing to overwrite it" >&2; exit 1
 fi
 if [[ $yes -ne 1 ]]; then

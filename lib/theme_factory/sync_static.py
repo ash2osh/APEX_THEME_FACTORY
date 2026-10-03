@@ -164,7 +164,7 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
         if check:
             report.drift.append("static-files/css/app.css: @themes block")
         else:
-            app_css.write_text(new_css, encoding="utf-8")
+            app_css.write_text(new_css, encoding="utf-8", newline="\n")
 
     # (1b) page-0 bootstrap regions
     page_zero = root / PAGE_ZERO
@@ -187,7 +187,7 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
             if check:
                 report.drift.append(f"{PAGE_ZERO.as_posix()}: bootstrap regions")
             else:
-                page_zero.write_text(new_p0, encoding="utf-8")
+                page_zero.write_text(new_p0, encoding="utf-8", newline="\n")
 
     # (1c) runtime script in static-files/js
     runtime_src = root / "installer/theme-factory-runtime.js"
@@ -241,7 +241,7 @@ def sync(root: Path, *, check: bool = False) -> SyncReport:
 
     if not check:
         if apx_text != original_apx:
-            apx.write_text(apx_text, encoding="utf-8")
+            apx.write_text(apx_text, encoding="utf-8", newline="\n")
         _remove_empty_dirs(dst / "css")
         _remove_empty_dirs(dst / "js")
     return report

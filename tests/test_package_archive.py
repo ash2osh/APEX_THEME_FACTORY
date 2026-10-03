@@ -66,6 +66,17 @@ class ArchiveTests(unittest.TestCase):
                 else:
                     os.environ["THEME_FACTORY_ALLOW_DIRTY"] = old_val
 
+    def test_text_members_use_lf_on_every_platform(self):
+        # A package built on Windows must still run install.sh under bash and hash identically.
+        text_suffixes = (".sh", ".css", ".js", ".json", ".md", ".py", ".sha256")
+        with tempfile.TemporaryDirectory() as tmp:
+            zip_path = build_package(self.repo_root, "linen", Path(tmp))
+            with zipfile.ZipFile(zip_path) as archive:
+                text_members = [name for name in archive.namelist() if name.endswith(text_suffixes)]
+                self.assertTrue(any(name.endswith("/install.sh") for name in text_members))
+                for name in text_members:
+                    self.assertNotIn(b"\r\n", archive.read(name), name)
+
     def test_extracted_package_verifies_checksums_and_manifest(self):
         with tempfile.TemporaryDirectory() as tmp:
             old_val = os.environ.get("THEME_FACTORY_ALLOW_DIRTY")

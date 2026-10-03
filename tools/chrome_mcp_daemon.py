@@ -67,12 +67,17 @@ def parse_tcp_address(addr: Union[str, Path]) -> Tuple[str, int]:
     return (host, port)
 
 
+DEFAULT_TCP_ENDPOINT = "127.0.0.1:9223"
+
+
 def default_socket_path() -> Union[str, Path]:
     override = os.environ.get("THEME_FACTORY_CHROME_MCP_SOCKET")
     if override:
         if is_tcp_address(override):
             return override
         return Path(override)
+    if not hasattr(socket, "AF_UNIX") or sys.platform == "win32":
+        return DEFAULT_TCP_ENDPOINT
     runtime = os.environ.get("XDG_RUNTIME_DIR")
     if runtime:
         base = Path(runtime)
@@ -98,21 +103,22 @@ def prepare_socket_path(path: Union[str, Path]) -> Path:
                 raise RuntimeError(f"Refusing to replace unsafe socket path: {path}")
         if hasattr(stat, "S_ISSOCK") and not stat.S_ISSOCK(info.st_mode):
             raise RuntimeError(f"Refusing to replace unsafe socket path: {path}")
-        probe = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        probe.settimeout(0.25)
-        try:
-            probe.connect(str(path))
-        except ConnectionRefusedError:
-            pass
-        except OSError as exc:
-            if getattr(exc, "winerror", None) == 10061 or "refused" in str(exc).lower():
+        if hasattr(socket, "AF_UNIX"):
+            probe = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            probe.settimeout(0.25)
+            try:
+                probe.connect(str(path))
+            except ConnectionRefusedError:
                 pass
+            except OSError as exc:
+                if getattr(exc, "winerror", None) == 10061 or "refused" in str(exc).lower():
+                    pass
+                else:
+                    raise RuntimeError(f"Refusing to replace ambiguous socket path {path}: {exc}") from exc
             else:
-                raise RuntimeError(f"Refusing to replace ambiguous socket path {path}: {exc}") from exc
-        else:
-            raise RuntimeError(f"Chrome MCP daemon is already listening on {path}")
-        finally:
-            probe.close()
+                raise RuntimeError(f"Chrome MCP daemon is already listening on {path}")
+            finally:
+                probe.close()
         try:
             path.unlink()
         except OSError as exc:
@@ -299,6 +305,11 @@ class ChromeMcpDaemon:
             finally:
                 self.close()
         else:
+            if not hasattr(socket, "AF_UNIX"):
+                raise RuntimeError(
+                    f"Cannot use UNIX socket '{self.socket_path}': AF_UNIX is not supported on this platform. "
+                    "Use a TCP address (e.g. 127.0.0.1:9223) instead."
+                )
             socket_path = prepare_socket_path(self.socket_path)
             self.socket_path = socket_path
             self._start_mcp_child()

@@ -18,6 +18,7 @@ from tools.chrome_devtools_client import ChromeDevToolsClient, ensure_daemon_run
 
 
 class ChromeMcpDaemonTests(unittest.TestCase):
+    @unittest.skipIf(sys.platform == "win32", "POSIX filesystem permissions not supported on Windows")
     def test_socket_directory_is_private(self):
         with tempfile.TemporaryDirectory() as temp:
             path = prepare_socket_path(Path(temp) / "service/chrome.sock")
@@ -65,6 +66,7 @@ class ChromeMcpDaemonTests(unittest.TestCase):
         response = daemon._read_response(7)
         self.assertEqual(response["result"], {"ok": True})
 
+    @unittest.skipUnless(hasattr(socket, "AF_UNIX"), "AF_UNIX not supported on this platform")
     def test_live_socket_is_not_unlinked_by_second_daemon(self):
         with tempfile.TemporaryDirectory() as temp:
             target = Path(temp) / "service/chrome.sock"
@@ -77,6 +79,7 @@ class ChromeMcpDaemonTests(unittest.TestCase):
                 prepare_socket_path(target)
             self.assertTrue(target.exists())
 
+    @unittest.skipUnless(hasattr(socket, "AF_UNIX"), "AF_UNIX not supported on this platform")
     def test_client_gives_up_on_a_silent_daemon(self):
         import threading
         from tools.chrome_devtools_client import ChromeDevToolsClient
@@ -110,6 +113,7 @@ class ChromeMcpDaemonTests(unittest.TestCase):
                 ensure_daemon_running(Path(temp) / "missing.sock", auto_spawn=False)
 
 
+@unittest.skipUnless(hasattr(socket, "AF_UNIX"), "AF_UNIX not supported on this platform")
 class ChromeMcpDaemonLifecycleTests(unittest.TestCase):
     FAKE = str(Path(__file__).resolve().parent / "fixtures/mcp/fake_mcp_server.py")
 
@@ -238,22 +242,27 @@ class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
     def test_default_socket_path_windows_fallback(self):
         env = os.environ.copy()
         env.pop("THEME_FACTORY_CHROME_MCP_SOCKET", None)
+        with patch.dict(os.environ, env, clear=True):
+            with patch("tools.chrome_mcp_daemon.sys.platform", "win32"):
+                self.assertEqual(default_socket_path(), "127.0.0.1:9223")
+
+    @unittest.skipUnless(hasattr(socket, "AF_UNIX"), "AF_UNIX not supported on this platform")
+    def test_default_socket_path_posix_fallback(self):
+        env = os.environ.copy()
+        env.pop("THEME_FACTORY_CHROME_MCP_SOCKET", None)
         env.pop("XDG_RUNTIME_DIR", None)
         env["USERNAME"] = "testuser"
         with patch.dict(os.environ, env, clear=True):
-            with patch("os.getuid", create=True) as mock_getuid:
-                del mock_getuid  # ensure hasattr(os, "getuid") is False
-                with patch("os.path.exists", return_value=True):
-                    # temporarily remove getuid attribute from os module
-                    orig_getuid = getattr(os, "getuid", None)
-                    try:
-                        if hasattr(os, "getuid"):
-                            delattr(os, "getuid")
-                        path = default_socket_path()
-                        self.assertIn("apex-theme-factory-testuser", str(path))
-                    finally:
-                        if orig_getuid is not None:
-                            os.getuid = orig_getuid
+            with patch("tools.chrome_mcp_daemon.sys.platform", "linux"):
+                orig_getuid = getattr(os, "getuid", None)
+                try:
+                    if hasattr(os, "getuid"):
+                        delattr(os, "getuid")
+                    path = default_socket_path()
+                    self.assertIn("apex-theme-factory-testuser", str(path))
+                finally:
+                    if orig_getuid is not None:
+                        os.getuid = orig_getuid
 
     def test_resolve_command(self):
         # Python script
@@ -318,6 +327,41 @@ class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
             client = ChromeDevToolsClient(socket_path=tcp_addr, response_timeout=2.0)
             res = client.call_tool("list_pages")
             self.assertEqual(res["echo"]["name"], "list_pages")
+        finally:
+            daemon.shutdown()
+            thread.join(timeout=5)
+
+    def test_tcp_loopback_unanswered_tool_call_times_out(self):
+        import threading
+        import time
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", 0))
+            free_port = probe.getsockname()[1]
+
+        tcp_addr = f"127.0.0.1:{free_port}"
+        os.environ["FAKE_MCP_MODE"] = "hang"
+        daemon = ChromeMcpDaemon(executable=self.FAKE, socket_path=tcp_addr, request_timeout=0.3)
+        thread = threading.Thread(target=daemon.start, daemon=True)
+        thread.start()
+        try:
+            deadline = time.time() + 5.0
+            ready = False
+            while time.time() < deadline:
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
+                        conn.settimeout(0.2)
+                        conn.connect(("127.0.0.1", free_port))
+                        ready = True
+                        break
+                except OSError:
+                    time.sleep(0.05)
+            self.assertTrue(ready, "TCP daemon never became ready")
+
+            client = ChromeDevToolsClient(socket_path=tcp_addr, response_timeout=1.0)
+            with self.assertRaises(RuntimeError) as context:
+                client.call_tool("list_pages")
+            self.assertIn("timed out", str(context.exception))
         finally:
             daemon.shutdown()
             thread.join(timeout=5)

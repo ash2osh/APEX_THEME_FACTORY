@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -44,7 +45,7 @@ class RealShapeLifecycleTests(unittest.TestCase):
         self.state_file = self.tmp / "fake-sql-state.txt"
         fake_bin = str((Path(__file__).resolve().parent / "fixtures/bin").resolve())
         self.env = os.environ.copy()
-        self.env["PATH"] = f"{fake_bin}:{self.env.get('PATH', '')}"
+        self.env["PATH"] = f"{fake_bin}{os.pathsep}{self.env.get('PATH', '')}"
         self.env["FAKE_SQL_MODE"] = "success"
         self.env["FAKE_SQL_FIXTURE"] = "real-shape"
         self.env["FAKE_SQL_STATE_FILE"] = str(self.state_file)
@@ -52,7 +53,7 @@ class RealShapeLifecycleTests(unittest.TestCase):
     def cli(self, *args: str, stdin: str = "") -> subprocess.CompletedProcess:
         backup_flag = [] if args[0] == "restore" else ["--backup-dir", str(self.backups)]
         return subprocess.run(
-            ["python3", "-m", "lib.theme_factory.cli", *args, "--connection", "demo", "--workspace", "DEMO",
+            [sys.executable, "-m", "lib.theme_factory.cli", *args, "--connection", "demo", "--workspace", "DEMO",
              "--app-id", "314", *backup_flag],
             input=stdin, text=True, capture_output=True, env=self.env, check=False, cwd=self.repo_root,
         )
@@ -66,7 +67,7 @@ class RealShapeLifecycleTests(unittest.TestCase):
         staged = Path(self.state_file.read_text(encoding="utf-8").strip())
         export = self.tmp / f"export-{len(list(self.tmp.iterdir()))}"
         shutil.copytree(staged, export)
-        subprocess.run(["python3", str(Path(__file__).resolve().parent / "fixtures/bin/apexlang_roundtrip.py"), str(export)], check=True)
+        subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "fixtures/bin/apexlang_roundtrip.py"), str(export)], check=True)
         return export
 
     def test_install_reinstall_coexist_switch_uninstall_restore(self):

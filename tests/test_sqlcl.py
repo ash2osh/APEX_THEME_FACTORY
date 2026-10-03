@@ -13,7 +13,7 @@ class SqlclTests(unittest.TestCase):
     def setUp(self):
         self.fake_bin = str((Path(__file__).resolve().parent / "fixtures/bin").resolve())
         self.orig_path = os.environ.get("PATH", "")
-        os.environ["PATH"] = f"{self.fake_bin}:{self.orig_path}"
+        os.environ["PATH"] = f"{self.fake_bin}{os.pathsep}{self.orig_path}"
 
     def tearDown(self):
         os.environ["PATH"] = self.orig_path

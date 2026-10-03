@@ -1,8 +1,28 @@
 import os
 from pathlib import Path
+import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
+
+
+def find_bash() -> str:
+    if sys.platform == "win32":
+        for b in [shutil.which("bash"), shutil.which("bash.exe")]:
+            if b and "system32" not in b.lower():
+                return b
+        git = shutil.which("git")
+        if git:
+            for parent in Path(git).resolve().parents:
+                for rel in ("bin/bash.exe", "usr/bin/bash.exe"):
+                    cand = parent / rel
+                    if cand.exists():
+                        return str(cand)
+        for cand in [r"C:\Program Files\Git\bin\bash.exe", r"C:\Program Files\Git\usr\bin\bash.exe"]:
+            if Path(cand).exists():
+                return cand
+    return "bash"
 
 
 class ConsumerResetScriptTests(unittest.TestCase):
@@ -10,17 +30,17 @@ class ConsumerResetScriptTests(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.log = self.tmp / "sql.log"
         self.env = os.environ.copy()
-        self.env["PATH"] = f"{Path.cwd() / 'tests/fixtures/bin'}:{self.env.get('PATH', '')}"
+        self.env["PATH"] = f"{Path.cwd() / 'tests/fixtures/bin'}{os.pathsep}{self.env.get('PATH', '')}"
         self.env["FAKE_SQL_LOG"] = str(self.log)
         self.env["FAKE_SQL_STATE_FILE"] = str(self.tmp / "state")
 
     def tearDown(self):
-        import shutil
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def run_reset(self, *args, existing="", stdin=""):
         env = dict(self.env, FAKE_SQL_EXISTING_APPS=existing)
-        return subprocess.run(["scripts/reset-consumer.sh", "--connection", "demo", *args],
+        cmd = [find_bash(), "scripts/reset-consumer.sh"] if sys.platform == "win32" else ["scripts/reset-consumer.sh"]
+        return subprocess.run([*cmd, "--connection", "demo", *args],
                               input=stdin, text=True, capture_output=True, env=env, check=False)
 
     def sql_log(self):

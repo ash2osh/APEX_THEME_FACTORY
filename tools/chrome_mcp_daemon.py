@@ -269,6 +269,7 @@ class ChromeMcpDaemon:
         self.proc = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, text=True, bufsize=1,
+            encoding="utf-8", errors="replace",
         )
         self.stderr_thread = threading.Thread(target=self._drain_stderr, name="mcp-stderr")
         self.stderr_thread.start()
@@ -289,10 +290,21 @@ class ChromeMcpDaemon:
         self._install_signal_handlers()
         if is_tcp_address(self.socket_path):
             host, port = parse_tcp_address(self.socket_path)
+            probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            probe.settimeout(0.25)
+            try:
+                probe.connect((host, port))
+            except (ConnectionRefusedError, OSError):
+                pass
+            else:
+                raise RuntimeError(f"Chrome MCP daemon is already listening on {host}:{port}")
+            finally:
+                probe.close()
             self._start_mcp_child()
             try:
                 self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                if sys.platform != "win32":
+                    self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.server_sock.bind((host, port))
                 self.server_sock.listen(10)
                 self._log(f"Daemon listening on tcp://{host}:{port}")
@@ -403,6 +415,14 @@ class ChromeMcpDaemon:
                     process.stdin.close()
             except OSError:
                 pass
+            if sys.platform == "win32":
+                try:
+                    subprocess.run(
+                        ["taskkill", "/F", "/T", "/PID", str(process.pid)],
+                        capture_output=True,
+                    )
+                except Exception:
+                    pass
             process.terminate()
             try:
                 process.wait(timeout=5)

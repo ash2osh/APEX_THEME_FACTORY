@@ -30,6 +30,8 @@ def _can_connect(socket_path: Union[str, Path]) -> bool:
                 connection.connect((host, port))
             return True
         else:
+            if not hasattr(socket, "AF_UNIX"):
+                return False
             with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
                 connection.settimeout(0.5)
                 connection.connect(str(socket_path))
@@ -92,6 +94,11 @@ class ChromeDevToolsClient:
             conn.connect((host, port))
             return conn
         else:
+            if not hasattr(socket, "AF_UNIX"):
+                raise RuntimeError(
+                    f"Cannot connect to UNIX socket '{self.socket_path}': AF_UNIX is not supported on this platform. "
+                    "Use a TCP address (e.g. 127.0.0.1:9223) instead."
+                )
             conn = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             conn.settimeout(self.response_timeout)
             conn.connect(str(self.socket_path))

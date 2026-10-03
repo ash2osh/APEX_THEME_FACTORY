@@ -38,8 +38,8 @@ python3 tools/chrome_devtools_client.py list_pages
 
 The daemon keeps one MCP/Chrome session open across Linux, macOS, and Windows:
 - **Linux & macOS**: Default socket is `$XDG_RUNTIME_DIR/chrome-mcp/chrome-mcp.sock` (or `/tmp/apex-theme-factory-<uid>/chrome-mcp/chrome-mcp.sock`), with a private `0700` directory and `0600` socket.
-- **Windows**: Default socket is `%TEMP%/apex-theme-factory-<user>/chrome-mcp/chrome-mcp.sock` (via Windows 10/11 `AF_UNIX`).
-- **TCP loopback (all platforms)**: Set `THEME_FACTORY_CHROME_MCP_SOCKET` to `127.0.0.1:<port>` or `tcp://127.0.0.1:<port>` (e.g. `127.0.0.1:9223`) to run over localhost TCP instead of UNIX sockets if preferred.
+- **Windows**: Default endpoint is TCP loopback `127.0.0.1:9223` (since standard Python on Windows lacks `AF_UNIX` socket support).
+- **TCP loopback (all platforms)**: Set `THEME_FACTORY_CHROME_MCP_SOCKET` to `127.0.0.1:<port>` or `tcp://127.0.0.1:<port>` (e.g. `127.0.0.1:9223`) to override the endpoint or run over localhost TCP instead of UNIX sockets if preferred.
 
 Set `THEME_FACTORY_CHROME_MCP_SOCKET` only when deliberately connecting to a known existing project daemon. The client does not silently spawn a daemon; a missing or failed daemon is reported as an error. Do not start a second daemon while the first owns the approved Chrome session: a second `chrome-devtools-mcp --autoConnect` instance may never answer while the first holds the connection.
 

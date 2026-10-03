@@ -40,6 +40,10 @@ The daemon keeps one MCP/Chrome session open across Linux, macOS, and Windows:
 - **Linux & macOS**: Default socket is `$XDG_RUNTIME_DIR/chrome-mcp/chrome-mcp.sock` (or `/tmp/apex-theme-factory-<uid>/chrome-mcp/chrome-mcp.sock`), with a private `0700` directory and `0600` socket.
 - **Windows**: Default endpoint is TCP loopback `127.0.0.1:9223` (since standard Python on Windows lacks `AF_UNIX` socket support).
 - **TCP loopback (all platforms)**: Set `THEME_FACTORY_CHROME_MCP_SOCKET` to `127.0.0.1:<port>` or `tcp://127.0.0.1:<port>` (e.g. `127.0.0.1:9223`) to override the endpoint or run over localhost TCP instead of UNIX sockets if preferred.
+- **TCP token**: loopback TCP is reachable by every local account, so a TCP daemon writes a random token to
+  `tcp-<port>.token` in the per-user state directory (`%LOCALAPPDATA%\apex-theme-factory\chrome-mcp\` on Windows,
+  next to the socket elsewhere) and refuses any request without it. The client reads it on every call; the daemon
+  deletes it on exit. `THEME_FACTORY_CHROME_MCP_TOKEN_DIR` moves it (the tests use a temp directory).
 
 Set `THEME_FACTORY_CHROME_MCP_SOCKET` only when deliberately connecting to a known existing project daemon. The client does not silently spawn a daemon; a missing or failed daemon is reported as an error. Do not start a second daemon while the first owns the approved Chrome session: a second `chrome-devtools-mcp --autoConnect` instance may never answer while the first holds the connection.
 
@@ -51,7 +55,9 @@ Lifecycle guarantees (verified by `tests/test_chrome_mcp_daemon.py`):
   next start after a connection probe confirms nothing is listening.
 - Child process execution cross-platform: resolves npm wrappers (`.cmd`/`.bat`) and Python scripts correctly across Windows, macOS, and Linux.
 - The tool allowlist is the chrome-devtools-mcp tool set (mutating tools included — the socket is same-uid
-  private); `take_heapsnapshot` and unknown names are refused without being forwarded.
+  private, and a TCP endpoint requires the per-user token); `take_heapsnapshot` and unknown names are refused
+  without being forwarded.
+- A failed `initialize` handshake stops the MCP child instead of leaving it (and the daemon) running.
 - `THEME_FACTORY_CHROME_MCP_EXECUTABLE` overrides the MCP binary (used by the tests with a fake server).
 
 ## Global installation (done 2026-09-13)

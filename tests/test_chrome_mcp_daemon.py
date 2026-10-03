@@ -213,6 +213,79 @@ class ChromeMcpDaemonLifecycleTests(unittest.TestCase):
 class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
     FAKE = str(Path(__file__).resolve().parent / "fixtures/mcp/fake_mcp_server.py")
 
+    def setUp(self):
+        # TCP daemons write their token here, not into the real per-user state directory.
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.token_dir = Path(temp.name)
+        env = patch.dict(os.environ, {"THEME_FACTORY_CHROME_MCP_TOKEN_DIR": temp.name})
+        env.start()
+        self.addCleanup(env.stop)
+
+    @staticmethod
+    def free_port() -> int:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", 0))
+            return probe.getsockname()[1]
+
+    def wait_for_port(self, port: int, seconds: float = 5.0) -> None:
+        import time
+        deadline = time.time() + seconds
+        while time.time() < deadline:
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as conn:
+                    conn.settimeout(0.2)
+                    conn.connect(("127.0.0.1", port))
+                return
+            except OSError:
+                time.sleep(0.05)
+        self.fail(f"TCP daemon on port {port} never became ready")
+
+    @staticmethod
+    def raw_call(port: int, request: dict) -> dict:
+        with socket.create_connection(("127.0.0.1", port), timeout=5) as connection:
+            connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
+            data = b""
+            while b"\n" not in data:
+                chunk = connection.recv(65536)
+                if not chunk:
+                    break
+                data += chunk
+        return json.loads(data.split(b"\n", 1)[0])
+
+    def test_tcp_daemon_refuses_requests_without_its_token(self):
+        import threading
+        port = self.free_port()
+        with patch.dict(os.environ, {"FAKE_MCP_MODE": "echo"}):
+            daemon = ChromeMcpDaemon(executable=self.FAKE, socket_path=f"127.0.0.1:{port}", request_timeout=2.0)
+            thread = threading.Thread(target=daemon.start, daemon=True)
+            thread.start()
+            token_file = self.token_dir / f"tcp-{port}.token"
+            try:
+                self.wait_for_port(port)
+                self.assertTrue(token_file.is_file())
+                for request in ({"name": "list_pages", "arguments": {}},
+                                {"name": "list_pages", "arguments": {}, "token": "wrong"}):
+                    response = self.raw_call(port, request)
+                    self.assertIn("token", response["error"]["message"])
+                client = ChromeDevToolsClient(socket_path=f"127.0.0.1:{port}", response_timeout=2.0)
+                self.assertEqual(client.call_tool("list_pages")["echo"]["name"], "list_pages")
+            finally:
+                daemon.shutdown()
+                thread.join(timeout=5)
+        self.assertFalse(thread.is_alive())
+        self.assertFalse(token_file.exists(), "token must be removed when the daemon stops")
+
+    def test_failed_handshake_stops_the_child(self):
+        port = self.free_port()
+        with patch.dict(os.environ, {"FAKE_MCP_MODE": "bad-init"}):
+            daemon = ChromeMcpDaemon(executable=self.FAKE, socket_path=f"127.0.0.1:{port}", request_timeout=2.0)
+            with self.assertRaises(RuntimeError) as context:
+                daemon.start()
+        self.assertIn("initialization failed", str(context.exception))
+        self.assertIsNone(daemon.proc, "the MCP child must be stopped when initialization fails")
+        self.assertFalse(daemon.stderr_thread.is_alive())
+
     def test_tcp_address_detection_and_parsing(self):
         self.assertTrue(is_tcp_address("127.0.0.1:9223"))
         self.assertEqual(parse_tcp_address("127.0.0.1:9223"), ("127.0.0.1", 9223))
@@ -387,6 +460,8 @@ class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
                     _, kwargs = mock_popen.call_args
                     self.assertIn("creationflags", kwargs)
                     self.assertNotIn("start_new_session", kwargs)
+                    # spawned on the address the caller polls, not the environment default
+                    self.assertEqual(kwargs["env"]["THEME_FACTORY_CHROME_MCP_SOCKET"], str(Path("/tmp/test.sock")))
 
 
 if __name__ == "__main__":

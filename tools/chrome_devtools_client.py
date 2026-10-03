@@ -2,6 +2,7 @@
 """Client for the explicitly started, persistent Chrome DevTools MCP daemon."""
 
 import json
+import os
 from pathlib import Path
 import socket
 import subprocess
@@ -12,12 +13,12 @@ from typing import Any, Dict, Optional, Union
 try:
     from tools.chrome_mcp_daemon import (
         ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
-        is_tcp_address, parse_tcp_address,
+        is_tcp_address, parse_tcp_address, read_token, token_path,
     )
 except ModuleNotFoundError:  # direct execution from tools/
     from chrome_mcp_daemon import (
         ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
-        is_tcp_address, parse_tcp_address,
+        is_tcp_address, parse_tcp_address, read_token, token_path,
     )
 
 
@@ -50,10 +51,13 @@ def ensure_daemon_running(
     if not auto_spawn:
         raise RuntimeError(f"Chrome MCP daemon is not running at {path}; start tools/chrome_mcp_daemon.py explicitly")
     command = [sys.executable, str(Path(__file__).with_name("chrome_mcp_daemon.py"))]
+    # The daemon reads its address from the environment: spawn it on the one we will poll.
+    env = {**os.environ, "THEME_FACTORY_CHROME_MCP_SOCKET": str(path)}
     if sys.platform == "win32":
         creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
         process = subprocess.Popen(
             command,
+            env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             creationflags=creationflags,
@@ -61,6 +65,7 @@ def ensure_daemon_running(
     else:
         process = subprocess.Popen(
             command,
+            env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             start_new_session=True,
@@ -113,8 +118,19 @@ class ChromeDevToolsClient:
         if name not in ALLOWED_TOOLS:
             raise ValueError(f"Chrome MCP tool is not allowed: {name!r}")
         ensure_daemon_running(self.socket_path)
+        request: Dict[str, Any] = {"name": name, "arguments": arguments or {}}
+        if is_tcp_address(self.socket_path):
+            # Read per call: a restarted daemon writes a new token.
+            _host, port = parse_tcp_address(self.socket_path)
+            token = read_token(token_path(port))
+            if token is None:
+                raise RuntimeError(
+                    f"No Chrome MCP daemon token at {token_path(port)}; the daemon on {self.socket_path} "
+                    "was not started by this account"
+                )
+            request["token"] = token
         with self._create_connection() as connection:
-            connection.sendall((json.dumps({"name": name, "arguments": arguments or {}}) + "\n").encode("utf-8"))
+            connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
             data = b""
             try:
                 while b"\n" not in data:

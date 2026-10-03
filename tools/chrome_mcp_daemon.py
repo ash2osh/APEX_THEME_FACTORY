@@ -3,15 +3,19 @@
 
 One `chrome-devtools-mcp --autoConnect` child is kept alive so Chrome asks for remote-debugging
 consent once; local clients (same uid, private UNIX socket) send `{"name","arguments"}` lines
-and receive the JSON-RPC response. Requests are correlated by id through a reader thread, so a
+and receive the JSON-RPC response. Over TCP loopback (Windows, or an explicit `host:port`) any local
+account can connect, so the daemon writes a random token to a per-user private file and refuses every
+request that does not carry it. Requests are correlated by id through a reader thread, so a
 call the MCP never answers (consent prompt pending, another instance holding the connection)
 times out and reports an error instead of wedging every later client.
 """
 
+import hmac
 import json
 import os
 from pathlib import Path
 import queue
+import secrets
 import shutil
 import signal
 import socket
@@ -20,7 +24,7 @@ import subprocess
 import sys
 import tempfile
 import threading
-from typing import Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 ALLOWED_TOOLS = frozenset({
     "click", "close_page", "drag", "emulate", "evaluate_script", "fill", "fill_form",
@@ -70,14 +74,11 @@ def parse_tcp_address(addr: Union[str, Path]) -> Tuple[str, int]:
 DEFAULT_TCP_ENDPOINT = "127.0.0.1:9223"
 
 
-def default_socket_path() -> Union[str, Path]:
-    override = os.environ.get("THEME_FACTORY_CHROME_MCP_SOCKET")
-    if override:
-        if is_tcp_address(override):
-            return override
-        return Path(override)
-    if not hasattr(socket, "AF_UNIX") or sys.platform == "win32":
-        return DEFAULT_TCP_ENDPOINT
+def user_state_dir() -> Path:
+    """Per-user directory for the daemon socket and TCP token; other local accounts cannot read it."""
+    if sys.platform == "win32":
+        local = os.environ.get("LOCALAPPDATA")
+        return (Path(local) if local else Path.home() / "AppData" / "Local") / "apex-theme-factory" / "chrome-mcp"
     runtime = os.environ.get("XDG_RUNTIME_DIR")
     if runtime:
         base = Path(runtime)
@@ -86,7 +87,44 @@ def default_socket_path() -> Union[str, Path]:
     else:
         user = os.environ.get("USERNAME") or os.environ.get("USER") or "user"
         base = Path(tempfile.gettempdir()) / f"apex-theme-factory-{user}"
-    return base / "chrome-mcp/chrome-mcp.sock"
+    return base / "chrome-mcp"
+
+
+def default_socket_path() -> Union[str, Path]:
+    override = os.environ.get("THEME_FACTORY_CHROME_MCP_SOCKET")
+    if override:
+        if is_tcp_address(override):
+            return override
+        return Path(override)
+    if not hasattr(socket, "AF_UNIX") or sys.platform == "win32":
+        return DEFAULT_TCP_ENDPOINT
+    return user_state_dir() / "chrome-mcp.sock"
+
+
+def token_path(port: int) -> Path:
+    """Where the daemon listening on TCP `port` keeps the token its clients must send."""
+    override = os.environ.get("THEME_FACTORY_CHROME_MCP_TOKEN_DIR")
+    return (Path(override) if override else user_state_dir()) / f"tcp-{port}.token"
+
+
+def write_token(path: Path, token: str) -> None:
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    try:
+        os.chmod(path.parent, 0o700)
+    except OSError:
+        pass
+    staged = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+    fd = os.open(staged, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+    with os.fdopen(fd, "w", encoding="ascii") as handle:
+        handle.write(token)
+    os.replace(staged, path)
+
+
+def read_token(path: Path) -> Optional[str]:
+    try:
+        return path.read_text(encoding="ascii").strip() or None
+    except (FileNotFoundError, UnicodeDecodeError):
+        return None
 
 
 def prepare_socket_path(path: Union[str, Path]) -> Path:
@@ -182,15 +220,27 @@ def _assign_to_job_object(proc: subprocess.Popen) -> Optional[Any]:
                 ("PeakJobMemoryLimit", ctypes.c_size_t),
             ]
 
-        kernel32 = ctypes.windll.kernel32
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.CreateJobObjectW.restype = wintypes.HANDLE
+        kernel32.CreateJobObjectW.argtypes = (wintypes.LPVOID, wintypes.LPCWSTR)
+        kernel32.SetInformationJobObject.restype = wintypes.BOOL
+        kernel32.SetInformationJobObject.argtypes = (wintypes.HANDLE, ctypes.c_int, wintypes.LPVOID, wintypes.DWORD)
+        kernel32.AssignProcessToJobObject.restype = wintypes.BOOL
+        kernel32.AssignProcessToJobObject.argtypes = (wintypes.HANDLE, wintypes.HANDLE)
+        kernel32.CloseHandle.argtypes = (wintypes.HANDLE,)
         job = kernel32.CreateJobObjectW(None, None)
         if not job:
             return None
         info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
         info.BasicLimitInformation.LimitFlags = 0x2000  # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
-        kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info))
-        if hasattr(proc, "_handle") and proc._handle:
-            kernel32.AssignProcessToJobObject(job, int(proc._handle))
+        assigned = (
+            kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info))  # ExtendedLimitInformation
+            and getattr(proc, "_handle", None)
+            and kernel32.AssignProcessToJobObject(job, int(proc._handle))
+        )
+        if not assigned:
+            kernel32.CloseHandle(job)
+            return None
         return job
     except Exception:
         return None
@@ -214,6 +264,8 @@ class ChromeMcpDaemon:
         self.pending_lock = threading.Lock()
         self.server_sock: Optional[socket.socket] = None
         self.socket_identity: Optional[tuple[int, int]] = None
+        self.auth_token: Optional[str] = None   # TCP only: loopback is reachable by every local account
+        self.token_file: Optional[Path] = None
         self.stopping = threading.Event()
         self.reader_thread: Optional[threading.Thread] = None
         self.stderr_thread: Optional[threading.Thread] = None
@@ -361,20 +413,22 @@ class ChromeMcpDaemon:
                 raise RuntimeError(f"Chrome MCP daemon is already listening on {host}:{port}")
             finally:
                 probe.close()
-            self._start_mcp_child()
             try:
+                self._start_mcp_child()
                 self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                if sys.platform != "win32":
+                if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+                    # Windows: refuse to share the port with a socket bound using SO_REUSEADDR
+                    self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+                else:
                     self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.server_sock.bind((host, port))
+                # Written before listen(), so a client that can connect can also read the token.
+                self.auth_token = secrets.token_urlsafe(32)
+                self.token_file = token_path(port)
+                write_token(self.token_file, self.auth_token)
                 self.server_sock.listen(10)
                 self._log(f"Daemon listening on tcp://{host}:{port}")
-                while not self.stopping.is_set():
-                    try:
-                        connection, _ = self.server_sock.accept()
-                    except OSError:
-                        break  # socket closed by shutdown()
-                    threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
+                self._accept_loop()
             finally:
                 self.close()
         else:
@@ -385,8 +439,8 @@ class ChromeMcpDaemon:
                 )
             socket_path = prepare_socket_path(self.socket_path)
             self.socket_path = socket_path
-            self._start_mcp_child()
             try:
+                self._start_mcp_child()
                 self.server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 self.server_sock.bind(str(socket_path))
                 try:
@@ -397,14 +451,18 @@ class ChromeMcpDaemon:
                 self.socket_identity = (bound.st_dev, bound.st_ino)
                 self.server_sock.listen(10)
                 self._log(f"Daemon listening on {socket_path}")
-                while not self.stopping.is_set():
-                    try:
-                        connection, _ = self.server_sock.accept()
-                    except OSError:
-                        break  # socket closed by shutdown()
-                    threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
+                self._accept_loop()
             finally:
                 self.close()
+
+    def _accept_loop(self) -> None:
+        assert self.server_sock is not None
+        while not self.stopping.is_set():
+            try:
+                connection, _ = self.server_sock.accept()
+            except OSError:
+                break  # socket closed by shutdown()
+            threading.Thread(target=self.handle_client, args=(connection,), daemon=True).start()
 
     def _install_signal_handlers(self) -> None:
         if threading.current_thread() is not threading.main_thread():
@@ -451,6 +509,12 @@ class ChromeMcpDaemon:
                     if len(data) > MAX_REQUEST_BYTES:
                         raise ValueError("request exceeds 1 MiB")
                 request = json.loads(data.split(b"\n", 1)[0])
+                if not isinstance(request, dict):
+                    raise ValueError("request must be a JSON object")
+                if self.auth_token is not None and not hmac.compare_digest(
+                    str(request.get("token", "")).encode("utf-8"), self.auth_token.encode("utf-8")
+                ):
+                    raise PermissionError("missing or invalid daemon token")
                 response = self.call_tool(request.get("name"), request.get("arguments", {}))
                 connection.settimeout(CLIENT_IO_TIMEOUT)
                 connection.sendall((json.dumps(response) + "\n").encode("utf-8"))
@@ -501,10 +565,21 @@ class ChromeMcpDaemon:
         if self.job_handle:
             try:
                 import ctypes
-                ctypes.windll.kernel32.CloseHandle(self.job_handle)
+                from ctypes import wintypes
+                close_handle = ctypes.WinDLL("kernel32").CloseHandle
+                close_handle.argtypes = (wintypes.HANDLE,)
+                close_handle(self.job_handle)
             except Exception:
                 pass
             self.job_handle = None
+        if self.token_file is not None:
+            # Remove the token only while it is still ours (a later daemon may own the port by now).
+            if read_token(self.token_file) == self.auth_token:
+                try:
+                    self.token_file.unlink()
+                except OSError:
+                    pass
+            self.token_file = None
         if self.socket_identity is not None and not is_tcp_address(self.socket_path):
             try:
                 sock_p = Path(self.socket_path)

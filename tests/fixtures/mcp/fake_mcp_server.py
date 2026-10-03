@@ -3,6 +3,7 @@
 
   hang    - never answers tools/call (Chrome consent prompt pending / connection contention)
   echo    - answers every tools/call with its arguments
+  bad-init - answers initialize with an error, then stays alive
 """
 import json
 import os
@@ -12,7 +13,9 @@ mode = os.environ.get("FAKE_MCP_MODE", "hang")
 print("fake mcp: starting", file=sys.stderr, flush=True)
 for line in sys.stdin:
     message = json.loads(line)
-    if message.get("method") == "initialize":
+    if message.get("method") == "initialize" and mode == "bad-init":
+        print(json.dumps({"jsonrpc": "2.0", "id": message["id"], "error": {"code": -32603, "message": "no"}}), flush=True)
+    elif message.get("method") == "initialize":
         print(json.dumps({"jsonrpc": "2.0", "id": message["id"], "result": {"capabilities": {}}}), flush=True)
     elif message.get("method") == "tools/call":
         if mode == "echo":

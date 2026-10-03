@@ -71,6 +71,11 @@ def ensure_daemon_running(
         if _can_connect(path):
             return path
         time.sleep(0.1)
+    if sys.platform == "win32":
+        try:
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(process.pid)], capture_output=True)
+        except Exception:
+            pass
     process.terminate()
     raise RuntimeError(f"Chrome MCP daemon did not become ready at {path}")
 

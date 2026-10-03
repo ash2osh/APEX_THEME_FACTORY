@@ -295,6 +295,16 @@ class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
                 if orig_getuid is not None:
                     os.getuid = orig_getuid
 
+    def test_live_tcp_port_is_rejected_by_second_daemon(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+            listener.bind(("127.0.0.1", 0))
+            port = listener.getsockname()[1]
+            listener.listen(1)
+            daemon = ChromeMcpDaemon(socket_path=f"127.0.0.1:{port}")
+            with self.assertRaises(RuntimeError) as context:
+                daemon.start()
+            self.assertIn("already listening", str(context.exception))
+
     def test_tcp_loopback_client_daemon_communication(self):
         import threading
         import time

@@ -59,8 +59,8 @@ def _install(root: Path, options: ReleaseOptions):
 def browser_problems(zip_path: Path, theme: str, url: str, widths: tuple[int, ...]) -> dict[int, list[str]]:
     """Open one background tab, check every width, close the tab."""
     from tools.browser_check import LiveBrowserMatrix, _text
-    from tools.chrome_devtools_client import ChromeDevToolsClient
-    client = ChromeDevToolsClient()
+    from tools.browser_client import BrowserClient
+    client = BrowserClient()
     opened = client.call_tool("new_page", {"url": url, "background": True})
     selected = re.findall(r"^(\d+): .*\[selected\]", _text(opened), re.MULTILINE)
     if len(selected) != 1:

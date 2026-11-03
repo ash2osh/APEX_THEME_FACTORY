@@ -452,7 +452,7 @@ class ChromeMcpDaemonCrossPlatformTests(unittest.TestCase):
     def test_ensure_daemon_running_spawns_process_with_windows_flags(self):
         mock_proc = SimpleNamespace(poll=lambda: None)
         with patch("sys.platform", "win32"):
-            with patch("tools.chrome_devtools_client._can_connect", side_effect=[False, True]):
+            with patch("tools.browser_client._can_connect", side_effect=[False, True]):
                 with patch("subprocess.Popen", return_value=mock_proc) as mock_popen:
                     path = ensure_daemon_running(Path("/tmp/test.sock"), auto_spawn=True)
                     self.assertEqual(path, Path("/tmp/test.sock"))

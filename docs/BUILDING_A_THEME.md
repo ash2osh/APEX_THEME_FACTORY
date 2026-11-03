@@ -186,9 +186,10 @@ scripts/theme.sh release midnight --offline  # check + package only, seconds
    with the switcher, opens it in its own Chrome tab at 1440 and 375 px (console errors, failed requests,
    fonts, AA contrast, keyboard switcher, selection kept across reload), then re-imports the clean export.
 
-It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the Chrome
-MCP daemon (`python3 tools/chrome_mcp_daemon.py`, never a direct MCP call — each new connection raises a
-consent prompt) and a clean 9010. If 9010 already carries packages, it refuses. Create or reset 9010 with:
+It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the browser
+daemon (Firefox by default: start Firefox from its launcher, then `python3 tools/firefox_mcp_daemon.py`; see
+[docs/FIREFOX_DEVTOOLS_MCP.md](FIREFOX_DEVTOOLS_MCP.md)) and a clean 9010. Never a direct MCP call: each new connection
+can raise a consent prompt. If 9010 already carries packages, it refuses. Create or reset 9010 with:
 
 ```bash
 scripts/reset-consumer.sh      # re-imports tests/live/consumer-apps/minimal as app 9010 (asks first)
@@ -206,7 +207,7 @@ applications/ut/        APEXLang export of the reference app (app 102) — gener
 scripts/                theme.sh, export / validate / import, sync-static, apply-theme, install-all-themes
 theme-templates/        neutral scaffold, component profiles, adapters/ (shared family segments)
 lib/theme_factory/      installer, uninstaller, packager, recipe/scaffold, checks, adapters
-tools/                  release smoke, browser check, cover capture, Chrome MCP daemon
+tools/                  release smoke, browser check, cover capture, browser daemons (Firefox, Chrome)
 docs/                   spec, design system, components, tooling guides
 .agents/                agent skills and knowledge (pitfalls)
 ```

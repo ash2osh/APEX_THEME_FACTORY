@@ -1,174 +1,32 @@
 #!/usr/bin/env python3
-"""Client for the explicitly started, persistent Chrome DevTools MCP daemon."""
-
-import json
-import os
-from pathlib import Path
-import socket
-import subprocess
+"""Client for the explicitly started, persistent Chrome DevTools MCP daemon (the Chrome backend of browser_client)."""
 import sys
-import time
 from typing import Any, Dict, Optional, Union
+from pathlib import Path
 
 try:
-    from tools.chrome_mcp_daemon import (
-        ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
-        is_tcp_address, parse_tcp_address, read_token, token_path,
-    )
+    from tools import browser_client as _client
+    from tools.browser_mcp_daemon import CHROME, DEFAULT_REQUEST_TIMEOUT, ALLOWED_TOOLS  # noqa: F401
 except ModuleNotFoundError:  # direct execution from tools/
-    from chrome_mcp_daemon import (
-        ALLOWED_TOOLS, DEFAULT_REQUEST_TIMEOUT, default_socket_path,
-        is_tcp_address, parse_tcp_address, read_token, token_path,
-    )
+    import browser_client as _client
+    from browser_mcp_daemon import CHROME, DEFAULT_REQUEST_TIMEOUT, ALLOWED_TOOLS  # noqa: F401
+
+_can_connect = _client._can_connect
 
 
-def _can_connect(socket_path: Union[str, Path]) -> bool:
-    try:
-        if is_tcp_address(socket_path):
-            host, port = parse_tcp_address(socket_path)
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
-                connection.settimeout(0.5)
-                connection.connect((host, port))
-            return True
-        else:
-            if not hasattr(socket, "AF_UNIX"):
-                return False
-            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
-                connection.settimeout(0.5)
-                connection.connect(str(socket_path))
-            return True
-    except OSError:
-        return False
+def ensure_daemon_running(socket_path: Optional[Union[str, Path]] = None, auto_spawn: bool = False):
+    return _client.ensure_daemon_running(socket_path, auto_spawn=auto_spawn, backend=CHROME)
 
 
-def ensure_daemon_running(
-    socket_path: Optional[Union[str, Path]] = None,
-    auto_spawn: bool = False,
-) -> Union[str, Path]:
-    path = socket_path or default_socket_path()
-    if _can_connect(path):
-        return path
-    if not auto_spawn:
-        raise RuntimeError(f"Chrome MCP daemon is not running at {path}; start tools/chrome_mcp_daemon.py explicitly")
-    command = [sys.executable, str(Path(__file__).with_name("chrome_mcp_daemon.py"))]
-    # The daemon reads its address from the environment: spawn it on the one we will poll.
-    env = {**os.environ, "THEME_FACTORY_CHROME_MCP_SOCKET": str(path)}
-    if sys.platform == "win32":
-        creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
-        process = subprocess.Popen(
-            command,
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=creationflags,
-        )
-    else:
-        process = subprocess.Popen(
-            command,
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            start_new_session=True,
-        )
-    for _ in range(50):
-        if process.poll() is not None:
-            raise RuntimeError(f"Chrome MCP daemon failed to start (exit {process.returncode})")
-        if _can_connect(path):
-            return path
-        time.sleep(0.1)
-    if sys.platform == "win32":
-        try:
-            subprocess.run(["taskkill", "/F", "/T", "/PID", str(process.pid)], capture_output=True)
-        except Exception:
-            pass
-    process.terminate()
-    raise RuntimeError(f"Chrome MCP daemon did not become ready at {path}")
-
-
-class ChromeDevToolsClient:
-    def __init__(
-        self,
-        socket_path: Optional[Union[str, Path]] = None,
-        auto_spawn: bool = False,
-        response_timeout: float = DEFAULT_REQUEST_TIMEOUT + 10.0,
-    ):
-        self.socket_path = ensure_daemon_running(socket_path, auto_spawn=auto_spawn)
-        # slightly longer than the daemon's own request timeout so its error reaches us first
-        self.response_timeout = response_timeout
-
-    def _create_connection(self) -> socket.socket:
-        if is_tcp_address(self.socket_path):
-            host, port = parse_tcp_address(self.socket_path)
-            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            conn.settimeout(self.response_timeout)
-            conn.connect((host, port))
-            return conn
-        else:
-            if not hasattr(socket, "AF_UNIX"):
-                raise RuntimeError(
-                    f"Cannot connect to UNIX socket '{self.socket_path}': AF_UNIX is not supported on this platform. "
-                    "Use a TCP address (e.g. 127.0.0.1:9223) instead."
-                )
-            conn = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            conn.settimeout(self.response_timeout)
-            conn.connect(str(self.socket_path))
-            return conn
-
-    def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> Any:
-        if name not in ALLOWED_TOOLS:
-            raise ValueError(f"Chrome MCP tool is not allowed: {name!r}")
-        ensure_daemon_running(self.socket_path)
-        request: Dict[str, Any] = {"name": name, "arguments": arguments or {}}
-        if is_tcp_address(self.socket_path):
-            # Read per call: a restarted daemon writes a new token.
-            _host, port = parse_tcp_address(self.socket_path)
-            token = read_token(token_path(port))
-            if token is None:
-                raise RuntimeError(
-                    f"No Chrome MCP daemon token at {token_path(port)}; the daemon on {self.socket_path} "
-                    "was not started by this account"
-                )
-            request["token"] = token
-        with self._create_connection() as connection:
-            connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
-            data = b""
-            try:
-                while b"\n" not in data:
-                    chunk = connection.recv(65536)
-                    if not chunk:
-                        break
-                    data += chunk
-            except socket.timeout as exc:
-                raise RuntimeError(
-                    f"Chrome MCP daemon did not answer '{name}' within {self.response_timeout:g}s; request timed out"
-                ) from exc
-        if not data:
-            raise RuntimeError("Chrome MCP daemon returned no response")
-        response = json.loads(data.split(b"\n", 1)[0])
-        if "error" in response:
-            raise RuntimeError(f"MCP error: {response['error']}")
-        return response.get("result", {})
-
-    def list_pages(self) -> Any:
-        return self.call_tool("list_pages")
-
-    def navigate_page(self, page_id: int, url: str) -> Any:
-        return self.call_tool("navigate_page", {"pageId": page_id, "url": url})
-
-    def evaluate_script(self, page_id: int, function_code: str) -> Any:
-        return self.call_tool("evaluate_script", {"pageId": page_id, "function": function_code})
-
-    def close(self) -> None:
-        pass
+class ChromeDevToolsClient(_client.BrowserClient):
+    def __init__(self, socket_path: Optional[Union[str, Path]] = None, auto_spawn: bool = False,
+                 response_timeout: Optional[float] = None):
+        super().__init__(browser="chrome", socket_path=socket_path, auto_spawn=auto_spawn,
+                         response_timeout=response_timeout)
 
 
 def main() -> None:
-    if len(sys.argv) < 2:
-        print("Usage: python3 tools/chrome_devtools_client.py <tool_name> [json_args]", file=sys.stderr)
-        raise SystemExit(1)
-    tool_name = sys.argv[1]
-    arguments = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
-    print(json.dumps(ChromeDevToolsClient().call_tool(tool_name, arguments), indent=2))
+    _client.main(["--browser", "chrome", *sys.argv[1:]])
 
 
 if __name__ == "__main__":

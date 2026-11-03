@@ -21,7 +21,7 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r tools/test-requirements.txt
 tests/run-offline.sh                          # must end with OFFLINE status=PASS
 scripts/fetch-vendor.sh --reference           # local-only Oracle UT/Iris CSS+JS for grepping (gitignored)
-python3 tools/chrome_mcp_daemon.py &          # the ONE daemon; every call goes through tools/chrome_devtools_client.py
+python3 tools/firefox_mcp_daemon.py &        # the ONE Firefox daemon (start Firefox from its launcher first); calls go through tools/browser_client.py
 sql -name docker-demo <<< "select 1 from dual;"   # SQLcl connection works
 ```
 

@@ -50,7 +50,8 @@ APEX_THEME_FACTORY/
 
 | Tool | Purpose | Doc |
 |---|---|---|
-| Chrome DevTools MCP (`--autoConnect` to the user's running Chrome) | runtime truth: DOM, computed CSS, console, network, screenshots | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
+| Firefox DevTools daemon (default; `--connect-existing` to the user's running Firefox, Marionette 2828) | runtime truth: DOM, console, network, screenshots | [FIREFOX_DEVTOOLS_MCP.md](FIREFOX_DEVTOOLS_MCP.md) |
+| Chrome DevTools daemon (`THEME_FACTORY_BROWSER=chrome`; `--autoConnect` to the user's running Chrome) | the same checks in Chrome; theme cover images | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
 | `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [README.md](../README.md#releasing-a-theme) |

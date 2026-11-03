@@ -1,5 +1,8 @@
 # Chrome DevTools MCP — install & usage
 
+> Firefox is the default browser for live checks now. This page covers the Chrome backend, which stays
+> available with `THEME_FACTORY_BROWSER=chrome` and `tools/chrome_mcp_daemon.py`. See [FIREFOX_DEVTOOLS_MCP.md](FIREFOX_DEVTOOLS_MCP.md).
+
 `chrome-devtools-mcp` (Google, https://github.com/ChromeDevTools/chrome-devtools-mcp) gives agents
 Puppeteer/CDP access to Chrome: pages, snapshots, screenshots, `evaluate_script`, console,
 network, emulation, performance traces.

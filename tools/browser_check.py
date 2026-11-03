@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import json
+from urllib.parse import urlsplit
 import zipfile
 from pathlib import Path
 import re
@@ -20,7 +21,7 @@ from typing import List, Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.chrome_devtools_client import ChromeDevToolsClient  # noqa: E402
+from tools.browser_client import BrowserClient  # noqa: E402
 
 
 @dataclass
@@ -67,6 +68,21 @@ PAGE_SNIPPET_TEMPLATE = r"""async () => {
   // A @font-face is only downloaded once something renders text in that family, so a
   // face no captured page happens to use (solarized-dark's mono) would look broken.
   // Force each declared face, then judge that: `check` means usable, not exercised.
+  // The url of a face's own @font-face rule, resolved against its stylesheet.
+  const faceUrl = (family, weight) => {
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch (e) { continue; }
+      for (const rule of rules) {
+        if (rule.constructor.name !== 'CSSFontFaceRule') continue;
+        if (rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim() !== family) continue;
+        if (rule.style.getPropertyValue('font-weight').trim() !== String(weight)) continue;
+        const match = /url\(\s*["']?([^"')]+)/.exec(rule.style.getPropertyValue('src'));
+        if (match) return new URL(match[1], sheet.href || location.href).href;
+      }
+    }
+    return '';
+  };
   const faceChecks = [];
   for (const f of expected) {
     const spec = f.weight + ' ' + f.style + ' 16px "' + f.family + '"';
@@ -75,16 +91,20 @@ PAGE_SNIPPET_TEMPLATE = r"""async () => {
       const got = await document.fonts.load(spec, 'Ag0');
       ok = got.length > 0 && got.every(x => x.status === 'loaded');
     } catch (e) { ok = false; }
-    faceChecks.push({ face: f, ok: ok && document.fonts.check(spec) });
+    // Firefox does not list font loads in resource timing, so the face's own URL is fetched again.
+    const url = faceUrl(f.family, f.weight);
+    let served = '';
+    if (url) { try { if ((await fetch(url, { cache: 'no-store' })).ok) served = url; } catch (e) { served = ''; } }
+    faceChecks.push({ face: f, ok: ok && document.fonts.check(spec), served: served });
   }
-  // Read resources only now, so requestUrl proves the bytes came from the package.
+  // Resource timing (Chrome lists font loads) is used when it has the file; the fetched URL is the fallback.
   const perf = performance.getEntriesByType('resource');
   const byName = {};
   for (const r of perf) { byName[r.name.split('/').pop()] = r.name; }
   const faceResults = faceChecks.map(fc => ({
     family: fc.face.family, weight: fc.face.weight, style: fc.face.style,
     check: fc.ok,
-    requestUrl: byName[fc.face.file.split('/').pop()] || ''
+    requestUrl: byName[fc.face.file.split('/').pop()] || fc.served
   }));
   const fontApexLoaded = document.fonts.check('16px "Font APEX"');
   return {
@@ -211,8 +231,10 @@ def _json_result(result: dict):
 
 
 class LiveBrowserMatrix:
-    def __init__(self, client: ChromeDevToolsClient, page_id: int, package: Optional[Path] = None):
+    def __init__(self, client: BrowserClient, page_id: int, package: Optional[Path] = None):
         self.package = package
+        self.host = None  # host:port of the page under test, set per row
+        self.row_started_ms = None
         self.client = client
         self.page_id = page_id
 
@@ -226,8 +248,14 @@ class LiveBrowserMatrix:
         self.call("navigate_page", url=url)
         time.sleep(1.0)
 
+    def _scope(self) -> dict:
+        # Firefox records every tab's console and network; only messages since this row began belong to it.
+        if self.client.backend.key != "firefox" or self.row_started_ms is None:
+            return {}
+        return {"sinceMs": max(0, int(time.time() * 1000 - self.row_started_ms))}
+
     def console_errors(self) -> List[str]:
-        text = _text(self.call("list_console_messages", types=["error"]))
+        text = _text(self.call("list_console_messages", types=["error"], **self._scope()))
         return [
             line.strip() for line in text.splitlines()
             if line.strip()
@@ -237,15 +265,50 @@ class LiveBrowserMatrix:
         ]
 
     def failed_requests(self) -> List[str]:
-        text = _text(self.call("list_network_requests"))
+        arguments = dict(self._scope())
+        if self.client.backend.key == "firefox" and self.host:
+            # Only this app's responses count as the page's failures.
+            arguments["urlContains"] = self.host
+        text = _text(self.call("list_network_requests", **arguments))
         failed = []
         for line in text.splitlines():
             if re.search(r"\[(?:4|5)\d\d\]|\bfailed\b|net::ERR", line, re.IGNORECASE):
                 failed.append(line.strip())
         return failed
 
+    def _storage_round_trip(self, url: str, theme: str):
+        """Storage works, and the tested theme stays active across reload.
+
+        The runtime clears the stored choice when the chosen theme is the app default (the visitor then follows
+        later default changes), so a single-theme release cannot prove storage with its own theme. A non-default
+        choice (Iris) proves the mechanism; the tested theme must then be active after reload, stored or not.
+        """
+        notes: List[str] = []
+        storage_ok = True
+        if theme != "iris":
+            self.evaluate("() => { const api = window.ApexThemeFactory; return api ? api.use('iris') : false; }")
+            time.sleep(2.0)
+            self.navigate(url)
+            state = self.evaluate(
+                "() => ({ active: document.documentElement.dataset.appThemeCurrent || null, stored: (() => { try { "
+                "return localStorage.getItem('apex.themeFactory.' + apex.env.APP_ID); } catch (e) { return null; } })() })"
+            )
+            storage_ok = state.get("active") == "iris" and state.get("stored") == "iris"
+            if not storage_ok:
+                notes.append(f"storage: after choosing Iris active={state.get('active')!r} stored={state.get('stored')!r}")
+        self.evaluate(f"() => {{ const api = window.ApexThemeFactory; return api ? api.use({json.dumps(theme)}) : false; }}")
+        time.sleep(2.0)
+        self.navigate(url)
+        after = self.evaluate("() => ({ active: document.documentElement.dataset.appThemeCurrent || null })")
+        kept = after.get("active") == theme
+        if not kept:
+            notes.append(f"selection lost on reload: {after}")
+        return storage_ok and kept, notes
+
     def capture_row(self, consumer: str, url: str, theme: str, width: int) -> RowCapture:
         notes: List[str] = []
+        self.host = urlsplit(url).netloc
+        self.row_started_ms = time.time() * 1000
         self.call("emulate", viewport=f"{width}x900x1")
         self.navigate(url)
         # baseline: bare Iris body font on this very page, for the fonts check below
@@ -262,15 +325,6 @@ class LiveBrowserMatrix:
         time.sleep(2.0)
         expected_faces = font_expectations(self.package, theme) if self.package else []
         page = self.evaluate(page_snippet(expected_faces))
-        persistence = page.get("activeTheme") == theme and page.get("storedSelection") == theme
-        if not persistence:
-            notes.append(f"persistence: active={page.get('activeTheme')!r} stored={page.get('storedSelection')!r}")
-        # second reload must keep the selection without calling use() again
-        self.navigate(url)
-        after_reload = self.evaluate("() => ({ active: document.documentElement.dataset.appThemeCurrent, width: innerWidth })")
-        if after_reload.get("active") != theme:
-            persistence = False
-            notes.append(f"selection lost on reload: {after_reload}")
         body_family = page.get("bodyFontFamily") or ""
         fonts_ok, page["fonts"] = evaluate_fonts(page, baseline, theme, expected_faces)
         page["bodyFontFamilyBareIris"] = baseline.get("body")
@@ -284,6 +338,8 @@ class LiveBrowserMatrix:
             notes.append(f"contrast failures={contrast.get('failures')} sample={contrast.get('sample', [])[:3]} keyboard={keyboard}")
         errors = self.console_errors()
         failed = self.failed_requests()
+        persistence, persistence_notes = self._storage_round_trip(url, theme)
+        notes += persistence_notes
         return RowCapture(consumer=consumer, width=width, page=page, console_errors=errors, failed_requests=failed,
                           fonts_verified=fonts_ok, accessibility_verified=accessibility, persistence_verified=persistence,
                           notes=notes, declared_face_count=len(expected_faces))

@@ -59,3 +59,20 @@
 .app-theme-linen .apex-theme-iris svg text {
     fill: var(--app-text-secondary);
 }
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-linen .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-linen .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), which is too faint on these surfaces (p6400). */
+.app-theme-linen .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
+}

@@ -305,6 +305,43 @@ html.app-theme-velvet-signal {
     --ut-timeline-type-background-color: var(--app-surface-card);
 }
 /* @adapter-end dark/tokens#4 */
+
+/* @adapter dark/tokens#5 prefix=vs - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-velvet-signal .apex-theme-iris {
+    /* Core and Iris declare these as var() chains on :root, so they freeze to Iris' light literals before the
+       package's own colours can reach them (pitfalls §1.2). Measured on the dark packages (26.2, p1207 and p1305):
+       the breadcrumb title was near-black on the dark title bar (1.05:1) and the menu bar kept a light background
+       under light text (1.1:1). Restate the chains on the theme scope. */
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+    /* Iris declares the trail text as a literal ink at 70 % on :root: dark trails stayed near-black (1.04:1). */
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --a-menubar-background-color: var(--app-surface-chrome);
+    --a-menubar-item-text-color: var(--app-text-emphasized);
+    --a-menubar-item-current-background-color: var(--app-surface-card);
+    --a-menubar-item-current-text-color: var(--app-text-emphasized);
+    /* The master-detail side panel and the region display selector (.apex-rds-container) read the body-info colour,
+       which falls back to Iris' light title-bar literal (#f1efed on :root). The title-bar restatement in shell.css
+       reaches only .t-Body-title, so the band under the title stayed light with light tab labels (1.07:1). */
+    --ut-body-info-background-color: var(--app-surface-page);
+    --ut-body-info-text-color: var(--app-text-emphasized);
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
+    /* Form error text: Iris sets --a-form-error-text-color to var(--a-palette-danger) on :root, which freezes to its
+       light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
+    --a-form-error-text-color: var(--ut-palette-danger-text);
+}
+/* @adapter-end dark/tokens#5 */
 /* identity: pill navigation and generous rounded shell */
 .app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
 .app-theme-velvet-signal .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
@@ -546,10 +583,10 @@ html.app-theme-velvet-signal {
     font-size: var(--app-text-md);
 }
 
-/* ---- Metric cards: cyan value (large text, needs ≥ 3:1) ----------------------------------- */
+/* ---- Metric cards: cyan value, 16 px text, so it needs 4.5:1: the text tint, not the accent ------- */
 .app-theme-velvet-signal .apex-theme-iris .t-MetricCard {
     --ut-metric-card-shadow: none;
-    --ut-metric-card-metric-text-color: var(--vs-cyan);
+    --ut-metric-card-metric-text-color: var(--vs-cyan-text);
     --ut-metric-card-meta-text-color: var(--app-text-secondary);
 }
 
@@ -1255,6 +1292,39 @@ html.app-theme-velvet-signal {
     color: var(--app-text-on-accent);
 }
 /* @adapter-end dark/misc#2 */
+
+/* @adapter dark/misc#3 prefix=vs - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Chart labels — JET paints axis ticks and series labels as SVG fill with the light-theme default (black at 65 %),
+   which is 1.06:1 on these dark surfaces (p406 and p1902 on 26.2). Reuse the package's secondary text token. */
+.app-theme-velvet-signal .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-velvet-signal .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-velvet-signal .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Outline badges take their text from the palette's solid colour, which is 2.8-4.1:1 on these cards for success and
+   danger (p3007, p3002). Use the text tints. */
+.app-theme-velvet-signal .apex-theme-iris .t-Badge--outline.t-Badge--success {
+    color: var(--ut-palette-success-text);
+}
+.app-theme-velvet-signal .apex-theme-iris .t-Badge--outline.t-Badge--danger {
+    color: var(--ut-palette-danger-text);
+}
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), 2.1-2.8:1 on these surfaces (p6400). */
+.app-theme-velvet-signal .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
+}
+/* @adapter-end dark/misc#3 */
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
 /* Responsive rules for html.app-theme-velvet-signal: strategy stack, at 768px and below. */

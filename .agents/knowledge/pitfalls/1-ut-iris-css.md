@@ -140,3 +140,26 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   `.a-CardView-items`) and confirm its `display`; then verify the computed value live at the target width. Working
   targets: `.t-Region-header` (non-wrapping flex row), `.t-ButtonRegion-wrap` (one-row grid left/content/right),
   `.a-CardView-items--grid{2…5}col` (grid).
+
+### 1.13 A `:root` alias of a palette atom freezes too: form errors and body-info bands stayed Iris-light
+- **Symptom (2026-11-03, final audit):** validation messages (`.a-Form-error`) read 2.1–2.8:1 on the dark packages
+  (p1402), and the master-detail side panel and region display selector kept Iris' light band `#f1efed` under light
+  tab labels (1.07:1, p1107). Light themes and bare Iris were fine.
+- **Cause:** Iris' `:root` declares `--a-form-error-text-color: var(--a-palette-danger)` and leaves the body-info colour
+  to fall back to the body-title literal. Both resolve to the light literals on `:root` before a theme can reach them
+  (§1.2). The title-bar restatement reached only `.t-Body-title`, not the sibling `.apex-rds-container`.
+- **Fix:** restate both on the theme scope (`--a-form-error-text-color: var(--ut-palette-danger-text)`,
+  `--ut-body-info-background-color` and `--ut-body-info-text-color`). Find the rule first: a `getComputedStyle` probe
+  on the element plus a walk of `document.styleSheets` names the selector and the variable it reads.
+- **Also:** Iris gives 11 of its 45 `--u-color-N` swatches white ink at 2.9–4.5:1. Black ink passes on all of them
+  (4.7:1 or better), so every theme sets `--u-color-N-contrast: #000` for those eleven.
+
+### 1.14 Badge text reads a different atom from the badge colour, and outline badges read the solid palette colour
+- **Symptom (2026-11-03, 26.2 final audit):** the circular badge-list label took the title colour (2.7–2.8:1 on the
+  orange and teal swatches, p1304); outline success and danger badges used the solid palette colour as their text
+  (2.8–4.1:1 on the card, p3007, p3002); the subtle info badge read `--a-palette-info`, frozen to Iris' `#227e9e`
+  on `:root` (4.0:1, p3002); estate-slate-dark's danger badge kept a hard-coded white (`--app-badge-danger-text`).
+- **Fix:** set the badge's own atom on the theme scope, not only the palette token. Circular labels inherit the
+  swatch's contrast ink; outline badges take `--ut-palette-{success,danger}-text`; the subtle info badge takes
+  `--ut-badge-subtle-info-text-color`. Find the atom with a `getComputedStyle` probe plus a walk of
+  `document.styleSheets` on the badge element.

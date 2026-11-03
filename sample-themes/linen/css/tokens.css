@@ -2,6 +2,27 @@
    Scoped to html.app-theme-linen so several themes can be loaded at once and switched live. */
 html.app-theme-linen {
     --app-surface-chrome:  var(--ut-component-background-color);  /* white header + side nav */
+    /* Iris' #227E9E badge text is 4.0:1 on the pale badge (p3002): darken the primary-alt text to 4.9:1. */
+    --ut-palette-primary-alt-text: #1d6f8f;
+    /* Subtle info badges (p3002, 26.2): Iris' #227E9E text is 4.0:1 on the pale badge; #1d6f8f is 4.9:1. */
+    --ut-palette-info-text: #1d6f8f;
+    --ut-badge-subtle-info-text-color: var(--ut-palette-info-text);
+    /* Code tokens: Iris' Prism number green (#098658) is 4.4:1 on the code background; #07703f is 5.9:1. */
+    --prism-number: #07703f;
+
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
 
     /* radius scale — literal: Iris' 2/4/8px is too tight for the direction */
     --app-radius-sm:       6px;

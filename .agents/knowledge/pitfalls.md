@@ -28,6 +28,8 @@ work; read a layer file when one of its headings touches the task.
 - **§1.10** A scripted `:root` literal-extraction pass can silently drop tokens
 - **§1.11** Fixing a themed *text* atom without its paired *background* atom is a half-fix
 - **§1.12** A layout rule must match the layout UT actually uses on that element
+- **§1.13** A `:root` alias of a palette atom freezes too: restate `--a-form-error-text-color` and the body-info band on the theme scope
+- **§1.14** Badge text reads its own atom: circular labels, outline badges and the subtle info badge need theme-scope text atoms
 
 ## 2. APEX JavaScript and widgets — [pitfalls/2-apex-javascript-widgets.md](pitfalls/2-apex-javascript-widgets.md)
 - **§2.1** Navigation-bar menus are built by theme42 on `apexreadyend`; `theme42ready` fires on **window**
@@ -62,6 +64,11 @@ work; read a layer file when one of its headings touches the task.
 - **§4.7** Computed padding is the padding atom minus the border
 - **§4.8** `document.styleSheets` does not list rules from `@import`ed files
 - **§4.9** "First matching element" probes pick the wrong element
+- **§4.10** Firefox records every tab: scope console and network checks to the page under test
+- **§4.11** Firefox refuses cross-origin fonts without CORS (reported as a sanitizer error)
+- **§4.12** JET charts paint their colours once: measure them after a reload in the theme
+- **§4.13** Pages can look broken when they are not: hidden labels, transparent text, direct dialog access
+- **§4.14** Firefox cannot shrink its window below about 500 px, so a 375 px resize measures 500 px: measure phone widths in a same-origin frame
 
 ## 5. Workflow — [pitfalls/5-workflow.md](pitfalls/5-workflow.md)
 - **§5.1** Another agent may be editing the same tree
@@ -71,3 +78,4 @@ work; read a layer file when one of its headings touches the task.
 - **§5.7** The live smoke needs a clean consumer app
 - **§5.8** A passing `sync-static --check` does not mean you deploy what is on `main`
 - **§5.9** Cloud sessions may leave `claude/…` branches they cannot delete
+- **§5.10** An adapter segment is not rendered until every member file has its fence

@@ -112,10 +112,10 @@
     font-size: var(--app-text-md);
 }
 
-/* ---- Metric cards: cyan value (large text, needs ≥ 3:1) ----------------------------------- */
+/* ---- Metric cards: cyan value, 16 px text, so it needs 4.5:1: the text tint, not the accent ------- */
 .app-theme-velvet-signal .apex-theme-iris .t-MetricCard {
     --ut-metric-card-shadow: none;
-    --ut-metric-card-metric-text-color: var(--vs-cyan);
+    --ut-metric-card-metric-text-color: var(--vs-cyan-text);
     --ut-metric-card-meta-text-color: var(--app-text-secondary);
 }
 

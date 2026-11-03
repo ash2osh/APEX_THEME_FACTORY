@@ -77,7 +77,7 @@ html.app-theme-estate-slate-dark {
     --app-overlay-background: rgba(10, 14, 23, 0.8);
     --app-card-media-overlay: rgba(10, 14, 23, 0.85);
     --app-focus-halo-color: var(--est-dark-amber-glow);
-    --app-badge-danger-text: #ffffff;
+    --app-badge-danger-text: var(--est-dark-text-dark);  /* white on coral is 2.8:1; the dark ink is 7.6:1 */
 
     /* Geometry */
     --app-control-h: 2.25rem;
@@ -143,7 +143,9 @@ html.app-theme-estate-slate-dark {
     --ut-palette-warning-shade: var(--est-dark-amber-shade);
 
     --ut-palette-danger: var(--app-color-danger);
-    --ut-palette-danger-contrast: #ffffff;
+    --ut-palette-danger-text: #fca5a5;  /* 9:1 on the card: text tint for outline badges and form errors */
+    --ut-palette-success-text: #86efac; /* 10:1 on the card: text tint for outline success badges */
+    --ut-palette-danger-contrast: var(--app-text-on-accent);  /* white on #f87171 is 2.8:1; the dark ink is AA */
     --ut-palette-danger-shade: var(--est-dark-ruby-shade);
 
     --ut-palette-info: var(--app-color-info);
@@ -300,4 +302,34 @@ html.app-theme-estate-slate-dark {
     --ut-cr-item-background-color: var(--app-surface-card);
     --ut-cr-border-color: var(--app-border-color);
     --ut-timeline-type-background-color: var(--app-surface-card);
+}
+
+/* The breadcrumb title and the menu bar: Core and Iris declare these as var() chains on :root, so they freeze to
+   Iris' light literals. The same restatement as the other dark packages (dark family, tokens segment 5). */
+.app-theme-estate-slate-dark .apex-theme-iris {
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --a-menubar-background-color: var(--app-surface-chrome);
+    --a-menubar-item-text-color: var(--app-text-emphasized);
+    --a-menubar-item-current-background-color: var(--app-surface-card);
+    --a-menubar-item-current-text-color: var(--app-text-emphasized);
+    /* Master-detail side panel and region display selector: the same band as the title bar (dark family, tokens segment 5). */
+    --ut-body-info-background-color: var(--app-surface-page);
+    --ut-body-info-text-color: var(--app-text-emphasized);
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
+    /* Form error text: Iris sets --a-form-error-text-color to var(--a-palette-danger) on :root, which freezes to its
+       light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
+    --a-form-error-text-color: var(--ut-palette-danger-text);
 }

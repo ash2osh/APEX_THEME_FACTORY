@@ -29,8 +29,8 @@ html.app-theme-solarized-dark {
     --sol-cyan:    #2aa198;
     --sol-green:   #859900;
     /* text-safe tints: the same hue, mixed towards white until ≥ 4.5:1 on #073642 */
-    --sol-blue-text:  #4b9fda;                          /* links, primary palette (blue is 3.5:1) */
-    --sol-cyan-text:  #39a89f;                          /* primary-alt text (cyan is 4.1:1) */
+    --sol-blue-text:  #6bb3e6;                          /* links, primary palette (5.0:1 on the panel, 5.7:1 on base) */
+    --sol-cyan-text:  #45c4b7;                          /* primary-alt text, metric values (6.1:1 on base) */
     --sol-red-text:   #e87674;                          /* validation / danger text (red is 2.8:1) */
     --sol-magenta-text: #e174a9;                        /* code numbers, class names: 4.5:1 on cards, 5.2:1 on canvas */
     --sol-orange-text:  #db815c;                        /* code entities/urls: 4.5:1 on cards, 5.2:1 on canvas */
@@ -150,7 +150,7 @@ html.app-theme-solarized-dark {
     --ut-palette-generic-text: var(--app-text-primary);
     --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
     --ut-palette-primary-alt-text: var(--sol-cyan-text);
-    --ut-palette-success-text: var(--sol-green);          /* 4.1:1 on cards: icons and large text only */
+    --ut-palette-success-text: #a0b90a;                   /* a text tint of sol-green: 5.8:1 on cards (badge values) */
 /* @adapter dark/tokens#2 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
     --ut-palette-warning-text: var(--sol-yellow);
     --ut-palette-danger-text: var(--sol-red-text);
@@ -324,6 +324,43 @@ html.app-theme-solarized-dark {
     --ut-timeline-type-background-color: var(--app-surface-card);
 }
 /* @adapter-end dark/tokens#4 */
+
+/* @adapter dark/tokens#5 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-solarized-dark .apex-theme-iris {
+    /* Core and Iris declare these as var() chains on :root, so they freeze to Iris' light literals before the
+       package's own colours can reach them (pitfalls §1.2). Measured on the dark packages (26.2, p1207 and p1305):
+       the breadcrumb title was near-black on the dark title bar (1.05:1) and the menu bar kept a light background
+       under light text (1.1:1). Restate the chains on the theme scope. */
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+    /* Iris declares the trail text as a literal ink at 70 % on :root: dark trails stayed near-black (1.04:1). */
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --a-menubar-background-color: var(--app-surface-chrome);
+    --a-menubar-item-text-color: var(--app-text-emphasized);
+    --a-menubar-item-current-background-color: var(--app-surface-card);
+    --a-menubar-item-current-text-color: var(--app-text-emphasized);
+    /* The master-detail side panel and the region display selector (.apex-rds-container) read the body-info colour,
+       which falls back to Iris' light title-bar literal (#f1efed on :root). The title-bar restatement in shell.css
+       reaches only .t-Body-title, so the band under the title stayed light with light tab labels (1.07:1). */
+    --ut-body-info-background-color: var(--app-surface-page);
+    --ut-body-info-text-color: var(--app-text-emphasized);
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
+    /* Form error text: Iris sets --a-form-error-text-color to var(--a-palette-danger) on :root, which freezes to its
+       light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
+    --a-form-error-text-color: var(--ut-palette-danger-text);
+}
+/* @adapter-end dark/tokens#5 */
 /* identity: minimal command nav and terminal-rule chrome */
 .app-theme-solarized-dark .apex-theme-iris .t-Header { --ut-header-strip-size: 0px; }
 .app-theme-solarized-dark .apex-theme-iris .t-Body-title { border-block-end: 1px solid var(--app-border-color); }
@@ -558,10 +595,10 @@ html.app-theme-solarized-dark {
     font-size: var(--app-text-md);
 }
 
-/* ---- Metric cards: cyan value (large text, needs ≥ 3:1) ----------------------------------- */
+/* ---- Metric cards: cyan value, 16 px text, so it needs 4.5:1: the text tint, not the accent ------- */
 .app-theme-solarized-dark .apex-theme-iris .t-MetricCard {
     --ut-metric-card-shadow: none;
-    --ut-metric-card-metric-text-color: var(--sol-cyan);
+    --ut-metric-card-metric-text-color: var(--sol-cyan-text);
     --ut-metric-card-meta-text-color: var(--app-text-secondary);
 }
 
@@ -1247,6 +1284,39 @@ html.app-theme-solarized-dark {
     color: var(--app-text-on-accent);
 }
 /* @adapter-end dark/misc#2 */
+
+/* @adapter dark/misc#3 prefix=sol - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Chart labels — JET paints axis ticks and series labels as SVG fill with the light-theme default (black at 65 %),
+   which is 1.06:1 on these dark surfaces (p406 and p1902 on 26.2). Reuse the package's secondary text token. */
+.app-theme-solarized-dark .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-solarized-dark .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-solarized-dark .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Outline badges take their text from the palette's solid colour, which is 2.8-4.1:1 on these cards for success and
+   danger (p3007, p3002). Use the text tints. */
+.app-theme-solarized-dark .apex-theme-iris .t-Badge--outline.t-Badge--success {
+    color: var(--ut-palette-success-text);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Badge--outline.t-Badge--danger {
+    color: var(--ut-palette-danger-text);
+}
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), 2.1-2.8:1 on these surfaces (p6400). */
+.app-theme-solarized-dark .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
+}
+/* @adapter-end dark/misc#3 */
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
 /* Responsive rules for html.app-theme-solarized-dark: strategy compress, at 768px and below. */

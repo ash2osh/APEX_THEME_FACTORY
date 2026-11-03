@@ -4,6 +4,27 @@
    Scoped to html.app-theme-linen so several themes can be loaded at once and switched live. */
 html.app-theme-linen {
     --app-surface-chrome:  var(--ut-component-background-color);  /* white header + side nav */
+    /* Iris' #227E9E badge text is 4.0:1 on the pale badge (p3002): darken the primary-alt text to 4.9:1. */
+    --ut-palette-primary-alt-text: #1d6f8f;
+    /* Subtle info badges (p3002, 26.2): Iris' #227E9E text is 4.0:1 on the pale badge; #1d6f8f is 4.9:1. */
+    --ut-palette-info-text: #1d6f8f;
+    --ut-badge-subtle-info-text-color: var(--ut-palette-info-text);
+    /* Code tokens: Iris' Prism number green (#098658) is 4.4:1 on the code background; #07703f is 5.9:1. */
+    --prism-number: #07703f;
+
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
 
     /* radius scale — literal: Iris' 2/4/8px is too tight for the direction */
     --app-radius-sm:       6px;
@@ -122,6 +143,10 @@ html.app-theme-linen {
     --ut-body-title-box-shadow: none;
     --ut-body-title-border-width: 1px;
     --ut-body-title-border-color: var(--ut-component-border-color);
+}
+/* Master-detail side panel and region display selector: the title-bar band, not Iris' #f1efed on :root. */
+.app-theme-linen .apex-theme-iris {
+    --ut-body-info-background-color: var(--app-surface-page);
 }
 .app-theme-linen .apex-theme-iris .t-HeroRegion-title {
     font-size: var(--app-text-2xl);
@@ -486,6 +511,23 @@ html.app-theme-linen {
    this light surface. Reuse the package's secondary text token (see light/misc segment 2). */
 .app-theme-linen .apex-theme-iris svg text {
     fill: var(--app-text-secondary);
+}
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-linen .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-linen .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), which is too faint on these surfaces (p6400). */
+.app-theme-linen .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
 }
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */

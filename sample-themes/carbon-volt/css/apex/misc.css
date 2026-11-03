@@ -273,3 +273,36 @@
     color: var(--app-text-on-accent);
 }
 /* @adapter-end dark/misc#2 */
+
+/* @adapter dark/misc#3 prefix=cv - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Chart labels — JET paints axis ticks and series labels as SVG fill with the light-theme default (black at 65 %),
+   which is 1.06:1 on these dark surfaces (p406 and p1902 on 26.2). Reuse the package's secondary text token. */
+.app-theme-carbon-volt .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-carbon-volt .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-carbon-volt .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Outline badges take their text from the palette's solid colour, which is 2.8-4.1:1 on these cards for success and
+   danger (p3007, p3002). Use the text tints. */
+.app-theme-carbon-volt .apex-theme-iris .t-Badge--outline.t-Badge--success {
+    color: var(--ut-palette-success-text);
+}
+.app-theme-carbon-volt .apex-theme-iris .t-Badge--outline.t-Badge--danger {
+    color: var(--ut-palette-danger-text);
+}
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), 2.1-2.8:1 on these surfaces (p6400). */
+.app-theme-carbon-volt .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
+}
+/* @adapter-end dark/misc#3 */

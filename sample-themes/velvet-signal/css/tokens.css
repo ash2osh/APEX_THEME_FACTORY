@@ -303,3 +303,40 @@ html.app-theme-velvet-signal {
     --ut-timeline-type-background-color: var(--app-surface-card);
 }
 /* @adapter-end dark/tokens#4 */
+
+/* @adapter dark/tokens#5 prefix=vs - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-velvet-signal .apex-theme-iris {
+    /* Core and Iris declare these as var() chains on :root, so they freeze to Iris' light literals before the
+       package's own colours can reach them (pitfalls §1.2). Measured on the dark packages (26.2, p1207 and p1305):
+       the breadcrumb title was near-black on the dark title bar (1.05:1) and the menu bar kept a light background
+       under light text (1.1:1). Restate the chains on the theme scope. */
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+    /* Iris declares the trail text as a literal ink at 70 % on :root: dark trails stayed near-black (1.04:1). */
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --a-menubar-background-color: var(--app-surface-chrome);
+    --a-menubar-item-text-color: var(--app-text-emphasized);
+    --a-menubar-item-current-background-color: var(--app-surface-card);
+    --a-menubar-item-current-text-color: var(--app-text-emphasized);
+    /* The master-detail side panel and the region display selector (.apex-rds-container) read the body-info colour,
+       which falls back to Iris' light title-bar literal (#f1efed on :root). The title-bar restatement in shell.css
+       reaches only .t-Body-title, so the band under the title stayed light with light tab labels (1.07:1). */
+    --ut-body-info-background-color: var(--app-surface-page);
+    --ut-body-info-text-color: var(--app-text-emphasized);
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
+    /* Form error text: Iris sets --a-form-error-text-color to var(--a-palette-danger) on :root, which freezes to its
+       light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
+    --a-form-error-text-color: var(--ut-palette-danger-text);
+}
+/* @adapter-end dark/tokens#5 */

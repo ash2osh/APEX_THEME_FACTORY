@@ -36,6 +36,9 @@ app TF-CONSUMER-MINIMAL (
     authentication {
         scheme: @oracle-apex-accounts
     }
+    security {
+        embedInFrames: allowSameOrigin
+    }
     sessionStateProtection {
         checksumSalt: BE8E26C19CF3511FBFEB1A6F9F79DA741A84B7ED70299369E025F6E56E2FFF65
     }

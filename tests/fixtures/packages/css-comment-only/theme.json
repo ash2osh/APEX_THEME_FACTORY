@@ -6,7 +6,7 @@
   "tagline": "Test theme with comments only",
   "class": "app-theme-css-comment-only",
   "compatibility": {
-    "apex": ">=26.1.0 <26.2.0",
+    "apex": ">=26.1.0 <26.3.0",
     "themeNumber": 42,
     "baseTheme": "ut-26.1",
     "themeStyle": "Iris"

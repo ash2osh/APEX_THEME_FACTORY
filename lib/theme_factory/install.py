@@ -25,7 +25,7 @@ from lib.theme_factory.apexlang import (
 )
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import ThemeManifest
+from lib.theme_factory.manifest import SUPPORTED_BASE_THEMES, ThemeManifest
 from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
 
@@ -50,22 +50,22 @@ class OperationReport:
     message: str = ""
 
 
-APEX_26_1_RE = re.compile(r"^26\.1(?:\.\d+)?(?:[-+].*)?$")
+APEX_26_RE = re.compile(r"^26\.[12](?:\.\d+)?(?:[-+].*)?$")
 # Exit codes: 2 package/argument, 3 unsupported target, 4 drift, 5 validation/import,
 # 6 post-import verification, 7 explicit cancellation or refused stale restore.
 CANCELLED_EXIT_CODE = 7
 
 
 def require_supported_apex_version(version: str) -> None:
-    if not APEX_26_1_RE.fullmatch(str(version).strip()):
+    if not APEX_26_RE.fullmatch(str(version).strip()):
         raise PackageError(
-            f"Target APEX version '{version}' is unsupported; expected APEX 26.1.x",
+            f"Target APEX version '{version}' is unsupported; expected APEX 26.1.x or 26.2.x",
             exit_code=3,
         )
 
 
 def matches_install(target: TargetExport, manifest: ThemeManifest, switcher_mode: str) -> bool:
-    if target.theme_number != 42 or target.base_theme != "ut-26.1" or target.style != "iris":
+    if target.theme_number != 42 or target.base_theme not in SUPPORTED_BASE_THEMES or target.style != "iris":
         return False
     expected_css = f"#APP_FILES#theme-factory/packages/{manifest.name}/{manifest.version}/theme.css"
     if expected_css not in target.css_urls:
@@ -221,9 +221,9 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
         raise PackageError(f"Failed to export application: {exc}", exit_code=5) from exc
 
     target = inspect_export(staged_dir)
-    if (target.theme_number, target.base_theme, target.style) != (42, "ut-26.1", "iris"):
+    if target.theme_number != 42 or target.base_theme not in SUPPORTED_BASE_THEMES or target.style != "iris":
         raise PackageError(
-            f"Target application {options.app_id} is not Universal Theme 42 / ut-26.1 / Iris "
+            f"Target application {options.app_id} is not Universal Theme 42 / ut-26.1 or ut-26.2 / Iris "
             f"(found: {target.theme_number}/{target.base_theme}/{target.style})",
             exit_code=3,
         )

@@ -25,7 +25,7 @@ class ThemeDiscoveryTests(unittest.TestCase):
             "tagline": f"The {name} test theme.",
             "class": f"app-theme-{name}",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",

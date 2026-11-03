@@ -201,7 +201,7 @@ def build_theme_css(
         f" * Theme: {manifest.name} ({manifest.title})\n"
         f" * Version: {manifest.version}\n"
         f" * Tagline: {manifest.tagline}\n"
-        " * Compatibility: APEX 26.1.x / Universal Theme 42 / Iris\n"
+        " * Compatibility: APEX 26.1.x or 26.2.x / Universal Theme 42 / Iris\n"
         f" * Source commit: {source_commit}\n"
         " */\n\n"
     )

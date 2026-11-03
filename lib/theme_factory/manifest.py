@@ -13,7 +13,9 @@ SEMVER_REGEX = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?
 FONT_NAME_REGEX = re.compile(r"^[A-Za-z][A-Za-z0-9 _-]{0,63}$")
 FONT_FILE_REGEX = re.compile(r"^fonts/[a-z0-9]+(?:-[a-z0-9]+)*\.woff2$")
 LICENSE_FILE_REGEX = re.compile(r"^licenses/[A-Za-z0-9][A-Za-z0-9._-]*$")
-APEX_COMPATIBILITY = ">=26.1.0 <26.2.0"
+APEX_COMPATIBILITY = ">=26.1.0 <26.3.0"
+# Universal Theme base themes the installer accepts: each APEX release ships its own (26.1 -> ut-26.1, 26.2 -> ut-26.2).
+SUPPORTED_BASE_THEMES = ("ut-26.1", "ut-26.2")
 NAV_STYLE_REGEX = re.compile(r"^t-TreeNav--[A-Za-z0-9_-]+$")
 TITLE_MAX_LENGTH = 64
 # A title is written verbatim into an APEXLang `label:` line and into the page-0 bootstrap
@@ -156,8 +158,8 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
         )
     if compat["themeNumber"] != 42:
         raise PackageError("compatibility/themeNumber must be 42")
-    if compat["baseTheme"] != "ut-26.1":
-        raise PackageError("compatibility/baseTheme must be 'ut-26.1'")
+    if compat["baseTheme"] not in SUPPORTED_BASE_THEMES:
+        raise PackageError("compatibility/baseTheme must be one of " + ", ".join(SUPPORTED_BASE_THEMES))
     if compat["themeStyle"] != "Iris":
         raise PackageError("compatibility/themeStyle must be 'Iris'")
 

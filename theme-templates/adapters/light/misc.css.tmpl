@@ -15,3 +15,10 @@
     --ut-cardlist-box-shadow: none;
     --ut-irr-region-box-shadow: none;
 }
+
+/* @segment 2 */
+/* Chart labels — JET paints axis ticks and series labels as SVG fill, and the shared grey
+   (147,161,161) misses AA on these light surfaces. Reuse the package's secondary text token. */
+.app-theme-__NAME__ .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}

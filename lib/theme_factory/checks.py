@@ -306,7 +306,7 @@ def run_theme_checks(repo_root: Path, theme_name: str) -> CheckReport:
                 issues.append(CheckIssue(
                     "warning", "COPIED_CSS",
                     f"{share:.0%} of this theme's own CSS is copied in blocks from {source}; share those rules "
-                    "through a theme-templates/adapters family (README: Shared adapter families) instead",
+                    "through a theme-templates/adapters family (docs/BUILDING_A_THEME.md: Shared adapter families) instead",
                     _relative(repo_root, theme_root),
                 ))
         except (PackageError, ValueError, OSError) as exc:

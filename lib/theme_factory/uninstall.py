@@ -42,7 +42,7 @@ from lib.theme_factory.install import (
     remove_staging_dir,
     require_supported_apex_version,
 )
-from lib.theme_factory.manifest import NAME_REGEX
+from lib.theme_factory.manifest import NAME_REGEX, SUPPORTED_BASE_THEMES
 from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
 
@@ -232,9 +232,9 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
         raise PackageError(f"Failed to export application: {exc}", exit_code=5) from exc
 
     target = inspect_export(staged_dir)
-    if (target.theme_number, target.base_theme, target.style) != (42, "ut-26.1", "iris"):
+    if target.theme_number != 42 or target.base_theme not in SUPPORTED_BASE_THEMES or target.style != "iris":
         raise PackageError(
-            f"Target application {options.app_id} is not Universal Theme 42 / ut-26.1 / Iris",
+            f"Target application {options.app_id} is not Universal Theme 42 / ut-26.1 or ut-26.2 / Iris",
             exit_code=3,
         )
 

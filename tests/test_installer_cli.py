@@ -301,7 +301,7 @@ class InstallerCliTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 5)
 
-    def test_rejects_target_outside_apex_26_1_before_export(self):
+    def test_rejects_target_outside_supported_apex_before_export(self):
         log = self.tmp / "sql.log"
         result = self.run_cli(
             self.package_dir,
@@ -415,7 +415,7 @@ class InstallerCliTests(unittest.TestCase):
             "tagline": "A dynamically discovered test package.",
             "class": "app-theme-ninth-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",

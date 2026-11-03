@@ -167,7 +167,7 @@ def main() -> None:
 
     elif mode == "unsupported-apex":
         if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
-            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.2.0"}\n')
+            sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.3.0"}\n')
         sys.stdout.write("Validation completed successfully.\n")
 
     else:

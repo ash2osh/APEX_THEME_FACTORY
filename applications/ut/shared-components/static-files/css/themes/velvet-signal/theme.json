@@ -7,7 +7,7 @@
   "direction": "Spacious aubergine layers with rounded surfaces and fuchsia-violet signals.",
   "class": "app-theme-velvet-signal",
   "compatibility": {
-    "apex": ">=26.1.0 <26.2.0",
+    "apex": ">=26.1.0 <26.3.0",
     "themeNumber": 42,
     "baseTheme": "ut-26.1",
     "themeStyle": "Iris"

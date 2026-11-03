@@ -53,3 +53,9 @@
 .app-theme-linen .apex-theme-iris .class-var {
     color: var(--app-text-primary);
 }
+
+/* Chart labels — JET paints axis ticks and series labels as SVG fill; the shared grey misses AA on
+   this light surface. Reuse the package's secondary text token (see light/misc segment 2). */
+.app-theme-linen .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}

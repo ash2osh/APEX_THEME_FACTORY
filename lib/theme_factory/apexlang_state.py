@@ -7,7 +7,7 @@ import re
 from typing import Dict, List, Optional, Tuple
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX, validate_title
+from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX, SUPPORTED_BASE_THEMES, validate_title
 from lib.theme_factory.apexlang_model import InstalledPackage, TargetExport
 from lib.theme_factory.apexlang_parser import (
     SWITCHER_ENTRY_PREFIX, _find_matching_brace, _is_bootstrap_identity,
@@ -129,8 +129,8 @@ def inspect_export(export_dir: Path) -> TargetExport:
     # Check baseTheme
     bt_match = re.search(r"baseTheme:\s*([^\s\(\)\{\}]+)", theme_text)
     base_theme = bt_match.group(1).strip('"\'') if bt_match else ""
-    if base_theme != "ut-26.1":
-        raise PackageError(f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1')", exit_code=3)
+    if base_theme not in SUPPORTED_BASE_THEMES:
+        raise PackageError(f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1' or 'ut-26.2')", exit_code=3)
 
     # Check currentThemeStyle
     ts_match = re.search(r"currentThemeStyle:\s*@/([^\s\(\)\{\}]+)", theme_text)

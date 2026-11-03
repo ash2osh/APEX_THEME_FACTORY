@@ -38,7 +38,7 @@
       "properties": {
         "apex": {
           "type": "string",
-          "const": ">=26.1.0 <26.2.0"
+          "const": ">=26.1.0 <26.3.0"
         },
         "themeNumber": {
           "type": "integer",
@@ -46,7 +46,7 @@
         },
         "baseTheme": {
           "type": "string",
-          "const": "ut-26.1"
+          "enum": ["ut-26.1", "ut-26.2"]
         },
         "themeStyle": {
           "type": "string",

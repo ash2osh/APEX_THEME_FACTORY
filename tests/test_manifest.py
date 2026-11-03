@@ -61,7 +61,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-mismatch-name",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -90,7 +90,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -115,7 +115,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -140,7 +140,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Vita",  # Not Iris
@@ -194,7 +194,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -227,7 +227,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -268,7 +268,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -307,7 +307,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Tagline",
             "class": "app-theme-valid-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",
@@ -346,7 +346,7 @@ class ManifestTests(unittest.TestCase):
             "tagline": "Testing all three font roles.",
             "class": "app-theme-font-theme",
             "compatibility": {
-                "apex": ">=26.1.0 <26.2.0",
+                "apex": ">=26.1.0 <26.3.0",
                 "themeNumber": 42,
                 "baseTheme": "ut-26.1",
                 "themeStyle": "Iris",

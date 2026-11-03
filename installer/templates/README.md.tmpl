@@ -8,9 +8,9 @@ Class: `__THEME_CLASS__`
 ---
 
 ## Compatibility
-- Target APEX: Oracle APEX 26.1.x
+- Target APEX: Oracle APEX 26.1.x or 26.2.x
 - Target Theme: Universal Theme (theme 42)
-- Target Base Theme: `ut-26.1`
+- Target Base Theme: `ut-26.1` (APEX 26.1) or `ut-26.2` (APEX 26.2)
 - Theme Style: **Iris** (light) only
 - Standard font fallback: Oracle Sans (or declared package WOFF2 custom fonts)
 
@@ -107,7 +107,7 @@ Ownership is stored in data APEX keeps: the Page 0 regions carry Static IDs `the
 ## Exit codes and recovery artifacts
 - `0`: Success (or clean dry-run preview)
 - `2`: Package integrity failure or argument error
-- `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 / Iris)
+- `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 or ut-26.2 / Iris)
 - `4`: Database drift detected during staging or while the confirmation prompt was open; nothing imported
 - `5`: APEXLang validation or SQLcl import failure (no automatic rollback: if the import itself failed, check the app and restore from the backup)
 - `6`: Post-import verification check failed (the import happened; inspect the printed differences, then uninstall or restore)

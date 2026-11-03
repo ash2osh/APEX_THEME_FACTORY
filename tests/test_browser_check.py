@@ -84,7 +84,7 @@ class FontExpectationTests(unittest.TestCase):
         (root / "licenses").mkdir(parents=True, exist_ok=True)
         manifest = {"schemaVersion": 1, "name": "linen", "title": "Linen", "version": "1.0.0",
                     "tagline": "t", "class": "app-theme-linen",
-                    "compatibility": {"apex": ">=26.1.0 <26.2.0", "themeNumber": 42,
+                    "compatibility": {"apex": ">=26.1.0 <26.3.0", "themeNumber": 42,
                                       "baseTheme": "ut-26.1", "themeStyle": "Iris"},
                     "assets": {"stylesheet": "theme.css"}}
         if fonts:

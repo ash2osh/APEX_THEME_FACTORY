@@ -305,4 +305,9 @@
 .app-theme-carbon-volt .apex-theme-iris .item {
     color: var(--app-text-emphasized);
 }
+
+/* Demo markup: the .red sample is pure CSS red (#ff0000), which fails AA on these surfaces (p6307). */
+.app-theme-carbon-volt .apex-theme-iris .red {
+    color: var(--ut-palette-danger-text);
+}
 /* @adapter-end dark/misc#3 */

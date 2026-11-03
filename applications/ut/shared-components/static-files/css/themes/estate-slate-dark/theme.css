@@ -1299,6 +1299,11 @@ html.app-theme-estate-slate-dark {
 .app-theme-estate-slate-dark .apex-theme-iris .item {
     color: var(--app-text-emphasized);
 }
+
+/* Demo markup: the .red sample is pure CSS red (#ff0000), which fails AA on these surfaces (p6307). */
+.app-theme-estate-slate-dark .apex-theme-iris .red {
+    color: var(--ut-palette-danger-text);
+}
 /* @theme-factory-generated */
 /* generated-from: theme.recipe.json */
 /* Responsive rules for html.app-theme-estate-slate-dark: strategy compress, at 768px and below. */

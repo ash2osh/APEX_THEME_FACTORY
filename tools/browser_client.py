@@ -176,7 +176,10 @@ class FirefoxTranslator:
 
     def _evaluate_script(self, args):
         self._select(args.pop("pageId"))
-        return self._raw("evaluate_script", {"function": args["function"]})
+        query = {"function": args["function"]}
+        if args.get("timeout") is not None:
+            query["timeout"] = int(args["timeout"])   # Firefox's default is 5000 ms; long audits ask for more
+        return self._raw("evaluate_script", query)
 
     LEVEL_LINE_RE = re.compile(r"\b(ERROR|WARN|INFO|LOG|DEBUG)\b")
 
@@ -212,7 +215,8 @@ class FirefoxTranslator:
 
     def _take_screenshot(self, args):
         self._select(args.pop("pageId"))
-        return self._raw("screenshot_page", {})
+        query = {"fullPage": True} if args.get("fullPage") else {}
+        return self._raw("screenshot_page", query)
 
 
 class BrowserClient:

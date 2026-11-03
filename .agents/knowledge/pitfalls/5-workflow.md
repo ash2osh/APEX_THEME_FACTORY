@@ -52,3 +52,12 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
 - A claude.ai cloud session pushes to its own `claude/<name>` branch and is not allowed to delete branches, so one can
   reappear after its work is merged. Its content is always already in `main`. Both repos have *Automatically delete
   head branches* on; delete any leftover with `git push origin --delete <branch>`.
+
+### 5.10 An adapter segment is not rendered until every member file has its fence
+- `scripts/theme.sh adapters` re-renders only the `@adapter` fences that already exist in a member theme's CSS. A new
+  `@segment` in the template is silently ignored: `drift=0` and `PASS` are reported, and the rule is in no package.
+  The light chart fix (2026-11-03) shipped in the template only, and every light theme kept the 14 chart-label failures.
+  To add a segment, add its empty fence (`begin_line` / `end_line` from `lib/theme_factory/adapters.py`) to each member
+  file, then render. Check the built theme, not the report, with a `grep` for the new selector.
+- A token segment is a body of declarations inside an open rule. Its `@segment` must open and close its own rule, or the
+  fence sits outside any selector (Oracle's own `}` inside segment 4 closes the block early).

@@ -34,7 +34,7 @@ class RowProblemTests(unittest.TestCase):
         self.assertEqual(capture("minimal", 1440).problems("linen"), [])
 
     def test_each_failure_is_named(self):
-        row = capture("minimal", 375, console_errors=["boom"], fonts_verified=False,
+        row = capture("minimal", 1440, console_errors=["boom"], fonts_verified=False,
                       accessibility_verified=False, persistence_verified=False, notes=["detail"])
         problems = row.problems("linen")
         self.assertIn("console error: boom", problems)
@@ -58,6 +58,31 @@ class ContrastInstrumentTests(unittest.TestCase):
         # a tree walker over text nodes alone cannot reach SVG <text>; the snippet must query them
         self.assertRegex(snippet, r"querySelectorAll\(\s*['\"][^'\"]*svg[^'\"]*text")
 
+
+
+class PhoneRowTests(unittest.TestCase):
+    """A phone row checks what the frame can show: layout, contrast, console and network."""
+
+    def test_phone_row_does_not_demand_fonts_or_storage(self):
+        row = capture("minimal", 375, viewport_applied=375, fonts_verified=False, persistence_verified=False)
+        self.assertEqual(row.problems("linen"), [])
+
+    def test_phone_row_that_overflows_is_a_problem(self):
+        page = dict(capture("minimal", 375).page, overflow=True, wide=["div.table"])
+        row = capture("minimal", 375, page=page, viewport_applied=375)
+        self.assertTrue(any("horizontal overflow at 375px" in p for p in row.problems("linen")))
+
+
+class ViewportTests(unittest.TestCase):
+    """Firefox cannot shrink its window below about 500 px, so a 375 px row must prove its frame width."""
+
+    def test_row_at_the_width_it_asked_for_has_no_viewport_problem(self):
+        row = capture("minimal", 375, viewport_applied=375)
+        self.assertEqual(row.problems("linen"), [])
+
+    def test_phone_row_that_ran_wider_than_asked_is_a_problem(self):
+        row = capture("minimal", 375, viewport_applied=500)
+        self.assertTrue(any("viewport is 500px, not the 375px asked for" in p for p in row.problems("linen")))
 
 
 class LiveCaptureTests(unittest.TestCase):

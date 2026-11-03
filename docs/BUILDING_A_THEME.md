@@ -183,8 +183,9 @@ scripts/theme.sh release midnight --offline  # check + package only, seconds
 1. **Check** — the author checks must pass.
 2. **Package** — builds and verifies `dist/<name>/<name>-<version>.zip`.
 3. **Live smoke** (skipped with `--offline`) — exports the disposable consumer app 9010, installs the package
-   with the switcher, opens it in its own Chrome tab at 1440 and 375 px (console errors, failed requests,
-   fonts, AA contrast, keyboard switcher, selection kept across reload), then re-imports the clean export.
+   with the switcher, opens it in its own Firefox tab at 1440 px (console errors, failed requests, fonts, AA
+   contrast, keyboard switcher, selection kept across reload) and at 375 px inside a phone-width frame (layout
+   overflow, AA contrast, console errors, failed requests), then re-imports the clean export.
 
 It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the browser
 daemon (Firefox by default: start Firefox from its launcher, then `python3 tools/firefox_mcp_daemon.py`; see

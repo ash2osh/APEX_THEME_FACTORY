@@ -22,6 +22,7 @@ from typing import List, Optional, Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.browser_client import BrowserClient  # noqa: E402
+from tools.phone_frame import DESKTOP_MIN_WIDTH, PHONE_CLOSE_JS, phone_open_js, phone_run_js  # noqa: E402
 
 
 @dataclass
@@ -36,19 +37,25 @@ class RowCapture:
     persistence_verified: bool = False
     notes: List[str] = field(default_factory=list)
     declared_face_count: int = 0
+    viewport_applied: Optional[int] = None  # CSS px of the phone frame; None on a desktop row
 
     def problems(self, theme: str) -> List[str]:
         """Everything a user would notice; empty means the row passed."""
         found = []
+        phone = self.width < DESKTOP_MIN_WIDTH
+        if phone and self.viewport_applied != self.width:
+            found.append(f"viewport is {self.viewport_applied}px, not the {self.width}px asked for")
+        if phone and self.page.get("overflow"):
+            found.append(f"horizontal overflow at {self.width}px: {self.page.get('wide')}")
         if self.page.get("activeTheme") != theme:
             found.append(f"active theme is {self.page.get('activeTheme')!r}, not {theme!r}")
         found += [f"console error: {line}" for line in self.console_errors]
         found += [f"failed request: {line}" for line in self.failed_requests]
-        if not self.fonts_verified:
+        if not phone and not self.fonts_verified:
             found.append("declared fonts not loaded")
         if not self.accessibility_verified:
             found.append("contrast or keyboard check failed")
-        if not self.persistence_verified:
+        if not phone and not self.persistence_verified:
             found.append("theme selection not kept across reload")
         return found + [f"note: {note}" for note in self.notes] if found else []
 
@@ -241,8 +248,11 @@ class LiveBrowserMatrix:
     def call(self, name: str, **arguments):
         return self.client.call_tool(name, {"pageId": self.page_id, **arguments})
 
-    def evaluate(self, function: str):
-        return _json_result(self.call("evaluate_script", function=function))
+    def evaluate(self, function: str, timeout: Optional[int] = None):
+        arguments = {"function": function}
+        if timeout is not None:
+            arguments["timeout"] = timeout
+        return _json_result(self.call("evaluate_script", **arguments))
 
     def navigate(self, url: str) -> None:
         self.call("navigate_page", url=url)
@@ -305,7 +315,48 @@ class LiveBrowserMatrix:
             notes.append(f"selection lost on reload: {after}")
         return storage_ok and kept, notes
 
+    def _capture_phone_row(self, consumer: str, url: str, theme: str, width: int) -> RowCapture:
+        """A phone row: the page inside a `width` px frame, checked for contrast, overflow, console and network.
+
+        Fonts and storage are checked on the desktop row. Firefox cannot resize below its window floor, so the
+        frame is the only way to see the real phone layout; see tools/phone_frame.py.
+        """
+        notes: List[str] = []
+        self.host = urlsplit(url).netloc
+        self.row_started_ms = time.time() * 1000
+        self.navigate(url)
+        self.evaluate("() => { const api = window.ApexThemeFactory; return api ? api.use(%s) : false; }" % json.dumps(theme))
+        time.sleep(2.0)
+        self.navigate(url)
+        measured = self.evaluate(phone_open_js(width), timeout=30000)
+        contrast = {}
+        try:
+            if isinstance(measured, dict) and "width" in measured:
+                contrast = self.evaluate(phone_run_js(_contrast_function()), timeout=60000)
+        finally:
+            self.evaluate(PHONE_CLOSE_JS)
+        measured = measured if isinstance(measured, dict) else {}
+        themes = measured.get("themes") or []
+        page = {
+            "url": url,
+            "activeTheme": themes[0][len("app-theme-"):] if themes else None,
+            "frameWidth": measured.get("width"),
+            "overflow": bool(measured.get("overflow")),
+            "wide": measured.get("wide", []),
+        }
+        accessibility = contrast.get("failures") == 0
+        if not accessibility:
+            notes.append(f"contrast failures={contrast.get('failures')} sample={contrast.get('sample', [])[:3]} "
+                         f"error={contrast.get('error')}")
+        errors = self.console_errors()
+        failed = self.failed_requests()
+        return RowCapture(consumer=consumer, width=width, page=page, console_errors=errors, failed_requests=failed,
+                          accessibility_verified=accessibility, notes=notes,
+                          viewport_applied=measured.get("width"))
+
     def capture_row(self, consumer: str, url: str, theme: str, width: int) -> RowCapture:
+        if width < DESKTOP_MIN_WIDTH:
+            return self._capture_phone_row(consumer, url, theme, width)
         notes: List[str] = []
         self.host = urlsplit(url).netloc
         self.row_started_ms = time.time() * 1000

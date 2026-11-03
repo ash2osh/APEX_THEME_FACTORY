@@ -69,7 +69,11 @@ know is refused.
 
 - New tabs open in the front of the Firefox window. The checks select their own tab for each call and
   select the previous tab again when they close it.
-- `emulate` resizes the Firefox window, because Firefox sets the viewport through the window size.
+- `emulate` resizes the Firefox window, because Firefox sets the viewport through the window size, and the window
+  cannot go narrower than about 500 px. A 375 px request would silently run at 500 px. Phone widths therefore
+  load the page into a same-origin iframe of the requested width (`tools/phone_frame.py`), where the media
+  queries see the real width. The audit and the release smoke both use it. A phone row fails if its frame is
+  not the width it asked for.
 - Screenshots are PNG. Theme cover images are JPEG, so `tools/theme_cover.py` and `lib/theme_factory/cli.py cover`
   keep using the Chrome daemon.
 - Page indexes can shift when a tab in front of yours closes. The checks read the index again on each run.

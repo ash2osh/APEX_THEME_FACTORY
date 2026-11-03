@@ -144,8 +144,8 @@ async () => {
     const t = n.textContent.trim(); if (t.length < 2) continue;
     const el = n.parentElement; if (!el || el.closest('#apexDevToolbar, script, style, [aria-hidden="true"], .u-VisuallyHidden')) continue;
     const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
-    const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
-    const fg = parse(cs.color); if (!fg) continue; const bg = bgOf(el); const ratio = cr(fg.a < 1 ? over(fg, bg) : fg, bg);
+    const r = el.getBoundingClientRect(); if (!r.width || !r.height || r.width <= 1 || r.height <= 1) continue;  // 1px = visually hidden
+    const fg = parse(cs.color); if (!fg || fg.a === 0) continue; const bg = bgOf(el); const ratio = cr(fg.a < 1 ? over(fg, bg) : fg, bg);
     const size = parseFloat(cs.fontSize), weight = parseInt(cs.fontWeight) || 400, need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
     if (ratio < need) { const k = el.className + '|' + cs.color + '|' + t.slice(0, 20); if (seen.has(k)) continue; seen.add(k);
       bad.push({ text: t.slice(0, 40), sel: el.tagName.toLowerCase() + '.' + String(el.className).trim().split(/\s+/).slice(0, 3).join('.'), fg: cs.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`, ratio: +ratio.toFixed(2), size }); }

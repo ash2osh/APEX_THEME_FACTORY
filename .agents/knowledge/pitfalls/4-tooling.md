@@ -127,3 +127,37 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   `.apex-item-text` can be a floating-label field (`paddingTop` ≈ 25px). Scope probes to `.t-Body-content`, exclude
   `.t-Button--headerTree` / `--small` / `--large` / `--tiny` / `--noUI` and
   `.t-Form-fieldContainer--floatingLabel`, and record the element id you measured.
+
+### 4.10 Firefox records every tab: scope console and network checks to the page under test
+- The Firefox DevTools MCP keeps one console and one network log for the whole browser, not per tab. A console error
+  from a previous tab (or another site) fails the page under test unless the check is limited by host
+  (`urlContains`) and by time (`sinceMs` from the start of the row). Its default limit of 50 can also hide older failures.
+- An empty answer is printed as a summary line ("Total messages: 0, Filters: level=error"), which a naive filter reads
+  as an error. Keep only lines with a level word.
+
+### 4.11 Firefox refuses cross-origin fonts without CORS, and reports the refusal as a sanitizer error
+- An injected stylesheet served from another origin (here `127.0.0.1:8765`) loads its `@font-face` files cross-origin.
+  Without `Access-Control-Allow-Origin` Firefox fails them with `NetworkError`, and the console says
+  "downloadable font: rejected by sanitizer". The font itself is fine: the consumer's own copy loads. Send CORS headers
+  from any local server used to inject CSS, and check a `FontFace` load before reading the font checks.
+- Firefox does not list font loads in resource timing, so a font check that needs a `resource` entry always fails there.
+  Fetch the face's own `url()` (from its `CSSFontFaceRule`) to prove the bytes come from the package.
+
+### 4.12 JET charts paint their colours once; a per-theme class swap measures the wrong chart
+- Oracle JET reads its `--oj-*` colours at bootstrap and bakes them into SVG `fill`. Swapping `html.app-theme-*` in the
+  page afterwards leaves the chart in the colours of the page's first theme, so the audit reports failures a real visitor
+  never sees. Measure charts after the runtime reloads the page in that theme (`use(theme)`), and restore the visitor's
+  stored choice afterwards. `tools/page_audit.py --chart-reload` does this on pages that draw SVG.
+
+### 4.13 Pages can look broken when they are not
+- A visually hidden label (clipped to 1px) is not visible text, and the contrast audit must skip it. Transparent text is
+  invisible too: a collapsed side navigation hides its labels that way on purpose.
+- Modal dialog pages (`pageMode: modalDialog`) report "cannot be rendered successfully" when opened directly. Check
+  them from the page that opens them.
+
+### 4.14 Firefox cannot shrink its window below about 500 px, so a 375 px "resize" measures 500 px
+- **Symptom (2026-11-03):** the audit and release smoke reported their 375 px rows, but `window.innerWidth` read 500.
+  `set_viewport_size` is a WebDriver window resize, and the Firefox window has a minimum width.
+- **Fix:** load the page into a same-origin iframe of the requested width and measure inside it
+  (`tools/phone_frame.py`). Check the frame's own `innerWidth` against the width asked for; the phone row fails if
+  they differ. Same-origin means the parent can script the frame, so the theme and contrast checks run inside it.

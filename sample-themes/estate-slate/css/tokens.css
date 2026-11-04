@@ -126,7 +126,7 @@ html.app-theme-estate-slate {
 /* @adapter-end light/tokens#1 */
 
     --ut-focus-outline-color: var(--app-color-primary);
-    --ut-link-text-color: var(--app-color-primary);
+    --ut-link-text-color: #a84c08; /* amber primary is 4.3:1 on the #eceeef info band; this is 4.9:1 */
 
     --ut-palette-primary: var(--app-color-primary);
     --ut-palette-primary-contrast: var(--app-text-on-accent);

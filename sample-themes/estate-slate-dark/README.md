@@ -32,7 +32,7 @@ css/apex/
   dialogs.css            standard & modal dialogs with crisp #1e293b hairline border framing
   misc.css               status pills (emerald live, cyan in-transit, amber priority), badges, breadcrumbs, search
 fonts/                   bundled self-hosted WOFF2 webfonts (IBM Plex Sans Arabic 400, 500, 600, 700)
-licenses/OFL.txt         SIL Open Font License 1.1 text for IBM Plex Sans Arabic
+licenses/OFL.txt         SIL Open Font License 1.1 text; the bundled files are renamed "TF Estate Arabic"
 preview/cover.jpg        960x525 gallery preview cover
 ```
 

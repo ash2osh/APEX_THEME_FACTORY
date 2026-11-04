@@ -185,3 +185,11 @@
        light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
     --a-form-error-text-color: var(--ut-palette-danger-text);
 }
+
+/* Print: browsers drop backgrounds by default, which leaves this theme's light text on white paper. */
+@media print {
+    html.app-theme-__NAME__ {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

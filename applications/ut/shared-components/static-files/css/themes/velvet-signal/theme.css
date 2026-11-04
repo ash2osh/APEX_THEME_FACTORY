@@ -341,6 +341,14 @@ html.app-theme-velvet-signal {
        light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
     --a-form-error-text-color: var(--ut-palette-danger-text);
 }
+
+/* Print: browsers drop backgrounds by default, which leaves this theme's light text on white paper. */
+@media print {
+    html.app-theme-velvet-signal {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
 /* @adapter-end dark/tokens#5 */
 /* identity: pill navigation and generous rounded shell */
 .app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }

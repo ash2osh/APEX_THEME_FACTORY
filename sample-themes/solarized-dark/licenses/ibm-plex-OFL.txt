@@ -9,7 +9,8 @@ MODIFICATION NOTICE (required by the OFL Reserved Font Name clause)
 -------------------------------------------------------------------
 The font files in this package are Modified Versions of the original: they were
 subset to a Latin character range and converted from TTF to WOFF2 with fontTools.
-They are therefore NOT distributed under the reserved font name. Each face is
+Their internal names were changed to "TF Solarized Sans" and "TF Solarized Mono", so
+they are NOT distributed under the reserved font name. Each face is
 declared to the browser under a package-scoped family name of the form
 `ThemeFactory-solarized-dark-<role>`, never under the original name.
 

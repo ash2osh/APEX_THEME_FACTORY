@@ -182,7 +182,7 @@ html.app-theme-citrus-pop {
     --ut-header-menubar-item-text-color: var(--app-text-chrome);
     --ut-header-menubar-item-border-color: var(--app-border-chrome);
     --ut-header-menubar-item-current-background-color: var(--app-accent-shade);
-    --ut-header-menubar-item-current-text-color: var(--app-color-primary);
+    --ut-header-menubar-item-current-text-color: var(--app-text-chrome); /* primary is under 3.3:1 on the dark bar */
     --ut-header-menubar-item-split-border-color: var(--app-border-chrome);
     --ut-header-menubar-item-split-icon-color: var(--app-text-chrome-muted);
 }

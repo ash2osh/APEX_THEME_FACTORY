@@ -1,6 +1,11 @@
 Copyright 2017-2018 IBM Corporation (https://github.com/IBM/plex)
 with Reserved Font Name "Plex".
 
+MODIFICATION NOTICE (required by the OFL Reserved Font Name clause)
+The font files in this package are Modified Versions of IBM Plex Sans Arabic. They were
+converted to WOFF2 with fontTools and their internal names changed to "TF Estate Arabic".
+They are not distributed under the Reserved Font Name.
+
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 http://scripts.sil.org/OFL

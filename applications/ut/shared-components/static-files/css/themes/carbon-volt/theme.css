@@ -341,6 +341,14 @@ html.app-theme-carbon-volt {
        light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
     --a-form-error-text-color: var(--ut-palette-danger-text);
 }
+
+/* Print: browsers drop backgrounds by default, which leaves this theme's light text on white paper. */
+@media print {
+    html.app-theme-carbon-volt {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
 /* @adapter-end dark/tokens#5 */
 /* identity: segmented rail navigation and hard module chrome */
 .app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-inline-start: 3px solid var(--app-color-primary); background: var(--app-surface-selected); }

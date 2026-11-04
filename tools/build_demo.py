@@ -6,6 +6,7 @@ Every change is made to a copy, so applications/ut/ stays the source. The demo d
   - opens on the theme gallery, with a notice on the gallery and Getting Started pages
   - gets a new session-state protection salt, because the one in the source is public
   - allows no runtime API changes to the application, and carries no fixed application ID
+  - loads all the map sample data whatever the database's date format
   - drops the Theme Version menu and the installer's test page, which only make sense on a development machine
 
     scripts/build-demo.sh                 # writes dist/demo/theme-factory-demo.zip and its .sha256
@@ -114,6 +115,15 @@ def demo_deployment(text: str) -> str:
     return json.dumps(settings, indent=2) + "\n"
 
 
+def demo_airports(text: str) -> str:
+    """Oracle's script writes to_date('04/01/1940') and relies on the session's date format, so on most databases
+    only the rows without a date load and the map page shows one airport."""
+    first = "alter session set nls_numeric_characters='.,';\n"
+    if first not in text:
+        raise PackageError("Demo build: could not find the start of the airports script")
+    return text.replace(first, first + "alter session set nls_date_format='MM/DD/YYYY';\n", 1)
+
+
 def demo_global_page(text: str) -> str:
     close = text.rstrip().rfind(")")
     if close == -1:
@@ -132,6 +142,8 @@ def prepare(source: Path, destination: Path, salt: str) -> None:
     global_page.write_text(demo_global_page(global_page.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     gallery = destination / "pages/p00405-themes.apx"
     gallery.write_text(demo_gallery(gallery.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
+    airports = destination / "supporting-objects/install-scripts/create-airports-table.sql"
+    airports.write_text(demo_airports(airports.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     deployment = destination / "deployments/default.json"
     deployment.write_text(demo_deployment(deployment.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     # Not an application file: the Theme Factory build reads it, and no import needs it.

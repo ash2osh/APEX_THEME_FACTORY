@@ -11,7 +11,7 @@ Work in this repository. A theme lives in one folder and nothing outside it is t
 |---|---|---|
 | Create | `scripts/theme.sh new NAME --recipe FILE` | seconds |
 | Check (policy, shipped-token contrast, recipe drift, fonts, packaging, uniqueness, copied CSS) | `scripts/theme.sh check NAME` | ~0.2 s |
-| See it in app 102 | `scripts/sync-static.sh`, `scripts/apex-validate.sh`, `scripts/apex-import.sh` | ~6 min |
+| See it in app 102 | `scripts/sync-static.sh`, `scripts/apex-validate.sh`, `scripts/apex-import.sh` | ~2 min |
 | Release | `scripts/theme.sh release NAME` | ~5 min |
 
 Iterate with `check`; import app 102 only when you need to see the page, and batch several edits per import.
@@ -90,7 +90,8 @@ scripts/theme.sh check midnight
 scripts/sync-static.sh && scripts/apex-validate.sh && scripts/apex-import.sh
 ```
 
-Theme Lab on page 406 shows typography, surfaces, buttons, forms/validation, cards, IR, IG, reports, calendar,
+A new theme fails `check` with `COVER_MISSING` until it has a cover (step 7). That is the only error you should
+expect here, and it doesn't stop `sync-static.sh`. Theme Lab on page 406 shows typography, surfaces, buttons, forms/validation, cards, IR, IG, reports, calendar,
 JET chart, menus, date picker, Popup LOV, modal, and drawer specimens. Page 405 is the theme gallery.
 
 To make it the app's default: `scripts/apply-theme.sh midnight` (then sync + import again).
@@ -101,9 +102,14 @@ To make it the app's default: `scripts/apply-theme.sh midnight` (then sync + imp
 ### 6. Audit contrast before you call it done
 
 Not optional, and not eyeballable — a dark theme in particular will pass a screenshot review and still fail
-WCAG AA in states you did not look at. Run the audit snippet in
-[docs/CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) across the standard page list, then **drive the
-states a resting sweep cannot see**: select a report row, open a date picker, hover a toolbar, open a dialog,
+WCAG AA in states you did not look at. Run every page in your theme, with stock Iris as the control:
+
+```bash
+python3 tools/page_audit.py --label 26.2 --base http://localhost:8181/ords/r/demo/ut --inject-css \
+  --themes bare,midnight --widths 1440,375 --chart-reload --out scratch/audit.jsonl
+```
+
+Then **drive the states a resting sweep cannot see**: select a report row, open a date picker, hover a toolbar, open a dialog,
 empty a search box. Every real defect found in this project's own dark theme lived in a state, not at rest.
 
 ### 7. Package and release it
@@ -112,7 +118,9 @@ See [Releasing a theme](#releasing-a-theme). `scripts/theme.sh release midnight 
 `dist/midnight/midnight-<version>.zip`; builds are deterministic and the ZIP carries its own installer,
 uninstaller and manual instructions.
 
-Capture a gallery cover after `check` passes:
+Every package needs a 960 px cover, so capture one once the theme shows in app 102. The `cover` command needs the
+Chrome daemon (`THEME_FACTORY_BROWSER=chrome`; see [docs/CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md)). It ignores
+a missing cover but refuses any other `check` error. You can also save your own 960 px JPEG at `preview/cover.jpg`.
 
 ```bash
 scripts/theme.sh cover midnight --output sample-themes/midnight/preview/cover.jpg          # dry run
@@ -235,5 +243,6 @@ tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every 
 ```
 
 CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.
-Open live work (runtime unification, responsive audit) is planned step by step in
-[docs/ONLINE_WORK_PLAN.md](ONLINE_WORK_PLAN.md).
+
+Pushing a `v*` tag builds every theme and creates a **draft** GitHub release with the ZIPs and `SHA256SUMS.txt`
+(`.github/workflows/release.yml`). Run the live checks first, then review the draft and publish it.

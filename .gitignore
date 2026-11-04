@@ -39,3 +39,9 @@ Thumbs.db
 
 # Oracle-copyrighted Universal Theme / APEX assets: fetched locally by scripts/fetch-vendor.sh, never committed
 /.agents/knowledge/reference/ut-*/
+
+# Third-party skills: not redistributed here; install them with `npx skills` from skills-lock.json
+/.agents/skills/impeccable/
+/.agents/skills/web-design-guidelines/
+/.claude/skills/impeccable
+/.claude/skills/web-design-guidelines

@@ -7,33 +7,76 @@ This guide takes you from nothing to a working theme in your APEX app. It takes 
 | Item | How to check it |
 |---|---|
 | Oracle APEX 26.1.x or 26.2.x | Run `select version_no from apex_release;` in SQL. |
-| Universal Theme 42 with the Iris style | This is the default. You do not need to change it. |
+| Universal Theme 42 with the Iris style | New apps on 26.1 or later already use it. An older app needs the steps in [Is my app ready?](#is-my-app-ready) |
 | SQLcl 26.x with a saved connection | Run `sql -name <CONNECTION>`. You should reach the SQL prompt. |
 | Python 3.10 or newer | Run `python3 --version`. |
+| A bash shell | Linux and macOS have one. On Windows, use WSL or Git Bash. |
 | Your workspace name and app ID | Both are shown in App Builder. |
+
+No SQLcl, or no shell? [Installing by hand](#installing-by-hand) needs only App Builder.
+
+## Is my app ready?
+
+The installer stops with exit code 3 unless the app is on Universal Theme 42 with the Iris style. Apps created on
+APEX 26.1 or later are ready. An app that came from an older APEX version usually isn't, because Iris only appears
+after a theme refresh. To prepare it, work on a copy of the app first:
+
+1. In App Builder, open the app. If a banner says a new version of Universal Theme is available, click
+   **Refresh Theme**. If there is no banner, go to **Shared Components > Themes**, open **Universal Theme**, click
+   **Verify**, and then click **Refresh Theme**.
+2. Go to **Shared Components > User Interface Attributes**, set **Theme Style** to **Iris**, and click
+   **Apply Changes**. A refresh can change the current style, so check this even if you had already picked Iris.
+3. Run the app and check it. A custom style from Theme Roller doesn't carry over, because these themes replace it.
+
+Then run the preview in Step 2 to confirm the app is ready.
+
+## Before you install on a shared or production app
+
+The installer changes only its own items, but APEX imports the whole app in one step. That has these effects:
+
+| Item | What happens to it | Is it in the backup? |
+|---|---|---|
+| Active user sessions | **They end.** People have to sign in again, and unsaved work is lost. Install in a quiet period. | No |
+| Filters a person has applied without saving a report | **They are lost** along with the session. | No |
+| Private saved reports | Kept. | No, they stay in the database |
+| Access-control role assignments | Kept. | No, they stay in the database |
+| Translated text | **It would be erased**, so the installer stops. See below. | No |
+
+We tested these results with a real install. Try the install on a copy of your app first, and keep your usual app
+and database backups as well.
+
+**If your app is translated,** the installer stops with exit code 3, because an import empties the translated text.
+Use [Installing by hand](#installing-by-hand) instead, because it imports nothing and your translations stay. If you
+can seed, translate and publish again, you can accept the loss with `--discard-translations`. The same check and
+option apply to `uninstall.sh` and `restore`.
 
 ## Step 1: Get a theme package
 
 Use one of these two ways.
 
-**A. Build it from this repository** (for developers):
+**A. Download a ZIP** from the [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases), then check
+it against `SHA256SUMS.txt` from the same release:
 
 ```bash
+sha256sum linen-<version>.zip
+unzip linen-<version>.zip -d ~/theme
+cd ~/theme/linen-<version>
+```
+
+> A checksum proves that the file is complete. It does not prove who made the file. Install only packages from a
+> source you trust.
+
+**B. Build it from this repository:**
+
+```bash
+git clone https://github.com/ash2osh/APEX_THEME_FACTORY.git
+cd APEX_THEME_FACTORY
 scripts/theme.sh release linen --offline
 unzip dist/linen/linen-<version>.zip -d ~/theme
 cd ~/theme/linen-<version>
 ```
 
-Replace `<version>` with the version in the file name, for example `1.1.0`. Each package is one ZIP file that holds exactly one theme. The extracted folder has its own `install.sh`.
-
-**B. Get a ZIP from a publisher.** Check its SHA-256 checksum against the value the publisher lists:
-
-```bash
-sha256sum linen-1.0.0.zip
-```
-
-> A checksum proves that the file is complete. It does not prove who made the file. Install only packages from a
-> source you trust.
+Replace `<version>` with the version in the file name, for example `1.2.0`. Each package is one ZIP file that holds exactly one theme. The extracted folder has its own `install.sh`.
 
 ## Step 2: Preview the install
 
@@ -58,8 +101,7 @@ Read the output before you go on. Check these points:
 
 The installer asks you to type the app ID. If you type anything else, it stops and changes nothing.
 
-Before it installs, the installer saves a full backup in `theme-factory-backups/`. Keep this folder. You need
-it to restore the app.
+Before it installs, the installer saves a backup of the app's source in `theme-factory-backups/`. Keep this folder private, because it holds your app's source. You need it to restore the app.
 
 To add a **Theme** menu to the navigation bar, add `--with-switcher` to the command. The menu lets each person
 pick a theme. The choice is saved in their browser only.
@@ -103,7 +145,8 @@ The installer ends with an exit code. Use this table to find the cause.
 | Code | What it means | What to do |
 |---|---|---|
 | 0 | The install finished, or the preview finished. | Nothing. |
-| 3 | The installer refused before it changed anything. The APEX version, the theme style or the app is not supported. | Check the version in the table under [What you need](#what-you-need). |
+| 2 | The package or a command option is wrong, or SQLcl was not found. Nothing changed. | Read the message. Check that the ZIP is complete and `sql` is on your PATH. |
+| 3 | The installer refused before it changed anything. The APEX version or theme style isn't supported, or the app has translated text. | See [Is my app ready?](#is-my-app-ready) and [Before you install](#before-you-install-on-a-shared-or-production-app). |
 | 4 | Someone changed the app while the installer ran. | Run the preview again. |
 | 5 | Export, compile or import failed. | Read the message. If the app is broken, restore the backup. |
 | 6 | The install finished, but the check afterwards found a difference. | Read the message. Restore the backup if the app does not work. |
@@ -122,12 +165,17 @@ It is deliberately narrow, and everything it owns is marked so it can be removed
 - **Adds** one hidden page-0 region carrying the bootstrap script, with the Static ID
   `theme_factory_bootstrap` and an HTML marker comment. A second one covers dialog templates.
 - **Adds** `#APP_FILES#theme-factory/packages/<name>/<version>/theme.css` to the application's CSS file URLs.
+- **Sets** the Side Navigation Menu's style option when the theme asks for one (most use Style B). The first install
+  records the old value, and removing the last theme puts it back. An app with no Page 0 gets one, and it stays.
 - **With `--with-switcher` only:** adds list entries under the `theme-factory-` static-ID namespace.
 - **Never** touches your pages, regions, processes, items, or any file it did not create. It records a
   SHA-256 for each file it owns in `registry.json` and refuses to remove anything whose digest has changed.
 
 Re-running the installer is safe: it detects its own previous install and upgrades in place rather than
 duplicating.
+
+Each SQLcl call stops after 30 minutes. For a very large app, set `THEME_FACTORY_SQLCL_TIMEOUT` to a higher number of
+seconds. If a call is stopped during the import, check the app and restore the backup if it needs it.
 
 ### Install all themes at once (with switcher)
 
@@ -165,11 +213,12 @@ Same confirmation and the same backup. It removes only what `registry.json` says
 proceed if any owned file has been edited since install — so a hand-tweaked file is never silently deleted.
 
 If two Theme Factory packages are installed, removing one leaves the other working and re-points the default
-at it. Removing the last one leaves the app on bare Iris, with the bootstrap regions and file URLs gone.
+at it. Removing the last one leaves the app on bare Iris, with the bootstrap regions and file URLs gone and the
+navigation style put back. Removing a theme ends active sessions too, for the same reason an install does.
 
 ### Undo an install (restore)
 
-The backup taken before an install is a full copy of the application as it was:
+The backup taken before an install holds the application's source as it was:
 
 ```bash
 # from the extracted package directory (its bundled lib/ is on PYTHONPATH)
@@ -178,7 +227,7 @@ PYTHONPATH=. python3 -m lib.theme_factory.cli restore \
   --backup ./theme-factory-backups/<WS>-<ID>/<TIMESTAMP> --apply
 ```
 
-This replaces the whole application with the backup, so anything you changed in the app *after* the install
+This replaces the whole application with the backup. Anything you changed in the app *after* the install
 would be lost. The tool checks for that and refuses unless you pass `--discard-later-changes`, which is there
 to make the loss a decision rather than a surprise. A backup whose contents have been modified is rejected
 outright.

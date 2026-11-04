@@ -6,15 +6,17 @@ documentation. It does **not** cover the third-party material below, which keeps
 
 | Path | Owner | Terms |
 |---|---|---|
-| `applications/ut/` (except the Theme Factory pages, regions and static files listed below) | Oracle and/or its affiliates | Export of Oracle's *Universal Theme reference* sample application (exported from APEX 26.1; the same application runs on APEX 26.2), including its demo scripts, data and images. Included only so the reference app can be re-imported for theme development; governed by your Oracle APEX licence, not by this repository's licence. |
-| `applications/ut/shared-components/static-files/css/`, `…/js/` | this repository | Assembled copies of `static-files/` and `sample-themes/*/css` (MIT). |
-| `sample-themes/*/fonts/`, `applications/ut/**/fonts/` | the font authors | SIL Open Font License 1.1 — see each theme's `licenses/`. |
-| `static-files/js/vendor/alpine*` | Alpine.js contributors | MIT — `static-files/js/vendor/alpine.LICENSE.md`. |
-| `.agents/skills/impeccable/`, `.agents/skills/web-design-guidelines/` | their upstream authors (`skills-lock.json`) | Their upstream licences. |
+| `applications/ut/` (except the Theme Factory pages, regions and static files listed below) | Oracle and/or its affiliates | Derived from Oracle's *Universal Theme Reference* sample application, which Oracle publishes under the Universal Permissive License 1.0 at [oracle/apex](https://github.com/oracle/apex/tree/26.1/sample-apps/universal-theme-reference). See [licenses/UPL-1.0-oracle-apex.txt](licenses/UPL-1.0-oracle-apex.txt). |
+| `applications/ut/shared-components/static-files/css/`, `…/js/`, pages 405, 406 and 409 | this repository | Theme Factory additions and assembled copies of `static-files/` and `sample-themes/*/css` (MIT). |
+| `sample-themes/*/fonts/`, `applications/ut/**/fonts/` | the font authors | SIL Open Font License 1.1: see each theme's `licenses/`. The IBM Plex files are Modified Versions, renamed as the licence requires. |
+| `static-files/js/vendor/alpine*` | Alpine.js contributors | MIT: `static-files/js/vendor/alpine.LICENSE.md`. |
 
-Oracle Universal Theme / APEX CSS and JavaScript (`Core.min.css`, `Iris.min.css`, `theme42.min.js`, …) are **not**
+Oracle's Universal Theme and APEX runtime files (`Core.min.css`, `Iris.min.css`, `theme42.min.js`, …) are **not**
 redistributed here. `scripts/fetch-vendor.sh --reference` copies them from your own APEX instance into the
 gitignored `.agents/knowledge/reference/` for local lookup.
+
+The agent skills `impeccable` and `web-design-guidelines` are not part of this repository. `skills-lock.json`
+records where they come from if you want to install them yourself.
 
 Oracle, APEX and Universal Theme are trademarks of Oracle and/or its affiliates. This project is not affiliated with
 or endorsed by Oracle.

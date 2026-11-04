@@ -37,6 +37,8 @@ Load only the skills the step needs.
 These are generic web-design skills. They never outrank the spec, and they never touch structure:
 run them **through** this router, on the CSS/Alpine layers, in refinement mode only.
 
+Both are optional and are not in this repository. Skip them if they aren't installed.
+
 **`impeccable`** — evaluate/refine passes. Use it as a design lead reviewing our work, not as a page builder.
 - Mode is always **Operate** (app UI). The brief is `AGENTS.md` + `docs/DESIGN_SYSTEM.md`: Iris palette,
   the system UI stack Iris actually renders (not Oracle Sans - it is linked but never loads, docs/PROJECT.md),

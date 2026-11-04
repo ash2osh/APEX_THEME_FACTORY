@@ -3,6 +3,10 @@
 Design-engineering workbench for Oracle APEX on **Universal Theme / Iris**.
 Governing spec: [AGENT_SPEC.md](AGENT_SPEC.md). Read it before any design work.
 
+This page describes the maintainer's reference environment (local Docker, saved connection `docker-demo`, app 102).
+Yours can differ: `scripts/_env.sh` reads `APEX_CONN`, and most scripts take `--connection`. To use the themes in your
+own app, read [GET_STARTED.md](GET_STARTED.md) instead.
+
 ## Hard constraints
 
 | Constraint | Value | Verified |
@@ -54,10 +58,10 @@ APEX_THEME_FACTORY/
 | Chrome DevTools daemon (`THEME_FACTORY_BROWSER=chrome`; `--autoConnect` to the user's running Chrome) | the same checks in Chrome; theme cover images | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
-| `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [README.md](../README.md#releasing-a-theme) |
+| `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [BUILDING_A_THEME.md](BUILDING_A_THEME.md#releasing-a-theme) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and (`--reference` alone) the UT/Iris CSS+JS into the gitignored `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |
 | APEX Builder / Page Designer | semantic map of runtime elements | http://localhost:8181/ords/r/apex/app-builder |
-| External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | `skills-lock.json`; update with `npx skills update -p` |
+| External skills `impeccable` (critique/audit/polish, Operate mode) and `web-design-guidelines` (checklist review) | design-quality passes on the CSS/Alpine layers; usage rules in the `design-to-apex` router | Not in this repository. `skills-lock.json` records their source; install them with `npx skills` |
 | Codex PR review bot (`chatgpt-codex-connector`) | comments P-level findings on every pull request (verify each at runtime before acting); `@codex review` re-runs it | GitHub repo settings |
 | Contrast audit (`evaluate_script` snippet) | AA text-contrast sweep of a page (the release smoke runs it automatically) | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | Pitfalls record | every trap met in this project, by layer, with the fix | [`.agents/knowledge/pitfalls.md`](../.agents/knowledge/pitfalls.md) |

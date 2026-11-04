@@ -10,6 +10,8 @@ from typing import List, Optional, Tuple
 
 from lib.theme_factory.apexlang import (
     RUNTIME_JS_URL,
+    apply_navigation_menu_style,
+    remove_navigation_menu_style,
     set_file_urls,
     build_bootstrap_regions,
     build_switcher_entries,
@@ -35,6 +37,7 @@ from lib.theme_factory.install import (
     create_backup,
     export_after_import,
     keep_or_remove_staging,
+    require_translations_safe,
     utc_stamp,
     make_staging_dir,
     remove_staging_dir,
@@ -52,6 +55,7 @@ class UninstallOptions:
     app_id: int
     backup_dir: Optional[Path] = None
     apply: bool = False
+    discard_translations: bool = False
 
 
 @dataclass(frozen=True)
@@ -62,6 +66,7 @@ class RestoreOptions:
     backup_dir: Path
     apply: bool = False
     discard_later_changes: bool = False
+    discard_translations: bool = False
 
 
 def choose_fallback(current_default: Optional[str], remaining: Tuple[str, ...] | List[str]) -> str:
@@ -119,6 +124,16 @@ def _remove_runtime_from_app(app_apx: Path) -> None:
     target = inspect_export(app_apx.parent)
     remaining = [url for url in target.javascript_urls if url != RUNTIME_JS_URL]
     app_apx.write_text(set_file_urls(content, "javaScript", remaining), encoding="utf-8", newline="\n")
+
+
+def _restore_navigation_menu_style(app_apx: Path, registry: dict) -> None:
+    """Put back the navigation menu style the first install recorded (none recorded: leave it)."""
+    if "originalNavigationMenuStyle" not in registry:
+        return
+    style = registry["originalNavigationMenuStyle"]
+    content = app_apx.read_text(encoding="utf-8")
+    restored = apply_navigation_menu_style(content, style) if style else remove_navigation_menu_style(content)
+    app_apx.write_text(restored, encoding="utf-8", newline="\n")
 
 
 def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> None:
@@ -182,6 +197,7 @@ def plan_and_apply_uninstall(staged_dir: Path, theme_name: str) -> None:
             shutil.rmtree(namespace_root)
         _remove_theme_from_static_files(static_files_apx, "theme-factory/runtime/")
         _remove_runtime_from_app(app_apx)
+        _restore_navigation_menu_style(app_apx, reg)
         _rewrite_page_zero(target, None)
         _rewrite_navigation(target, None)
         return
@@ -221,6 +237,7 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
+    require_translations_safe(target_meta, options.discard_translations)
 
     staging_temp = make_staging_dir("apex-theme-factory-uninst-")
     staging.append(staging_temp)
@@ -396,6 +413,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
+    require_translations_safe(target_meta, options.discard_translations)
 
     live_temp = make_staging_dir(prefix="apex-theme-factory-restore-live-")
     try:
@@ -503,6 +521,7 @@ def run_uninstall_cli(args) -> None:
         app_id=args.app_id,
         backup_dir=getattr(args, "backup_dir", None),
         apply=getattr(args, "apply", False),
+        discard_translations=getattr(args, "discard_translations", False),
     )
     report = run_uninstall(options)
     if report.exit_code != 0:
@@ -517,6 +536,7 @@ def run_restore_cli(args) -> None:
         backup_dir=args.backup,
         apply=getattr(args, "apply", False),
         discard_later_changes=getattr(args, "discard_later_changes", False),
+        discard_translations=getattr(args, "discard_translations", False),
     )
     report = run_restore(options)
     if report.exit_code != 0:

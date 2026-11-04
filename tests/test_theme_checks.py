@@ -19,6 +19,7 @@ class ThemeChecksTests(unittest.TestCase):
         shutil.copytree(self.source_repo / "sample-themes/linen", self.repo / "sample-themes/linen")
         shutil.copytree(self.source_repo / "static-files/css/foundation", self.repo / "static-files/css/foundation")
         shutil.copytree(self.source_repo / "installer", self.repo / "installer")
+        shutil.copy2(self.source_repo / "LICENSE", self.repo / "LICENSE")
         shutil.copytree(self.source_repo / "lib", self.repo / "lib")
         shutil.copytree(self.source_repo / "theme-templates", self.repo / "theme-templates")
         shutil.copytree(self.source_repo / "tools", self.repo / "tools")
@@ -66,6 +67,7 @@ class ThemeChecksTests(unittest.TestCase):
         self.assertIn("CONTRAST_PRIMARY_PAGE", codes)
         self.assertIn("CSS_UNSCOPED_SELECTOR", codes)
         self.assertIn("COVER_MISSING", codes)
+        self.assertNotIn("ARCHIVE_INVALID", codes)
         self.assertGreaterEqual(len(report.issues), 3)
 
 

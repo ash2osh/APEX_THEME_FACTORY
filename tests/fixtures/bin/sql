@@ -103,6 +103,8 @@ def main() -> None:
             sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
 
         sys.stdout.write("Validation completed successfully.\n")
+        if m_imp:
+            sys.stdout.write("Import successful.\n")
 
     elif mode == "validation-warning":
         if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
@@ -146,6 +148,8 @@ def main() -> None:
         if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
             sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
         sys.stdout.write("Validation completed successfully.\n")
+        if m_imp:
+            sys.stdout.write("Import successful.\n")
 
     elif mode == "postcheck-diverge":
         if "apex export" in input_data and export_dir:
@@ -164,6 +168,8 @@ def main() -> None:
         if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:
             sys.stdout.write('THEME_FACTORY_TARGET={"appId":314,"alias":"FIXTURE_APP","name":"Fixture App","workspace":"DEMO","apexVersion":"26.1.0"}\n')
         sys.stdout.write("Validation completed successfully.\n")
+        if m_imp:
+            sys.stdout.write("Import successful.\n")
 
     elif mode == "unsupported-apex":
         if "THEME_FACTORY_TARGET=" in input_data or "apex_applications" in input_data:

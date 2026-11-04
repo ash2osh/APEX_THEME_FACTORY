@@ -12,7 +12,7 @@ Class: `__THEME_CLASS__`
 - Target Theme: Universal Theme (theme 42)
 - Target Base Theme: `ut-26.1` (APEX 26.1) or `ut-26.2` (APEX 26.2)
 - Theme Style: **Iris** (light) only
-- Standard font fallback: Oracle Sans (or declared package WOFF2 custom fonts)
+- Fonts: declared package WOFF2 fonts, otherwise the Universal Theme system font stack
 
 ---
 
@@ -63,6 +63,10 @@ Type application ID <APP_ID> to import:
 ```
 Only after exact numeric confirmation is the staged APEXLang imported.
 
+The import replaces the whole application, so run it in a quiet period: **every active session of the application ends**, and users sign in again. Private saved reports and access-control role assignments stay.
+
+An application with translated text is refused (exit 3), because an import empties that text. Follow `MANUAL-INSTALL.md`, which imports nothing, or accept the loss with `--discard-translations`.
+
 ---
 
 ## Optional switcher
@@ -107,10 +111,15 @@ Ownership is stored in data APEX keeps: the Page 0 regions carry Static IDs `the
 ## Exit codes and recovery artifacts
 - `0`: Success (or clean dry-run preview)
 - `2`: Package integrity failure or argument error
-- `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 or ut-26.2 / Iris)
+- `3`: Target application unsupported (not Universal Theme 42 / ut-26.1 or ut-26.2 / Iris, or it has translated text)
 - `4`: Database drift detected during staging or while the confirmation prompt was open; nothing imported
 - `5`: APEXLang validation or SQLcl import failure (no automatic rollback: if the import itself failed, check the app and restore from the backup)
 - `6`: Post-import verification check failed (the import happened; inspect the printed differences, then uninstall or restore)
 - `7`: Operation cancelled at the confirmation prompt, or a restore refused because the application changed after the backed-up operation (re-run with `--discard-later-changes` to accept losing those changes)
 
-Recovery artifacts and backups are preserved in `./theme-factory-backups/<WORKSPACE>-<APP_ID>/<TIMESTAMP>-before-__THEME_NAME__/`.
+Recovery artifacts and backups are preserved in `./theme-factory-backups/<WORKSPACE>-<APP_ID>/<TIMESTAMP>-before-__THEME_NAME__/`. A backup holds the application's source. It does not hold user-saved reports or role assignments, which stay in the database. Keep backups private.
+
+SQLcl calls stop after 30 minutes; set `THEME_FACTORY_SQLCL_TIMEOUT` (seconds) for a very large application.
+
+## License
+This package's tooling and CSS are MIT licensed: see `licenses/LICENSE-theme-factory.txt`. Bundled fonts keep their own licenses in `licenses/`.

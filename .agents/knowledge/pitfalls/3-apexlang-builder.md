@@ -60,3 +60,16 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   `icon { imageIconCssClasses }`, `userDefinedAttributes { 2: <li classes> }`. `cssClasses` is not an
   entry property (`node ~/.claude/skills/apex/apexlang/tools/query-valid-props.mjs --component-type-id 3525`).
 - `application.apx` may have no `javaScript {}` block at all (app 104); create it next to `css {}`.
+
+### 3.10 An import keeps saved reports and role assignments, ends sessions, and empties translated text
+- **Measured 2026-11-04, APEX 26.2, 124-page app, real installer:** private saved reports and ACL role assignments
+  survive, with the same IDs. Every session of the app ends, and with it unsaved report settings.
+- The language mapping survives but the translation repository doesn't: 5,555 rows to 0, and the mapping needs
+  publishing again. `-exptranslations` adds `generated-artifacts/translations.sql`, but importing that folder fails
+  with `PLS-00103` at the end of the generated block (SQLcl 26.3), so it can't preserve them. The installer refuses a
+  translated app unless given `--discard-translations`; a manual install imports nothing and keeps them.
+- **`apex import` exits 0 when it fails.** It prints `APEXlang Import Errors:` and changes nothing. Require
+  `Import successful.` in the output (`SqlclClient.import_apexlang`). An import that only *appears* to keep data may
+  simply not have run: check the import's own output before believing a before/after comparison.
+- `-expsavedreports`, `-exppubreports` and `-expaclassignments` add nothing to an APEXLang export, so a backup can't
+  hold those. They stay in the database because the IDs stay stable.

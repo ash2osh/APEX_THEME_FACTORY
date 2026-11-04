@@ -5,12 +5,26 @@ import tempfile
 import unittest
 
 from lib.theme_factory.apexlang import (
+    read_navigation_menu_style,
+    remove_navigation_menu_style,
     apply_patch,
     canonical_digest,
     inspect_export,
     plan_install,
 )
 from lib.theme_factory.errors import PackageError
+
+
+class NavigationStyleTests(unittest.TestCase):
+    APP = "app X (\n    navigationMenu {\n        templateOptions: [\n            #DEFAULT#\n            %s\n        ]\n    }\n)\n"
+
+    def test_read_and_remove_touch_only_the_navigation_menu_style(self):
+        app = self.APP % "t-TreeNav--styleA"
+        self.assertEqual(read_navigation_menu_style(app), "t-TreeNav--styleA")
+        removed = remove_navigation_menu_style(app)
+        self.assertIsNone(read_navigation_menu_style(removed))
+        self.assertIn("#DEFAULT#", removed)
+        self.assertIsNone(read_navigation_menu_style("app X (\n)\n"))
 
 
 class ApexLangCompatibilityTests(unittest.TestCase):

@@ -15,6 +15,12 @@ from lib.theme_factory.apexlang_parser import (
 )
 
 
+IRIS_HELP = (
+    "In App Builder, open Shared Components > Themes, refresh Universal Theme, then make Iris the current style. "
+    "See 'Is my app ready?' in docs/GET_STARTED.md."
+)
+
+
 def inspect_export(export_dir: Path) -> TargetExport:
     """Inspect and validate an APEXLang application export directory."""
     export_dir = export_dir.resolve()
@@ -130,13 +136,15 @@ def inspect_export(export_dir: Path) -> TargetExport:
     bt_match = re.search(r"baseTheme:\s*([^\s\(\)\{\}]+)", theme_text)
     base_theme = bt_match.group(1).strip('"\'') if bt_match else ""
     if base_theme not in SUPPORTED_BASE_THEMES:
-        raise PackageError(f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1' or 'ut-26.2')", exit_code=3)
+        raise PackageError(
+            f"Unsupported baseTheme: '{base_theme}' (expected 'ut-26.1' or 'ut-26.2'). {IRIS_HELP}", exit_code=3
+        )
 
     # Check currentThemeStyle
     ts_match = re.search(r"currentThemeStyle:\s*@/([^\s\(\)\{\}]+)", theme_text)
     theme_style = ts_match.group(1).strip('"\'').lower() if ts_match else ""
     if theme_style != "iris":
-        raise PackageError(f"Unsupported themeStyle: '{theme_style}' (expected 'iris')", exit_code=3)
+        raise PackageError(f"Unsupported themeStyle: '{theme_style}' (expected 'iris'). {IRIS_HELP}", exit_code=3)
 
     # Locate static-files.apx
     sf_files = list(export_dir.glob("**/static-files.apx"))

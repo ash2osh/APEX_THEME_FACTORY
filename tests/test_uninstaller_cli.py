@@ -209,6 +209,33 @@ class UninstallerCliTests(unittest.TestCase):
         self.assertEqual(application.read_text(encoding="utf-8"), owned_looking)
 
 
+    def test_guide_flow_from_inside_the_package_and_style_restored(self):
+        """Get started runs everything from the extracted folder, so the default backups land inside it."""
+        package = self.tmp / "extracted" / self.package_dir.name
+        shutil.copytree(self.package_dir, package)
+        env = {**os.environ, "FAKE_SQL_MODE": "success", "FAKE_SQL_FIXTURE": "real-shape"}
+        target = ["--connection", "demo", "--workspace", "DEMO", "--app-id", "314"]
+
+        def wrapper(script: str, *args: str, stdin: str = ""):
+            path = (package / script).as_posix() if sys.platform == "win32" else str(package / script)
+            return subprocess.run([find_bash(), path, *target, *args], cwd=package, input=stdin, text=True,
+                                  capture_output=True, env=env, check=False)
+
+        cancelled = wrapper("install.sh", "--apply", stdin="999\n")
+        self.assertEqual(cancelled.returncode, 7, cancelled.stderr + cancelled.stdout)
+        self.assertTrue((package / "theme-factory-backups").is_dir())
+
+        installed = wrapper("install.sh", "--apply", stdin="314\n")
+        self.assertEqual(installed.returncode, 0, installed.stderr + installed.stdout)
+        imported = Path(os.environ["FAKE_SQL_STATE_FILE"] + ".d")
+        self.assertIn("t-TreeNav--styleB", (imported / "application.apx").read_text(encoding="utf-8"))
+
+        removed = wrapper("uninstall.sh", "--apply", stdin="314\n")
+        self.assertEqual(removed.returncode, 0, removed.stderr + removed.stdout)
+        restored = (imported / "application.apx").read_text(encoding="utf-8")
+        self.assertIn("t-TreeNav--styleA", restored)
+        self.assertNotIn("t-TreeNav--styleB", restored)
+
     def test_packaged_uninstall_wrapper_infers_single_theme(self):
         installed = self.run_install(
             self.package_dir,

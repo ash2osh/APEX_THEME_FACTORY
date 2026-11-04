@@ -47,6 +47,8 @@ def parse_args(argv=None):
                         help="Backup root (default: theme-factory-backups/)")
     parser.add_argument("--apply", action="store_true", help="Import into the database (default is a dry run)")
     parser.add_argument("--yes", action="store_true", help="Skip the typed confirmation with --apply")
+    parser.add_argument("--discard-translations", action="store_true",
+                        help="Accept that the import empties the application's translated text")
     return parser.parse_args(argv)
 
 
@@ -77,6 +79,7 @@ def main(argv=None) -> int:
             backup_dir=args.backup_dir,
             apply=args.apply,
             assume_yes=args.yes,
+            discard_translations=args.discard_translations,
         ))
     except PackageError as exc:
         print(f"Error: {exc}", file=sys.stderr)

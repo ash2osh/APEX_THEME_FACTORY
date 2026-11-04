@@ -31,6 +31,9 @@ def register_package_commands(subparsers: argparse._SubParsersAction) -> None:
     verify.set_defaults(handler=_handle_verify_package)
 
 
+DISCARD_TRANSLATIONS_HELP = "Accept that the import empties the application's translated text."
+
+
 def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     install = subparsers.add_parser("install", help="Install theme into APEX application")
     install.add_argument("--package-root", type=Path, required=True, action="append",
@@ -45,6 +48,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     install.add_argument("--apply", action="store_true")
     install.add_argument("--yes", action="store_true",
                          help="Skip typed confirmation; the named app is fully replaced.")
+    install.add_argument("--discard-translations", action="store_true", help=DISCARD_TRANSLATIONS_HELP)
     install.set_defaults(handler=_handle_install)
 
     uninstall = subparsers.add_parser("uninstall", help="Uninstall theme from APEX application")
@@ -56,6 +60,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     uninstall.add_argument("--app-id", type=int, required=True)
     uninstall.add_argument("--backup-dir", type=Path, default=None)
     uninstall.add_argument("--apply", action="store_true")
+    uninstall.add_argument("--discard-translations", action="store_true", help=DISCARD_TRANSLATIONS_HELP)
     uninstall.set_defaults(handler=_handle_uninstall)
 
     restore = subparsers.add_parser("restore", help="Restore application from backup")
@@ -65,6 +70,7 @@ def register_install_commands(subparsers: argparse._SubParsersAction) -> None:
     restore.add_argument("--backup", type=Path, required=True)
     restore.add_argument("--apply", action="store_true")
     restore.add_argument("--discard-later-changes", action="store_true")
+    restore.add_argument("--discard-translations", action="store_true", help=DISCARD_TRANSLATIONS_HELP)
     restore.set_defaults(handler=_handle_restore)
 
 
@@ -277,10 +283,13 @@ def _handle_cover(args: argparse.Namespace) -> int:
 
     if args.overwrite and not args.apply:
         raise PackageError("cover --overwrite requires --apply")
+    # This command creates the cover, so a new theme's missing or unreadable one cannot block it.
     report = run_theme_checks(args.repo_root, args.name)
-    if report.status != "PASS":
+    blocking = [issue for issue in report.issues
+                if issue.severity == "error" and issue.code not in ("COVER_MISSING", "COVER_INVALID")]
+    if blocking:
         raise PackageError(
-            f"Theme '{args.name}' failed theme check; fix it before opening Chrome"
+            f"Theme '{args.name}' failed theme check ({blocking[0].code}); fix it before opening Chrome"
         )
     client = None
     if args.apply:

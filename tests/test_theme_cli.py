@@ -40,6 +40,24 @@ class ThemeCliTests(unittest.TestCase):
         self.assertEqual(passed[0], 0)
         self.assertEqual(failed[0], 2)
 
+    def test_cover_is_not_blocked_by_its_own_missing_file(self):
+        issues = (CheckIssue("error", "COVER_MISSING", "no cover", "preview/cover.jpg", 0),)
+        output = str(self.repo / "cover.jpg")
+        with patch("lib.theme_factory.cli.run_theme_checks", return_value=CheckReport("ERROR", "fixture", 4, issues)), \
+                patch("tools.theme_cover.capture_cover") as capture:
+            capture.return_value.to_human.return_value = "captured"
+            code, stdout, _ = self.invoke("cover", "fixture", "--repo-root", str(self.repo), "--output", output)
+        self.assertEqual(code, 0)
+        self.assertIn("captured", stdout)
+        capture.assert_called_once()
+
+        with patch("lib.theme_factory.cli.run_theme_checks", return_value=self.report("ERROR")), \
+                patch("tools.theme_cover.capture_cover") as capture:
+            code, _, stderr = self.invoke("cover", "fixture", "--repo-root", str(self.repo), "--output", output)
+        self.assertEqual(code, 2)
+        self.assertIn("BROKEN", stderr)
+        capture.assert_not_called()
+
     def test_names_that_could_leave_sample_themes_are_refused(self):
         with patch("lib.theme_factory.font_pipeline.install_font") as install:
             code, _, stderr = self.invoke(

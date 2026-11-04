@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.sqlcl import SqlclClient
+from lib.theme_factory.sqlcl import SqlclClient, SqlclResult
 
 
 class SqlclTests(unittest.TestCase):
@@ -29,6 +29,29 @@ class SqlclTests(unittest.TestCase):
             SqlclClient("")
         with self.assertRaises(PackageError):
             SqlclClient("a" * 129)
+
+    def test_timeout_comes_from_the_environment_and_rejects_nonsense(self):
+        with patch.dict(os.environ, {"THEME_FACTORY_SQLCL_TIMEOUT": "7200"}):
+            self.assertEqual(SqlclClient("demo").timeout_seconds, 7200)
+        with patch.dict(os.environ, {"THEME_FACTORY_SQLCL_TIMEOUT": "soon"}):
+            with self.assertRaisesRegex(PackageError, "THEME_FACTORY_SQLCL_TIMEOUT"):
+                SqlclClient("demo")
+        with patch.dict(os.environ):
+            os.environ.pop("THEME_FACTORY_SQLCL_TIMEOUT", None)
+            self.assertEqual(SqlclClient("demo").timeout_seconds, 1800)
+
+    def test_import_needs_sqlcl_to_confirm_success(self):
+        failed = SqlclResult(0, "Importing application ID: 314\nAPEXlang Import Errors:\nType: PLSQL_ERROR\n", "")
+        silent = SqlclResult(0, "", "")
+        passed = SqlclResult(0, "Importing application ID: 314\nImport successful.\n", "")
+        client = SqlclClient("demo")
+        with patch.object(client, "validate"):
+            for result in (failed, silent):
+                with patch.object(client, "_run_script", return_value=result):
+                    with self.assertRaisesRegex(PackageError, "did not confirm success"):
+                        client.import_apexlang(Path("tests/fixtures/apexlang/minimal"), "DEMO", 314)
+            with patch.object(client, "_run_script", return_value=passed):
+                client.import_apexlang(Path("tests/fixtures/apexlang/minimal"), "DEMO", 314)
 
     def test_workspace_validation(self):
         client = SqlclClient("demo")

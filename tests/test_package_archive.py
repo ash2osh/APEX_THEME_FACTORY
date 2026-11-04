@@ -14,12 +14,29 @@ from lib.theme_factory.archive import (
     verify_package,
 )
 from lib.theme_factory.errors import PackageError
+from lib.theme_factory.manifest import load_manifest
 
 
 class ArchiveTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.repo_root = Path(__file__).resolve().parent.parent
+
+    def test_package_carries_the_project_licence_and_tolerates_its_own_backups(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            zip_path = build_package(self.repo_root, "linen", Path(tmp) / "dist")
+            extract_dir = Path(tmp) / "extracted"
+            with zipfile.ZipFile(zip_path) as archive:
+                archive.extractall(extract_dir)
+            pkg_root = next(extract_dir.iterdir())
+            self.assertIn("MIT License", (pkg_root / "licenses/LICENSE-theme-factory.txt").read_text(encoding="utf-8"))
+            backup = pkg_root / "theme-factory-backups/DEMO-314/20260101T000000Z-before-linen/apexlang"
+            backup.mkdir(parents=True)
+            (backup / "application.apx").write_text("app X ()\n", encoding="utf-8")
+            self.assertEqual(verify_package(pkg_root).name, "linen")
+            (pkg_root / "stray.txt").write_text("not listed", encoding="utf-8")
+            with self.assertRaisesRegex(PackageError, "unlisted file 'stray.txt'"):
+                verify_package(pkg_root)
 
     def test_two_builds_are_byte_identical_and_single_theme(self):
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
@@ -89,7 +106,7 @@ class ArchiveTests(unittest.TestCase):
                 pkg_root = next(extract_dir.iterdir())
                 manifest = verify_package(pkg_root)
                 self.assertEqual(manifest.name, "linen")
-                self.assertEqual(manifest.version, "1.1.0")
+                self.assertEqual(manifest.version, load_manifest(self.repo_root / "sample-themes/linen/theme.json", self.repo_root / "sample-themes/linen").version)
 
                 # Test tamper detection
                 (pkg_root / "theme.css").write_text("/* tampered */", encoding="utf-8")
@@ -192,6 +209,7 @@ class ArchiveTests(unittest.TestCase):
                 repo / "static-files/css/foundation",
             )
             shutil.copytree(self.repo_root / "installer", repo / "installer")
+            shutil.copy2(self.repo_root / "LICENSE", repo / "LICENSE")
             shutil.copytree(self.repo_root / "lib", repo / "lib")
             shared = repo / "static-files/css/unowned.css"
             shared.write_text(".unowned { color: red; }\n", encoding="utf-8")

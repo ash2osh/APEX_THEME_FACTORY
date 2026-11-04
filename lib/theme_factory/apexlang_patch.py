@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import re
 import shutil
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import load_manifest
@@ -40,6 +40,15 @@ def plan_install(
     installed_pkgs, current_default, prior_switcher = read_install_state(export_dir)
     registry_document = read_registry_document(export_dir)
     verify_runtime_ownership(export_dir, registry_document)
+
+    # The first install records the app's own navigation menu style so the last uninstall can put it back.
+    # A registry from before this field has no record, and its uninstall leaves the style as it is.
+    has_original_style = registry_document is None or "originalNavigationMenuStyle" in registry_document
+    original_nav_style = (
+        read_navigation_menu_style(target.application_file.read_text(encoding="utf-8"))
+        if registry_document is None
+        else (registry_document or {}).get("originalNavigationMenuStyle")
+    )
 
     prior_package = next((package for package in installed_pkgs if package.name == manifest.name), None)
     if prior_package:
@@ -168,6 +177,8 @@ def plan_install(
             for p in all_pkgs
         ],
     }
+    if has_original_style:
+        registry_payload["originalNavigationMenuStyle"] = original_nav_style
     reg_rel = Path("shared-components/static-files/theme-factory/runtime/registry.json")
     after_files[reg_rel] = json.dumps(registry_payload, indent=2) + "\n"
 
@@ -333,6 +344,29 @@ def _format_file_urls(urls: List[str]) -> str:
     if len(urls) == 1:
         return urls[0]
     return "[\n" + "\n".join(f"            {url}" for url in urls) + "\n        ]"
+
+
+NAV_STYLE_RE = re.compile(r"\bt-TreeNav--[A-Za-z0-9_-]+")
+
+
+def read_navigation_menu_style(app_text: str) -> Optional[str]:
+    """The `t-TreeNav--*` option in navigationMenu.templateOptions, or None."""
+    menu = re.search(r"\bnavigationMenu\s*\{", app_text)
+    close = _find_matching_brace(app_text, menu.end() - 1) if menu else -1
+    if close == -1:
+        return None
+    found = NAV_STYLE_RE.search(app_text[menu.end():close])
+    return found.group(0) if found else None
+
+
+def remove_navigation_menu_style(app_text: str) -> str:
+    """Remove the `t-TreeNav--*` option from a navigationMenu.templateOptions list."""
+    menu = re.search(r"\bnavigationMenu\s*\{", app_text)
+    close = _find_matching_brace(app_text, menu.end() - 1) if menu else -1
+    if close == -1:
+        return app_text
+    body = re.sub(r"[ \t]*\bt-TreeNav--[A-Za-z0-9_-]+[ \t]*\n?", "", app_text[menu.end():close])
+    return app_text[: menu.end()] + body + app_text[close:]
 
 
 def apply_navigation_menu_style(app_text: str, style: str) -> str:

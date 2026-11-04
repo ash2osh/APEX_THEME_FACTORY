@@ -312,7 +312,7 @@ def run_theme_checks(repo_root: Path, theme_name: str) -> CheckReport:
         except (PackageError, ValueError, OSError) as exc:
             issues.append(CheckIssue("error", "COPY_CHECK_FAILED", str(exc), _relative(repo_root, theme_root)))
 
-    if manifest is not None:
+    if manifest is not None and not any(issue.code == "COVER_MISSING" for issue in issues):
         try:
             with tempfile.TemporaryDirectory(prefix="theme-author-check-") as temporary:
                 package = build_package_from_root(

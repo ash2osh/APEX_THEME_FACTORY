@@ -50,6 +50,7 @@ work; read a layer file when one of its headings touches the task.
 - **§3.7** `apex import` is a full replace
 - **§3.8** APEXLang comment lines never come back from `apex export`
 - **§3.9** Lists are exported into one `shared-components/lists.apx`
+- **§3.10** An import keeps saved reports and role assignments, ends sessions, and empties translated text
 
 ## 4. Tooling (Chrome DevTools MCP, SQLcl) — [pitfalls/4-tooling.md](pitfalls/4-tooling.md)
 - **§4.1** Shared browser state

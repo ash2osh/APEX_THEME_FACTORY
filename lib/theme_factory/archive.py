@@ -19,10 +19,13 @@ from lib.theme_factory.manifest import NAME_REGEX, ThemeManifest, load_manifest
 FIXED_DATETIME = (1980, 1, 1, 0, 0, 0)
 REQUIRED_PACKAGE_FILES = frozenset({
     "theme.json", "theme.css", "theme-factory-runtime.js", "install.sh", "uninstall.sh",
-    "README.md", "MANUAL-INSTALL.md", "preview/cover.jpg", "licenses/THIRD_PARTY.md",
+    "README.md", "MANUAL-INSTALL.md", "preview/cover.jpg", "licenses/LICENSE-theme-factory.txt",
+    "licenses/THIRD_PARTY.md",
     "lib/theme_factory/__init__.py",
 })
 SOURCE_ONLY_THEME_FILES = frozenset({"theme.recipe.json"})
+# Run from the extracted package, the default backup root lands inside it. It is never read as package content.
+BACKUP_ROOT_NAME = "theme-factory-backups"
 
 
 def get_source_commit(repo_root: Path) -> str:
@@ -72,6 +75,7 @@ def build_package_from_root(
         repo_root / "installer/templates/README.md.tmpl",
         repo_root / "installer/templates/MANUAL-INSTALL.md.tmpl",
         repo_root / "installer/templates/bootstrap.html.tmpl",
+        repo_root / "LICENSE",
     )
     missing_sources = [path for path in required_sources if not path.is_file()]
     if missing_sources:
@@ -129,7 +133,12 @@ def build_package_from_root(
         # 7. Declared fonts and licenses
         licenses_staging = staging / "licenses"
         licenses_staging.mkdir(parents=True, exist_ok=True)
+        (licenses_staging / "LICENSE-theme-factory.txt").write_text(
+            (repo_root / "LICENSE").read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
+        )
         third_party_lines = ["# Third-Party Font Licenses\n"]
+        if not manifest.fonts:
+            third_party_lines.append("This package bundles no third-party fonts.\n")
 
         for role_name, role in manifest.fonts.items():
             third_party_lines.append(f"## {role.family} ({role_name})\n")
@@ -259,6 +268,8 @@ def _verify_package_dir(package_root: Path) -> ThemeManifest:
 
     actual_paths: set[str] = set()
     for target in package_root.rglob("*"):
+        if target.relative_to(package_root).parts[0] == BACKUP_ROOT_NAME:
+            continue
         if target.is_symlink():
             raise PackageError(
                 f"Package contains symlink '{target.relative_to(package_root).as_posix()}'"

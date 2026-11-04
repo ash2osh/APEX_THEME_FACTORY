@@ -26,7 +26,7 @@ from lib.theme_factory.apexlang import (
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import SUPPORTED_BASE_THEMES, ThemeManifest
-from lib.theme_factory.sqlcl import SqlclClient
+from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
 
 @dataclass(frozen=True)
@@ -39,6 +39,7 @@ class InstallOptions:
     backup_dir: Optional[Path] = None
     apply: bool = False
     assume_yes: bool = False
+    discard_translations: bool = False
 
 
 @dataclass(frozen=True)
@@ -62,6 +63,20 @@ def require_supported_apex_version(version: str) -> None:
             f"Target APEX version '{version}' is unsupported; expected APEX 26.1.x or 26.2.x",
             exit_code=3,
         )
+
+
+def require_translations_safe(target_meta: TargetMetadata, discard: bool) -> None:
+    """Every operation here ends in `apex import`, which empties the translation repository (pitfalls §3.10)."""
+    if not target_meta.translation_rows:
+        return
+    if not discard:
+        raise PackageError(
+            f"Application {target_meta.app_id} has {target_meta.translation_rows} translated text rows, and an "
+            "APEXLang import empties them. Install by hand (MANUAL-INSTALL.md), which imports nothing, or pass "
+            "--discard-translations and seed, translate and publish the application again afterwards.",
+            exit_code=3,
+        )
+    print(f"WARNING: --discard-translations: the import empties {target_meta.translation_rows} translated text rows.")
 
 
 def matches_install(target: TargetExport, manifest: ThemeManifest, switcher_mode: str) -> bool:
@@ -128,6 +143,8 @@ def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, labe
         backup_dir = root / f"{now}-before-{label}-{count}"
         count += 1
     backup_dir.mkdir(parents=True)
+    # A backup is the application's full source, including its session-state protection salt.
+    root.chmod(0o700)
     shutil.copytree(staged_dir, backup_dir / "apexlang")
     # Unknown until the operation ends one way or another: any path that exits without recording the real
     # post-operation digest (drift refused, import failed, an exception) leaves a backup restore will not
@@ -211,6 +228,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
     # 3. SQLcl preflight check
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
+    require_translations_safe(target_meta, options.discard_translations)
 
     # 4. Fresh export into staging
     staging_temp = make_staging_dir("apex-theme-factory-stage-")
@@ -293,6 +311,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
     print(f"  Install:       {_describe(manifests)}")
     print(f"  Staged Digest: {staged_digest}")
     print(f"  Backup:        {backup_dir}")
+    print("  Note:          the import replaces the whole application and ends its active sessions.")
 
     if options.assume_yes:
         # Requested explicitly by the operator. Recorded in the output so an unattended full
@@ -404,6 +423,7 @@ def run_install_cli(args) -> None:
         switcher_mode=switcher_mode,
         backup_dir=getattr(args, "backup_dir", None),
         apply=getattr(args, "apply", False),
+        discard_translations=getattr(args, "discard_translations", False),
     )
 
     report = run_install(options)

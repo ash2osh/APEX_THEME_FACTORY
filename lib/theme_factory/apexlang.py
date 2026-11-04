@@ -13,7 +13,8 @@ from lib.theme_factory.apexlang_state import (
     theme_factory_projection, verify_package_ownership, verify_runtime_ownership,
 )
 from lib.theme_factory.apexlang_patch import (
-    apply_navigation_menu_style, apply_patch, plan_install, set_file_urls,
+    apply_navigation_menu_style, apply_patch, plan_install, read_navigation_menu_style,
+    remove_navigation_menu_style, set_file_urls,
 )
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "inspect_export", "read_registry_document", "read_install_state",
     "verify_package_ownership", "verify_runtime_ownership", "canonical_digest",
     "plan_install", "set_file_urls", "apply_navigation_menu_style",
+    "read_navigation_menu_style", "remove_navigation_menu_style",
     "theme_factory_projection", "apply_patch",
 ]

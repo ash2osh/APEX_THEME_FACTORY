@@ -399,6 +399,23 @@ class InstallerCliTests(unittest.TestCase):
         for h in manual_expected_headings:
             self.assertIn(h, rendered_manual)
 
+    def test_translated_application_is_refused_unless_the_loss_is_accepted(self):
+        from lib.theme_factory.errors import PackageError
+        from lib.theme_factory.install import InstallOptions, require_translations_safe, run_install
+        from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
+
+        translated = TargetMetadata(314, "X", "X", "DEMO", "26.2.0", translation_rows=5)
+        options = InstallOptions(package_roots=(self.package_dir,), connection="demo", workspace="DEMO", app_id=314,
+                                 backup_dir=self.tmp / "b")
+        with mock.patch.object(SqlclClient, "preflight", return_value=translated), \
+                mock.patch.object(SqlclClient, "export_apexlang") as export:
+            with self.assertRaises(PackageError) as refused:
+                run_install(options)
+        self.assertEqual(refused.exception.exit_code, 3)
+        self.assertIn("MANUAL-INSTALL.md", str(refused.exception))
+        export.assert_not_called()
+        self.assertIsNone(require_translations_safe(translated, discard=True))
+
     def test_default_theme_list_is_discovered_from_manifests(self):
         repo = self.tmp / "repo"
         shutil.copytree(self.repo_root / "sample-themes", repo / "sample-themes")
@@ -431,7 +448,8 @@ class InstallerCliTests(unittest.TestCase):
         names = args.themes.split(",")
         self.assertEqual(names, sorted(names))
         self.assertIn("ninth-theme", names)
-        self.assertEqual(len(names), 9)
+        shipped = [path for path in (self.repo_root / "sample-themes").iterdir() if (path / "theme.json").is_file()]
+        self.assertEqual(len(names), len(shipped) + 1)
 
     def test_dry_run_and_apply_remove_staging_directories(self):
         """Temporary staging exports must not accumulate in the system temp directory."""

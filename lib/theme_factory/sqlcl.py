@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -12,6 +13,8 @@ from lib.theme_factory.errors import PackageError
 
 CONNECTION_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 WORKSPACE_RE = re.compile(r"^[A-Z][A-Z0-9_$#]{0,127}$")
+DEFAULT_TIMEOUT_SECONDS = 1800
+TIMEOUT_ENV = "THEME_FACTORY_SQLCL_TIMEOUT"
 
 
 @dataclass(frozen=True)
@@ -21,6 +24,7 @@ class TargetMetadata:
     name: str
     workspace: str
     apex_version: str
+    translation_rows: int = 0
 
 
 @dataclass(frozen=True)
@@ -51,14 +55,24 @@ def validate_app_id(app_id: int) -> None:
         raise PackageError(f"Application ID must be a positive integer, got: {app_id}")
 
 
+def default_timeout_seconds() -> int:
+    """Each SQLcl call's limit: a kill during `apex import` can leave the application half replaced."""
+    raw = os.environ.get(TIMEOUT_ENV, "")
+    if not raw:
+        return DEFAULT_TIMEOUT_SECONDS
+    if not raw.isdigit() or int(raw) <= 0:
+        raise PackageError(f"{TIMEOUT_ENV} must be a positive number of seconds, got: {raw!r}")
+    return int(raw)
+
+
 class SqlclClient:
-    def __init__(self, connection: str, timeout_seconds: int = 300, env: Optional[dict] = None) -> None:
+    def __init__(self, connection: str, timeout_seconds: Optional[int] = None, env: Optional[dict] = None) -> None:
         if not isinstance(connection, str) or not CONNECTION_RE.match(connection):
             raise PackageError(
                 f"Invalid SQLcl connection name: '{connection}'. Must match ^[A-Za-z0-9_.-]{{1,128}}$"
             )
         self.connection = connection
-        self.timeout_seconds = timeout_seconds
+        self.timeout_seconds = default_timeout_seconds() if timeout_seconds is None else timeout_seconds
         self.env = env  # None = inherit; tests inject a PATH with the fake `sql`
 
     def __repr__(self) -> str:
@@ -81,7 +95,10 @@ class SqlclClient:
             )
             return SqlclResult(res.returncode, res.stdout, res.stderr)
         except subprocess.TimeoutExpired as exc:
-            raise PackageError(f"SQLcl execution timed out after {self.timeout_seconds} seconds") from exc
+            raise PackageError(
+                f"SQLcl execution timed out after {self.timeout_seconds} seconds; "
+                f"set {TIMEOUT_ENV} to allow longer"
+            ) from exc
         except FileNotFoundError as exc:
             raise PackageError("SQLcl executable 'sql' not found in PATH") from exc
 
@@ -97,7 +114,9 @@ class SqlclClient:
             "           'alias' value a.alias,",
             "           'name' value a.application_name,",
             "           'workspace' value a.workspace,",
-            "           'apexVersion' value r.version_no",
+            "           'apexVersion' value r.version_no,",
+            "           'translationRows' value (select count(*) from apex_application_trans_repos t",
+            "                                    where t.application_id = a.application_id)",
             "         returning varchar2)",
             "  from apex_applications a",
             " cross join apex_release r",
@@ -132,6 +151,7 @@ class SqlclClient:
                 name=str(data.get("name") or ""),
                 workspace=str(data["workspace"]),
                 apex_version=str(data["apexVersion"]),
+                translation_rows=int(data.get("translationRows") or 0),
             )
         except Exception as exc:
             raise PackageError(f"Failed to parse preflight target JSON: {raw_json}") from exc
@@ -218,3 +238,6 @@ class SqlclClient:
             clean = line.strip()
             if clean.startswith("ERROR") or (clean.startswith("WARNING") and "validation" in clean.lower()):
                 raise PackageError(f"APEXLang import reported an issue: {clean}")
+        # SQLcl exits 0 and prints "APEXlang Import Errors:" when a PL/SQL step of the import fails (pitfalls §3.10).
+        if "import errors" in combined.lower() or "import successful" not in combined.lower():
+            raise PackageError(f"APEXLang import did not confirm success:\n{combined.strip()}")

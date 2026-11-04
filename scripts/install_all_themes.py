@@ -48,7 +48,7 @@ def parse_args(argv=None):
     parser.add_argument("--apply", action="store_true", help="Import into the database (default is a dry run)")
     parser.add_argument("--yes", action="store_true", help="Skip the typed confirmation with --apply")
     parser.add_argument("--discard-translations", action="store_true",
-                        help="Accept that the import empties the application's translated text")
+                        help="Don't keep Application-Based translations: the import empties them")
     return parser.parse_args(argv)
 
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.1 (unreleased)
+
+### Translated apps
+
+- **Application-Based translations now survive an install, uninstall or restore on APEX 26.2.** Version 1.0.0 refused
+  these apps. The installer now carries the translations through the import, repairs a bug in the translation file that
+  SQLcl generates, seeds and publishes every language again, and compares every translated string with a copy it saved
+  first. That copy also puts back text that APEX's own export leaves out, such as Faceted Search and Smart Filter labels
+  and item help. Backups include the translations.
+- **Text Message-Based translations** are confirmed to survive on 26.1 and 26.2, with no special handling.
+- **Application-Based translations on APEX 26.1** can't be handled by the installer, because APEXLang doesn't support
+  them on that version. The installer now explains this and the options, instead of showing a raw ORA-20987 error.
+
 ## 1.0.0 (2026-11-04)
 
 ### Install and uninstall

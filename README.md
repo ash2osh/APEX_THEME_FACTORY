@@ -57,8 +57,8 @@ But APEX imports the whole app in one step, so:
 
 - **Every active session of the app ends.** Install in a quiet period.
 - **Private saved reports and role assignments stay.**
-- **An app with translated text is refused,** because the import would erase that text. Install those
-  [by hand](docs/GET_STARTED.md#installing-by-hand).
+- **Translations stay, with one exception.** On APEX 26.1, Oracle's APEXLang format doesn't support the older
+  Application-Based translations, so those apps need [a manual install](docs/GET_STARTED.md#if-your-app-is-translated).
 
 Try it on a copy of your app first. [Get started](docs/GET_STARTED.md#before-you-install-on-a-shared-or-production-app)
 has the details.
@@ -83,6 +83,7 @@ has the details.
 | Real installs | All eight themes on APEX 26.1 and 26.2. Upgrade, uninstall and restore on 26.2. All run on Linux |
 | Install scripts on Windows and macOS | Run in CI against a simulated SQLcl, not a real database |
 | Right-to-left | A 14-page sample in all eight themes, using the reference app's RTL switch, not a fully translated Arabic app |
+| Translated apps | Both APEX translation methods, with the app checked in a French browser. See [the results](docs/GET_STARTED.md#if-your-app-is-translated) |
 | Printing | Checked on a dark theme: dark themes print with their background so the text stays readable, which uses a lot of ink |
 
 ## Known issues

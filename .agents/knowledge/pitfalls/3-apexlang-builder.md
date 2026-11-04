@@ -61,15 +61,32 @@ Part of the [pitfalls index](../pitfalls.md); entry numbers are stable and cited
   entry property (`node ~/.claude/skills/apex/apexlang/tools/query-valid-props.mjs --component-type-id 3525`).
 - `application.apx` may have no `javaScript {}` block at all (app 104); create it next to `css {}`.
 
-### 3.10 An import keeps saved reports and role assignments, ends sessions, and empties translated text
-- **Measured 2026-11-04, APEX 26.2, 124-page app, real installer:** private saved reports and ACL role assignments
-  survive, with the same IDs. Every session of the app ends, and with it unsaved report settings.
-- The language mapping survives but the translation repository doesn't: 5,555 rows to 0, and the mapping needs
-  publishing again. `-exptranslations` adds `generated-artifacts/translations.sql`, but importing that folder fails
-  with `PLS-00103` at the end of the generated block (SQLcl 26.3), so it can't preserve them. The installer refuses a
-  translated app unless given `--discard-translations`; a manual install imports nothing and keeps them.
+### 3.10 Translations and `apex import`: two methods, two versions
+- **Text Message-Based** (`globalization { translationMethod: textMessages }`, new in 26.1): messages live in
+  `shared-components/messages.apx`, so they are in every export and survive every import. Nothing special to do.
+- **Application-Based on APEX 26.1:** `apex export -exptype APEXLANG` fails with ORA-20987 ("translated text in the
+  Translation Repository, which is not supported by the APEXlang format"), with or without `-exptranslations`. No
+  APEXLang round trip is possible, so `SqlclClient` turns this into exit 3 with the options. Nothing has changed by then.
+- **Application-Based on APEX 26.2:** a plain export succeeds and keeps the mapping, but an import empties the repository
+  (5,555 rows to 0). `-exptranslations` adds `generated-artifacts/translations.sql`, which SQLcl 26.3 splits every
+  10,000 lines or so, sometimes between `if ... then` and its body, so the import fails with `PLS-00103`.
+  `repair_translation_script` moves those `if` lines into the next block.
+- **`-exptranslations` silently leaves rows out.** With every row translated (3,138), 13 never reached the file: page
+  item prompts on Faceted Search and Smart Filters pages (`APEX_PAGE_ITEMS`), and `APEX_PAGE_ITEM_HELP`. A backup of that
+  file can't bring them back, so `save_translations` writes the translated rows to `translations.json` beside the backup
+  (its digest is in `target.json`). `restore_translations` then seeds, puts back what differs, publishes, and compares
+  every saved row by `from_id`, column, JSON path and language. Those keys are stable across an import.
+- After a good import the mapping needs seeding and publishing again (`requires_synchronization = Yes`), and about 20
+  untranslated attribute rows only return with the seed. Seeding keeps translated text. Untranslated rows follow the
+  source, so the bootstrap regions don't go stale in the translated app on an upgrade.
+- **Dynamic translations** live in `shared-components/dynamic-translations.apx`, and survive an import. Two languages
+  work: each has its own repository rows, and the installer loops over the mappings.
+- **Test scripts:** a `&x.` in a script fed to SQLcl stops at a substitution prompt forever if stdin stays open, with
+  no CPU use and no output. `set define off` and `</dev/null`. A `dbms_output` line of `set serveroutput on size
+  unlimited feedback off` still hit the 1 MB limit: call `dbms_output.enable(null)` in the block.
 - **`apex import` exits 0 when it fails.** It prints `APEXlang Import Errors:` and changes nothing. Require
   `Import successful.` in the output (`SqlclClient.import_apexlang`). An import that only *appears* to keep data may
-  simply not have run: check the import's own output before believing a before/after comparison.
-- `-expsavedreports`, `-exppubreports` and `-expaclassignments` add nothing to an APEXLang export, so a backup can't
-  hold those. They stay in the database because the IDs stay stable.
+  simply not have run: this misled a before/after comparison on 2026-11-04.
+- **Other effects of an import, measured on 26.2:** private saved reports and ACL role assignments survive with the
+  same IDs, and every session of the app ends. `-expsavedreports`, `-exppubreports` and `-expaclassignments` add nothing
+  to an APEXLang export, so a backup can't hold those.

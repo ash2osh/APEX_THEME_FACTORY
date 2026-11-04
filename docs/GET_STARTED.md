@@ -51,14 +51,42 @@ The installer changes only its own items, but APEX imports the whole app in one 
 | Filters a person applied without saving a report | **They are lost** along with the session. | No |
 | Private saved reports | Kept. | No, they stay in the database |
 | Access-control role assignments | Kept. | No, they stay in the database |
-| Translated text | **It would be erased**, so the installer stops. See below. | No |
+| Translations | Kept, with one exception. See below. | Yes |
 
 These results come from real installs on APEX 26.2. Try the install on a copy of your app first, and keep your usual
 app and database backups as well.
 
-**If your app is translated,** use [Installing by hand](#installing-by-hand), because it imports nothing and your
-translations stay. If you're able to seed, translate and publish again afterwards, you can accept the loss by adding
-`--discard-translations`. The uninstall and restore scripts have the same check and option.
+### If your app is translated
+
+APEX has two translation methods. To see which one your app uses, go to **Shared Components > Globalization** and
+look at **Translate Method**. An app with no such setting uses Application-Based.
+
+| Translation method | APEX 26.2 | APEX 26.1 |
+|---|---|---|
+| **Text Message-Based** (added in 26.1) | Kept. The messages are part of the app. | Kept. The messages are part of the app. |
+| **Application-Based** (the older one) | Kept. The installer carries the translations through the import, then seeds and publishes every language again. | **The installer stops** with exit code 3, and nothing changes. |
+
+Dynamic translations are part of the app's source, so they're kept wherever the installer can run.
+
+On 26.1, Oracle's APEXLang format doesn't support Application-Based translations, and the installer depends on that
+format. You have three options there:
+
+- [Install by hand](#installing-by-hand), which imports nothing.
+- Upgrade to APEX 26.2.
+- Move the app to Text Message-Based translation.
+
+If you don't need to keep Application-Based translations on 26.2, you can add `--discard-translations`, and the import
+empties them. The uninstall and restore scripts have the same option.
+
+We tested both methods on both versions through real installs, with the French version of the app checked in a browser.
+For Application-Based on 26.2, that included an app with every string translated (3,138), through install, upgrade,
+uninstall and restore. Each string came back exactly as it was, except the labels of the **Theme** menu when that menu
+was removed.
+
+On 26.2 the script saves a copy of your translated text beside the backup, and it uses that copy to compare every string
+after the import. The copy also puts back text that APEX's export leaves out, such as Faceted Search labels. The script
+also repairs a bug in the translation file that SQLcl 26.3 generates. If a later SQLcl changes that file in a way the
+script can't repair, the script stops with exit code 3 and changes nothing.
 
 ## Step 1: Get a theme package
 
@@ -202,10 +230,10 @@ The scripts end with an exit code. Use this table to find the cause.
 |---|---|---|
 | 0 | The script finished, or the preview finished. | Nothing. |
 | 2 | The package or a command option is wrong, or Python or SQLcl wasn't found. Nothing changed. | Read the message. Check that the ZIP is complete, and that Python and `sql` are installed and on your PATH. |
-| 3 | The script refused before it changed anything. The APEX version or theme style isn't supported, or the app has translated text. | See [Is my app ready?](#is-my-app-ready) and [Before you install](#before-you-install-on-a-shared-or-production-app). |
+| 3 | The script refused before it changed anything. The APEX version or theme style isn't supported, or the app's translations can't be carried through. | See [Is my app ready?](#is-my-app-ready) and [If your app is translated](#if-your-app-is-translated). |
 | 4 | Someone changed the app while the script ran. | Run the preview again. |
 | 5 | Export, compile or import failed. | Read the message. If the app is broken, restore the backup. |
-| 6 | The script finished, but the check afterwards found a difference. | Read the message. Restore the backup if the app doesn't work. |
+| 6 | The import ran, but the check afterwards found a difference, or the translations weren't published. | Read the message. Restore the backup if the app doesn't work. |
 | 7 | You cancelled at the prompt, or a restore would lose later changes. | Nothing changed. |
 
 ## Reference
@@ -216,7 +244,8 @@ You don't need these sections for a normal install.
 
 `MANUAL-INSTALL.md` inside every package lists each step in App Builder: which files to upload, the region to create,
 and the CSS file URL to add, plus the matching removal steps. It needs no SQLcl or Python. It imports nothing, so
-active sessions and translations aren't affected.
+active sessions and translations aren't affected. If the app uses Application-Based translation, seed and publish each
+language when you finish, so the translated versions pick up the theme.
 
 ### Install several themes at once
 

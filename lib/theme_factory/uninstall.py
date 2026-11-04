@@ -37,14 +37,17 @@ from lib.theme_factory.install import (
     create_backup,
     export_after_import,
     keep_or_remove_staging,
-    require_translations_safe,
+    load_translations,
+    plan_translations,
+    restore_translations,
+    save_translations,
     utc_stamp,
     make_staging_dir,
     remove_staging_dir,
     require_supported_apex_version,
 )
 from lib.theme_factory.manifest import NAME_REGEX, SUPPORTED_BASE_THEMES
-from lib.theme_factory.sqlcl import SqlclClient
+from lib.theme_factory.sqlcl import SqlclClient, TRANSLATION_SCRIPT
 
 
 @dataclass(frozen=True)
@@ -237,13 +240,15 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
-    require_translations_safe(target_meta, options.discard_translations)
+    plan_translations(sqlcl, target_meta, options.discard_translations)
 
     staging_temp = make_staging_dir("apex-theme-factory-uninst-")
     staging.append(staging_temp)
     try:
         staged_dir = sqlcl.export_apexlang(options.app_id, staging_temp)
     except Exception as exc:
+        if isinstance(exc, PackageError) and exc.exit_code == 3:
+            raise
         raise PackageError(f"Failed to export application: {exc}", exit_code=5) from exc
 
     target = inspect_export(staged_dir)
@@ -285,6 +290,7 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
                 "timestamp": utc_stamp(),
                 "preExportDigest": pre_digest,
             })
+        saved_translations = save_translations(sqlcl, options.app_id, backup_dir)
 
     # Mutate staged export
     plan_and_apply_uninstall(staged_dir, options.theme_name)
@@ -349,6 +355,7 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
         _record_post_digest(backup_dir, UNKNOWN_POST_DIGEST)
         raise PackageError(f"Import failed during uninstall: {exc}", exit_code=5) from exc
     state["imported"] = True
+    restore_translations(sqlcl, target_meta, options.workspace, saved_translations)
 
     # The post-operation digest is recorded before any comparison (see install.py).
     post_temp = make_staging_dir(prefix="apex-theme-factory-uninstall-post-")
@@ -413,7 +420,13 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     sqlcl = SqlclClient(options.connection)
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
-    require_translations_safe(target_meta, options.discard_translations)
+    plan_translations(sqlcl, target_meta, options.discard_translations)
+    if sqlcl.keep_translations and not (apexlang_path / TRANSLATION_SCRIPT).is_file():
+        raise PackageError(
+            f"Application {options.app_id} has translations, and this backup doesn't: it was made without them, so "
+            "restoring it would empty them. Pass --discard-translations to accept that.", exit_code=3,
+        )
+    saved_translations = load_translations(backup_path, metadata) if sqlcl.keep_translations else []
 
     live_temp = make_staging_dir(prefix="apex-theme-factory-restore-live-")
     try:
@@ -483,6 +496,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
         sqlcl.import_apexlang(apexlang_path, options.workspace, options.app_id)
     except PackageError as exc:
         raise PackageError(f"Import failed during restore: {exc}", exit_code=5) from exc
+    restore_translations(sqlcl, target_meta, options.workspace, saved_translations)
 
     post_temp = make_staging_dir(prefix="apex-theme-factory-restore-post-")
     try:

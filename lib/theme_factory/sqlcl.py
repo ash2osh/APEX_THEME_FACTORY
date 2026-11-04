@@ -15,6 +15,16 @@ CONNECTION_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 WORKSPACE_RE = re.compile(r"^[A-Z][A-Z0-9_$#]{0,127}$")
 DEFAULT_TIMEOUT_SECONDS = 1800
 TIMEOUT_ENV = "THEME_FACTORY_SQLCL_TIMEOUT"
+TRANSLATED_ON_26_1 = (
+    "APEX 26.1 can't export an application with Application-Based translations to APEXLang (ORA-20987), so this "
+    "script can't work on it. Nothing was changed. Install by hand (MANUAL-INSTALL.md), upgrade to APEX 26.2, or move "
+    "the application to Text Message-Based translation."
+)
+TRANSLATION_SCRIPT = Path("generated-artifacts/translations.sql")
+TRANSLATION_IF = "if wwv_imp_util.is_component_created("
+TRANSLATION_SPLIT_RE = re.compile(
+    r"^(" + re.escape(TRANSLATION_IF) + r"[^\n]*\) then)\nend;\n/\nbegin\n", re.MULTILINE
+)
 
 
 @dataclass(frozen=True)
@@ -32,6 +42,34 @@ class SqlclResult:
     returncode: int
     stdout: str
     stderr: str
+
+
+def repair_translation_script(text: str) -> str:
+    """Repair SQLcl's -exptranslations output so `apex import` can run it (SQLcl 26.3, pitfalls §3.10).
+
+    SQLcl splits the script into blocks every 10,000 lines or so, and can split between `if ... then` and its body,
+    which fails the whole import with PLS-00103. Move that `if` into the next block. A block that is still unbalanced
+    is refused here, because the import would fail on it.
+    """
+    repaired = TRANSLATION_SPLIT_RE.sub(r"end;\n/\nbegin\n\1\n", text)
+    for block in repaired.split("\n/\n"):
+        lines = block.splitlines()
+        if sum(line.startswith(TRANSLATION_IF) for line in lines) != lines.count("end if;"):
+            raise PackageError(
+                "SQLcl's translation export has a shape this installer can't repair. Install by hand "
+                "(MANUAL-INSTALL.md), or pass --discard-translations and translate the application again.",
+                exit_code=3,
+            )
+    return repaired
+
+
+def unistr_literals(text: str, size: int = 200) -> list[str]:
+    """`text` as unistr('...') literals of `size` characters at most. Only letters, digits and spaces stay as they
+    are, so no quote, `&` or console code page can change the text on its way to the database."""
+    data = text.encode("utf-16-be", "surrogatepass")
+    units = [data[i:i + 2].decode("utf-16-be", "surrogatepass") for i in range(0, len(data), 2)]
+    tokens = [unit if unit.isascii() and (unit.isalnum() or unit == " ") else f"\\{ord(unit):04X}" for unit in units]
+    return [f"unistr('{''.join(tokens[i:i + size // 5])}')" for i in range(0, len(tokens), size // 5)]
 
 
 def validate_workspace(workspace: str) -> None:
@@ -73,6 +111,8 @@ class SqlclClient:
             )
         self.connection = connection
         self.timeout_seconds = default_timeout_seconds() if timeout_seconds is None else timeout_seconds
+        # Application-Based translations: exports carry the repository so an import doesn't empty it.
+        self.keep_translations = False
         self.env = env  # None = inherit; tests inject a PATH with the fake `sql`
 
     def __repr__(self) -> str:
@@ -162,15 +202,19 @@ class SqlclClient:
         dest_dir = Path(sqlcl_path(dest_dir))
         dest_dir.mkdir(parents=True, exist_ok=True)
 
+        translations = " -exptranslations" if self.keep_translations else ""
         script = "\n".join([
             "whenever sqlerror exit failure",
-            f'apex export -applicationid {app_id} -exptype APEXLANG -split -dir "{dest_dir}" -skipexportdate -overwrite-files',
+            f'apex export -applicationid {app_id} -exptype APEXLANG -split -dir "{dest_dir}" -skipexportdate '
+            f"-overwrite-files{translations}",
             "exit",
         ]) + "\n"
 
         result = self._run_script(script)
         if result.returncode != 0:
             err = result.stderr.strip() or result.stdout.strip()
+            if "Translation Repository" in err:
+                raise PackageError(TRANSLATED_ON_26_1, exit_code=3)
             raise PackageError(f"SQLcl export failed (code {result.returncode}): {err}")
 
         # Discover directory containing application.apx
@@ -181,13 +225,137 @@ class SqlclClient:
         if not candidates:
             # Maybe dest_dir itself has application.apx
             if (dest_dir / "application.apx").exists():
-                return dest_dir
-            raise PackageError(f"No APEXLang export containing application.apx found in {dest_dir}")
+                candidates = [dest_dir]
+            else:
+                raise PackageError(f"No APEXLang export containing application.apx found in {dest_dir}")
         if len(candidates) > 1:
             names = ", ".join(c.name for c in candidates)
             raise PackageError(f"Multiple APEXLang application directories found in {dest_dir}: {names}")
 
+        if self.keep_translations:
+            script_path = candidates[0] / TRANSLATION_SCRIPT
+            if not script_path.is_file():
+                raise PackageError(
+                    "SQLcl did not export this application's translations. Install by hand (MANUAL-INSTALL.md), or "
+                    "pass --discard-translations and translate the application again.",
+                    exit_code=3,
+                )
+            script_path.write_text(repair_translation_script(script_path.read_text(encoding="utf-8")),
+                                   encoding="utf-8", newline="\n")
         return candidates[0]
+
+    def read_translations(self, app_id: int) -> list[dict]:
+        """Every row of the translation repository. Printed in ASCII and in marked chunks, so neither a console code
+        page nor SQLcl trimming a line can change the text."""
+        validate_app_id(app_id)
+        script = "\n".join([
+            "set serveroutput on",
+            "set feedback off",
+            "whenever sqlerror exit failure",
+            "declare",
+            "  l_rows pls_integer := 0;",
+            "begin",
+            "  dbms_output.enable(null);",
+            "  for r in (select json_serialize(json_object('id' value to_char(id), 'fromId' value to_char(from_id),",
+            "                     'column' value internal_column_id, 'path' value internal_column_json_path,",
+            "                     'lang' value language_code, 'from' value from_string, 'to' value to_string",
+            "                     returning clob) returning clob ascii) line",
+            f"              from apex_application_trans_repos where application_id = {app_id}) loop",
+            "    for i in 0 .. trunc((dbms_lob.getlength(r.line) - 1) / 4000) loop",
+            "      dbms_output.put_line('TF_CHUNK ' || dbms_lob.substr(r.line, 4000, i * 4000 + 1) || '|');",
+            "    end loop;",
+            "    dbms_output.put_line('TF_ROW_END');",
+            "    l_rows := l_rows + 1;",
+            "  end loop;",
+            "  dbms_output.put_line('THEME_FACTORY_TRANSLATIONS=' || l_rows);",
+            "end;",
+            "/",
+            "exit",
+        ]) + "\n"
+        result = self._run_script(script)
+        rows: list[dict] = []
+        chunks: list[str] = []
+        expected = None
+        for line in result.stdout.split("\n"):
+            line = line.rstrip("\r")
+            if line.startswith("TF_CHUNK ") and line.endswith("|"):
+                chunks.append(line[len("TF_CHUNK "):-1])
+            elif line == "TF_ROW_END":
+                rows.append(json.loads("".join(chunks)))
+                chunks = []
+            elif line.startswith("THEME_FACTORY_TRANSLATIONS="):
+                expected = int(line.partition("=")[2])
+        if result.returncode != 0 or expected != len(rows):
+            err = result.stderr.strip() or result.stdout.strip()[-1000:]
+            raise PackageError(f"Reading the translations failed: {err}")
+        return rows
+
+    def _for_each_language(self, workspace: str, app_id: int, call: str, sentinel: str) -> None:
+        validate_workspace(workspace)
+        validate_app_id(app_id)
+        script = "\n".join([
+            "set serveroutput on feedback off",
+            "whenever sqlerror exit failure",
+            "declare",
+            "  l_workspace_id number;",
+            "begin",
+            f"  select workspace_id into l_workspace_id from apex_workspaces where upper(workspace) = upper('{workspace}');",
+            "  apex_util.set_security_group_id(l_workspace_id);",
+            "  for language_map in (select translated_app_language language_code from apex_application_trans_map",
+            f"                       where primary_application_id = {app_id}) loop",
+            f"    {call}(p_application_id => {app_id}, p_language => language_map.language_code);",
+            "  end loop;",
+            "  commit;",
+            f"  dbms_output.put_line('{sentinel}');",
+            "end;",
+            "/",
+            "exit",
+        ]) + "\n"
+        result = self._run_script(script)
+        if result.returncode != 0 or sentinel not in result.stdout:
+            err = result.stderr.strip() or result.stdout.strip()
+            raise PackageError(f"{call} failed: {err}")
+
+    def seed_translations(self, workspace: str, app_id: int) -> None:
+        """Seeding keeps existing translated text. It only adds what is new."""
+        self._for_each_language(workspace, app_id, "apex_lang.seed_translations", "THEME_FACTORY_SEEDED")
+
+    def publish_translations(self, workspace: str, app_id: int) -> None:
+        """An import leaves translated applications unpublished."""
+        self._for_each_language(workspace, app_id, "apex_lang.publish_application", "THEME_FACTORY_PUBLISHED")
+
+    def write_translations(self, workspace: str, updates: list[tuple[str, str, str]]) -> None:
+        """Set the translated text of (row id, language, text) in one transaction."""
+        validate_workspace(workspace)
+        lines = [
+            "set serveroutput on",
+            "set feedback off",
+            "set define off",
+            "whenever sqlerror exit failure rollback",
+            "declare",
+            "  l_workspace_id number;",
+            "begin",
+            f"  select workspace_id into l_workspace_id from apex_workspaces where upper(workspace) = upper('{workspace}');",
+            "  apex_util.set_security_group_id(l_workspace_id);",
+            "end;",
+            "/",
+        ]
+        for row_id, language, text in updates:
+            if not re.fullmatch(r"\d+", row_id) or not re.fullmatch(r"[A-Za-z-]{1,30}", language):
+                raise PackageError(f"Unexpected translation row: {row_id} {language}")
+            literals = unistr_literals(text)
+            lines += ["declare", "  l_text varchar2(32767);", "begin"]
+            lines += [f"  l_text := l_text || {literal};" for literal in literals]
+            lines += [
+                f"  apex_lang.update_translated_string(p_id => {row_id}, p_language => '{language}', p_string => l_text);",
+                "end;",
+                "/",
+            ]
+        lines += ["commit;", "exec dbms_output.put_line('THEME_FACTORY_WRITTEN')", "exit"]
+        result = self._run_script("\n".join(lines) + "\n")
+        if result.returncode != 0 or "THEME_FACTORY_WRITTEN" not in result.stdout:
+            err = result.stderr.strip() or result.stdout.strip()[-1000:]
+            raise PackageError(f"Putting the translations back failed: {err}")
 
     def validate(self, apexlang_dir: Path, workspace: str) -> None:
         validate_workspace(workspace)

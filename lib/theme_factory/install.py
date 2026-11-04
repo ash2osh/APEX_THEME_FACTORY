@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -65,18 +66,81 @@ def require_supported_apex_version(version: str) -> None:
         )
 
 
-def require_translations_safe(target_meta: TargetMetadata, discard: bool) -> None:
-    """Every operation here ends in `apex import`, which empties the translation repository (pitfalls §3.10)."""
+def plan_translations(sqlcl: SqlclClient, target_meta: TargetMetadata, discard: bool) -> None:
+    """Every operation here ends in `apex import`, which empties the translation repository unless the export
+    carries it (pitfalls §3.10). Text Message-Based translations are ordinary components and need nothing here."""
     if not target_meta.translation_rows:
         return
-    if not discard:
+    if discard:
+        print(f"WARNING: --discard-translations: the import empties {target_meta.translation_rows} translation rows.")
+        return
+    sqlcl.keep_translations = True
+    print(f"Translations: keeping {target_meta.translation_rows} translation rows, and publishing them after the import.")
+
+
+def _translation_key(row: dict) -> tuple:
+    return row["fromId"], row["column"], row.get("path"), row["lang"]
+
+
+def save_translations(sqlcl: SqlclClient, app_id: int, backup_dir: Path) -> list[dict]:
+    """Keep our own copy of the translated text beside the backup: APEX's export leaves some of it out, such as
+    facet labels and item help (pitfalls §3.10), so neither an import nor a restore could bring that back."""
+    if not sqlcl.keep_translations:
+        return []
+    try:
+        rows = sqlcl.read_translations(app_id)
+    except PackageError as exc:
+        raise PackageError(f"{exc}. Nothing was changed.", exit_code=3) from exc
+    saved = [row for row in rows if row.get("to") is not None and row["to"] != row["from"]]
+    content = json.dumps(saved, indent=1, ensure_ascii=True) + "\n"
+    (backup_dir / TRANSLATIONS_FILE).write_text(content, encoding="ascii", newline="\n")
+    target_json = backup_dir / "target.json"
+    data = json.loads(target_json.read_text(encoding="utf-8"))
+    data["translationsDigest"] = hashlib.sha256(content.encode("ascii")).hexdigest()
+    target_json.write_text(json.dumps(data, indent=2), encoding="utf-8", newline="\n")
+    return saved
+
+
+def load_translations(backup_dir: Path, metadata: dict) -> list[dict]:
+    """The copy that `save_translations` made, refused if it isn't exactly what was saved."""
+    path = backup_dir / TRANSLATIONS_FILE
+    if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != metadata.get("translationsDigest"):
+        raise PackageError("Backup translations are missing or don't match target.json; restore refused")
+    return json.loads(path.read_text(encoding="ascii"))
+
+
+def restore_translations(sqlcl: SqlclClient, target_meta: TargetMetadata, workspace: str, saved: list[dict]) -> None:
+    """Seed the translated application after an import, put back whatever the import lost, publish it, and prove
+    that every saved row is intact."""
+    if not sqlcl.keep_translations:
+        return
+    app_id = target_meta.app_id
+    try:
+        sqlcl.seed_translations(workspace, app_id)
+        current = {_translation_key(row): row for row in sqlcl.read_translations(app_id)}
+        kept = [row for row in saved if _translation_key(row) in current]
+        lost = [row for row in kept if current[_translation_key(row)].get("to") != row["to"]]
+        if lost:
+            sqlcl.write_translations(
+                workspace, [(current[_translation_key(row)]["id"], row["lang"], row["to"]) for row in lost]
+            )
+        sqlcl.publish_translations(workspace, app_id)
+        after = {_translation_key(row): row for row in sqlcl.read_translations(app_id)}
+    except PackageError as exc:
         raise PackageError(
-            f"Application {target_meta.app_id} has {target_meta.translation_rows} translated text rows, and an "
-            "APEXLang import empties them. Install by hand (MANUAL-INSTALL.md), which imports nothing, or pass "
-            "--discard-translations and seed, translate and publish the application again afterwards.",
-            exit_code=3,
+            f"Imported, but the translations were not restored and published: {exc}. Restore the backup.",
+            exit_code=6,
+        ) from exc
+    missing = [row for row in kept if after.get(_translation_key(row), {}).get("to") != row["to"]]
+    if missing:
+        raise PackageError(
+            f"Imported, but {len(missing)} of {len(kept)} translated rows did not come back. Restore the backup.",
+            exit_code=6,
         )
-    print(f"WARNING: --discard-translations: the import empties {target_meta.translation_rows} translated text rows.")
+    print(f"Translations: translated rows kept: {len(kept)}, put back after the import: {len(lost)}. "
+          "Every language published.")
+    if len(kept) < len(saved):
+        print(f"Translations: translated rows whose component no longer exists: {len(saved) - len(kept)}.")
 
 
 def matches_install(target: TargetExport, manifest: ThemeManifest, switcher_mode: str) -> bool:
@@ -130,6 +194,9 @@ def assert_no_drift(sqlcl: SqlclClient, app_id: int, expected_digest: str, momen
 # Recorded when the import ran but the application could not be exported again: a later restore
 # can then never prove "no later changes" and asks for --discard-later-changes.
 UNKNOWN_POST_DIGEST = "unknown"
+
+
+TRANSLATIONS_FILE = "translations.json"
 
 
 def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, label: str,
@@ -228,7 +295,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
     # 3. SQLcl preflight check
     target_meta = sqlcl.preflight(options.workspace, options.app_id)
     require_supported_apex_version(target_meta.apex_version)
-    require_translations_safe(target_meta, options.discard_translations)
+    plan_translations(sqlcl, target_meta, options.discard_translations)
 
     # 4. Fresh export into staging
     staging_temp = make_staging_dir("apex-theme-factory-stage-")
@@ -236,6 +303,8 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
     try:
         staged_dir = sqlcl.export_apexlang(options.app_id, staging_temp)
     except Exception as exc:
+        if isinstance(exc, PackageError) and exc.exit_code == 3:
+            raise
         raise PackageError(f"Failed to export application: {exc}", exit_code=5) from exc
 
     target = inspect_export(staged_dir)
@@ -263,6 +332,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
             "timestamp": utc_stamp(),
             "preExportDigest": pre_digest,
         })
+        saved_translations = save_translations(sqlcl, options.app_id, backup_dir)
 
     # 6. Plan and apply one staged patch per package, in the order given
     diffs = []
@@ -348,6 +418,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
         _record_post_digest(backup_dir, UNKNOWN_POST_DIGEST)
         raise PackageError(f"APEX import failed: {exc}", exit_code=5) from exc
     state["imported"] = True
+    restore_translations(sqlcl, target_meta, options.workspace, saved_translations)
 
     # Post-check. The post-operation digest is recorded before any comparison, so restore's
     # "later changes" guard works even when the check below fails.

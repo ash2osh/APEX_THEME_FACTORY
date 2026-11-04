@@ -31,7 +31,7 @@ def register_package_commands(subparsers: argparse._SubParsersAction) -> None:
     verify.set_defaults(handler=_handle_verify_package)
 
 
-DISCARD_TRANSLATIONS_HELP = "Accept that the import empties the application's translated text."
+DISCARD_TRANSLATIONS_HELP = "Don't keep Application-Based translations: the import empties them."
 
 
 def register_install_commands(subparsers: argparse._SubParsersAction) -> None:

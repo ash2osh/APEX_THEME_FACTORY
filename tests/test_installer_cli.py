@@ -399,22 +399,53 @@ class InstallerCliTests(unittest.TestCase):
         for h in manual_expected_headings:
             self.assertIn(h, rendered_manual)
 
-    def test_translated_application_is_refused_unless_the_loss_is_accepted(self):
+    def test_translated_application_keeps_its_translations_and_publishes_them(self):
         from lib.theme_factory.errors import PackageError
-        from lib.theme_factory.install import InstallOptions, require_translations_safe, run_install
+        from lib.theme_factory.install import load_translations, plan_translations, restore_translations, save_translations
         from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
 
-        translated = TargetMetadata(314, "X", "X", "DEMO", "26.2.0", translation_rows=5)
-        options = InstallOptions(package_roots=(self.package_dir,), connection="demo", workspace="DEMO", app_id=314,
-                                 backup_dir=self.tmp / "b")
-        with mock.patch.object(SqlclClient, "preflight", return_value=translated), \
-                mock.patch.object(SqlclClient, "export_apexlang") as export:
+        def row(row_id, from_id, source, text):
+            return {"id": row_id, "fromId": from_id, "column": 14, "lang": "fr", "from": source, "to": text}
+
+        before = TargetMetadata(314, "X", "X", "DEMO", "26.2.0", translation_rows=9)
+        client = SqlclClient("demo")
+        plan_translations(client, TargetMetadata(314, "X", "X", "DEMO", "26.2.0"), discard=False)
+        self.assertFalse(client.keep_translations, "an app without a repository exports as before")
+        plan_translations(client, before, discard=True)
+        self.assertFalse(client.keep_translations, "--discard-translations opts out")
+        self.assertEqual(save_translations(client, 314, self.tmp), [])
+        restore_translations(client, before, "DEMO", [])  # nothing to do, and no SQLcl call
+
+        plan_translations(client, before, discard=False)
+        self.assertTrue(client.keep_translations)
+        (self.tmp / "target.json").write_text("{}", encoding="utf-8")
+        live = [row("1", "10", "Status", "État"), row("2", "20", "Name", "Name"), row("3", "30", "Gone", "Parti")]
+        with mock.patch.object(client, "read_translations", return_value=live):
+            saved = save_translations(client, 314, self.tmp)
+        self.assertEqual([item["id"] for item in saved], ["1", "3"], "untranslated rows need no copy")
+        metadata = json.loads((self.tmp / "target.json").read_text(encoding="utf-8"))
+        self.assertEqual(load_translations(self.tmp, metadata), saved)
+        with self.assertRaises(PackageError):
+            load_translations(self.tmp, {"translationsDigest": "tampered"})
+
+        # The import dropped row 10's text and its id is new, and row 30's component is gone: only 10 is put back.
+        dropped = [row("7", "10", "Status", "Status"), row("8", "20", "Name", "Name")]
+        repaired = [row("7", "10", "Status", "État"), row("8", "20", "Name", "Name")]
+        with mock.patch.object(client, "seed_translations") as seed, \
+                mock.patch.object(client, "publish_translations") as publish, \
+                mock.patch.object(client, "write_translations") as write, \
+                mock.patch.object(client, "read_translations", side_effect=[dropped, repaired]):
+            restore_translations(client, before, "DEMO", saved)
+        seed.assert_called_once_with("DEMO", 314)
+        write.assert_called_once_with("DEMO", [("7", "fr", "État")])
+        publish.assert_called_once_with("DEMO", 314)
+
+        with mock.patch.object(client, "seed_translations"), mock.patch.object(client, "publish_translations"), \
+                mock.patch.object(client, "write_translations"), \
+                mock.patch.object(client, "read_translations", side_effect=[dropped, dropped]):
             with self.assertRaises(PackageError) as refused:
-                run_install(options)
-        self.assertEqual(refused.exception.exit_code, 3)
-        self.assertIn("MANUAL-INSTALL.md", str(refused.exception))
-        export.assert_not_called()
-        self.assertIsNone(require_translations_safe(translated, discard=True))
+                restore_translations(client, before, "DEMO", saved)
+        self.assertEqual(refused.exception.exit_code, 6)
 
     def test_default_theme_list_is_discovered_from_manifests(self):
         repo = self.tmp / "repo"

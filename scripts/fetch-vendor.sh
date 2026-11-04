@@ -48,7 +48,9 @@ for UT_VERSION in $UT_VERSIONS; do
     echo "# Fetched $(date -u +%Y-%m-%dT%H:%MZ) by scripts/fetch-vendor.sh"
     echo "alpinejs=$ALPINE_VERSION"
     echo "apex_origin=$APEX_ORIGIN ut=$UT_VERSION"
-    (cd "$ROOT" && sha256sum static-files/js/vendor/*.js .agents/knowledge/reference/ut-$UT_VERSION/*.{css,js})
+    # macOS may have shasum instead of sha256sum
+    command -v sha256sum >/dev/null && sha256=(sha256sum) || sha256=(shasum -a 256)
+    (cd "$ROOT" && "${sha256[@]}" static-files/js/vendor/*.js .agents/knowledge/reference/ut-$UT_VERSION/*.{css,js})
   } > "$REF/MANIFEST.txt"
   echo "done; manifest: $REF/MANIFEST.txt"
 done

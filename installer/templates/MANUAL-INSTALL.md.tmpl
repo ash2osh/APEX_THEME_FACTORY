@@ -10,9 +10,10 @@ Use only APEX 26.1.x or 26.2.x with Universal Theme 42, base theme `ut-26.1` or 
 Before uploading any files, check the integrity of your downloaded package archive:
 
 ```bash
-sha256sum -c checksums.sha256
+sha256sum -c checksums.sha256          # Linux
+shasum -a 256 -c checksums.sha256      # macOS
 ```
-Ensure all files report `OK`.
+Ensure all files report `OK`. On Windows, compare `Get-FileHash <file>` in PowerShell with the values in `checksums.sha256`.
 
 ---
 

@@ -88,6 +88,7 @@ class SqlclClient:
                 [sql_bin, "-S", "-name", self.connection],
                 input=script,
                 text=True,
+                errors="replace",  # Windows consoles report in their own code page, not UTF-8
                 capture_output=True,
                 timeout=self.timeout_seconds,
                 check=False,

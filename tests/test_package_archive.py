@@ -69,7 +69,7 @@ class ArchiveTests(unittest.TestCase):
                     for info in archive.infolist():
                         self.assertEqual(info.date_time, (1980, 1, 1, 0, 0, 0))
                         mode = (info.external_attr >> 16) & 0o777
-                        if info.filename.endswith(("/install.sh", "/uninstall.sh")):
+                        if info.filename.endswith(("/install.sh", "/uninstall.sh", "/restore.sh")):
                             self.assertEqual(mode, 0o755)
                         else:
                             self.assertEqual(mode, 0o644)

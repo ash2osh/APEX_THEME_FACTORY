@@ -20,14 +20,18 @@ Class: `__THEME_CLASS__`
 Verify the integrity of package contents before installation:
 
 ```bash
-sha256sum -c checksums.sha256
+sha256sum -c checksums.sha256          # Linux
+shasum -a 256 -c checksums.sha256      # macOS
 ```
+
+On Windows, compare `Get-FileHash <file>` with the values in `checksums.sha256`. The installer also checks every file each time it runs.
 
 This package includes:
 - `theme.json`: Manifest describing metadata, compatibility, and optional fonts
 - `theme.css`: Standalone scoped CSS bundle for `__THEME_NAME__`
 - `theme-factory-runtime.js`: Switcher and client runtime helper
-- `install.sh` / `uninstall.sh`: Automated installer wrappers
+- `install.sh` / `uninstall.sh` / `restore.sh`: Installer scripts for Linux and macOS
+- `install.ps1` / `uninstall.ps1` / `restore.ps1`: The same scripts for Windows PowerShell
 - `preview/cover.jpg`: Theme visual preview
 - `licenses/`: Applicable software and font licenses
 
@@ -39,6 +43,9 @@ The automated installer defaults to a non-destructive dry-run:
 ```bash
 ./install.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID>
 ```
+
+In Windows PowerShell, every command here works the same way: replace `./install.sh` with
+`powershell -ExecutionPolicy Bypass -File .\install.ps1`.
 
 In dry-run mode:
 1. SQLcl connects and preflights target metadata.
@@ -99,7 +106,7 @@ To safely remove `__THEME_NAME__` from your application:
 
 If you need to restore from an immutable backup created during install:
 ```bash
-PYTHONPATH=. python3 -m lib.theme_factory.cli restore --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
+./restore.sh --connection <saved-connection> --workspace <WORKSPACE> --app-id <APP_ID> --backup <backup-dir> --apply
 ```
 
 Restore compares the live application with the state recorded right after the backed-up operation. If anything changed in between, it refuses (exit 7) until you pass `--discard-later-changes`.

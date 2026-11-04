@@ -18,7 +18,8 @@ from lib.theme_factory.manifest import NAME_REGEX, ThemeManifest, load_manifest
 
 FIXED_DATETIME = (1980, 1, 1, 0, 0, 0)
 REQUIRED_PACKAGE_FILES = frozenset({
-    "theme.json", "theme.css", "theme-factory-runtime.js", "install.sh", "uninstall.sh",
+    "theme.json", "theme.css", "theme-factory-runtime.js", "install.sh", "uninstall.sh", "restore.sh",
+    "install.ps1", "uninstall.ps1", "restore.ps1", "theme-factory-python.ps1",
     "README.md", "MANUAL-INSTALL.md", "preview/cover.jpg", "licenses/LICENSE-theme-factory.txt",
     "licenses/THIRD_PARTY.md",
     "lib/theme_factory/__init__.py",
@@ -26,6 +27,8 @@ REQUIRED_PACKAGE_FILES = frozenset({
 SOURCE_ONLY_THEME_FILES = frozenset({"theme.recipe.json"})
 # Run from the extracted package, the default backup root lands inside it. It is never read as package content.
 BACKUP_ROOT_NAME = "theme-factory-backups"
+SHELL_SCRIPTS = ("install.sh", "uninstall.sh", "restore.sh")
+POWERSHELL_SCRIPTS = ("install.ps1", "uninstall.ps1", "restore.ps1", "theme-factory-python.ps1")
 
 
 def get_source_commit(repo_root: Path) -> str:
@@ -70,8 +73,7 @@ def build_package_from_root(
     required_sources = (
         theme_root / manifest.cover,
         repo_root / "installer/theme-factory-runtime.js",
-        repo_root / "installer/install.sh",
-        repo_root / "installer/uninstall.sh",
+        *(repo_root / "installer" / name for name in (*SHELL_SCRIPTS, *POWERSHELL_SCRIPTS)),
         repo_root / "installer/templates/README.md.tmpl",
         repo_root / "installer/templates/MANUAL-INSTALL.md.tmpl",
         repo_root / "installer/templates/bootstrap.html.tmpl",
@@ -110,8 +112,12 @@ def build_package_from_root(
             runtime_src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
         )
 
-        # 4. install.sh & uninstall.sh
-        for sh_name in ("install.sh", "uninstall.sh"):
+        # 4. Shell and PowerShell entry points
+        for ps_name in POWERSHELL_SCRIPTS:
+            (staging / ps_name).write_text(
+                (repo_root / "installer" / ps_name).read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
+            )
+        for sh_name in SHELL_SCRIPTS:
             sh_src = repo_root / f"installer/{sh_name}"
             sh_dst = staging / sh_name
             sh_dst.write_text(sh_src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
@@ -212,7 +218,7 @@ def build_package_from_root(
                     data = file_path.read_bytes()
                     info = zipfile.ZipInfo(arc_name, date_time=FIXED_DATETIME)
                     info.compress_type = zipfile.ZIP_DEFLATED
-                    is_exec = arc_name.endswith(("/install.sh", "/uninstall.sh"))
+                    is_exec = arc_name.endswith(tuple(f"/{name}" for name in SHELL_SCRIPTS))
                     info.external_attr = ((0o755 if is_exec else 0o644) & 0xFFFF) << 16
                     archive.writestr(info, data)
 

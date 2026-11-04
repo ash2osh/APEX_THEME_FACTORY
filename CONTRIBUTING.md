@@ -16,7 +16,8 @@ python3 -m pip install -r tools/test-requirements.txt
 tests/run-offline.sh    # must end with OFFLINE status=PASS
 ```
 
-- You need Python 3.10 or newer, and a bash shell. On Windows, use WSL or Git Bash.
+- You need Python 3.10 or newer. `tests/run-offline.sh` and the `scripts/apex-*.sh` scripts need bash, so on Windows
+  run those in Git Bash or WSL. `scripts/theme.ps1`, `install-all-themes.ps1` and `build-demo.ps1` work in PowerShell.
 - `tests/run-offline.sh` needs no database and no browser, and CI runs the same script.
 - To add a theme, follow [Building and releasing a theme](docs/BUILDING_A_THEME.md).
 - A theme colour change edits `css/tokens.css` and `theme.recipe.json` together.

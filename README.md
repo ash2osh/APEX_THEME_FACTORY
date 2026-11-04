@@ -31,7 +31,7 @@ The installer checks all of this first, and it stops when the app is not support
 
 ## Quick start
 
-You need an APEX app, a saved SQLcl connection, Python 3.10 or newer, and a theme package from the
+It works on Windows, macOS and Linux. You need an APEX app, a saved SQLcl connection, Python 3.10 or newer, and a theme package from the
 [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases). The
 [Get started guide](docs/GET_STARTED.md) explains each step.
 
@@ -53,7 +53,9 @@ You need an APEX app, a saved SQLcl connection, Python 3.10 or newer, and a them
    ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
    ```
 
-`install.sh` comes inside each theme package. The [Get started guide](docs/GET_STARTED.md) also shows how to build
+In Windows PowerShell, run `powershell -ExecutionPolicy Bypass -File .\install.ps1` with the same options.
+
+`install.sh` and `install.ps1` come inside each theme package. The [Get started guide](docs/GET_STARTED.md) also shows how to build
 one from this repository, and how to install by hand in App Builder.
 
 ## Safe by design

@@ -10,7 +10,7 @@ This guide takes you from nothing to a working theme in your APEX app. It takes 
 | Universal Theme 42 with the Iris style | New apps on 26.1 or later already use it. An older app needs the steps in [Is my app ready?](#is-my-app-ready) |
 | SQLcl 26.x with a saved connection | Run `sql -name <CONNECTION>`. You should reach the SQL prompt. |
 | Python 3.10 or newer | Run `python3 --version`. |
-| A bash shell | Linux and macOS have one. On Windows, use WSL or Git Bash. |
+| A terminal | Windows: PowerShell. macOS: Terminal. Linux: any shell. The guide shows the commands for each. |
 | Your workspace name and app ID | Both are shown in App Builder. |
 
 No SQLcl, or no shell? [Installing by hand](#installing-by-hand) needs only App Builder.
@@ -57,10 +57,28 @@ Use one of these two ways.
 **A. Download a ZIP** from the [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases), then check
 it against `SHA256SUMS.txt` from the same release:
 
+On Linux:
+
 ```bash
 sha256sum linen-<version>.zip
 unzip linen-<version>.zip -d ~/theme
 cd ~/theme/linen-<version>
+```
+
+On macOS:
+
+```bash
+shasum -a 256 linen-<version>.zip
+unzip linen-<version>.zip -d ~/theme
+cd ~/theme/linen-<version>
+```
+
+In Windows PowerShell:
+
+```powershell
+Get-FileHash .\linen-<version>.zip -Algorithm SHA256
+Expand-Archive .\linen-<version>.zip -DestinationPath $HOME\theme
+cd $HOME\theme\linen-<version>
 ```
 
 > A checksum proves that the file is complete. It does not prove who made the file. Install only packages from a
@@ -76,13 +94,35 @@ unzip dist/linen/linen-<version>.zip -d ~/theme
 cd ~/theme/linen-<version>
 ```
 
-Replace `<version>` with the version in the file name, for example `1.2.0`. Each package is one ZIP file that holds exactly one theme. The extracted folder has its own `install.sh`.
+In Windows PowerShell, use `.\scripts\theme.ps1` and `Expand-Archive` instead:
+
+```powershell
+git clone https://github.com/ash2osh/APEX_THEME_FACTORY.git
+cd APEX_THEME_FACTORY
+powershell -ExecutionPolicy Bypass -File .\scripts\theme.ps1 release linen --offline
+Expand-Archive .\dist\linen\linen-<version>.zip -DestinationPath $HOME\theme
+cd $HOME\theme\linen-<version>
+```
+
+Replace `<version>` with the version in the file name, for example `1.2.0`. Each package is one ZIP file that holds exactly one theme. The extracted folder has its own `install.sh` and `install.ps1`.
 
 ## Step 2: Preview the install
+
+On Linux and macOS:
 
 ```bash
 ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
 ```
+
+In Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
+```
+
+`-ExecutionPolicy Bypass` applies to this one command, and it's needed because Windows blocks scripts by default.
+Every other command in this guide works the same way: replace `./name.sh` with
+`powershell -ExecutionPolicy Bypass -File .\name.ps1`.
 
 This command does **not** change your app. It copies the app, applies the theme to the copy, checks that it
 compiles, and prints what would change. You can run it as often as you like.
@@ -95,8 +135,16 @@ Read the output before you go on. Check these points:
 
 ## Step 3: Install
 
+On Linux and macOS:
+
 ```bash
 ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
+```
+
+In Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
 ```
 
 The installer asks you to type the app ID. If you type anything else, it stops and changes nothing.
@@ -135,6 +183,8 @@ scripts/install-all-themes.sh --app-id <APP_ID>            # preview
 scripts/install-all-themes.sh --app-id <APP_ID> --apply    # install
 ```
 
+In Windows PowerShell, the script is `.\scripts\install-all-themes.ps1`.
+
 Add `--connection <CONNECTION>` and `--workspace <WORKSPACE>` if you do not use the defaults
 (`docker-demo` and `DEMO`).
 
@@ -145,7 +195,7 @@ The installer ends with an exit code. Use this table to find the cause.
 | Code | What it means | What to do |
 |---|---|---|
 | 0 | The install finished, or the preview finished. | Nothing. |
-| 2 | The package or a command option is wrong, or SQLcl was not found. Nothing changed. | Read the message. Check that the ZIP is complete and `sql` is on your PATH. |
+| 2 | The package or a command option is wrong, or Python or SQLcl was not found. Nothing changed. | Read the message. Check that the ZIP is complete, and that Python and `sql` are installed and on your PATH. |
 | 3 | The installer refused before it changed anything. The APEX version or theme style isn't supported, or the app has translated text. | See [Is my app ready?](#is-my-app-ready) and [Before you install](#before-you-install-on-a-shared-or-production-app). |
 | 4 | Someone changed the app while the installer ran. | Run the preview again. |
 | 5 | Export, compile or import failed. | Read the message. If the app is broken, restore the backup. |
@@ -221,9 +271,8 @@ navigation style put back. Removing a theme ends active sessions too, for the sa
 The backup taken before an install holds the application's source as it was:
 
 ```bash
-# from the extracted package directory (its bundled lib/ is on PYTHONPATH)
-PYTHONPATH=. python3 -m lib.theme_factory.cli restore \
-  --connection <CONN> --workspace <WS> --app-id <ID> \
+# from the extracted package directory
+./restore.sh --connection <CONN> --workspace <WS> --app-id <ID> \
   --backup ./theme-factory-backups/<WS>-<ID>/<TIMESTAMP> --apply
 ```
 

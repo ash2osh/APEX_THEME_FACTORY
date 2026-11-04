@@ -23,6 +23,8 @@ If you downloaded the ZIP from the Releases page, go to Step 2. To build it your
 scripts/build-demo.sh
 ```
 
+In Windows PowerShell, run `powershell -ExecutionPolicy Bypass -File .\scripts\build-demo.ps1`.
+
 This writes `dist/demo/theme-factory-demo.zip`. It changes only the copy that goes into the ZIP, and each build gets
 a new session-state protection salt.
 

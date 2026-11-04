@@ -7,4 +7,4 @@ case "$PY_VERSION" in
   3.1[0-9]|3.[2-9][0-9]|[4-9].*) ;;
   *) echo "Python 3.10+ is required (found $PY_VERSION)" >&2; exit 2 ;;
 esac
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$SCRIPT_DIR" exec python3 -m lib.theme_factory.cli install --package-root "$SCRIPT_DIR" "$@"
+PYTHONUTF8=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$SCRIPT_DIR" exec python3 -m lib.theme_factory.cli install --package-root "$SCRIPT_DIR" "$@"

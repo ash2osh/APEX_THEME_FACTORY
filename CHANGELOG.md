@@ -16,6 +16,10 @@
 - Each package includes this project's MIT licence.
 - The guides now say what an install does to sessions, saved reports, role assignments and translated text.
 
+- Windows PowerShell: every package has `install.ps1`, `uninstall.ps1` and `restore.ps1`, and the repository has
+  `scripts/theme.ps1`, `install-all-themes.ps1` and `build-demo.ps1`. CI runs them on Windows and macOS.
+- `restore.sh` replaces the long `python3 -m` restore command.
+
 ### Themes (each theme's version goes up)
 
 - Citrus Pop, Cobalt Press, Estate Slate: the current item in a top menu bar now meets AA contrast (it was 2.3:1 to 3.25:1).

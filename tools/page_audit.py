@@ -205,8 +205,8 @@ http.server.ThreadingHTTPServer(("127.0.0.1", port), functools.partial(Handler, 
 """
 
 
-def start_css_server() -> subprocess.Popen:
-    return subprocess.Popen([sys.executable, "-c", CSS_SERVER_CODE, str(CSS_SERVER_PORT), str(THEME_CSS_DIR)],
+def start_css_server(port: int = CSS_SERVER_PORT) -> subprocess.Popen:
+    return subprocess.Popen([sys.executable, "-c", CSS_SERVER_CODE, str(port), str(THEME_CSS_DIR)],
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
@@ -218,6 +218,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--pages", default="", help="comma list of page numbers; default every page of the app")
     parser.add_argument("--widths", default="375", help="phone widths for the overflow check")
     parser.add_argument("--inject-css", action="store_true", help="load this checkout's theme CSS into each page")
+    parser.add_argument("--css-port", type=int, default=CSS_SERVER_PORT, help="port for --inject-css; audits running side by side need their own")
     parser.add_argument("--app-dir", default=str(ROOT / "applications/ut"))
     parser.add_argument("--out", required=True)
     parser.add_argument("--resume", action="store_true", help="skip pages already recorded in --out and append")
@@ -230,8 +231,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     pages = [int(p) for p in args.pages.split(",") if p] or page_ids(Path(args.app_dir) / "pages")
     widths = [int(w) for w in args.widths.split(",") if w]
     host = urlsplit(args.base).netloc
-    css_urls = [f"http://127.0.0.1:{CSS_SERVER_PORT}/{t}/theme.css" for t in themes] if args.inject_css else []
-    server = start_css_server() if args.inject_css else None
+    css_urls = [f"http://127.0.0.1:{args.css_port}/{t}/theme.css" for t in themes if t != BARE] if args.inject_css else []
+    server = start_css_server(args.css_port) if args.inject_css else None
     client = BrowserClient()
     page_id = None
     try:

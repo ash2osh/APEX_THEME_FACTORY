@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Install and uninstall
+
+- A run that refuses before it imports no longer leaves a backup folder behind. Before, a refused install, such as
+  `--with-switcher` on an app whose navigation bar isn't a static list, left a folder that looked restorable but had no
+  translations.
+
 ## 1.0.1 (2026-11-04)
 
 ### Translated apps

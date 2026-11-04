@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 from lib.theme_factory.archive import build_package_from_root
@@ -103,6 +104,18 @@ class UninstallerCliTests(unittest.TestCase):
             env=env,
             check=False,
         )
+
+    def test_refused_uninstall_leaves_no_backup_behind(self):
+        """A refusal before the import leaves the application untouched, so the run's backup is removed."""
+        app = self.tmp / "app-with-linen"
+        shutil.copytree(self.repo_root / "tests/fixtures/apexlang/minimal", app)
+        (app / "shared-components/static-files/theme-factory/packages/linen").mkdir(parents=True)
+        backups = self.tmp / "refused-backups"
+        with mock.patch.dict(os.environ, {"FAKE_SQL_FIXTURE_DIR": str(app)}):
+            result = self.run_uninstall("linen", "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+                                        "--apply", "--backup-dir", str(backups), stdin="314\n")
+        self.assertNotEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertFalse(backups.exists(), list(backups.rglob("*")) if backups.exists() else None)
 
     def test_keeps_valid_default_then_uses_lexicographic_fallback(self):
         self.assertEqual(choose_fallback("linen", ("linen", "solarized-dark")), "linen")

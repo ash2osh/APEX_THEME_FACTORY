@@ -80,8 +80,9 @@ empties them. The uninstall and restore scripts have the same option.
 
 We tested both methods on both versions through real installs, with the French version of the app checked in a browser.
 For Application-Based on 26.2, that included an app with every string translated (3,138), through install, upgrade,
-uninstall and restore. Each string came back exactly as it was, except the labels of the **Theme** menu when that menu
-was removed.
+uninstall and restore. Install, upgrade and restore brought back every string exactly as it was. Uninstall removes the
+text of the components it removes: the labels of the **Theme** menu when that menu goes, and the theme's own plug-in
+text. The installer reports how many rows it removed.
 
 On 26.2 the script saves a copy of your translated text beside the backup, and it uses that copy to compare every string
 after the import. The copy also puts back text that APEX's export leaves out, such as Faceted Search labels. The script

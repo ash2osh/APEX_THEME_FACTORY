@@ -134,6 +134,16 @@ class InstallerCliTests(unittest.TestCase):
         self.assertFalse(backups.exists(), list(backups.rglob("*")) if backups.exists() else None)
         self.assertNotIn("Staged:", result.stdout)
 
+    def test_refused_install_leaves_no_backup_behind(self):
+        """The switcher is refused before the import, so the application is untouched and no backup is kept."""
+        backups = self.tmp / "refused-backups"
+        with mock.patch.dict(os.environ, {"FAKE_SQL_FIXTURE_DIR": str(self.sql_navigation_bar_fixture())}):
+            result = self.run_cli(self.package_dir, "--connection", "demo", "--workspace", "DEMO", "--app-id", "314",
+                                  "--with-switcher", "--apply", "--backup-dir", str(backups), stdin="314\n")
+        self.assertEqual(result.returncode, 3, result.stderr + result.stdout)
+        self.assertIn("Cannot install the theme switcher", result.stderr + result.stdout)
+        self.assertFalse(backups.exists(), list(backups.rglob("*")) if backups.exists() else None)
+
     def test_lowercase_workspace_is_accepted(self):
         from lib.theme_factory.cli import build_parser
         args = build_parser().parse_args(["install", "--package-root", "x", "--connection", "demo",

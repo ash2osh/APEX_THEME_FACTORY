@@ -221,6 +221,18 @@ def create_backup(backup_root: Optional[Path], workspace: str, app_id: int, labe
     return backup_dir
 
 
+def discard_backup(backup_dir: Optional[Path]) -> None:
+    """Remove a backup of a run that refused before importing, and any parent folder that is left empty."""
+    if backup_dir is None:
+        return
+    shutil.rmtree(backup_dir)
+    for folder in backup_dir.parents:
+        try:
+            folder.rmdir()
+        except OSError:
+            break
+
+
 def export_after_import(sqlcl: SqlclClient, app_id: int, dest: Path, backup_dir: Path) -> Path:
     try:
         return sqlcl.export_apexlang(app_id, dest)
@@ -336,20 +348,25 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
 
     # 6. Plan and apply one staged patch per package, in the order given
     diffs = []
-    for package_root in package_roots:
-        patch = plan_install(staged_dir, package_root, options.switcher_mode)
-        apply_patch(patch)
-        diffs.append(patch.diff)
-    staged_digest = canonical_digest(staged_dir)
-    # SQLcl reformats APEXLang on export (indentation, ordering, dropped comments), so the
-    # post-import comparison uses the semantic Theme Factory projection, not raw bytes.
-    staged_projection = theme_factory_projection(staged_dir)
-
-    # 7. Validate staged changes via SQLcl
     try:
-        sqlcl.validate(staged_dir, options.workspace)
-    except PackageError as exc:
-        raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
+        for package_root in package_roots:
+            patch = plan_install(staged_dir, package_root, options.switcher_mode)
+            apply_patch(patch)
+            diffs.append(patch.diff)
+        staged_digest = canonical_digest(staged_dir)
+        # SQLcl reformats APEXLang on export (indentation, ordering, dropped comments), so the
+        # post-import comparison uses the semantic Theme Factory projection, not raw bytes.
+        staged_projection = theme_factory_projection(staged_dir)
+
+        # 7. Validate staged changes via SQLcl
+        try:
+            sqlcl.validate(staged_dir, options.workspace)
+        except PackageError as exc:
+            raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
+    except PackageError:
+        # Nothing has been imported yet, so the application is unchanged and this run's backup has nothing to keep.
+        discard_backup(backup_dir)
+        raise
 
     # 8. Drift guard: fresh second export to check for DB state modification during staging
     assert_no_drift(sqlcl, options.app_id, pre_digest, "during staging")

@@ -35,6 +35,7 @@ from lib.theme_factory.install import (
     _record_post_digest,
     assert_no_drift,
     create_backup,
+    discard_backup,
     export_after_import,
     keep_or_remove_staging,
     load_translations,
@@ -293,15 +294,20 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
         saved_translations = save_translations(sqlcl, options.app_id, backup_dir)
 
     # Mutate staged export
-    plan_and_apply_uninstall(staged_dir, options.theme_name)
-    staged_digest = canonical_digest(staged_dir)
-    staged_projection = theme_factory_projection(staged_dir)
-
-    # Validate
     try:
-        sqlcl.validate(staged_dir, options.workspace)
-    except PackageError as exc:
-        raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
+        plan_and_apply_uninstall(staged_dir, options.theme_name)
+        staged_digest = canonical_digest(staged_dir)
+        staged_projection = theme_factory_projection(staged_dir)
+
+        # Validate
+        try:
+            sqlcl.validate(staged_dir, options.workspace)
+        except PackageError as exc:
+            raise PackageError(f"Staged export validation failed: {exc}", exit_code=5) from exc
+    except PackageError:
+        # Nothing has been imported yet, so the application is unchanged and this run's backup has nothing to keep.
+        discard_backup(backup_dir)
+        raise
 
     # Drift guard
     assert_no_drift(sqlcl, options.app_id, pre_digest, "during staging")

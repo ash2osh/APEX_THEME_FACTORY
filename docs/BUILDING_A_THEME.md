@@ -186,6 +186,9 @@ scripts/theme.sh release midnight --offline  # check + package only, seconds
    with the switcher, opens it in its own Firefox tab at 1440 px (console errors, failed requests, fonts, AA
    contrast, keyboard switcher, selection kept across reload) and at 375 px inside a phone-width frame (layout
    overflow, AA contrast, console errors, failed requests), then re-imports the clean export.
+   The phone row loads the page into a same-origin frame, so the consumer app must allow same-origin framing.
+   `tests/live/consumer-apps/minimal` does (`embedInFrames: allowSameOrigin`, as app 102 does); a consumer that
+   denies framing cannot run the 375 px row.
 
 It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the browser
 daemon (Firefox by default: start Firefox from its launcher, then `python3 tools/firefox_mcp_daemon.py`; see
@@ -208,7 +211,7 @@ applications/ut/        APEXLang export of the reference app (app 102) — gener
 scripts/                theme.sh, export / validate / import, sync-static, apply-theme, install-all-themes
 theme-templates/        neutral scaffold, component profiles, adapters/ (shared family segments)
 lib/theme_factory/      installer, uninstaller, packager, recipe/scaffold, checks, adapters
-tools/                  release smoke, browser check, cover capture, browser daemons (Firefox, Chrome)
+tools/                  release smoke, browser check, page audit, phone-width frame, cover capture, browser daemons (Firefox, Chrome)
 docs/                   spec, design system, components, tooling guides
 .agents/                agent skills and knowledge (pitfalls)
 ```

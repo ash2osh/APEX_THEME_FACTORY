@@ -2,7 +2,8 @@
 
 Written 2026-09-24, after the audit branch was merged (PR #8). Everything offline is done: the offline gate
 (`tests/run-offline.sh`) passes and CI is green. What is left needs the local APEX instance
-(`docker-demo`, workspace `DEMO`), app 102, the disposable consumer app 9010 and the approved Chrome session.
+(`docker-demo`, workspace `DEMO`), app 102, the disposable consumer app 9010 and the approved Firefox session
+(`docs/FIREFOX_DEVTOOLS_MCP.md`).
 
 Work through the stages in order. Stage 0 confirms that what was merged offline also holds on screen, before
 anything new is built on top of it. Tick the boxes as you go and commit this file with your changes.
@@ -124,8 +125,9 @@ thick borders, pill navigation, letter-spacing and grid backgrounds that were on
 **2.1 Audit first. Change nothing yet.**
 
 For each theme × width (1440, 1024, 768, 375) × page (500 Getting Started, 406 Theme Lab, 1402 Interactive
-Report, 1910 modal dialog, 1601 forms), in **your own background tab** (`new_page {url, background:true}` then
-`emulate {pageId, viewport:"375x812x2,mobile,touch"}`), run:
+Report, 1910 modal dialog, 1601 forms), in **your own background tab** (`new_page {url, background:true}`). Firefox cannot shrink its window below about
+500 px, so the 375 px rows are measured in a same-origin frame by `tools/page_audit.py --widths 1440,375`
+(`docs/FIREFOX_DEVTOOLS_MCP.md`). The snippet below reads the window; for 375 px, run it inside the frame.
 
 ```js
 () => {

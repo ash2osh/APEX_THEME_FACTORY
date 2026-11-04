@@ -69,8 +69,11 @@ You need an APEX app, a saved SQLcl connection and a theme package. The
 
 | Area | What happens | Status |
 |---|---|---|
-| Reference app 102 on APEX 26.2 | The app is not re-imported from this source yet. Page 3007 has a third metric card demo that APEX 26.2 rejects with `column TICKER not found`. Your 26.2 copy of the app was updated by hand, so it still runs. | Open. Needs a decision on the demo. |
-| Charts on the local APEX 26.1.5 test stack | Chart data calls return HTTP 404, so the Theme Lab charts do not draw. The stack pairs ORDS 26.3 with APEX 26.1.5. This is the likely cause, not yet confirmed. | Open. Environment issue. |
+| Reference app 102 on APEX 26.2 | The 26.2 copy of app 102 was switched to base theme `ut-26.2` by hand. The source here stays on `ut-26.1`, which the SQLcl validator accepts, so the source is not re-imported into that copy. The 26.2 pages are checked with the current theme CSS injected. | Decided: the source stays on `ut-26.1`. |
+| Sample data on a clean APEX 26.1 install | Pages that query the `EBA_UT_*` sample tables (for example 1410, 1411, 1412, 1710, 1720, 1908, 3001 and 3110) show an ORA-00942 error when those tables are missing. They render on a database that has the sample data. | Environment, not a theme defect. |
+| Dialog pages 1111, 1112 and 1912–1922 | APEX shows its dialog-template error when these pages open, in every theme, including bare Iris. | Stock demo, not a theme defect. |
+| Palette demo page 6302 | Palette colours used as text fail AA in every theme, bare Iris included. Only a change to the palette itself could fix it. | Stock palette, not a theme defect. |
+| Map page 1906 | The map needs internet access for its tiles. | Environment. |
 | Saved-report styling in dark themes | The rules now cover the APEX 26.2 saved-report group as well as the 26.1 element. No saved report was on the test page, so this is not checked visually. | Not verified. |
 
 ## For developers

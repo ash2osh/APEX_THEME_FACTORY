@@ -151,7 +151,7 @@ Options:
 - `--backup-dir <dir>`: Backup root (default: `theme-factory-backups/`).
 - `--apply`: Import into the database (default is a dry run). The last theme listed becomes the default.
 
-It runs the same guarded transaction as `scripts/theme.sh install`: APEX 26.1 / UT 42 / Iris preflight,
+It runs the same guarded transaction as `scripts/theme.sh install`: APEX 26.1.x or 26.2.x / UT 42 / Iris preflight,
 checksum verification, backup, SQLcl validation, drift guard and post-import check.
 
 ### Uninstall

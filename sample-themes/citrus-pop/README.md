@@ -18,3 +18,7 @@ playful density independent from Cobalt Press's editorial geometry.
   `ofl/tajawal/`.
 - License: SIL Open Font License 1.1 in `licenses/OFL.txt`.
 - Runtime family: `ThemeFactory-citrus-pop-body`; Font APEX icons remain isolated.
+
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md).

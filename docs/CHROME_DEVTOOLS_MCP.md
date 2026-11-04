@@ -15,8 +15,6 @@ so it sees the APEX Builder session, cookies and the logged-in app.
 Chrome ≥ 144 exposes a user-consented remote-debugging endpoint:
 
 1. In Chrome open `chrome://inspect/#remote-debugging` and enable **Allow remote debugging for this browser**.
-   (Verified on this machine: `~/.config/google-chrome/Local State` → `"remote_debugging":{"user-enabled":true}`,
-   `~/.config/google-chrome/DevToolsActivePort` → port `9222`.)
 2. Start the server with `--autoConnect`. It reads `DevToolsActivePort` from the stable-channel
    profile and attaches. No `--remote-debugging-port` flag on Chrome is needed.
 3. The **first** tool call after start can take 20–40 s (Chrome may show a consent prompt).
@@ -63,20 +61,17 @@ Lifecycle guarantees (verified by `tests/test_chrome_mcp_daemon.py`):
 - A failed `initialize` handshake stops the MCP child instead of leaving it (and the daemon) running.
 - `THEME_FACTORY_CHROME_MCP_EXECUTABLE` overrides the MCP binary (used by the tests with a fake server).
 
-## Global installation (done 2026-09-13)
+## Installation
 
 ```bash
-npm i -g chrome-devtools-mcp@latest          # binary: chrome-devtools-mcp (v1.9.0 at install time)
+npm i -g chrome-devtools-mcp@latest
 ```
 
-| Client | Config location | Server name | Command |
-|---|---|---|---|
-| Claude Code | `~/.claude.json` (user scope) via `claude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest --autoConnect` | `chrome-devtools` | `npx -y chrome-devtools-mcp@latest --autoConnect` |
-| Codex | `~/.codex/config.toml` `[mcp_servers.chrome-devtools]` via `codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --autoConnect` | `chrome-devtools` | same |
-| Antigravity | `~/.gemini/config/mcp_config.json` → `mcpServers.chrome-devtools-mcp` (pre-existing) | `chrome-devtools-mcp` | `npx -y chrome-devtools-mcp@latest --auto-connect` |
+Add it to your MCP client the way that client expects. For example, in Claude Code:
 
-Re-run the `add` commands (or edit the files) to reinstall on another machine. Backups of the
-Codex config are kept next to it as `config.toml.bak-<timestamp>`.
+```bash
+claude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest --autoConnect
+```
 
 ## Tool cheat-sheet (v1.9)
 

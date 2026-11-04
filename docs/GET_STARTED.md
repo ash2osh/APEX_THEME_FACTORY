@@ -1,25 +1,36 @@
 # Get started
 
-This guide takes you from nothing to a working theme in your APEX app. It takes about 15 minutes.
+This guide takes you from nothing to a working theme in your APEX app. It takes about 15 minutes once your tools are
+set up.
 
 ## What you need
 
 | Item | How to check it |
 |---|---|
-| Oracle APEX 26.1.x or 26.2.x | Run `select version_no from apex_release;` in SQL. |
-| Universal Theme 42 with the Iris style | New apps on 26.1 or later already use it. An older app needs the steps in [Is my app ready?](#is-my-app-ready) |
-| SQLcl 26.x with a saved connection | Run `sql -name <CONNECTION>`. You should reach the SQL prompt. |
-| Python 3.10 or newer | Run `python3 --version`. |
-| A terminal | Windows: PowerShell. macOS: Terminal. Linux: any shell. The guide shows the commands for each. |
+| Oracle APEX 26.1.x or 26.2.x | Run `select version_no from apex_release;` in SQL Workshop. |
+| Universal Theme 42 with the Iris style | New apps on 26.1 or later already use it. Otherwise see [Is my app ready?](#is-my-app-ready) |
+| SQLcl, with a saved connection | Run `sql -name <CONNECTION>`. You should reach the SQL prompt. |
+| Python 3.10 or newer | Run `python3 --version`, or `py -3 --version` on Windows. |
 | Your workspace name and app ID | Both are shown in App Builder. |
 
-No SQLcl, or no shell? [Installing by hand](#installing-by-hand) needs only App Builder.
+No SQLcl, or no way to run scripts? [Installing by hand](#installing-by-hand) needs only App Builder.
+
+### Set up SQLcl
+
+1. Download [SQLcl](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/) and add its `bin` folder to
+   your PATH. SQLcl also needs Java.
+2. Save a connection to your app's parsing schema. Run `sql /nolog`, and then run this at the SQL prompt:
+
+   ```sql
+   conn -save <CONNECTION> -savepwd <SCHEMA>@//<HOST>:<PORT>/<SERVICE>
+   ```
+
+   SQLcl asks for the password and stores it in your user profile.
 
 ## Is my app ready?
 
-The installer stops with exit code 3 unless the app is on Universal Theme 42 with the Iris style. Apps created on
-APEX 26.1 or later are ready. An app that came from an older APEX version usually isn't, because Iris only appears
-after a theme refresh. To prepare it, work on a copy of the app first:
+Apps created on APEX 26.1 or later are ready. An app that came from an older version usually isn't, because Iris only
+appears after a theme refresh, and the installer stops with exit code 3. To prepare it, work on a copy of the app:
 
 1. In App Builder, open the app. If a banner says a new version of Universal Theme is available, click
    **Refresh Theme**. If there is no banner, go to **Shared Components > Themes**, open **Universal Theme**, click
@@ -28,7 +39,7 @@ after a theme refresh. To prepare it, work on a copy of the app first:
    **Apply Changes**. A refresh can change the current style, so check this even if you had already picked Iris.
 3. Run the app and check it. A custom style from Theme Roller doesn't carry over, because these themes replace it.
 
-Then run the preview in Step 2 to confirm the app is ready.
+Then run the preview in Step 2 to confirm that the app is ready.
 
 ## Before you install on a shared or production app
 
@@ -37,25 +48,24 @@ The installer changes only its own items, but APEX imports the whole app in one 
 | Item | What happens to it | Is it in the backup? |
 |---|---|---|
 | Active user sessions | **They end.** People have to sign in again, and unsaved work is lost. Install in a quiet period. | No |
-| Filters a person has applied without saving a report | **They are lost** along with the session. | No |
+| Filters a person applied without saving a report | **They are lost** along with the session. | No |
 | Private saved reports | Kept. | No, they stay in the database |
 | Access-control role assignments | Kept. | No, they stay in the database |
 | Translated text | **It would be erased**, so the installer stops. See below. | No |
 
-We tested these results with a real install. Try the install on a copy of your app first, and keep your usual app
-and database backups as well.
+These results come from real installs on APEX 26.2. Try the install on a copy of your app first, and keep your usual
+app and database backups as well.
 
-**If your app is translated,** the installer stops with exit code 3, because an import empties the translated text.
-Use [Installing by hand](#installing-by-hand) instead, because it imports nothing and your translations stay. If you
-can seed, translate and publish again, you can accept the loss with `--discard-translations`. The same check and
-option apply to `uninstall.sh` and `restore`.
+**If your app is translated,** use [Installing by hand](#installing-by-hand), because it imports nothing and your
+translations stay. If you're able to seed, translate and publish again afterwards, you can accept the loss by adding
+`--discard-translations`. The uninstall and restore scripts have the same check and option.
 
 ## Step 1: Get a theme package
 
-Use one of these two ways.
+Each package is one ZIP that holds exactly one theme. Get it in one of these two ways.
 
-**A. Download a ZIP** from the [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases), then check
-it against `SHA256SUMS.txt` from the same release:
+**A. Download it** from the [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases), and compare its
+checksum with the value in `SHA256SUMS.txt` from the same release.
 
 On Linux:
 
@@ -81,10 +91,12 @@ Expand-Archive .\linen-<version>.zip -DestinationPath $HOME\theme
 cd $HOME\theme\linen-<version>
 ```
 
-> A checksum proves that the file is complete. It does not prove who made the file. Install only packages from a
-> source you trust.
+> A checksum proves that the file is complete. It does not prove who made it. Install only packages from a source you
+> trust.
 
-**B. Build it from this repository:**
+**B. Build it** from this repository.
+
+On Linux and macOS:
 
 ```bash
 git clone https://github.com/ash2osh/APEX_THEME_FACTORY.git
@@ -94,7 +106,7 @@ unzip dist/linen/linen-<version>.zip -d ~/theme
 cd ~/theme/linen-<version>
 ```
 
-In Windows PowerShell, use `.\scripts\theme.ps1` and `Expand-Archive` instead:
+In Windows PowerShell:
 
 ```powershell
 git clone https://github.com/ash2osh/APEX_THEME_FACTORY.git
@@ -104,7 +116,7 @@ Expand-Archive .\dist\linen\linen-<version>.zip -DestinationPath $HOME\theme
 cd $HOME\theme\linen-<version>
 ```
 
-Replace `<version>` with the version in the file name, for example `1.2.0`. Each package is one ZIP file that holds exactly one theme. The extracted folder has its own `install.sh` and `install.ps1`.
+Replace `<version>` with the version in the file name, for example `1.2.0`.
 
 ## Step 2: Preview the install
 
@@ -121,13 +133,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION>
 ```
 
 `-ExecutionPolicy Bypass` applies to this one command, and it's needed because Windows blocks scripts by default.
-Every other command in this guide works the same way: replace `./name.sh` with
+Every other script in this guide works the same way: replace `./name.sh` with
 `powershell -ExecutionPolicy Bypass -File .\name.ps1`.
 
-This command does **not** change your app. It copies the app, applies the theme to the copy, checks that it
-compiles, and prints what would change. You can run it as often as you like.
+If macOS or Linux says `permission denied`, run `bash install.sh` with the same options.
 
-Read the output before you go on. Check these points:
+The preview does **not** change your app. It copies the app, applies the theme to the copy, checks that it compiles,
+and prints what would change. You can run it as often as you like. Check these points in the output:
 
 - The theme name and version are the ones you expect.
 - The list of files to add looks right.
@@ -135,157 +147,113 @@ Read the output before you go on. Check these points:
 
 ## Step 3: Install
 
-On Linux and macOS:
+Add `--apply` to the same command:
 
 ```bash
 ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
 ```
 
-In Windows PowerShell:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
-```
-
 The installer asks you to type the app ID. If you type anything else, it stops and changes nothing.
 
-Before it installs, the installer saves a backup of the app's source in `theme-factory-backups/`. Keep this folder private, because it holds your app's source. You need it to restore the app.
+Before it installs, the installer saves a backup of the app's source in `theme-factory-backups/`. Keep this folder, and
+keep it private, because it holds your app's source. You need it to restore the app.
 
-To add a **Theme** menu to the navigation bar, add `--with-switcher` to the command. The menu lets each person
-pick a theme. The choice is saved in their browser only.
+To add a **Theme** menu to the navigation bar, also add `--with-switcher`. The menu lets each person pick a theme, and
+the choice is saved in their browser only. The navigation bar must be a static list.
 
 ## Step 4: Check the result
 
-1. Open any page of the app.
-2. Open the browser's developer tools and look at the `<html>` element. It should have a class named
-   `app-theme-<name>`.
-3. The browser console should show no errors.
-4. If you added the switcher, open the **Theme** menu. One entry should be checked.
+1. Open any page of the app. It should show the new theme.
+2. The browser console (F12) should show no errors.
+3. If you added the switcher, open the **Theme** menu. One entry should be checked.
 
-## Step 5: Undo an install
+If the page looks unchanged, open the browser's developer tools and look at the `<html>` element. It should have a
+class named `app-theme-<name>`.
 
-To remove the theme and keep the app:
+## Undo an install
+
+**To remove the theme and keep the app,** run the uninstall script. Preview it first, then add `--apply`:
 
 ```bash
 ./uninstall.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>            # preview
 ./uninstall.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply    # remove
 ```
 
-To go back to the exact app from before the install, restore the backup. See
-[Undo an install (restore)](#undo-an-install-restore) below.
+It removes only what the install recorded, and it refuses to continue if one of those files has been edited since. If
+two themes are installed, the other one keeps working and becomes the default. Removing the last one leaves the app
+on standard Iris, with the navigation menu style put back. Active sessions end, as they do for an install.
 
-## Install every theme at once (repository)
-
-If you work from this repository, you can install all eight themes in one step:
+**To go back to the exact app from before the install,** restore the backup:
 
 ```bash
-scripts/install-all-themes.sh --app-id <APP_ID>            # preview
-scripts/install-all-themes.sh --app-id <APP_ID> --apply    # install
+./restore.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> \
+  --backup ./theme-factory-backups/<WORKSPACE>-<APP_ID>/<BACKUP_FOLDER> --apply
+```
+
+This replaces the whole application with the backup, so anything you changed in the app after the install would be
+lost. The script checks for that and stops unless you add `--discard-later-changes`. It rejects a backup whose contents
+have been modified.
+
+## If something goes wrong
+
+The scripts end with an exit code. Use this table to find the cause.
+
+| Code | What it means | What to do |
+|---|---|---|
+| 0 | The script finished, or the preview finished. | Nothing. |
+| 2 | The package or a command option is wrong, or Python or SQLcl wasn't found. Nothing changed. | Read the message. Check that the ZIP is complete, and that Python and `sql` are installed and on your PATH. |
+| 3 | The script refused before it changed anything. The APEX version or theme style isn't supported, or the app has translated text. | See [Is my app ready?](#is-my-app-ready) and [Before you install](#before-you-install-on-a-shared-or-production-app). |
+| 4 | Someone changed the app while the script ran. | Run the preview again. |
+| 5 | Export, compile or import failed. | Read the message. If the app is broken, restore the backup. |
+| 6 | The script finished, but the check afterwards found a difference. | Read the message. Restore the backup if the app doesn't work. |
+| 7 | You cancelled at the prompt, or a restore would lose later changes. | Nothing changed. |
+
+## Reference
+
+You don't need these sections for a normal install.
+
+### Installing by hand
+
+`MANUAL-INSTALL.md` inside every package lists each step in App Builder: which files to upload, the region to create,
+and the CSS file URL to add, plus the matching removal steps. It needs no SQLcl or Python. It imports nothing, so
+active sessions and translations aren't affected.
+
+### Install several themes at once
+
+From this repository, you can install all eight themes in one step, with the **Theme** menu:
+
+```bash
+scripts/install-all-themes.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>            # preview
+scripts/install-all-themes.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply    # install
 ```
 
 In Windows PowerShell, the script is `.\scripts\install-all-themes.ps1`.
 
-Add `--connection <CONNECTION>` and `--workspace <WORKSPACE>` if you do not use the defaults
-(`docker-demo` and `DEMO`).
+| Option | What it does |
+|---|---|
+| `--themes <list>` | Installs only these themes, comma-separated, built from `sample-themes/`. The last one becomes the default. |
+| `--packages <zip,...>` | Installs these exact ZIP files instead. |
+| `--with-switcher` / `--without-switcher` | Adds the **Theme** menu or leaves it out. The default adds it, and a navigation bar that isn't a static list is refused. |
+| `--backup-dir <dir>` | Sets where the backup goes. The default is `theme-factory-backups/`. |
+| `--discard-translations` | Accepts that the import erases translated text. |
 
-## If something goes wrong
+### What the installer changes
 
-The installer ends with an exit code. Use this table to find the cause.
+Everything it owns is marked, so it can be removed exactly.
 
-| Code | What it means | What to do |
-|---|---|---|
-| 0 | The install finished, or the preview finished. | Nothing. |
-| 2 | The package or a command option is wrong, or Python or SQLcl was not found. Nothing changed. | Read the message. Check that the ZIP is complete, and that Python and `sql` are installed and on your PATH. |
-| 3 | The installer refused before it changed anything. The APEX version or theme style isn't supported, or the app has translated text. | See [Is my app ready?](#is-my-app-ready) and [Before you install](#before-you-install-on-a-shared-or-production-app). |
-| 4 | Someone changed the app while the installer ran. | Run the preview again. |
-| 5 | Export, compile or import failed. | Read the message. If the app is broken, restore the backup. |
-| 6 | The install finished, but the check afterwards found a difference. | Read the message. Restore the backup if the app does not work. |
-| 7 | You cancelled at the prompt. | Nothing changed. |
-
-## Reference
-
-These sections give the full details. You do not need them for a normal install.
-
-### What the installer actually touches
-
-It is deliberately narrow, and everything it owns is marked so it can be removed exactly:
-
-- **Adds** static files under `theme-factory/packages/<name>/<version>/` (the CSS, `theme.json`, the preview
-  image, any fonts) plus `theme-factory/runtime/registry.json`.
-- **Adds** one hidden page-0 region carrying the bootstrap script, with the Static ID
-  `theme_factory_bootstrap` and an HTML marker comment. A second one covers dialog templates.
+- **Adds** static files under `theme-factory/packages/<name>/<version>/` (the CSS, `theme.json`, the preview image, and
+  any fonts), plus `theme-factory/runtime/registry.json`.
+- **Adds** two hidden Page 0 regions with the bootstrap script. Their Static IDs are `theme_factory_bootstrap` and
+  `theme_factory_bootstrap_dialog`. An app with no Page 0 gets one, and it stays.
 - **Adds** `#APP_FILES#theme-factory/packages/<name>/<version>/theme.css` to the application's CSS file URLs.
 - **Sets** the Side Navigation Menu's style option when the theme asks for one (most use Style B). The first install
-  records the old value, and removing the last theme puts it back. An app with no Page 0 gets one, and it stays.
-- **With `--with-switcher` only:** adds list entries under the `theme-factory-` static-ID namespace.
-- **Never** touches your pages, regions, processes, items, or any file it did not create. It records a
-  SHA-256 for each file it owns in `registry.json` and refuses to remove anything whose digest has changed.
+  records the old value, and removing the last theme puts it back.
+- **With `--with-switcher` only:** adds list entries with the `theme-factory-` Static ID prefix, and the switcher script.
 
-Re-running the installer is safe: it detects its own previous install and upgrades in place rather than
-duplicating.
+It doesn't touch your pages, processes, items, or any file it didn't create. It records a SHA-256 for each file it owns.
+Running the installer again is safe: it finds its previous install and upgrades in place.
+
+### Very large apps
 
 Each SQLcl call stops after 30 minutes. For a very large app, set `THEME_FACTORY_SQLCL_TIMEOUT` to a higher number of
 seconds. If a call is stopped during the import, check the app and restore the backup if it needs it.
-
-### Install all themes at once (with switcher)
-
-To install every discovered Theme Factory package into any APEX application with the switcher in a single command:
-
-```bash
-# Dry-run first (exports, stages, and validates via SQLcl without writing to DB):
-scripts/install-all-themes.sh --app-id <APP_ID>
-
-# Apply live to the database:
-scripts/install-all-themes.sh --app-id <APP_ID> --apply
-```
-
-Options:
-- `--app-id <ID>`: Target APEX application ID (required).
-- `--connection <CONN>`: SQLcl saved connection name (default: `docker-demo`).
-- `--workspace <WS>`: Target APEX workspace name (default: `DEMO`).
-- `--themes <list>`: Comma-separated themes, built fresh from `sample-themes/` (default: every discovered theme).
-- `--packages <zip,...>`: Install these exact archives instead.
-- `--with-switcher` / `--without-switcher`: Control the navigation-bar switcher (default: `--with-switcher`). A navigation bar that is not a static list is refused, exactly like the single-theme installer — see `MANUAL-INSTALL.md`. This is why app 102 (SQL navigation bar) is served by `scripts/sync-static.sh` instead.
-- `--backup-dir <dir>`: Backup root (default: `theme-factory-backups/`).
-- `--apply`: Import into the database (default is a dry run). The last theme listed becomes the default.
-
-It runs the same guarded transaction as `scripts/theme.sh install`: APEX 26.1.x or 26.2.x / UT 42 / Iris preflight,
-checksum verification, backup, SQLcl validation, drift guard and post-import check.
-
-### Uninstall
-
-```bash
-./uninstall.sh --connection <CONN> --workspace <WS> --app-id <ID>            # dry run
-./uninstall.sh --connection <CONN> --workspace <WS> --app-id <ID> --apply    # remove
-```
-
-Same confirmation and the same backup. It removes only what `registry.json` says it owns, and it refuses to
-proceed if any owned file has been edited since install — so a hand-tweaked file is never silently deleted.
-
-If two Theme Factory packages are installed, removing one leaves the other working and re-points the default
-at it. Removing the last one leaves the app on bare Iris, with the bootstrap regions and file URLs gone and the
-navigation style put back. Removing a theme ends active sessions too, for the same reason an install does.
-
-### Undo an install (restore)
-
-The backup taken before an install holds the application's source as it was:
-
-```bash
-# from the extracted package directory
-./restore.sh --connection <CONN> --workspace <WS> --app-id <ID> \
-  --backup ./theme-factory-backups/<WS>-<ID>/<TIMESTAMP> --apply
-```
-
-This replaces the whole application with the backup. Anything you changed in the app *after* the install
-would be lost. The tool checks for that and refuses unless you pass `--discard-later-changes`, which is there
-to make the loss a decision rather than a surprise. A backup whose contents have been modified is rejected
-outright.
-
-### Installing by hand
-
-No SQLcl, or a locked-down environment? `MANUAL-INSTALL.md` inside every package lists each step through the
-App Builder UI — which files to upload, the exact region to create, and the CSS file URL to add — plus the
-matching uninstall steps.
-
----
-

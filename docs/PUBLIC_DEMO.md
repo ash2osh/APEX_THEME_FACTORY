@@ -74,6 +74,9 @@ the rest of the demo still works.
 
 This creates the tables in your workspace's schema, so use a workspace that doesn't already hold important data.
 
+If the install isn't offered, run the two scripts in `supporting-objects/install-scripts/` from the ZIP in
+**SQL Workshop > SQL Scripts**: `create-tables.sql` first, and then `create-airports-table.sql`.
+
 ## Step 5: Check it as a visitor
 
 Sign out of App Builder, or use a private browser window, and open:
@@ -132,8 +135,15 @@ go to **Supporting Objects**, and choose **Deinstall**.
 | The import says the theme or version isn't supported | The workspace is older than APEX 26.1. Use a newer one. |
 | A sign-in page appears for visitors | Check that you used the `/r/` URL from Step 5. Then check **Shared Components > Security** in the app. |
 | Pages show ORA-00942 | Do Step 4. |
-| The installed supporting objects fail on the airports table | Your database may lack spatial types. The rest of the sample data still works, and only the map pages are affected. |
+| The airports script fails | Your database may lack spatial types. The rest of the sample data still works, and only the map pages are affected. |
 | The themes don't appear | Open the browser's developer tools. `css/app.css` should load without errors. If it doesn't, import the ZIP again. |
+
+## What has been tested
+
+The ZIP was imported with SQLcl, and the app and its sample-data scripts were checked on APEX 26.1 and 26.2. App
+Builder's upload page and its **Install Supporting Objects** wizard weren't run. The ZIP has the same layout as
+Oracle's own sample-app ZIPs, which Oracle documents for that page. If the wizard behaves differently from Step 3 or
+Step 4, follow what it shows and please open an issue.
 
 ## Licences
 

@@ -3,6 +3,10 @@
 This guide is for theme authors. It covers how a theme is made, how to check it, and how to release it.
 To install a theme into an app, read [Get started](GET_STARTED.md) instead.
 
+The commands use `scripts/theme.sh`. In Windows PowerShell, `scripts/theme.ps1` takes the same options. The
+`scripts/apex-*.sh`, `sync-static.sh`, `apply-theme.sh` and `reset-consumer.sh` scripts need bash, so on Windows run
+them in Git Bash or WSL.
+
 ## Building a theme
 
 Work in this repository. A theme lives in one folder and nothing outside it is theme-specific.
@@ -199,7 +203,7 @@ scripts/theme.sh release midnight --offline  # check + package only, seconds
    denies framing cannot run the 375 px row.
 
 It prints `RELEASE theme=<name> status=PASS|FAIL` and nothing is recorded. The smoke needs SQLcl, the browser
-daemon (Firefox by default: start Firefox from its launcher, then `python3 tools/firefox_mcp_daemon.py`; see
+daemon (Firefox by default: start Firefox with the flags in that guide, then `python3 tools/firefox_mcp_daemon.py`; see
 [docs/FIREFOX_DEVTOOLS_MCP.md](FIREFOX_DEVTOOLS_MCP.md)) and a clean 9010. Never a direct MCP call: each new connection
 can raise a consent prompt. If 9010 already carries packages, it refuses. Create or reset 9010 with:
 

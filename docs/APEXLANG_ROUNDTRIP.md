@@ -1,9 +1,12 @@
 # APEXLang round-trip with SQLcl (`docker-demo`)
 
-SQLcl 26.2.1 + APEX 26.1.4. Saved connection: `docker-demo` (user `DEMO`, workspace `DEMO`).
-Application **102** exports to `applications/ut/` (alias `UT`).
+This page is for working on the reference app. To install a theme in your own app, read [Get started](GET_STARTED.md).
 
-## Commands (verified 2026-09-13)
+SQLcl 26.x with APEX 26.1 or 26.2. Application **102** exports to `applications/ut/` (alias `UT`). The scripts default
+to the saved connection `docker-demo` and workspace `DEMO`. Set `APEX_CONN`, `APEX_APP_ID` and `APEX_WORKSPACE` to use
+your own.
+
+## Commands
 
 ```bash
 scripts/apex-export.sh      # apex export -applicationid 102 -exptype APEXLANG -split -dir applications -skipexportdate
@@ -20,7 +23,7 @@ apex import   -input /abs/path/applications/ut -workspace DEMO
 ```
 
 Notes
-- `-split -dir <parent>` creates `<parent>/<alias-lowercase>/` (here `applications/ut/`), 202 files, ~6 MB.
+- `-split -dir <parent>` creates `<parent>/<alias-lowercase>/` (here `applications/ut/`).
 - `-skipexportdate` keeps diffs clean. Add `-force` / `-overwrite-files` to refresh an existing export.
 - Validate is clean (0 warnings) since 2026-09-14 — the former `p00000-global-page.apx … Slot regionBody is deprecated` warning went away with `P0_THEME_STYLE_ID`. Any warning is now yours.
 - **Validate and import must run in the same SQLcl session** (apexlang skill rule). `scripts/apex-import.sh` does this.
@@ -35,7 +38,7 @@ Notes
 applications/ut/
 ├── application.apx                 # app UT ( ... ) — name, nav, auth, UI, theme ref
 ├── page-groups.apx
-├── pages/pNNNNN-<alias>.apx        # one file per page (122)
+├── pages/pNNNNN-<alias>.apx        # one file per page
 ├── shared-components/
 │   ├── themes/universal-theme/theme.apx   # baseTheme: ut-26.1, currentThemeStyle: @/iris
 │   ├── static-files.apx + static-files/  # app static files (#APP_FILES#)
@@ -47,5 +50,5 @@ applications/ut/
 ```
 
 Editing rules: spec §40 — smallest change, preserve formatting/IDs, validate, inspect runtime.
-Grammar/property questions: the global `apex` skill (`~/.claude/skills/apex/apexlang`) has the
-compiler-truth tools (`node tools/query-valid-props.mjs`, `apexctl.mjs apexlang format`).
+For grammar and property questions, `apex validate` is the final word. If you use the optional `apex` agent skill, it
+has tools that list the valid properties.

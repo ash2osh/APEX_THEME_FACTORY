@@ -6,16 +6,15 @@ browser asks for permission once instead of on every call.
 
 ## Start Firefox first
 
-Start Firefox from its launcher (on this PC: the Firefox entry in the application menu). The launcher
-passes both flags the MCP needs:
+Start Firefox with both of the flags the MCP needs. Use a launcher or a shell alias so you don't have to retype them:
 
-    /snap/bin/firefox --remote-debugging-port=9333 --marionette
+    firefox --remote-debugging-port=9333 --marionette
 
 - `--remote-debugging-port=9333` opens the WebDriver BiDi endpoint on port 9333.
 - `--marionette` opens Marionette, which the MCP attaches to on port 2828 (its default).
 
 If Firefox was started with only one of the flags, the MCP answers with `No Marionette listener` or asks
-for both flags. Start Firefox again from the launcher.
+for both flags. Close Firefox and start it again with both flags.
 
 > Marionette sets `navigator.webdriver` and other fingerprint signals. Restart Firefox normally after the
 > checks. The MCP can reach every tab, cookie and login in the profile it attaches to, so use a dedicated
@@ -82,6 +81,6 @@ know is refused.
 
 | Message | Cause and fix |
 |---|---|
-| `No Marionette listener on 127.0.0.1:2828` | Firefox is not running with `--marionette`. Start it from its launcher. |
+| `No Marionette listener on 127.0.0.1:2828` | Firefox is not running with `--marionette`. Close it and start it with both flags. |
 | `Firefox DevTools daemon is not running` | Start `python3 tools/firefox_mcp_daemon.py` in its own terminal. |
 | `did not answer ... within 60s` | The MCP is waiting for Firefox or another client holds the connection. Close other Firefox MCP instances. |

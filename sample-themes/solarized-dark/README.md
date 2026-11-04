@@ -9,6 +9,11 @@
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |
 
+## Fonts
+
+The bundled IBM Plex Sans and IBM Plex Mono files are subset and renamed "TF Solarized Sans" and "TF Solarized Mono", as
+the SIL Open Font License requires for modified files. See `licenses/`.
+
 ## Preview
 
 | Getting Started (1440) | Interactive Report (1920) | Modal dialog (1920) | Mobile nav (375) |
@@ -81,7 +86,10 @@ Solarized's dark hierarchy is base1 / base0 / base01. On the `#073642` card surf
 
 Accents kept raw for icons, markers, highlight bars and large text (≥ 3:1): cyan 4.1, green 4.1, yellow 4.1 on cards.
 
-## Apply / switch
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md). The commands below are for the
+reference app in this repository.
 
 ```bash
 scripts/apply-theme.sh solarized-dark   # make it the app default (page-0 DEFAULT + template options from theme.json)

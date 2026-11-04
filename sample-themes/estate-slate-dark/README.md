@@ -83,7 +83,10 @@ Universal Theme 42 / Iris is natively a light theme with hundreds of literal col
 | Emerald Telemetry Badge | `#34d399` (Emerald-400) | `#064e3b` (Emerald-900) | **6.22:1** | Pass (AA ≥ 4.5:1) |
 | Transit Cyan Badge | `#22d3ee` (Cyan-400) | `#164e63` (Cyan-900) | **6.15:1** | Pass (AA ≥ 4.5:1) |
 
-## Apply / Switch
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md). The commands below are for the
+reference app in this repository.
 
 ```bash
 # Set as app default (page-0 DEFAULT + declarative template options)

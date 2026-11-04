@@ -17,3 +17,7 @@ not the inherited slate shell used by the original factory samples.
   `ofl/cairo/Cairo[slnt,wght].ttf`, instantiated at `slnt=0`.
 - License: SIL Open Font License 1.1 in `licenses/OFL.txt`.
 - Runtime family: `ThemeFactory-cobalt-press-body`; Font APEX icons remain isolated.
+
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md).

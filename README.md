@@ -1,130 +1,107 @@
 # APEX Theme Factory
 
-Change how an Oracle APEX app looks, without changing the app itself.
+**Eight ready-made themes for Oracle APEX. Change how an app looks without changing the app.**
 
-This project builds **themes** for Oracle APEX. A theme is a small CSS package. You install it into an APEX app
-with one command. Your pages, regions and business logic stay the same. If you remove the theme, the app goes
-back to the standard Universal Theme look.
+Each theme is a small CSS package that sits on top of Universal Theme. Your pages, regions and business logic stay
+as they are. Remove the theme, and the app goes back to the standard look.
 
-## Which APEX version do I need?
-
-| APEX version | Status |
+| | |
 |---|---|
-| 26.1.x | Supported |
-| 26.2.x | Supported |
+| [![Carbon Volt](sample-themes/carbon-volt/preview/cover.jpg)](sample-themes/carbon-volt/)<br>**Carbon Volt** (dark)<br>Graphite surfaces with acid lime and cyan. | [![Citrus Pop](sample-themes/citrus-pop/preview/cover.jpg)](sample-themes/citrus-pop/)<br>**Citrus Pop** (light)<br>Fresh aqua, deep teal and tangerine. |
+| [![Cobalt Press](sample-themes/cobalt-press/preview/cover.jpg)](sample-themes/cobalt-press/)<br>**Cobalt Press** (light)<br>Warm paper with cobalt and vermilion. | [![Estate Slate](sample-themes/estate-slate/preview/cover.jpg)](sample-themes/estate-slate/)<br>**Estate Slate** (light)<br>Corporate slate and champagne amber. |
+| [![Estate Slate Dark](sample-themes/estate-slate-dark/preview/cover.jpg)](sample-themes/estate-slate-dark/)<br>**Estate Slate Dark** (dark)<br>Deep slate with amber and emerald. | [![Linen](sample-themes/linen/preview/cover.jpg)](sample-themes/linen/)<br>**Linen** (light)<br>Quiet white surfaces and one teal accent. |
+| [![Solarized Dark](sample-themes/solarized-dark/preview/cover.jpg)](sample-themes/solarized-dark/)<br>**Solarized Dark** (dark)<br>Terminal cyan and deep Solarized blues. | [![Velvet Signal](sample-themes/velvet-signal/preview/cover.jpg)](sample-themes/velvet-signal/)<br>**Velvet Signal** (dark)<br>Aubergine depth and fuchsia signals. |
 
-Both versions use **Universal Theme 42** with the **Iris** style. Iris is the only style these themes support.
-New apps on APEX 26.1 or later already use it. An app from an older APEX version needs a theme refresh first:
-see [Is my app ready?](docs/GET_STARTED.md#is-my-app-ready)
+All eight meet WCAG AA text contrast on the reference app's pages, except its palette demo page (see
+[Known issues](#known-issues)). All of them work on phones and respect the reduced-motion setting. Six bundle fonts
+that include Arabic. You can install one theme, or install several and let people switch from a menu.
 
-The installer checks all of this first, and it stops when the app is not supported.
+## Requirements
 
-## Start here
-
-| I want to… | Read this |
+| You need | Details |
 |---|---|
-| Install a theme in my APEX app (start here if you are new) | [Get started](docs/GET_STARTED.md) |
-| Remove a theme, or undo an install | [Undo an install](docs/GET_STARTED.md#undo-an-install-restore) |
-| Put a live demo of all the themes on public APEX hosting | [Put the demo online](docs/PUBLIC_DEMO.md) |
-| Build my own theme | [Building and releasing a theme](docs/BUILDING_A_THEME.md) |
-| Release a theme | [Releasing a theme](docs/BUILDING_A_THEME.md#releasing-a-theme) |
+| Oracle APEX 26.1 or 26.2 | With Universal Theme 42 and the **Iris** style. New apps on 26.1 or later already use it. An older app needs [a theme refresh](docs/GET_STARTED.md#is-my-app-ready). |
+| SQLcl, with a saved connection | [How to set it up](docs/GET_STARTED.md#what-you-need). |
+| Python 3.10 or newer | Windows, macOS and Linux all work. |
+
+No SQLcl? You can [install a theme by hand](docs/GET_STARTED.md#installing-by-hand) in App Builder.
 
 ## Quick start
 
-It works on Windows, macOS and Linux. You need an APEX app, a saved SQLcl connection, Python 3.10 or newer, and a theme package from the
-[Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases). The
-[Get started guide](docs/GET_STARTED.md) explains each step.
+Download a theme ZIP from the [Releases page](https://github.com/ash2osh/APEX_THEME_FACTORY/releases), extract it,
+and open a terminal in the extracted folder.
 
-1. **Check your APEX version.** Run this in SQL:
+**On Linux and macOS:**
 
-   ```sql
-   select version_no from apex_release;
-   ```
+```bash
+./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>            # preview, changes nothing
+./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply    # install
+```
 
-2. **Preview the install.** This changes nothing:
+**In Windows PowerShell:**
 
-   ```bash
-   ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>
-   ```
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID>            # preview, changes nothing
+powershell -ExecutionPolicy Bypass -File .\install.ps1 --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply    # install
+```
 
-3. **Install for real.** You type the app ID to confirm:
+The installer asks you to type the app ID before it changes anything. The [Get started guide](docs/GET_STARTED.md)
+covers every step.
 
-   ```bash
-   ./install.sh --connection <CONNECTION> --workspace <WORKSPACE> --app-id <APP_ID> --apply
-   ```
+## Before you install on a live app
 
-In Windows PowerShell, run `powershell -ExecutionPolicy Bypass -File .\install.ps1` with the same options.
+The installer previews first, saves a backup of your app's source, and only adds its own files and regions. It also
+sets the navigation menu style, and it puts that back when you remove the last theme.
 
-`install.sh` and `install.ps1` come inside each theme package. The [Get started guide](docs/GET_STARTED.md) also shows how to build
-one from this repository, and how to install by hand in App Builder.
+But APEX imports the whole app in one step, so:
 
-## Safe by design
+- **Every active session of the app ends.** Install in a quiet period.
+- **Private saved reports and role assignments stay.**
+- **An app with translated text is refused,** because the import would erase that text. Install those
+  [by hand](docs/GET_STARTED.md#installing-by-hand).
 
-- **Preview first.** The installer does nothing until you add `--apply`.
-- **Backup first.** Before it changes anything, it saves your app's source.
-- **Only its own items.** It adds its own files and regions, and it never edits your pages, processes or items.
-  It also sets the navigation menu style, and it puts that back when you remove the last theme.
-- **Easy undo.** You can remove the theme, or restore the backup.
+Try it on a copy of your app first. [Get started](docs/GET_STARTED.md#before-you-install-on-a-shared-or-production-app)
+has the details.
 
-**An install ends every active session of the app**, because APEX imports the whole app in one step. Private saved
-reports and role assignments stay. **A translated app is refused**, because an import would erase its translated text:
-install those by hand. Read
-[Before you install on a shared or production app](docs/GET_STARTED.md#before-you-install-on-a-shared-or-production-app).
+## Guides
 
-## The eight themes
-
-|   |   |
+| I want to… | Read |
 |---|---|
-| [![Carbon Volt](sample-themes/carbon-volt/preview/cover.jpg)](sample-themes/carbon-volt/) | [![Citrus Pop](sample-themes/citrus-pop/preview/cover.jpg)](sample-themes/citrus-pop/) |
-| **Carbon Volt** (Dark) | **Citrus Pop** (Light) |
-| [![Cobalt Press](sample-themes/cobalt-press/preview/cover.jpg)](sample-themes/cobalt-press/) | [![Estate Slate](sample-themes/estate-slate/preview/cover.jpg)](sample-themes/estate-slate/) |
-| **Cobalt Press** (Light) | **Estate Slate** (Light) |
-| [![Estate Slate Dark](sample-themes/estate-slate-dark/preview/cover.jpg)](sample-themes/estate-slate-dark/) | [![Linen](sample-themes/linen/preview/cover.jpg)](sample-themes/linen/) |
-| **Estate Slate Dark** (Dark) | **Linen** (Light) |
-| [![Solarized Dark](sample-themes/solarized-dark/preview/cover.jpg)](sample-themes/solarized-dark/) | [![Velvet Signal](sample-themes/velvet-signal/preview/cover.jpg)](sample-themes/velvet-signal/) |
-| **Solarized Dark** (Dark) | **Velvet Signal** (Dark) |
+| Install a theme in my app | [Get started](docs/GET_STARTED.md) |
+| Remove a theme, or undo an install | [Undo an install](docs/GET_STARTED.md#undo-an-install) |
+| Put a live demo of all the themes online | [Put the demo online](docs/PUBLIC_DEMO.md) |
+| Build my own theme | [Building and releasing a theme](docs/BUILDING_A_THEME.md) |
+| Fix something or add a theme to this project | [Contributing](CONTRIBUTING.md) |
+| Report a security problem | [Security](SECURITY.md) |
+| See what changed | [Changelog](CHANGELOG.md) |
 
-Five of the themes bundle Arabic-capable fonts.
+## How it was tested
 
-## What was tested
-
-Before this release, the project was checked like this:
-
-- **Every page of the reference app:** 123 pages in all eight themes on APEX 26.1 and 26.2, at desktop and phone width, for WCAG AA text contrast, layout overflow and console errors, with stock Iris as the control.
-- **Real installs:** install, upgrade, uninstall and restore against a real database.
-- **Right-to-left:** a 14-page sample in all eight themes, using the reference app's own RTL switch. It wasn't tested with a fully translated Arabic app.
+| Check | Coverage |
+|---|---|
+| Every page of the reference app | 123 pages, all eight themes, APEX 26.1 and 26.2, desktop and phone width: text contrast, layout overflow and console errors, with stock Iris as the control |
+| Real installs | All eight themes on APEX 26.1 and 26.2. Upgrade, uninstall and restore on 26.2. All run on Linux |
+| Install scripts on Windows and macOS | Run in CI against a simulated SQLcl, not a real database |
+| Right-to-left | A 14-page sample in all eight themes, using the reference app's RTL switch, not a fully translated Arabic app |
+| Printing | Checked on a dark theme: dark themes print with their background so the text stays readable, which uses a lot of ink |
 
 ## Known issues
 
-These happen with stock Iris too, so they aren't theme defects. You see them only if you browse the reference app.
+You only see these if you browse the reference app. They also happen with stock Iris, so they aren't theme defects.
 
 | Where | What happens |
 |---|---|
-| Sample data on a clean install | Pages that query the `EBA_UT_*` sample tables (for example 1410, 1411, 1412, 1710, 1720, 1908, 3001 and 3110) show ORA-00942 when the tables are missing. |
-| Dialog pages 1111, 1112 and 1912–1922 | Opened directly, they show APEX's dialog-template error. |
-| Palette page 6302 | Palette colours used as text fail AA. Only a change to the palette itself could fix that. |
-| Page 3110 | Automated contrast checks flag card titles over images. This is a false alarm: the check can't see the image. |
+| Palette page 6302 | Palette colours used as text fail AA contrast. Only a change to the palette itself could fix that. |
+| Page 3110 | Automated contrast checks flag card titles over images. This is a false alarm, because the check can't see the image. |
+| Dialog pages 1111, 1112 and 1912–1922 | Opened by direct URL, they show APEX's dialog-template error. They work when opened from their buttons. |
+| Pages using `EBA_UT_*` tables | They show an error until you [install the sample data](docs/PUBLIC_DEMO.md#step-4-install-the-sample-data). |
 | Map page 1906 | The map needs internet access for its tiles. |
-
-Printing a dark theme uses a lot of ink: it prints with its dark background, so the text stays readable.
-
-The 26.2 copy of the reference app was moved to base theme `ut-26.2` by hand. The source here stays on `ut-26.1`,
-which imports and runs on both versions. This affects only people working on the reference app.
-
-## For developers
-
-```bash
-tests/run-offline.sh    # offline checks; ends with OFFLINE status=PASS
-```
-
-Live checks need a database and a browser. See [Releasing a theme](docs/BUILDING_A_THEME.md#releasing-a-theme).
-To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md). To report a security problem, read [SECURITY.md](SECURITY.md).
-Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Third-party material keeps its own terms: see [NOTICE.md](NOTICE.md).
+The themes and tooling are [MIT licensed](LICENSE). Bundled fonts and other third-party material keep their own
+terms, listed in [NOTICE.md](NOTICE.md).
 
-The reference app in `applications/ut/` is based on Oracle's sample app, which Oracle publishes under the Universal
-Permissive License 1.0. Oracle's Universal Theme runtime files are not redistributed:
-`scripts/fetch-vendor.sh --reference` copies them from your own APEX instance.
+The reference app in `applications/ut/` is based on Oracle's Universal Theme Reference sample, which Oracle publishes
+under the Universal Permissive License 1.0. Oracle's Universal Theme runtime files aren't in this project: they ship
+with APEX. This project isn't affiliated with or endorsed by Oracle.

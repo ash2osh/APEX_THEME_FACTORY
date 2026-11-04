@@ -1,4 +1,6 @@
-# sample-themes
+# Theme sources
+
+To install a theme, read [Get started](../docs/GET_STARTED.md). This page is for people changing the themes.
 
 One folder per theme package — the only editable copy of a theme. No symlinks: `scripts/sync-static.sh`
 assembles `static-files/css|js/**` into the APEXLang export, flattens each `sample-themes/<name>/css/theme.css`
@@ -72,4 +74,4 @@ Conventions
 - Custom fonts: optional self-hosted WOFF2 assets (`wOF2` signature) under `fonts/` with licenses under `licenses/`. External font URLs and data URLs are forbidden. Manifest declares `body` (required if fonts used), optional `heading` and `mono`. Family identifiers are package-prefixed (`ThemeFactory-<name>-<role>`) and Font APEX icons remain untouched.
 - `preview/` holds `cover.jpg` plus a few curated `.jpg` captures; iteration PNGs never get committed
   (`.gitignore`).
-- `scripts/theme.sh release <name>` is the release: check, package, live smoke (see the root README).
+- `scripts/theme.sh release <name>` is the release: check, package, live smoke (see [Releasing a theme](../docs/BUILDING_A_THEME.md#releasing-a-theme)).

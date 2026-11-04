@@ -19,8 +19,9 @@
 - Windows PowerShell: every package has `install.ps1`, `uninstall.ps1` and `restore.ps1`, and the repository has
   `scripts/theme.ps1`, `install-all-themes.ps1` and `build-demo.ps1`. CI runs them on Windows and macOS.
 - `restore.sh` replaces the long `python3 -m` restore command.
+- Get started now explains how to set up SQLcl and is shorter, and the README opens with the themes.
 
-### Themes (each theme's version goes up)
+### Themes (Solarized Dark is now 1.3.0, and the others are 1.2.0)
 
 - Citrus Pop, Cobalt Press, Estate Slate: the current item in a top menu bar now meets AA contrast (it was 2.3:1 to 3.25:1).
 - Estate Slate: links on the pale info band now meet AA contrast (it was 4.3:1).

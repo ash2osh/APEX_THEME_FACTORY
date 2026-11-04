@@ -66,7 +66,10 @@ Per design and system requirements, this package embeds **IBM Plex Sans Arabic**
 | Interactive Grid Row Hover | `#1e293b` | `#f1f5f9` (Slate-100 Hover) | **13.01:1** | Pass (AA ≥ 4.5:1) |
 | Emerald Status Pill | `#065f46` (Emerald-800) | `#d1fae5` (Emerald-100) | **5.38:1** | Pass (AA ≥ 4.5:1) |
 
-## Apply / Switch
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md). The commands below are for the
+reference app in this repository.
 
 ```bash
 # Set as app default (page-0 DEFAULT + declarative template options)

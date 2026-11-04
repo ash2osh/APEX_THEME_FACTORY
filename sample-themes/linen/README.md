@@ -8,7 +8,6 @@
 | Direction | "Quiet product": white chrome, hairline borders, flat 8px surfaces, tighter density, Iris teal `#00688c` reserved for actions and selection |
 | Palette / font | Iris palette and Iris' system font stack, untouched — every colour is an Iris token alias (Iris 26.1.4 never renders Oracle Sans; pitfalls §1.1b) |
 | Scope | app-wide, one CSS layer; no page-level edits |
-| Applied to app 102 | 2026-09-13 (import `2eb072f` + this package) |
 
 ## Preview
 
@@ -56,7 +55,10 @@ css {
 navigationMenu { templateOptions: [ … t-TreeNav--styleB ] }   # Side Navigation Menu → Style: Style B
 ```
 
-## Apply / switch
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md). The commands below are for the
+reference app in this repository.
 
 ```bash
 scripts/apply-theme.sh linen      # make it the app default (page-0 DEFAULT + template options from theme.json)

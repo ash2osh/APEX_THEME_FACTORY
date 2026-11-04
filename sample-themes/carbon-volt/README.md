@@ -17,3 +17,7 @@ faces and complete Iris dark-token coverage remain package-owned.
   `ofl/notokufiarabic/NotoKufiArabic[wght].ttf`.
 - License: SIL Open Font License 1.1 in `licenses/OFL.txt`.
 - Runtime family: `ThemeFactory-carbon-volt-body`; Font APEX icons remain isolated.
+
+## Use this theme
+
+To install this theme in your own app, follow [Get started](../../docs/GET_STARTED.md).

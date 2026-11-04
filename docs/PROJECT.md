@@ -57,6 +57,7 @@ APEX_THEME_FACTORY/
 | Firefox DevTools daemon (default; `--connect-existing` to the user's running Firefox, Marionette 2828) | runtime truth: DOM, console, network, screenshots | [FIREFOX_DEVTOOLS_MCP.md](FIREFOX_DEVTOOLS_MCP.md) |
 | Chrome DevTools daemon (`THEME_FACTORY_BROWSER=chrome`; `--autoConnect` to the user's running Chrome) | the same checks in Chrome; theme cover images | [CHROME_DEVTOOLS_MCP.md](CHROME_DEVTOOLS_MCP.md) |
 | SQLcl `docker-demo` | `apex export / validate / import` in APEXLang | [APEXLANG_ROUNDTRIP.md](APEXLANG_ROUNDTRIP.md) |
+| `scripts/build-demo.sh` | Builds the public demo ZIP from app 102 | [PUBLIC_DEMO.md](PUBLIC_DEMO.md) |
 | `scripts/install-all-themes.sh` | Installs any/all theme packages into any APEX application with switcher | [README.md](../README.md) |
 | `scripts/theme.sh` | Recipe scaffold, fonts, author checks, covers, and `release` (check + package + live smoke) | [BUILDING_A_THEME.md](BUILDING_A_THEME.md#releasing-a-theme) |
 | `scripts/fetch-vendor.sh` | pulls Alpine.js into `static-files/js/vendor` and (`--reference` alone) the UT/Iris CSS+JS into the gitignored `.agents/knowledge/reference` for offline grep | [`.agents/knowledge/reference/README.md`](../.agents/knowledge/reference/README.md) |

@@ -235,6 +235,7 @@ docs/                   spec, design system, components, tooling guides
 | `scripts/apply-theme.sh <name>` | Set the app's default theme |
 | `scripts/install-all-themes.sh` | Install several themes into any consumer app |
 | `scripts/reset-consumer.sh` | Create or reset the release test app 9010 |
+| `scripts/build-demo.sh` | Build the public demo ZIP ([Put the demo online](PUBLIC_DEMO.md)) |
 
 ## Verification
 

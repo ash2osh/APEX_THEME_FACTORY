@@ -30,6 +30,11 @@
 - Adding a theme no longer fails two tests that counted the themes.
 - Pushing a `v*` tag builds every package and creates a draft GitHub release.
 
+### Public demo
+
+- `scripts/build-demo.sh` builds one ZIP you can import on public APEX hosting: the reference app with all eight themes,
+  under its own name, with a new session-state protection salt. [Put the demo online](docs/PUBLIC_DEMO.md) is the guide.
+
 ### Repository
 
 - Oracle's Universal Theme runtime files and the third-party agent skills are removed from the repository and its

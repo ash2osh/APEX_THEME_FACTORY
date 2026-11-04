@@ -25,6 +25,7 @@ The installer checks all of this first, and it stops when the app is not support
 |---|---|
 | Install a theme in my APEX app (start here if you are new) | [Get started](docs/GET_STARTED.md) |
 | Remove a theme, or undo an install | [Undo an install](docs/GET_STARTED.md#undo-an-install-restore) |
+| Put a live demo of all the themes on public APEX hosting | [Put the demo online](docs/PUBLIC_DEMO.md) |
 | Build my own theme | [Building and releasing a theme](docs/BUILDING_A_THEME.md) |
 | Release a theme | [Releasing a theme](docs/BUILDING_A_THEME.md#releasing-a-theme) |
 

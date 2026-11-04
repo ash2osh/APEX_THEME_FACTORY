@@ -30,6 +30,8 @@ jobs:
             scripts/theme.sh release "$name" --offline
             cp dist/"$name"/"$name"-*.zip release/
           done
+          scripts/build-demo.sh --output-dir release
+          rm release/*.sha256
           (cd release && sha256sum *.zip > SHA256SUMS.txt)
       - name: Create a draft release
         env:

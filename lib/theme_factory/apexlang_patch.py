@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import re
 import shutil
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import load_manifest
@@ -19,7 +19,7 @@ from lib.theme_factory.apexlang_state import (
     _sha256_file, inspect_export, read_install_state, read_registry_document,
     verify_package_ownership, verify_runtime_ownership,
 )
-from lib.theme_factory.static_files import MIME_BY_SUFFIX, file_block
+from lib.theme_factory.static_files import file_block
 
 
 
@@ -195,7 +195,7 @@ def plan_install(
 
     new_sf_blocks = []
     # Add files from staged_copies that go under shared-components/static-files/
-    for src_path, dst_path in staged_copies:
+    for _src_path, dst_path in staged_copies:
         rel_static = dst_path.relative_to(export_dir / "shared-components/static-files").as_posix()
         new_sf_blocks.append(file_block(rel_static) + "\n")
 

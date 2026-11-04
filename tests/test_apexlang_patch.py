@@ -460,7 +460,7 @@ class EmptyApplicationTargetTests(unittest.TestCase):
         self.assertIn("globalPage: 0", patch.after_files[Path("application.apx")])
 
     def test_find_matching_brace_handles_apostrophes_in_unquoted_text(self):
-        from lib.theme_factory.apexlang import _find_matching_brace
+        from lib.theme_factory.apexlang_parser import _find_matching_brace
         sample = """entry test (
     label: Test
     userDefinedAttributes {

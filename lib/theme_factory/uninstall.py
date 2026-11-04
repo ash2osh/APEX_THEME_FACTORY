@@ -2,12 +2,10 @@
 
 from dataclasses import dataclass
 import json
-import os
 from pathlib import Path
 import re
 import shutil
 import sys
-import tempfile
 from typing import List, Optional, Tuple
 
 from lib.theme_factory.apexlang import (
@@ -43,7 +41,7 @@ from lib.theme_factory.install import (
     require_supported_apex_version,
 )
 from lib.theme_factory.manifest import NAME_REGEX, SUPPORTED_BASE_THEMES
-from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
+from lib.theme_factory.sqlcl import SqlclClient
 
 
 @dataclass(frozen=True)
@@ -287,10 +285,11 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
 
     # Dry-run (target untouched: post-operation state == pre-export state)
     if not options.apply:
-        print(f"\nUninstall Summary:")
+        print("\nUninstall Summary:")
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
         print(f"  Theme:     {options.theme_name}")
+        print(f"  Staged Digest: {staged_digest}")
         print("  Backup:    none (dry run; --apply writes one before importing)")
         print("\nStatus: STAGED_ONLY (dry-run, no database changes applied)")
         return OperationReport(
@@ -302,7 +301,7 @@ def _run_uninstall(options: UninstallOptions, staging: list, state: dict) -> Ope
         )
 
     # Apply Confirmation
-    print(f"\nUninstall Confirmation:")
+    print("\nUninstall Confirmation:")
     print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
     print(f"  Workspace: {target_meta.workspace}")
     print(f"  Theme:     {options.theme_name}")
@@ -405,7 +404,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
     finally:
         shutil.rmtree(live_temp, ignore_errors=True)
 
-    print(f"\nRestore Preflight:")
+    print("\nRestore Preflight:")
     print(f"  App ID:        {target_meta.app_id} ({target_meta.name})")
     print(f"  Workspace:     {target_meta.workspace}")
     print(f"  Live Digest:   {live_digest}")
@@ -450,7 +449,7 @@ def run_restore(options: RestoreOptions) -> OperationReport:
         typed = ""
 
     if typed != str(options.app_id):
-        print(f"Confirmation mismatch. Target untouched.")
+        print("Confirmation mismatch. Target untouched.")
         print("Status: TARGET_UNTOUCHED")
         return OperationReport(
             status="TARGET_UNTOUCHED",

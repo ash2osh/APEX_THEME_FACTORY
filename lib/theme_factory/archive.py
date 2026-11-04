@@ -1,8 +1,6 @@
 """Deterministic package archive builder and checksum verifier."""
 
 import hashlib
-import json
-import os
 from pathlib import Path
 from pathlib import PurePosixPath
 import shutil

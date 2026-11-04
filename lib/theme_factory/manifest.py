@@ -101,7 +101,7 @@ def load_manifest(path: Path, package_root: Path) -> ThemeManifest:
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
-        raise PackageError(f"Invalid JSON in manifest {path}: {e}")
+        raise PackageError(f"Invalid JSON in manifest {path}: {e}") from e
 
     if not isinstance(raw, dict):
         raise PackageError("Manifest root must be an object")

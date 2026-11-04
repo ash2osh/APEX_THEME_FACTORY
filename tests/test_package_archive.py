@@ -23,7 +23,6 @@ class ArchiveTests(unittest.TestCase):
 
     def test_two_builds_are_byte_identical_and_single_theme(self):
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
-            env = dict(os.environ, THEME_FACTORY_ALLOW_DIRTY="1")
             old_val = os.environ.get("THEME_FACTORY_ALLOW_DIRTY")
             os.environ["THEME_FACTORY_ALLOW_DIRTY"] = "1"
             try:

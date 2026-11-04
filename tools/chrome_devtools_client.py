@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Client for the explicitly started, persistent Chrome DevTools MCP daemon (the Chrome backend of browser_client)."""
 import sys
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 from pathlib import Path
 
 try:

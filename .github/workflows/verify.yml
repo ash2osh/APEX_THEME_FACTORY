@@ -19,6 +19,8 @@ jobs:
           python-version: '3.12'
       - name: Install test dependencies
         run: python -m pip install --disable-pip-version-check --no-cache-dir -r tools/test-requirements.txt
+      - name: Lint (pyflakes and bugbear rules)
+        run: python -m ruff check --select F,B tools lib tests installer scripts
       - name: Offline gate
         run: tests/run-offline.sh
       - name: Live checks are local

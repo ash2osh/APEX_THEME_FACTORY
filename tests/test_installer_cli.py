@@ -349,9 +349,6 @@ class InstallerCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
 
     def test_templates_comply_with_heading_and_content_rules(self):
-        readme_tmpl = (self.repo_root / "installer/templates/README.md.tmpl").read_text(encoding="utf-8")
-        manual_tmpl = (self.repo_root / "installer/templates/MANUAL-INSTALL.md.tmpl").read_text(encoding="utf-8")
-
         replacements = {
             "THEME_NAME": "linen",
             "THEME_TITLE": "Linen",

@@ -5,7 +5,6 @@ import unittest
 from lib.theme_factory.css_bundle import (
     build_theme_css,
     flatten_css,
-    internal_family,
     render_font_css,
 )
 from lib.theme_factory.manifest import FontFace, FontRole, ThemeManifest

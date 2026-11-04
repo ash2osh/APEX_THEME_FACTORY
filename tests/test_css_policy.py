@@ -3,7 +3,7 @@ import shutil
 import tempfile
 import unittest
 
-from lib.theme_factory.css_policy import scan_package, PolicyViolation
+from lib.theme_factory.css_policy import scan_package
 
 
 class CssPolicyTests(unittest.TestCase):

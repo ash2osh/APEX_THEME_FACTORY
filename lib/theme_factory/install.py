@@ -26,7 +26,7 @@ from lib.theme_factory.apexlang import (
 from lib.theme_factory.archive import verify_package
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import SUPPORTED_BASE_THEMES, ThemeManifest
-from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
+from lib.theme_factory.sqlcl import SqlclClient
 
 
 @dataclass(frozen=True)
@@ -268,7 +268,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
 
     # 9. Dry-run mode (target untouched: post-operation state == pre-export state)
     if not options.apply:
-        print(f"\nTarget Summary:")
+        print("\nTarget Summary:")
         print(f"  App ID:    {target_meta.app_id} ({target_meta.name})")
         print(f"  Workspace: {target_meta.workspace}")
         print(f"  Alias:     {target_meta.alias}")
@@ -286,7 +286,7 @@ def _run_install(options: InstallOptions, staging: list, state: dict) -> Operati
         )
 
     # 10. Apply mode: Confirmation
-    print(f"\nTarget Application:")
+    print("\nTarget Application:")
     print(f"  App ID:        {target_meta.app_id} ({target_meta.name})")
     print(f"  Workspace:     {target_meta.workspace}")
     print(f"  Alias:         {target_meta.alias}")

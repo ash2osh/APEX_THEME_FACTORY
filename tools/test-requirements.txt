@@ -1,3 +1,5 @@
 # Test-only dependencies for the repository-wide offline verification gate.
+# ruff runs only in CI, as the pyflakes and bugbear lint step (.github/workflows/verify.yml).
 Pillow==12.3.0
 PyYAML==6.0.3
+ruff==0.17.0

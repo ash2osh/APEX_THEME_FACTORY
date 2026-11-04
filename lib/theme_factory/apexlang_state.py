@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import NAME_REGEX, SEMVER_REGEX, SUPPORTED_BASE_THEMES, validate_title

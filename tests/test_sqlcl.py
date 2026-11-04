@@ -1,12 +1,11 @@
 import os
 from pathlib import Path
-import re
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from lib.theme_factory.errors import PackageError
-from lib.theme_factory.sqlcl import SqlclClient, TargetMetadata
+from lib.theme_factory.sqlcl import SqlclClient
 
 
 class SqlclTests(unittest.TestCase):
@@ -33,7 +32,7 @@ class SqlclTests(unittest.TestCase):
 
     def test_workspace_validation(self):
         client = SqlclClient("demo")
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory():
             with self.assertRaises(PackageError):
                 client.preflight("demo", 102)  # Lowercase not allowed
             with self.assertRaises(PackageError):
@@ -43,7 +42,7 @@ class SqlclTests(unittest.TestCase):
 
     def test_app_id_validation(self):
         client = SqlclClient("demo")
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory():
             with self.assertRaises(PackageError):
                 client.preflight("DEMO", -1)
             with self.assertRaises(PackageError):

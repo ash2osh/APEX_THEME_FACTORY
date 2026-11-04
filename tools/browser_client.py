@@ -8,7 +8,6 @@ the reply, so the checks read the same text for either browser. The Chrome backe
 
 Select the browser with THEME_FACTORY_BROWSER=firefox|chrome or the `browser=` argument (default: firefox).
 """
-import base64
 import json
 import os
 from pathlib import Path
@@ -21,12 +20,12 @@ from typing import Any, Dict, Optional, Union
 
 try:
     from tools.browser_mcp_daemon import (
-        BACKENDS, CHROME, Backend, default_socket_path, is_tcp_address, parse_tcp_address,
+        BACKENDS, Backend, default_socket_path, is_tcp_address, parse_tcp_address,
         read_token, request_timeout_for, token_path,
     )
 except ModuleNotFoundError:  # direct execution from tools/
     from browser_mcp_daemon import (
-        BACKENDS, CHROME, Backend, default_socket_path, is_tcp_address, parse_tcp_address,
+        BACKENDS, Backend, default_socket_path, is_tcp_address, parse_tcp_address,
         read_token, request_timeout_for, token_path,
     )
 

@@ -7,7 +7,7 @@ description: Mandatory Oracle APEX Theme Factory architecture and safety boundar
 
 - Before theme, runtime, or import work read `docs/AGENT_SPEC.md` §1–§14 and §75–§79 (the rest is reference),
   `docs/PROJECT.md`, and the `.agents/knowledge/pitfalls.md` index.
-- Target only APEX 26.1.x, Universal Theme 42, and the Iris light style. Never switch styles or use Theme Roller.
+- Target APEX 26.1.x or 26.2.x, Universal Theme 42, and the Iris light style. Never switch styles or use Theme Roller.
 - Runtime truth comes from the user's running Firefox, through the Firefox DevTools MCP attached by the project daemon. Chrome DevTools is the second backend (`THEME_FACTORY_BROWSER=chrome`).
 - Reach it only through the project daemon: `python3 tools/browser_client.py <tool> '<json-args>'` (Firefox by default;
   `THEME_FACTORY_BROWSER=chrome` selects the Chrome daemon). Never call a browser MCP tool directly and never start a second

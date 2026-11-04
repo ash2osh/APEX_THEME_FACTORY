@@ -33,7 +33,7 @@ The application source is managed primarily through:
 
 You may also have access to:
 
-* Chrome DevTools MCP
+* Browser DevTools (project daemon: Firefox by default, Chrome optional)
 * the running APEX application
 * APEX Page Designer
 * APEX Builder
@@ -193,9 +193,9 @@ Different sources answer different questions. Do not treat them as interchangeab
 
 Figma, Stitch, screenshots, prototypes, or visual references answer: **What should this look and behave like?**
 
-### Chrome DevTools
+### Browser DevTools
 
-Chrome DevTools answers: **What is actually happening in the browser?**
+Browser DevTools answers: **What is actually happening in the browser?**
 
 Use it to inspect:
 
@@ -257,7 +257,7 @@ If the running application is available, inspect it.
 * Do not guess which CSS rule is winning.
 * Do not guess why an APEX component behaves differently after refresh.
 
-Use Chrome DevTools. Then connect the runtime element back to Page Designer and APEXLang.
+Use Browser DevTools. Then connect the runtime element back to Page Designer and APEXLang.
 
 ## 5. Observe Before Modifying
 
@@ -411,9 +411,9 @@ Example:
 
 For each section: inspect → implement → reload → visually verify → correct → continue.
 
-## 13. Chrome DevTools MCP Workflow
+## 13. Browser DevTools Workflow
 
-Chrome DevTools MCP is primarily an inspection, debugging, prototyping, and verification tool. Use it extensively.
+The browser daemon is primarily an inspection, debugging, prototyping, and verification tool. Use it extensively.
 
 You may use temporary DevTools modifications to test an idea.
 
@@ -1165,7 +1165,7 @@ Do not fight Oracle APEX. Understand it.
 * Use APEXLang as the declarative source.
 * Use CSS as the visual system.
 * Use Alpine.js as the custom interaction layer.
-* Use Chrome DevTools as runtime truth.
+* Use Browser DevTools (the project daemon) as runtime truth.
 * Use Page Designer to understand APEX semantics.
 * Use visual comparison to verify your work.
 * Use pitfalls to improve your knowledge over time.
@@ -1185,7 +1185,7 @@ Unless the task clearly requires a different workflow:
    Read relevant APEXLang, CSS, JS and component documentation.
 
 4. INSPECT RUNTIME
-   Open the actual application through Chrome DevTools MCP.
+   Open the actual application through the project browser daemon.
 
 5. MAP APEX COMPONENTS
    Identify the runtime components in Page Designer/APEXLang.

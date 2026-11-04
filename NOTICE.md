@@ -6,7 +6,7 @@ documentation. It does **not** cover the third-party material below, which keeps
 
 | Path | Owner | Terms |
 |---|---|---|
-| `applications/ut/` (except the Theme Factory pages, regions and static files listed below) | Oracle and/or its affiliates | Export of Oracle's *Universal Theme 26.1 Reference* sample application, including its demo scripts, data and images. Included only so the reference app can be re-imported for theme development; governed by your Oracle APEX licence, not by this repository's licence. |
+| `applications/ut/` (except the Theme Factory pages, regions and static files listed below) | Oracle and/or its affiliates | Export of Oracle's *Universal Theme reference* sample application (exported from APEX 26.1; the same application runs on APEX 26.2), including its demo scripts, data and images. Included only so the reference app can be re-imported for theme development; governed by your Oracle APEX licence, not by this repository's licence. |
 | `applications/ut/shared-components/static-files/css/`, `…/js/` | this repository | Assembled copies of `static-files/` and `sample-themes/*/css` (MIT). |
 | `sample-themes/*/fonts/`, `applications/ut/**/fonts/` | the font authors | SIL Open Font License 1.1 — see each theme's `licenses/`. |
 | `static-files/js/vendor/alpine*` | Alpine.js contributors | MIT — `static-files/js/vendor/alpine.LICENSE.md`. |

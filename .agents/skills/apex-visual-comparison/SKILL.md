@@ -10,7 +10,7 @@ A change is done when the runtime matches the target at matching viewports, not 
 
 ## Loop
 ```text
-reload → list_console_messages (no new errors) → resize_page to target width →
+reload → list_console_messages (no new errors) → measure at the target width (phone frame for 375) →
 take_screenshot → put beside target → list mismatches by priority (§10) →
 evaluate_script to measure the mismatched element → fix source → repeat
 ```

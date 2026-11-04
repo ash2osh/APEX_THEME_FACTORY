@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Base | APEX 26.1.4 · Universal Theme 42 · theme style **Iris** (unchanged) |
+| Base | APEX 26.1.x or 26.2.x · Universal Theme 42 · theme style **Iris** (unchanged) |
 | Direction | Aegis Concierge OS / Estate Ops Slate (Light): `#f8fafc` crisp slate canvas, `#ffffff` pure white cards and panels, `#0f172a` deep slate chrome, `#b45309` deep champagne amber actions, `#059669` telemetry emerald |
 | Typography | **IBM Plex Sans Arabic** (bundled OFL-1.1, weights 400, 500, 600, 700) with complete Arabic (Arabic, Persian, Urdu) and Latin coverage; JetBrains Mono / system monospace stack for tabular figures |
 | Palette | Restful corporate slate (`#f8fafc`, `#f1f5f9`, `#e2e8f0`, `#cbd5e1`, `#0f172a`), champagne amber directives (`#b45309`), emerald telemetry (`#059669`), and transit cyan (`#0891b2`) |

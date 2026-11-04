@@ -31,7 +31,7 @@ them in place: change the template (use `__NAME__` / `__PREFIX__`), run `scripts
 every member theme. A rule for one theme goes outside the fences.
 
 ## Writing a rule
-1. Inspect the runtime element (`chrome-devtools-mcp`): real class list, winning rule, specificity.
+1. Inspect the runtime element (`project-browser`): real class list, winning rule, specificity.
 2. Prototype in DevTools; measure.
 3. Write the rule with `--app-*` tokens; scope it; comment any UT-internal selector with why.
 4. Reload, console, screenshot, compare; check 4 widths.

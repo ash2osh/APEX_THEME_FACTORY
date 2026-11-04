@@ -8,7 +8,7 @@ description: Use when verifying tablet and mobile behaviour after any layout or 
 ## Core principle
 Desktop-only targets still ship on phones (spec §45). Universal Theme's responsive grid is the base; app CSS must not break it.
 
-## Check at 1440 · 1024 · 768 · 375 (`resize_page`)
+## Check at 1440 · 1024 · 768 · 375 (375 in the phone frame, `tools/phone_frame.py`)
 - `document.documentElement.scrollWidth > innerWidth` → horizontal overflow (find with `[...document.querySelectorAll('*')].filter(e => e.getBoundingClientRect().right > innerWidth)`).
 - Grid columns stack (UT `col-*` at < 640 px); custom `.app-*` grids need `@media (max-width: 640px)` fallbacks.
 - IG/IR: horizontal scroll inside the region only; IR "stretch" template option; column widths.

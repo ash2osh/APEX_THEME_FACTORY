@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Base | APEX 26.1.4 · Universal Theme 42 · theme style **Iris** (unchanged) |
+| Base | APEX 26.1.x or 26.2.x · Universal Theme 42 · theme style **Iris** (unchanged) |
 | Direction | VS Code Solarized Dark: `#002b36` editor canvas, `#073642` regions and cards, `#00212b` chrome, cyan `#2aa198` for actions and selection, blue for links |
 | Palette | Ethan Schoonover's Solarized (VS Code bundled theme); UI surfaces (input, hover, selected) are VS Code's own |
 | Scope | app-wide, one CSS layer scoped under `html.app-theme-solarized-dark`; no page-level edits (the reference app's own `.dm-*` demo surfaces are restated in `misc.css`) |

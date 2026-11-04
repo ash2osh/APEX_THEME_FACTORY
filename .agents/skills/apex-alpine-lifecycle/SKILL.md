@@ -9,7 +9,7 @@ description: Use when an Alpine component lives inside a refreshable APEX region
 APEX replaces DOM subtrees; Alpine initialises new subtrees automatically via MutationObserver. Never call `Alpine.start()` twice (spec §33). Bind lifecycle to APEX events, not polling (spec §34).
 
 ## Before attaching behaviour (spec §72)
-1. Which region owns the element? (`chrome-devtools-mcp`: `el.closest('.t-Region').id`)
+1. Which region owns the element? (`project-browser`: `el.closest('.t-Region').id`)
 2. Is that node replaced on refresh? Test: `apex.region(id).refresh()` then check `el.isConnected`.
 3. Which event signals completion? `apexafterrefresh` on the region (IG, IR, classic); **Cards regions** instead fire `tablemodelviewpagechange` (bubbles to `document`) after every render and load their first page *after* DOM-ready; `apexafterclosedialog` for dialogs; `apexpagesubmit` before submit. Verify the event at runtime first (`.agents/knowledge/pitfalls.md` §2.4).
 

@@ -27,7 +27,7 @@ Smallest correct declarative change, then validate (spec §40).
 2. Edit only that block; keep indentation, ordering and comments. LF endings.
 3. If unsure a property/value is legal → query compiler truth; templates are examples, not oracles.
 4. `scripts/apex-validate.sh`. New warning = your change.
-5. Import only when the user asks; then verify runtime with `chrome-devtools-mcp`.
+5. Import only when the user asks; then verify runtime with `project-browser`.
 
 ## Common mistakes
 - Adding a CSS class in Page Designer and forgetting to export/update `.apx` (source drift).

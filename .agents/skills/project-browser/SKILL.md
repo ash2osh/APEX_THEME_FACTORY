@@ -1,20 +1,20 @@
 ---
-name: chrome-devtools-mcp
-description: Use when you need runtime truth from the running APEX app at localhost:8181 — DOM, generated classes, computed CSS, Iris token values, console errors, network failures, screenshots, responsive checks, or to prototype a CSS change — via the chrome-devtools MCP server attached to the user's running Chrome
+name: project-browser
+description: Use when you need runtime truth from the running APEX app at localhost:8181 — DOM, generated classes, computed CSS, Iris token values, console errors, network failures, screenshots, responsive checks, or to prototype a CSS change — through the project browser daemon (Firefox by default)
 ---
 
-# chrome-devtools-mcp (project usage)
+# project-browser (project usage)
 
-Reference: `docs/CHROME_DEVTOOLS_MCP.md` (install, connection, troubleshooting).
+Reference: `docs/FIREFOX_DEVTOOLS_MCP.md` (Firefox, the default) and `docs/CHROME_DEVTOOLS_MCP.md` (Chrome, `THEME_FACTORY_BROWSER=chrome`).
 
 ## Connection facts
-- Server name: `chrome-devtools` (Claude, Codex) / `chrome-devtools-mcp` (Antigravity), started with `--autoConnect`.
-- It attaches to the **user's running Chrome** (remote-debugging toggle enabled). The first call may take 20–40 s. Do not launch another Chrome.
-- Every page-scoped tool needs `pageId` from `list_pages`. The APEX tab is the one whose URL starts with `http://localhost:8181/ords/r/demo/ut/`. If it is missing, `new_page` with that URL.
+- Always through the project daemon, never a browser MCP tool directly: `python3 tools/browser_client.py <tool> '<json>'`, or `BrowserClient` in `tools/browser_client.py`. A direct call or a second daemon can raise a consent prompt the user may not be there to answer.
+- The daemon owns one approved browser session: the user's Firefox, started from its launcher with the debugging port. Do not start another browser. Start the daemon only if it is not already running.
+- Every page-scoped call takes a `pageId` from `list_pages`. The APEX tab's URL starts with `http://localhost:8181/ords/r/demo/ut/`. If it is missing, `new_page` with `{"url": ..., "background": true}`.
 
 ## Standard inspection sequence
 ```text
-list_pages → (navigate_page url|reload) → take_snapshot → evaluate_script → list_console_messages → take_screenshot
+list_pages → navigate_page (url) → take_snapshot → evaluate_script → list_console_messages → take_screenshot
 ```
 
 `evaluate_script` function shapes that answer spec questions:
@@ -33,13 +33,13 @@ Prototype CSS by appending a `<style id="proto">` element; read the result; then
 ## Rules
 - DevTools changes are never the deliverable (spec §14). Note prototypes in the response so the source step is not skipped.
 - Treat any console error appearing after your change as a defect (spec §49).
-- Compare target vs implementation at the same viewport (`emulate viewport`, per tab — not `resize_page`, which resizes the user's window), at 1440 / 1024 / 768 / 375 (spec §45, §73).
-- Own tab (`new_page … background:true`), never `#theme=` in the URL (shared localStorage), close the tab at the end — `docs/CHROME_DEVTOOLS_MCP.md`, *etiquette*.
-- Before declaring a restyle done: run the **contrast audit** snippet from `docs/CHROME_DEVTOOLS_MCP.md` on the standard page list (`.agents/knowledge/pitfalls.md` §4.3).
+- Compare target vs implementation at 1440 and 375 px (spec §45, §73). Firefox cannot shrink its window below about 500 px, so do not use `emulate` or `resize_page` for 375. Measure a phone width in the frame (`tools/phone_frame.py`, see `docs/FIREFOX_DEVTOOLS_MCP.md`), or run `tools/page_audit.py --widths 1440,375`.
+- Own tab (`new_page` with `background: true`). Never put `#theme=` in the URL (it shares localStorage). Close the tab when you finish.
+- Before declaring a restyle done, run the contrast audit snippet from `docs/CHROME_DEVTOOLS_MCP.md` on the standard page list (`.agents/knowledge/pitfalls.md` §4.3).
 - Screenshots go to the scratchpad; do not commit them.
 
 ## Common mistakes
 - Passing a selector without `pageId` → `Required at pageId`.
-- Reading `--a-*` on `:root` — most are component-scoped; read on the element.
+- Reading `--a-*` on `:root`. Most are component-scoped, so read on the element.
 - Inspecting the Builder tab (`/ords/r/apex/…`) instead of the app tab.
-- Synthetic `element.click()` on APEX menu items (use `click uid`); rule finders that ignore custom-property-only rules and `@import`ed sheets (`pitfalls.md` §1.9).
+- Synthetic `element.click()` on APEX menu items. Use the daemon's `click` with a uid instead. Rule finders must also read custom-property-only rules and `@import`ed sheets (`pitfalls.md` §1.9).

@@ -9,14 +9,14 @@ Governing spec: `docs/AGENT_SPEC.md`. Project facts: `docs/PROJECT.md`. Theme st
 
 ## Core principle
 Universal Theme owns structure · APEXLang owns declarations · repo CSS owns appearance · Alpine owns
-custom interaction · APEX JS APIs bridge · PL/SQL owns logic. Runtime truth comes from Chrome DevTools,
+custom interaction · APEX JS APIs bridge · PL/SQL owns logic. Runtime truth comes from the project browser daemon (Firefox),
 never from memory.
 
 ## Workflow (spec §77) — follow in order, one section at a time
 1. UNDERSTAND the request. Split the design into sections (header, context, KPIs, content, grid, actions, dialogs).
 2. INSPECT TARGET → `apex-design-system` (map values to Iris/`--app-*` tokens).
 3. INSPECT SOURCE → `applications/ut/pages/pNNNNN-*.apx`, `static-files/`, the active theme package `sample-themes/<name>/css/`, `docs/COMPONENTS.md`.
-4. INSPECT RUNTIME → `chrome-devtools-mcp` (DOM, computed CSS, console). Required before any CSS.
+4. INSPECT RUNTIME → `project-browser` (DOM, computed CSS, console). Required before any CSS.
 5. MAP COMPONENTS → `apex-component-selection`, `apex-ut-dom-knowledge`, `apex-template-options`.
 6. CHOOSE IMPLEMENTATION in priority order: existing component → native APEX → native+CSS → native+Alpine → reusable custom → custom HTML.
 7. IMPLEMENT one section → `apexlang-design-editor`, `apex-css-design-system`, `apex-css-selector-strategy`; if custom interaction → `apex-alpine-components`, `apex-alpine-lifecycle`, `apex-alpine-server-integration`.
@@ -42,7 +42,7 @@ run them **through** this router, on the CSS/Alpine layers, in refinement mode o
   the system UI stack Iris actually renders (not Oracle Sans - it is linked but never loads, docs/PROJECT.md),
   Iris radius/shadows, UT components. Impeccable's own "the brief wins" rule applies.
 - Allowed sub-commands: `critique`, `audit`, `polish`, `layout`, `typeset`, `adapt`, `harden`, `onboard`,
-  `clarify`, `quieter`, `distill`. Target = a running page URL (inspect via `chrome-devtools-mcp`) or
+  `clarify`, `quieter`, `distill`. Target = a running page URL (inspect via `project-browser`) or
   files under `static-files/` (components, pages) or the theme package `sample-themes/<name>/css/` (app-wide look).
 - Not allowed here: `bolder`, `overdrive`, `delight`, `colorize`, `animate`, `craft`/new-work, `init`,
   `document`, `extract`, `live`, `hooks`, `doctor` — they invent identity, replace markup, or write

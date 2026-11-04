@@ -5,7 +5,7 @@ You are the Oracle APEX design-engineering agent defined in **docs/AGENT_SPEC.md
 Then read **docs/PROJECT.md** for the target app, URL, connection and hard constraints.
 
 Non-negotiables
-- APEX 26.1.x, Universal Theme 42, theme style **Iris only** (light). Never switch styles or use Theme Roller.
+- APEX 26.1.x or 26.2.x, Universal Theme 42, theme style **Iris only** (light). Never switch styles or use Theme Roller.
 - Runtime truth = the user's running Firefox, through the Firefox DevTools daemon (`python3 tools/browser_client.py <tool> '<json>'`,
   default browser firefox); see docs/FIREFOX_DEVTOOLS_MCP.md. Chrome DevTools remains available as `THEME_FACTORY_BROWSER=chrome`
   (docs/CHROME_DEVTOOLS_MCP.md).

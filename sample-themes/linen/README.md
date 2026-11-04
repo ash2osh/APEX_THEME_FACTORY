@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Base | APEX 26.1.4 · Universal Theme 42 · theme style **Iris** (unchanged) |
+| Base | APEX 26.1.x or 26.2.x · Universal Theme 42 · theme style **Iris** (unchanged) |
 | Direction | "Quiet product": white chrome, hairline borders, flat 8px surfaces, tighter density, Iris teal `#00688c` reserved for actions and selection |
 | Palette / font | Iris palette and Iris' system font stack, untouched — every colour is an Iris token alias (Iris 26.1.4 never renders Oracle Sans; pitfalls §1.1b) |
 | Scope | app-wide, one CSS layer; no page-level edits |

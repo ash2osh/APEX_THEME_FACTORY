@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.2 (2026-11-09)
 
 ### Reliability
 
@@ -25,6 +25,8 @@
   buttons are readable on dark cards. The success text token of the other dark themes moved into the shared dark
   adapter.
 - Removed the stale `theme-templates/neutral/css/tokens.css.tmpl`; `recipe.py` is the only tokens generator.
+- The four dark themes are re-released as Estate Slate Dark, Carbon Volt and Velvet Signal 1.2.1, and Solarized Dark
+  1.3.1, so an installed copy can be told from the new one.
 - The foundation token comment and `docs/DESIGN_SYSTEM.md` now describe what the policy enforces: the foundation is the
   shared vocabulary, and a theme declares any extra `--app-*` token it uses.
 

@@ -483,3 +483,57 @@ class EmptyApplicationTargetTests(unittest.TestCase):
 )"""
         close = _find_matching_brace(sample, sample.find("("))
         self.assertEqual(close, len(sample) - 1)
+
+
+class FileBlockParserTests(unittest.TestCase):
+    """One balanced `file "..." ( ... )` parser serves install, uninstall and sync_static."""
+
+    TEXT = (
+        'file "keep/a.css" (\n    mimeType: text/css\n)\n\n'
+        'file "theme-factory/packages/x/1/theme.css" (\n    mimeType: text/css\n'
+        '    note: see (the) docs\n    other: "a ) b"\n    charSet: utf-8\n)\n\n'
+        'file "keep/b.js" (\n    mimeType: text/javascript\n)\n'
+    )
+
+    def test_a_paren_inside_a_body_does_not_end_the_block(self):
+        from lib.theme_factory.apexlang_parser import iter_file_blocks
+        blocks = {path: block for _s, _e, path, block in iter_file_blocks(self.TEXT)}
+        self.assertEqual(list(blocks), ["keep/a.css", "theme-factory/packages/x/1/theme.css", "keep/b.js"])
+        self.assertTrue(blocks["theme-factory/packages/x/1/theme.css"].endswith("charSet: utf-8\n)"))
+
+    def test_all_three_operations_agree_and_remove_then_reinsert_round_trips(self):
+        import tempfile
+        from lib.theme_factory.apexlang_parser import remove_file_blocks
+        from lib.theme_factory.static_files import file_block
+        from lib.theme_factory.sync_static import _reconcile_block, _remove_block
+        from lib.theme_factory.uninstall import _remove_theme_from_static_files
+
+        owned = "theme-factory/packages/x/1/theme.css"
+        expected = 'file "keep/a.css" (\n    mimeType: text/css\n)\n\nfile "keep/b.js" (\n    mimeType: text/javascript\n)\n'
+        self.assertEqual(remove_file_blocks(self.TEXT, lambda path: path == owned), expected)
+        self.assertEqual(_remove_block(self.TEXT, owned), expected)
+        with tempfile.TemporaryDirectory() as tmp:
+            apx = Path(tmp) / "static-files.apx"
+            apx.write_text(self.TEXT, encoding="utf-8")
+            _remove_theme_from_static_files(apx, "theme-factory/packages/x/")
+            self.assertEqual(apx.read_text(encoding="utf-8"), expected)
+        # reinsert: a stale block (with a paren in its body) is replaced, never half-removed
+        text, status = _reconcile_block(self.TEXT, owned)
+        self.assertEqual(status, "changed")
+        self.assertEqual(text.count(owned), 1)
+        self.assertIn(file_block(owned), text)
+        self.assertNotIn("note: see", text)
+        again, status = _reconcile_block(text, owned)
+        self.assertEqual((again, status), (text, "same"))
+        self.assertEqual(_remove_block(text, owned), expected)
+
+    def test_unbalanced_block_is_a_typed_error(self):
+        from lib.theme_factory.apexlang_parser import remove_file_blocks
+        with self.assertRaises(PackageError):
+            remove_file_blocks('file "a" (\n    mimeType: x\n', lambda path: True)
+
+    def test_export_without_a_closing_paren_is_refused_with_exit_code_3(self):
+        from lib.theme_factory.apexlang_parser import last_close_paren
+        with self.assertRaises(PackageError) as refused:
+            last_close_paren("page 0 \n name: x", "Page 0")
+        self.assertEqual(refused.exception.exit_code, 3)

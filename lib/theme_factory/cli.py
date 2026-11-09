@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+import os
 import sys
 
 from lib.theme_factory.archive import build_package, build_package_from_root, verify_package
@@ -311,7 +312,9 @@ def run_cli(argv: list[str] | None = None) -> int:
         print(f"Error: {exc}", file=sys.stderr)
         return exc.exit_code
     except Exception as exc:
-        print(f"Unexpected error: {exc}", file=sys.stderr)
+        if os.environ.get("THEME_FACTORY_DEBUG") == "1":
+            raise
+        print(f"Unexpected error: {exc} (set THEME_FACTORY_DEBUG=1 for the traceback)", file=sys.stderr)
         return 1
 
 

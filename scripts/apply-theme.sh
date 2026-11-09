@@ -19,8 +19,11 @@ with open(tf_path, "w", encoding="utf-8", newline="\n") as f:
     f.write("\n")
 nav=th.get("templateOptions",{}).get("navigationMenuStyle")  # schema v1 key (see schemas/theme-package.schema.json)
 if nav:
+    # theme.json carries the full class (schemas/theme-package.schema.json); these are the styles application.apx can hold
+    if nav not in ("t-TreeNav--styleA", "t-TreeNav--styleB", "t-TreeNav--classic"):
+        sys.exit(f"apply-theme: invalid navigationMenuStyle {nav!r}; expected t-TreeNav--styleA, t-TreeNav--styleB or t-TreeNav--classic")
     p=f"{root}/applications/ut/application.apx"; s=open(p, encoding="utf-8").read()
-    s2,n=re.subn(r"(\n            )t-TreeNav--(styleA|styleB|classic)\n", rf"\1{nav}\n", s)
+    s2,n=re.subn(r"(\n            )t-TreeNav--(styleA|styleB|classic)\n", lambda m: m.group(1) + nav + "\n", s)
     assert n==1, "navigationMenu style option not found"
     with open(p, "w", encoding="utf-8", newline="\n") as f: f.write(s2)
 print(f"apply-theme: default={name} nav={nav}")

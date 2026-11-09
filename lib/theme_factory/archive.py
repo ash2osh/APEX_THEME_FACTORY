@@ -260,8 +260,8 @@ def _verify_package_dir(package_root: Path) -> ThemeManifest:
         if rel_path in listed_paths:
             raise PackageError(f"Duplicate checksum path '{rel_path}'")
         listed_paths.add(rel_path)
-        if len(expected_hash) != 64 or any(ch not in "0123456789abcdef" for ch in expected_hash.lower()):
-            raise PackageError(f"Invalid SHA-256 digest for '{rel_path}'")
+        if len(expected_hash) != 64 or any(ch not in "0123456789abcdef" for ch in expected_hash):
+            raise PackageError(f"Invalid SHA-256 digest for '{rel_path}': expected 64 lowercase hex characters")
 
         target = (package_root / rel_path).resolve()
         if not target.is_relative_to(package_root):

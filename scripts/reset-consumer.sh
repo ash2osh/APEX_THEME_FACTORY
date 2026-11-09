@@ -15,9 +15,10 @@ while [[ $# -gt 0 ]]; do
     *) echo "usage: reset-consumer.sh [--connection NAME] [--workspace WS] [--app-id 9010] [--yes]" >&2; exit 2;;
   esac
 done
-if [[ ! "$app_id" =~ ^[0-9]+$ ]] || (( app_id < 9000 || app_id > 9099 )); then
+if [[ ! "$app_id" =~ ^[0-9]+$ ]] || (( 10#$app_id < 9000 || 10#$app_id > 9099 )); then
   echo "reset-consumer: app id must be in the disposable range 9000-9099 (got $app_id)" >&2; exit 2
 fi
+app_id=$((10#$app_id))  # "09010" is app 9010 (and not an octal error)
 alias="TF-CONSUMER-MINIMAL-$app_id"
 
 existing=$(sql -S -name "$conn" <<SQL

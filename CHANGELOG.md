@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### Reliability
+
+- Install, uninstall and sync read `file "…" ( … )` entries in `static-files.apx` with one balanced parser. Before,
+  three separate scanners each stopped at the first `)` they met, so an entry with a parenthesis in it could be
+  removed half-way.
+- An export without a closing parenthesis, a damaged translation row from SQLcl, and a translation row missing a key
+  are now refused with a clear message instead of a raw `KeyError` or a corrupted file.
+- The translation-script repair no longer refuses a script that has an `if` nested inside another.
+- `release` reports a failed restore of the baseline next to the failure that caused it, instead of replacing it.
+- `THEME_FACTORY_DEBUG=1` shows the full traceback of an unexpected error. A checksum file with an upper-case digest is
+  refused as invalid, not reported as a mismatch.
+- `scripts/fetch-vendor.sh` checks the SHA-256 of Alpine.js; `apply-theme.sh` validates the navigation menu style;
+  `apex-export.sh` fails when it exports nothing; `reset-consumer.sh` accepts an app id with a leading zero.
+- `tests/run-offline.sh` lists the tests it skipped.
+
+### Themes
+
+- The `cards-buoyant` template moved cards with a fixed offset that reduced motion could not switch off; it now uses
+  `--app-hover-transform`. A new policy check, `motion-token-misuse`, fails any theme `transform` that doesn't.
+- `estate-slate-dark` now sets the warning, info and primary-alt text tokens, so outline badges and faceted-search
+  buttons are readable on dark cards. The success text token of the other dark themes moved into the shared dark
+  adapter.
+- Removed the stale `theme-templates/neutral/css/tokens.css.tmpl`; `recipe.py` is the only tokens generator.
+- The foundation token comment and `docs/DESIGN_SYSTEM.md` now describe what the policy enforces: the foundation is the
+  shared vocabulary, and a theme declares any extra `--app-*` token it uses.
+
 ### Install and uninstall
 
 - A run that refuses before it imports no longer leaves a backup folder behind. Before, a refused install, such as

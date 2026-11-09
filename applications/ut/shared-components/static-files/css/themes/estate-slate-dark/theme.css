@@ -135,6 +135,8 @@ html.app-theme-estate-slate-dark {
     --ut-palette-primary-contrast: var(--app-text-on-accent);
     --ut-palette-primary-shade: var(--app-accent-shade);
     --ut-palette-primary-alt: var(--est-dark-amber-hover);
+    --ut-palette-primary-alt-contrast: var(--app-text-on-accent); /* 8.99:1 of the dark ink on the amber-hover fill */
+    --ut-palette-primary-alt-text: var(--est-dark-amber-text);    /* 10.08:1 on the card: faceted-search buttons, alt links */
     --ut-palette-primary-text: var(--app-color-primary);
 
     --ut-palette-success: var(--app-color-success);
@@ -144,6 +146,7 @@ html.app-theme-estate-slate-dark {
     --ut-palette-warning: var(--app-color-warning);
     --ut-palette-warning-contrast: var(--app-text-on-accent);
     --ut-palette-warning-shade: var(--est-dark-amber-shade);
+    --ut-palette-warning-text: var(--est-dark-amber-text);        /* 10.08:1 on the card: outline warning badges */
 
     --ut-palette-danger: var(--app-color-danger);
     --ut-palette-danger-text: #fca5a5;  /* 9:1 on the card: text tint for outline badges and form errors */
@@ -154,6 +157,7 @@ html.app-theme-estate-slate-dark {
     --ut-palette-info: var(--app-color-info);
     --ut-palette-info-contrast: var(--app-text-on-accent);
     --ut-palette-info-shade: var(--est-dark-cyan-shade);
+    --ut-palette-info-text: var(--est-dark-cyan);                 /* 9.51:1 on the card: outline info badges */
 
     --ut-palette-generic: var(--app-surface-chrome);
     --ut-palette-generic-contrast: var(--app-text-primary);

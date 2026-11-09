@@ -24,6 +24,8 @@ class FakeInstall:
 
 
 class FakeSql:
+    restore_error = None
+
     def __init__(self, calls):
         self.calls = calls
 
@@ -33,6 +35,8 @@ class FakeSql:
 
     def import_apexlang(self, path, workspace, app_id):
         self.calls.append("restore")
+        if self.restore_error:
+            raise self.restore_error
 
 
 class ReleaseSmokeTests(unittest.TestCase):
@@ -41,8 +45,11 @@ class ReleaseSmokeTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp)
         self.calls = []
 
-    def run_with(self, *, live=True, check_status="PASS", install_code=0, problems=None, pristine=True):
+    def run_with(self, *, live=True, check_status="PASS", install_code=0, problems=None, pristine=True,
+                 restore_error=None):
         calls = self.calls
+        FakeSql.restore_error = restore_error
+        self.addCleanup(setattr, FakeSql, "restore_error", None)
 
         def checks(repo_root, theme):
             calls.append("check")
@@ -100,6 +107,33 @@ class ReleaseSmokeTests(unittest.TestCase):
         self.assertEqual(self.run_with(install_code=5), 1)
         self.assertNotIn("browser", self.steps())
         self.assertEqual(self.steps()[-1], "restore")
+
+    def test_failed_restore_is_reported_next_to_the_failed_install(self):
+        self.assertEqual(self.run_with(install_code=5, restore_error=PackageError("import refused")), 1)
+        lines = [call[1] for call in self.calls if isinstance(call, tuple)]
+        self.assertTrue(any("step=install" in line for line in lines))
+        self.assertTrue(any("step=restore" in line and "NOT restored" in line for line in lines))
+
+    def test_failed_restore_alone_fails_the_release(self):
+        self.assertEqual(self.run_with(restore_error=PackageError("import refused")), 1)
+
+    def test_restore_failure_does_not_hide_the_original_exception(self):
+        calls = self.calls
+
+        def boom(zip_path, theme, url, widths):
+            raise RuntimeError("browser died")
+
+        FakeSql.restore_error = PackageError("import refused")
+        self.addCleanup(setattr, FakeSql, "restore_error", None)
+        options = ReleaseOptions(repo_root=self.tmp, theme="linen", live=True, work_dir=self.tmp / "work")
+        with self.assertRaises(RuntimeError):
+            run_release(
+                options, checks=lambda r, t: FakeReport("PASS"), build=lambda r, t, o: self.tmp / "z.zip",
+                verify=lambda z: None, sqlcl_factory=lambda conn: FakeSql(calls), pristine_check=lambda d: None,
+                extract=lambda z, d: d, install=lambda root, o: FakeInstall(0), browser=boom,
+                out=lambda line: calls.append(("out", line)),
+            )
+        self.assertTrue(any(isinstance(c, tuple) and "step=restore" in c[1] for c in calls))
 
     def test_consumer_with_leftover_packages_is_refused_before_install(self):
         with self.assertRaises(PackageError):

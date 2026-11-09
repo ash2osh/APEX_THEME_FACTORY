@@ -21,6 +21,7 @@ TRANSLATED_ON_26_1 = (
     "the application to Text Message-Based translation."
 )
 TRANSLATION_SCRIPT = Path("generated-artifacts/translations.sql")
+IF_OPEN_RE = re.compile(r"^if\b.*\bthen$")
 TRANSLATION_IF = "if wwv_imp_util.is_component_created("
 TRANSLATION_SPLIT_RE = re.compile(
     r"^(" + re.escape(TRANSLATION_IF) + r"[^\n]*\) then)\nend;\n/\nbegin\n", re.MULTILINE
@@ -53,8 +54,16 @@ def repair_translation_script(text: str) -> str:
     """
     repaired = TRANSLATION_SPLIT_RE.sub(r"end;\n/\nbegin\n\1\n", text)
     for block in repaired.split("\n/\n"):
-        lines = block.splitlines()
-        if sum(line.startswith(TRANSLATION_IF) for line in lines) != lines.count("end if;"):
+        depth = 0
+        for line in block.splitlines():
+            code = line.strip().lower()
+            if IF_OPEN_RE.match(code):
+                depth += 1
+            elif code == "end if;":
+                depth -= 1
+            if depth < 0:
+                break
+        if depth != 0:
             raise PackageError(
                 "SQLcl's translation export has a shape this installer can't repair. Install by hand "
                 "(MANUAL-INSTALL.md), or pass --discard-translations and translate the application again.",
@@ -281,7 +290,12 @@ class SqlclClient:
             if line.startswith("TF_CHUNK ") and line.endswith("|"):
                 chunks.append(line[len("TF_CHUNK "):-1])
             elif line == "TF_ROW_END":
-                rows.append(json.loads("".join(chunks)))
+                try:
+                    rows.append(json.loads("".join(chunks)))
+                except ValueError as exc:
+                    raise PackageError(
+                        f"Reading the translations failed: row {len(rows) + 1} is not valid JSON ({exc})"
+                    ) from exc
                 chunks = []
             elif line.startswith("THEME_FACTORY_TRANSLATIONS="):
                 expected = int(line.partition("=")[2])

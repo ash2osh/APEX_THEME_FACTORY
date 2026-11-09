@@ -139,6 +139,8 @@ class ThemeScaffoldTests(unittest.TestCase):
         self.assertNotIn("app-theme-linen", combined)
         self.assertNotIn("#fffaf0", combined.casefold())
         self.assertIn("/* generated-from: theme-templates/neutral */", combined)
+        self.assertFalse((Path(__file__).resolve().parent.parent / "theme-templates/neutral/css/tokens.css.tmpl").exists(),
+                         "render_tokens is the only tokens.css generator; a template would only go stale")
         tokens = (theme_root / "css/tokens.css").read_text(encoding="utf-8")
         self.assertIn("--app-density-scale: 0.875", tokens)
         self.assertIn("--app-space-unit: 0.375rem", tokens)

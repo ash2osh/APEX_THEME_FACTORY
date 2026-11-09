@@ -1,6 +1,8 @@
 /* Application design tokens — shared foundation (spec §16).
-   Every --app-* token is declared here with its Iris-default value, so any theme can rely on the full
-   vocabulary. A theme changes values only under `html.app-theme-<name>` (sample-themes/<name>/css/tokens.css).
+   The shared --app-* vocabulary, each with its Iris-default value. A theme changes values only under
+   `html.app-theme-<name>` (sample-themes/<name>/css/tokens.css) and declares there any extra --app-* token it
+   consumes; the undeclared-app-token policy (lib/theme_factory/css_policy.py) fails a theme that uses one
+   neither the foundation nor its own tokens.css declares.
    Alias Iris (--ut-*) first; literals only where Iris has no token. Never redefine --ut-* / --a-* here. */
 :root {
     /* colour */

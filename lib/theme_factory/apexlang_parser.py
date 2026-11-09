@@ -89,6 +89,37 @@ def _remove_spans(text: str, spans: List[Tuple[int, int]]) -> str:
     return re.sub(r"\n{3,}", "\n\n", text)
 
 
+def iter_file_blocks(text: str):
+    """Yield (start, end, path, block) for each top-level `file "<path>" ( ... )` block.
+
+    The one parser every static-files edit goes through: parentheses are balanced, so a `)` inside a block
+    body (or on a line of its own) never ends the block early.
+    """
+    return _iter_blocks(text, "file")
+
+
+def remove_file_blocks(text: str, predicate) -> str:
+    """`text` without the file blocks whose path satisfies `predicate(path)`."""
+    spans = [(start, end) for start, end, path, _block in iter_file_blocks(text) if predicate(path)]
+    return _remove_spans(text, spans) if spans else text
+
+
+def find_file_block(text: str, path: str) -> Optional[Tuple[int, int]]:
+    """The (start, end) of the file block for `path` (start excludes its indentation), or None."""
+    for start, end, block_path, block in iter_file_blocks(text):
+        if block_path == path:
+            return start + len(block) - len(block.lstrip(" \t")), end
+    return None
+
+
+def last_close_paren(text: str, what: str) -> int:
+    """Index of the closing `)` of a component file, or a typed error when the export has none."""
+    close = text.rfind(")")
+    if close == -1:
+        raise PackageError(f"{what}: export shape not recognized (no closing parenthesis)", exit_code=3)
+    return close
+
+
 def _is_bootstrap_identity(identifier: str, body: str) -> bool:
     if identifier in BOOTSTRAP_REGION_IDS:
         return True
@@ -172,6 +203,6 @@ def insert_switcher_entries(lists_text: str, alias: str, entries_code: str) -> s
         raise PackageError(f"Navigation bar list '{alias}' not found in lists source")
     start, end = span
     block = lists_text[start:end]
-    last_paren = block.rfind(")")
+    last_paren = last_close_paren(block, f"Navigation bar list '{alias}'")
     new_block = block[:last_paren].rstrip() + "\n\n" + entries_code.rstrip("\n") + "\n\n)"
     return lists_text[:start] + new_block + lists_text[end:]

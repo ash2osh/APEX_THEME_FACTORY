@@ -110,9 +110,10 @@ tokens), `--u-*` (100, utilities), `--jui-*`, `--oj-*`. All are **reserved** (sp
 
 ## 3. Application tokens (`--app-*`)
 
-`static-files/css/foundation/tokens.css` declares **every** `--app-*` token with its Iris-default value — the
-shared vocabulary each theme package can rely on. A package changes values only under `html.app-theme-<name>`
-in its own `css/tokens.css` (see §3.2). Theme-private palette tokens may use a short theme prefix
+`static-files/css/foundation/tokens.css` declares the **shared** `--app-*` vocabulary with Iris-default values —
+what every theme package can rely on. A package changes values only under `html.app-theme-<name>` in its own
+`css/tokens.css` (see §3.2), and declares there any extra `--app-*` token it consumes; the
+`undeclared-app-token` policy (`css_policy.py`) fails a package that uses a token neither declares. Theme-private palette tokens may use a short theme prefix
 (`--sol-*` in Solarized Dark); anything used as a *role* is `--app-*`.
 
 ### 3.1 Foundation (Iris defaults)

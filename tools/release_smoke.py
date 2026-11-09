@@ -116,14 +116,35 @@ def run_release(
     sqlcl = sqlcl_factory(options.connection)
     baseline = sqlcl.export_apexlang(options.app_id, work / "baseline")
     pristine_check(baseline)
+    problems: dict[int, list[str]] = {}
+    install_failed = False
+    raised: Optional[Exception] = None
     try:
         installed = install(extract(zip_path, work / "package"), options)
         if installed.exit_code != 0:
             out(f"RELEASE theme={theme} status=FAIL step=install ({installed.status})")
-            return 1
-        problems = browser(zip_path, theme, options.url, options.widths)
-    finally:
+            install_failed = True
+        else:
+            problems = browser(zip_path, theme, options.url, options.widths)
+    except Exception as exc:
+        raised = exc
+    restore_error: Optional[Exception] = None
+    try:
         sqlcl.import_apexlang(baseline, options.workspace, options.app_id)
+    except Exception as exc:
+        restore_error = exc
+    if restore_error is not None:
+        out(
+            f"RELEASE theme={theme} status=FAIL step=restore: the baseline was NOT restored; "
+            f"app {options.app_id} still has the release installed ({restore_error}). "
+            f"Baseline export: {baseline}"
+        )
+    if raised is not None:
+        raise raised
+    if restore_error is not None:
+        return 1
+    if install_failed:
+        return 1
     failed = {width: found for width, found in problems.items() if found}
     out(f"RELEASE theme={theme} status={'FAIL' if failed else 'PASS'} package={zip_path}")
     for width, found in failed.items():

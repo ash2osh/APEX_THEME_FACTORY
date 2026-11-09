@@ -11,8 +11,8 @@ from lib.theme_factory.errors import PackageError
 from lib.theme_factory.manifest import load_manifest
 from lib.theme_factory.apexlang_model import InstallPatch, InstalledPackage
 from lib.theme_factory.apexlang_parser import (
-    _find_matching_brace, insert_switcher_entries, strip_bootstrap_regions,
-    strip_switcher_entries,
+    _find_matching_brace, insert_switcher_entries, last_close_paren, remove_file_blocks,
+    strip_bootstrap_regions, strip_switcher_entries,
 )
 from lib.theme_factory.apexlang_runtime import build_bootstrap_regions, build_switcher_entries
 from lib.theme_factory.apexlang_state import (
@@ -85,18 +85,8 @@ def plan_install(
             exit_code=3,
         )
 
-    # Build updated packages list
     pkg_stylesheet_url = f"#APP_FILES#theme-factory/packages/{manifest.name}/{manifest.version}/theme.css"
-    new_pkg = InstalledPackage(
-        name=manifest.name,
-        title=manifest.title,
-        version=manifest.version,
-        class_name=manifest.class_name,
-        stylesheet_url=pkg_stylesheet_url,
-        files={},
-    )
     other_pkgs = [p for p in installed_pkgs if p.name != manifest.name]
-    all_pkgs = sorted(other_pkgs + [new_pkg], key=lambda x: x.name)
     default_theme = manifest.name
 
     before_files: Dict[Path, str] = {}
@@ -131,11 +121,11 @@ def plan_install(
         if destination.is_relative_to(pkg_static_dir)
     }
     new_pkg = InstalledPackage(
-        name=new_pkg.name,
-        title=new_pkg.title,
-        version=new_pkg.version,
-        class_name=new_pkg.class_name,
-        stylesheet_url=new_pkg.stylesheet_url,
+        name=manifest.name,
+        title=manifest.title,
+        version=manifest.version,
+        class_name=manifest.class_name,
+        stylesheet_url=pkg_stylesheet_url,
         files=package_files,
     )
     all_pkgs = sorted(other_pkgs + [new_pkg], key=lambda package: package.name)
@@ -187,22 +177,10 @@ def plan_install(
     before_sf = target.static_files_file.read_text(encoding="utf-8") if target.static_files_file.exists() else ""
     before_files[sf_rel] = before_sf
 
-    sf_lines = before_sf.splitlines()
-    # Collect all static files registered
     owned_prefix = f"theme-factory/packages/{manifest.name}/"
-    filtered_sf_lines = []
-    skip = False
-    for line in sf_lines:
-        if line.strip().startswith("file ") and (
-            owned_prefix in line or "theme-factory/runtime/" in line
-        ):
-            skip = True
-            continue
-        if skip:
-            if line.strip() == ")":
-                skip = False
-            continue
-        filtered_sf_lines.append(line)
+    clean_sf = remove_file_blocks(
+        before_sf, lambda path: owned_prefix in path or "theme-factory/runtime/" in path
+    ).strip()
 
     new_sf_blocks = []
     # Add files from staged_copies that go under shared-components/static-files/
@@ -213,7 +191,6 @@ def plan_install(
     # Also register registry.json
     new_sf_blocks.append(file_block("theme-factory/runtime/registry.json") + "\n")
 
-    clean_sf = "\n".join(filtered_sf_lines).strip()
     after_sf = (clean_sf + "\n\n" + "\n".join(new_sf_blocks)).strip() + "\n"
     after_files[sf_rel] = after_sf
 
@@ -263,7 +240,7 @@ def plan_install(
     else:
         # Strip existing marked or managed regions
         clean_p0 = strip_bootstrap_regions(before_p0)
-        last_paren = clean_p0.rfind(")")
+        last_paren = last_close_paren(clean_p0, "Page 0")
         after_p0 = clean_p0[:last_paren].rstrip() + "\n" + bootstrap_regions + "\n)\n"
 
     after_files[p0_rel] = after_p0
@@ -336,7 +313,7 @@ def set_file_urls(app_text: str, block_name: str, urls: List[str]) -> str:
     anchor = None
     if block_name == "javaScript":
         anchor = re.search(r"^[ \t]*css\s*\{", app_text, re.MULTILINE)
-    insert_at = anchor.start() if anchor else app_text.rfind(")")
+    insert_at = anchor.start() if anchor else last_close_paren(app_text, "application.apx")
     return app_text[:insert_at] + new_block + app_text[insert_at:]
 
 

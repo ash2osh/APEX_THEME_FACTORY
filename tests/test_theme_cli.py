@@ -97,5 +97,29 @@ class ThemeCliTests(unittest.TestCase):
         self.assertIn("--mode", stderr)
 
 
+class UnexpectedErrorTests(unittest.TestCase):
+    ARGS = ["verify-package", "--package", "nowhere.zip"]
+
+    def run_with_boom(self, env):
+        import os
+        stderr = io.StringIO()
+        with patch.dict(os.environ, env), patch("lib.theme_factory.cli._handle_verify_package",
+                                                  side_effect=RuntimeError("boom")), \
+                contextlib.redirect_stderr(stderr):
+            return stderr, run_cli(self.ARGS)
+
+    def test_unexpected_error_is_one_line_by_default(self):
+        import os
+        with patch.dict(os.environ):
+            os.environ.pop("THEME_FACTORY_DEBUG", None)
+            stderr, code = self.run_with_boom({})
+        self.assertEqual(code, 1)
+        self.assertIn("Unexpected error: boom", stderr.getvalue())
+
+    def test_debug_mode_re_raises_for_the_traceback(self):
+        with self.assertRaises(RuntimeError):
+            self.run_with_boom({"THEME_FACTORY_DEBUG": "1"})
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -180,6 +180,41 @@ class CssPolicyTests(unittest.TestCase):
             codes = [v.code for v in violations]
             self.assertIn("undeclared-app-token", codes)
 
+    def test_transform_must_go_through_the_hover_transform_token(self):
+        bad = (
+            "translateY(calc(var(--app-focus-offset) * -1))",
+            "translateY(-2px)",
+            "scale(1.02)",
+        )
+        for value in bad:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                theme_dir = Path(tmp) / "css-comment-only"
+                shutil.copytree(Path("tests/fixtures/packages/css-comment-only"), theme_dir)
+                (theme_dir / "css/apex/dialogs.css").write_text(
+                    f"html.app-theme-css-comment-only .t-Card:hover {{ transform: {value}; }}\n",
+                    encoding="utf-8",
+                )
+                self.assertIn("motion-token-misuse", [v.code for v in scan_package(theme_dir)])
+        with tempfile.TemporaryDirectory() as tmp:
+            theme_dir = Path(tmp) / "css-comment-only"
+            shutil.copytree(Path("tests/fixtures/packages/css-comment-only"), theme_dir)
+            (theme_dir / "css/apex/dialogs.css").write_text(
+                "html.app-theme-css-comment-only .t-Card:hover { transform: var(--app-hover-transform); }\n"
+                "html.app-theme-css-comment-only .t-Card { transform: none; }\n",
+                encoding="utf-8",
+            )
+            self.assertNotIn("motion-token-misuse", [v.code for v in scan_package(theme_dir)])
+
+    def test_component_templates_route_motion_through_the_hover_transform_token(self):
+        import re
+        from lib.theme_factory.css_policy import motion_token_misuse
+        templates = sorted(Path("theme-templates").rglob("*.tmpl"))
+        self.assertTrue(templates)
+        for template in templates:
+            for match in re.finditer(r"(?<![-\w])(transform)\s*:\s*([^;}]+)", template.read_text(encoding="utf-8")):
+                with self.subTest(template=template.name, value=match.group(2)):
+                    self.assertFalse(motion_token_misuse(match.group(1), match.group(2)))
+
     def test_existing_themes_have_no_policy_violations(self):
         for name in ("linen", "solarized-dark"):
             with self.subTest(name=name):

@@ -68,6 +68,28 @@ class SqlclTests(unittest.TestCase):
             repair_translation_script(f"begin\n{if_line}end;\n/\n")
         self.assertEqual(refused.exception.exit_code, 3)
 
+    def test_translation_script_with_a_nested_if_is_not_refused(self):
+        outer = "if wwv_imp_util.is_component_created(1,wwv_flow_t_varchar2('a'),null,null) then\n"
+        script = f"begin\n{outer}if l_ok then\nnull;\nend if;\nend if;\nend;\n/\n"
+        self.assertEqual(repair_translation_script(script), script)
+        for broken in (f"begin\n{outer}if l_ok then\nnull;\nend if;\nend;\n/\n", "begin\nend if;\nend;\n/\n"):
+            with self.assertRaises(PackageError):
+                repair_translation_script(broken)
+
+    def test_malformed_translation_row_is_a_typed_error(self):
+        out = "TF_CHUNK {\"id\":\"1\",\"from|\nTF_ROW_END\nTHEME_FACTORY_TRANSLATIONS=1\n"
+        client = SqlclClient("demo")
+        with patch.object(client, "_run_script", return_value=SqlclResult(0, out, "")):
+            with self.assertRaises(PackageError) as refused:
+                client.read_translations(314)
+        self.assertIn("not valid JSON", str(refused.exception))
+
+    def test_translation_row_missing_a_key_is_a_typed_error(self):
+        from lib.theme_factory.install import _translation_key
+        with self.assertRaises(PackageError) as refused:
+            _translation_key({"fromId": "2", "lang": "fr"})
+        self.assertIn("column", str(refused.exception))
+
     def test_unistr_literals_survive_quotes_ampersands_and_any_language(self):
         text = "l'é « &ITEM. » \\ \n😀 Status"
         literals = unistr_literals(text, size=20)

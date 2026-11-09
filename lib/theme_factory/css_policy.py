@@ -46,6 +46,20 @@ COLOR_CAPABLE_PROPERTIES = frozenset({
     "fill", "filter", "flood-color", "lighting-color", "scrollbar-color",
     "stop-color", "stroke", "text-shadow",
 })
+MOTION_LITERAL_RE = re.compile(r"\b(?:translate|scale)[A-Za-z0-9]*\s*\(", re.IGNORECASE)
+
+
+def motion_token_misuse(prop: str, value: str) -> bool:
+    """True when a `transform` bypasses `--app-hover-transform`, the only token reduced motion switches off.
+
+    The token being declared is not enough: `translateY(calc(var(--app-focus-offset) * -1))` passes the
+    undeclared-token check yet keeps moving for visitors who asked for less motion.
+    """
+    if prop.strip().lower() != "transform":
+        return False
+    return "--app-focus-offset" in value or bool(MOTION_LITERAL_RE.search(value))
+
+
 EXTERNAL_URL_RE = re.compile(r"""url\(\s*['"]?(?:https?:|//|data:)""", re.IGNORECASE)
 IRIS_INLINE_RE = re.compile(r"/\*\s*Iris\s*:", re.IGNORECASE)
 SCOPE_BOUNDARY_CHARS = frozenset(">+~.#[,:")
@@ -338,6 +352,11 @@ def _check_declaration(
         token = match.group(1)
         if token not in declared_tokens:
             violations.append(PolicyViolation(css_file, line_num, "undeclared-app-token", f"Used undeclared token: {token}"))
+    if not is_tokens_file and motion_token_misuse(prop, decoded_value):
+        violations.append(PolicyViolation(
+            css_file, line_num, "motion-token-misuse",
+            f"transform must use var(--app-hover-transform) so reduced motion stops it: {decl_str}",
+        ))
     if not is_tokens_file:
         value_without_strings = _without_strings(_without_url_functions(decoded_value))
         value_without_token_names = CUSTOM_PROPERTY_RE.sub("", value_without_strings)

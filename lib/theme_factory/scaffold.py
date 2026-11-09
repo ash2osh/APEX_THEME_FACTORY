@@ -204,13 +204,14 @@ def _render_neutral_tree(repo_root: Path, destination: Path, recipe: ThemeRecipe
         relative = source.relative_to(neutral)
         target = destination / relative.with_suffix("")
         target.parent.mkdir(parents=True, exist_ok=True)
-        if relative.as_posix() == "css/tokens.css.tmpl":
-            content = render_tokens(recipe)
-        elif relative.as_posix() == "css/apex/responsive.css.tmpl":
+        if relative.as_posix() == "css/apex/responsive.css.tmpl":
             content = render_responsive_css(recipe)
         else:
             content = _render(source.read_text(encoding="utf-8"), replacements)
         target.write_text(content, encoding="utf-8", newline="\n")
+
+    # css/tokens.css has no template: render_tokens (recipe.py) is its only generator
+    (destination / "css/tokens.css").write_text(render_tokens(recipe), encoding="utf-8", newline="\n")
 
     for profile_type, owner in PROFILE_OWNERS.items():
         profile = getattr(recipe.components, profile_type)

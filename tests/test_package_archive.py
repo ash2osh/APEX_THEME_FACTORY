@@ -138,6 +138,21 @@ class ArchiveTests(unittest.TestCase):
                 else:
                     os.environ["THEME_FACTORY_ALLOW_DIRTY"] = old_val
 
+    def test_uppercase_digest_is_invalid_rather_than_a_checksum_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.dict(os.environ, {"THEME_FACTORY_ALLOW_DIRTY": "1"}):
+                zip_path = build_package(self.repo_root, "linen", Path(tmp))
+            extract_dir = Path(tmp) / "extracted"
+            with zipfile.ZipFile(zip_path) as archive:
+                archive.extractall(extract_dir)
+            pkg_root = next(extract_dir.iterdir())
+            sums = pkg_root / "checksums.sha256"
+            first, *rest = sums.read_text(encoding="utf-8").splitlines()
+            sums.write_text("\n".join([first.upper().replace(first.split()[1].upper(), first.split()[1]), *rest]) + "\n",
+                            encoding="utf-8")
+            with self.assertRaisesRegex(PackageError, "Invalid SHA-256 digest"):
+                verify_package(pkg_root)
+
     def test_verifier_rejects_unsafe_zip_member_before_extraction(self):
         with tempfile.TemporaryDirectory() as tmp:
             archive_path = Path(tmp) / "unsafe.zip"

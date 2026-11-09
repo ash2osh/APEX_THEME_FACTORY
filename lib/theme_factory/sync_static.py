@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 import re
 
+from lib.theme_factory.apexlang_parser import find_file_block, remove_file_blocks
 from lib.theme_factory.apexlang_runtime import build_bootstrap_html, script_json
 from lib.theme_factory.css_bundle import flatten_css, render_font_css
 from lib.theme_factory.manifest import load_manifest
@@ -122,18 +123,17 @@ def _theme_files(theme_root: Path, name: str) -> dict[str, bytes]:
 
 def _reconcile_block(text: str, rel: str) -> tuple[str, str]:
     want = file_block(rel)
-    pattern = re.compile(r'file "' + re.escape(rel) + r'" \(\n(?:    [^\n]*\n)*\)')
-    match = pattern.search(text)
-    if match and match.group(0) == want:
+    span = find_file_block(text, rel)
+    if span and text[span[0]:span[1]] == want:
         return text, "same"
-    if match:
-        text = pattern.sub("", text, count=1)
+    if span:
+        text = remove_file_blocks(text, lambda path: path == rel)
         text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.rstrip("\n") + "\n\n" + want + "\n", "changed" if match else "new"
+    return text.rstrip("\n") + "\n\n" + want + "\n", "changed" if span else "new"
 
 
 def _remove_block(text: str, rel: str) -> str:
-    return re.sub(r'\n*file "' + re.escape(rel) + r'" \(\n(?:    .*\n)*\)\n', "\n", text)
+    return re.sub(r"\n{2,}\Z", "\n", remove_file_blocks(text, lambda path: path == rel))
 
 
 def _remove_empty_dirs(base: Path) -> None:

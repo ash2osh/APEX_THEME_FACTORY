@@ -244,7 +244,7 @@ docs/                   spec, design system, components, tooling guides
 ## Verification
 
 ```bash
-tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every theme check + package (~20 s)
+tests/run-offline.sh   # unit tests, skills layout, app 102 export drift, every theme check + package (~30 s; skipped tests are listed)
 ```
 
 CI runs the same script. Live checks (database, browser) run locally through `scripts/theme.sh release`.

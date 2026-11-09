@@ -43,6 +43,12 @@ class RowProblemTests(unittest.TestCase):
         self.assertIn("theme selection not kept across reload", problems)
         self.assertIn("note: detail", problems)
 
+    def test_notes_explain_a_failure_but_never_fail_a_clean_row(self):
+        # Notes are diagnostics (the contrast sample, the storage state...). Returning them on their own would turn
+        # a row that passed every check into a failed release.
+        row = capture("minimal", 1440, notes=["ApexThemeFactory runtime not present (switcher disabled?)"])
+        self.assertEqual(row.problems("linen"), [])
+
     def test_wrong_active_theme_is_a_problem(self):
         self.assertTrue(capture("minimal", 1440).problems("citrus-pop"))
 

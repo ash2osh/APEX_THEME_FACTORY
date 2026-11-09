@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 import json
 from pathlib import Path
-import re
 import shutil
 import sys
 from typing import List, Optional, Tuple
@@ -27,6 +26,7 @@ from lib.theme_factory.apexlang import (
     verify_package_ownership,
     verify_runtime_ownership,
 )
+from lib.theme_factory.apexlang_parser import last_close_paren, remove_file_blocks
 from lib.theme_factory.errors import PackageError
 from lib.theme_factory.install import (
     CANCELLED_EXIT_CODE,
@@ -95,12 +95,7 @@ def _remove_theme_from_static_files(static_files_apx: Path, prefix: str) -> None
     if not static_files_apx.exists():
         return
     content = static_files_apx.read_text(encoding="utf-8")
-    # `file "<prefix>..." ( ... )` blocks, anchored at line start so an entry on line 1 is matched too
-    pattern = re.compile(
-        r'^[ \t]*file[ \t]+"' + re.escape(prefix) + r'[^"\n]*"[ \t]*\([^)]*\)[ \t]*\n?(?:[ \t]*\n)?',
-        re.MULTILINE,
-    )
-    new_content = pattern.sub("", content).lstrip("\n")
+    new_content = remove_file_blocks(content, lambda path: path.startswith(prefix)).lstrip("\n")
     if not new_content.strip():
         # A component file with no components must be deleted, not left empty (pitfalls §3.4);
         # drop the now-empty static-files directory as well so the export matches a pristine one.
@@ -146,7 +141,7 @@ def _rewrite_page_zero(target: TargetExport, regions_code: Optional[str]) -> Non
         return
     text = strip_bootstrap_regions(target.page_zero_file.read_text(encoding="utf-8"))
     if regions_code:
-        last_paren = text.rfind(")")
+        last_paren = last_close_paren(text, "Page 0")
         text = text[:last_paren].rstrip() + "\n" + regions_code + "\n)\n"
     target.page_zero_file.write_text(text, encoding="utf-8", newline="\n")
 

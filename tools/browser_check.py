@@ -57,6 +57,7 @@ class RowCapture:
             found.append("contrast or keyboard check failed")
         if not phone and not self.persistence_verified:
             found.append("theme selection not kept across reload")
+        # Notes are diagnostics for a failure; on a row that passed they must not turn it into one.
         return found + [f"note: {note}" for note in self.notes] if found else []
 
 

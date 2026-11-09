@@ -79,6 +79,12 @@ def plan_translations(sqlcl: SqlclClient, target_meta: TargetMetadata, discard: 
 
 
 def _translation_key(row: dict) -> tuple:
+    missing = [key for key in ("fromId", "column", "lang") if key not in row]
+    if missing:
+        raise PackageError(
+            f"A translation row is missing {', '.join(missing)}; the translation rows have an unexpected shape.",
+            exit_code=3,
+        )
     return row["fromId"], row["column"], row.get("path"), row["lang"]
 
 

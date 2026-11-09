@@ -28,6 +28,7 @@ html.app-theme-solarized-dark {
     --sol-blue:    #268bd2;
     --sol-cyan:    #2aa198;
     --sol-green:   #859900;
+    --sol-green-text: #a0b90a;                          /* a text tint of sol-green: 5.8:1 on cards (badge values) */
     /* text-safe tints: the same hue, mixed towards white until ≥ 4.5:1 on #073642 */
     --sol-blue-text:  #6bb3e6;                          /* links, primary palette (5.0:1 on the panel, 5.7:1 on base) */
     --sol-cyan-text:  #45c4b7;                          /* primary-alt text, metric values (6.1:1 on base) */
@@ -150,8 +151,8 @@ html.app-theme-solarized-dark {
     --ut-palette-generic-text: var(--app-text-primary);
     --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
     --ut-palette-primary-alt-text: var(--sol-cyan-text);
-    --ut-palette-success-text: #a0b90a;                   /* a text tint of sol-green: 5.8:1 on cards (badge values) */
 /* @adapter dark/tokens#2 prefix=sol - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    --ut-palette-success-text: var(--sol-green-text);
     --ut-palette-warning-text: var(--sol-yellow);
     --ut-palette-danger-text: var(--sol-red-text);
     --ut-palette-info-text: var(--sol-cyan);

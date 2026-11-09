@@ -1,5 +1,7 @@
 # APEX Theme Factory
 
+**[Live demo: try all eight themes](https://oracleapex.com/ords/r/orochimaru/theme-factory-demo/themes)**, and switch between them from the Theme menu.
+
 **Eight ready-made themes for Oracle APEX. Change how an app looks without changing the app.**
 
 Each theme is a small CSS package that sits on top of Universal Theme. Your pages, regions and business logic stay

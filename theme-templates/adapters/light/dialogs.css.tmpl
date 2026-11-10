@@ -30,3 +30,12 @@
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
 }
+
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-__NAME__ .apex-theme-iris .a-Menu,
+.app-theme-__NAME__ .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-__NAME__ .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
+}

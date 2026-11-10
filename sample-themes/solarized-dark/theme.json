@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "solarized-dark",
   "title": "Solarized Dark",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "tagline": "Precision terminal cyan and deep solarized blues.",
   "direction": "Terminal-inspired Solarized depth with cyan-blue accents and compact geometry.",
   "class": "app-theme-solarized-dark",

@@ -63,13 +63,32 @@
 }
 /* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
    override has to be !important too. */
-.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
     background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
 }
-.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
-.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
-.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
     color: var(--app-text-emphasized);
+}
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-surface-selected) !important; /* Iris: `#006c91!important` */
+}
+.app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+.app-theme-carbon-volt .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-emphasized));
 }
 /* Style B (template option on the Side Navigation Menu list) gives the pill geometry; Iris fills the current
    pill teal + white — keep the pill, use the selection surface and light text. */

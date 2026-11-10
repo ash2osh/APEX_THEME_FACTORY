@@ -146,6 +146,14 @@
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
     --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
 }
+.app-theme-carbon-volt .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-carbon-volt .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-carbon-volt .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
 /* @adapter-end dark/regions#1 */
 
 /* technical-grid: square modules use an instrument-panel grid and a lime telemetry edge. */

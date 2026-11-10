@@ -64,14 +64,38 @@
     background-color: var(--app-accent-shade);
 }
 
-.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
     background-color: var(--app-surface-chrome-hover) !important; /* Iris: .is-hover{...!important} */
 }
 
-.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
-.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
-.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
     color: var(--app-text-chrome);
+}
+
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: .is-hover{...!important} */
+}
+
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-accent-shade) !important; /* Iris: #006c91!important */
+}
+
+.app-theme-estate-slate .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+
+.app-theme-estate-slate .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-chrome));
 }
 
 /* Style B Navigation Menu */

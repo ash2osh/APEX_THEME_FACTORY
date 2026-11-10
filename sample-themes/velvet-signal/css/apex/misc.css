@@ -34,6 +34,8 @@
 
     /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
     --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-background-color: transparent;
+    --ut-tabs-item-background-color: transparent;
     --ut-tabs-item-text-color: var(--app-text-secondary);
     --ut-tabs-item-active-text-color: var(--app-text-emphasized);
     --ut-tabs-item-active-highlight-color: var(--vs-cyan);

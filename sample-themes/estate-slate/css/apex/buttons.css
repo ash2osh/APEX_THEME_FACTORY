@@ -59,6 +59,22 @@
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-estate-slate .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-estate-slate .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-estate-slate .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-estate-slate .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-estate-slate .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-estate-slate .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
 /* @adapter-end light/buttons#1 */
 
 /* identity: crisp outlined operations */

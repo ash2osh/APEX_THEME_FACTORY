@@ -41,6 +41,15 @@
     --a-menu-callout-border-color: var(--app-border-color);
 }
 
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-velvet-signal .apex-theme-iris .a-Menu,
+.app-theme-velvet-signal .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-velvet-signal .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
+}
+
 /* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */
 .app-theme-velvet-signal .t-Dialog-page--wizard .t-Dialog-header {
     background-color: var(--app-surface-chrome);

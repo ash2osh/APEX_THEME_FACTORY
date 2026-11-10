@@ -435,13 +435,32 @@ html.app-theme-solarized-dark {
 }
 /* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
    override has to be !important too. */
-.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
     background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
 }
-.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
-.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
-.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
     color: var(--app-text-emphasized);
+}
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-surface-selected) !important; /* Iris: `#006c91!important` */
+}
+.app-theme-solarized-dark .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-emphasized));
 }
 /* Style B (template option on the Side Navigation Menu list) gives the pill geometry; Iris fills the current
    pill teal + white — keep the pill, use the selection surface and light text. */
@@ -638,6 +657,14 @@ html.app-theme-solarized-dark {
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
     --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
 }
+.app-theme-solarized-dark .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-solarized-dark .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
 /* @adapter-end dark/regions#1 */
 /* identity: underline directives instead of filled controls; the text must stay on the card surface */
 .app-theme-solarized-dark .apex-theme-iris .t-Button--primary {
@@ -709,6 +736,22 @@ html.app-theme-solarized-dark {
 .app-theme-solarized-dark .apex-theme-iris .t-Button:focus-visible {
     box-shadow: var(--app-focus-ring);
     outline: none;
+}
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-solarized-dark .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-solarized-dark .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-solarized-dark .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-solarized-dark .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-solarized-dark .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
 }
 /* @adapter-end dark/buttons#1 */
 /* identity: dense terminal inputs and compact labels */
@@ -1005,6 +1048,15 @@ html.app-theme-solarized-dark {
     --a-menu-callout-border-color: var(--app-border-color);
 }
 
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-solarized-dark .apex-theme-iris .a-Menu,
+.app-theme-solarized-dark .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-solarized-dark .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
+}
+
 /* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */
 .app-theme-solarized-dark .t-Dialog-page--wizard .t-Dialog-header {
     background-color: var(--app-surface-chrome);
@@ -1054,6 +1106,8 @@ html.app-theme-solarized-dark {
 
     /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
     --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-background-color: transparent;
+    --ut-tabs-item-background-color: transparent;
     --ut-tabs-item-text-color: var(--app-text-secondary);
     --ut-tabs-item-active-text-color: var(--app-text-emphasized);
     --ut-tabs-item-active-highlight-color: var(--sol-cyan);

@@ -416,13 +416,32 @@ html.app-theme-velvet-signal {
 }
 /* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
    override has to be !important too. */
-.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
     background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
 }
-.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
-.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
-.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
     color: var(--app-text-emphasized);
+}
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-surface-selected) !important; /* Iris: `#006c91!important` */
+}
+.app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+.app-theme-velvet-signal .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-emphasized));
 }
 /* Style B (template option on the Side Navigation Menu list) gives the pill geometry; Iris fills the current
    pill teal + white — keep the pill, use the selection surface and light text. */
@@ -480,7 +499,7 @@ html.app-theme-velvet-signal {
 }
 /* identity: sculpted layered surface and nested aubergine cards */
 .app-theme-velvet-signal .apex-theme-iris .t-Region,
-.app-theme-velvet-signal .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); box-shadow: var(--app-shadow-md); }
+.app-theme-velvet-signal .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); box-shadow: var(--app-shadow-md); overflow: hidden; }
 /* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
    Surfaces and text come from the --ut-component-* / palette tokens in tokens.css (Core paints .t-Wizard,
    .t-MetricCard, .t-MediaList, .t-ContentRow, .t-Timeline, .t-Comments from them); this file only sets
@@ -626,6 +645,14 @@ html.app-theme-velvet-signal {
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
     --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
 }
+.app-theme-velvet-signal .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-velvet-signal .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-velvet-signal .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
 /* @adapter-end dark/regions#1 */
 
 /* layered-surface: aubergine cards drift above the canvas instead of sharing a flat plane. */
@@ -635,9 +662,29 @@ html.app-theme-velvet-signal {
     box-shadow: var(--app-shadow-md);
 }
 
-/* signal-glow: fuchsia top signal with a violet-focus halo on interaction. */
+/* signal-glow: fuchsia top signal cleanly inset, preventing corner miter distortion */
 .app-theme-velvet-signal .apex-theme-iris .t-Region {
-    border-block-start: 2px solid var(--vs-magenta);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-theme-velvet-signal .apex-theme-iris .t-Region::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--vs-magenta);
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.app-theme-velvet-signal .apex-theme-iris .t-Region-header {
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
 }
 
 .app-theme-velvet-signal .apex-theme-iris .t-Cards .t-Card-wrap:hover,
@@ -647,6 +694,12 @@ html.app-theme-velvet-signal {
 /* identity: smooth lift controls with fuchsia signal fills */
 .app-theme-velvet-signal .apex-theme-iris .t-Button { transition: transform var(--app-motion-duration) ease, box-shadow var(--app-motion-duration) ease; border-radius: var(--app-radius-lg); }
 .app-theme-velvet-signal .apex-theme-iris .t-Button:hover { transform: var(--app-hover-transform); box-shadow: var(--app-shadow-sm); }
+.app-theme-velvet-signal .apex-theme-iris .t-Header .t-Button:hover,
+.app-theme-velvet-signal .apex-theme-iris .t-Button--header:hover,
+.app-theme-velvet-signal .apex-theme-iris .t-Button--navBar:hover,
+.app-theme-velvet-signal .apex-theme-iris #t_Button_navControl:hover {
+    transform: none;
+}
 /* Buttons.
    Core/Iris declare the *base* --a-button-* atoms on :root and every modifier (--small, --header, --hot,
    --danger …) on the element, so overriding the base atoms on body.apex-theme-iris restyles all buttons while
@@ -711,6 +764,22 @@ html.app-theme-velvet-signal {
 .app-theme-velvet-signal .apex-theme-iris .t-Button:focus-visible {
     box-shadow: var(--app-focus-ring);
     outline: none;
+}
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-velvet-signal .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-velvet-signal .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-velvet-signal .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-velvet-signal .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-velvet-signal .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-velvet-signal .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
 }
 /* @adapter-end dark/buttons#1 */
 
@@ -1013,6 +1082,15 @@ html.app-theme-velvet-signal {
     --a-menu-callout-border-color: var(--app-border-color);
 }
 
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-velvet-signal .apex-theme-iris .a-Menu,
+.app-theme-velvet-signal .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-velvet-signal .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
+}
+
 /* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */
 .app-theme-velvet-signal .t-Dialog-page--wizard .t-Dialog-header {
     background-color: var(--app-surface-chrome);
@@ -1062,6 +1140,8 @@ html.app-theme-velvet-signal {
 
     /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
     --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-background-color: transparent;
+    --ut-tabs-item-background-color: transparent;
     --ut-tabs-item-text-color: var(--app-text-secondary);
     --ut-tabs-item-active-text-color: var(--app-text-emphasized);
     --ut-tabs-item-active-highlight-color: var(--vs-cyan);

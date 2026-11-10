@@ -145,4 +145,12 @@
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
     --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
 }
+.app-theme-solarized-dark .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-solarized-dark .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-solarized-dark .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
 /* @adapter-end dark/regions#1 */

@@ -239,14 +239,38 @@ html.app-theme-citrus-pop {
     background-color: var(--app-accent-shade);
 }
 
-.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover {
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
     background-color: var(--app-surface-chrome-hover) !important; /* Iris: .is-hover{...!important} */
 }
 
-.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-content,
-.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle,
-.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
     color: var(--app-text-chrome);
+}
+
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: .is-hover{...!important} */
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-accent-shade) !important; /* Iris: #006c91!important */
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+
+.app-theme-citrus-pop .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-chrome));
 }
 
 /* Style B Navigation Menu */
@@ -451,6 +475,22 @@ html.app-theme-citrus-pop {
     box-shadow: var(--app-focus-ring);
     outline: none;
 }
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-citrus-pop .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-citrus-pop .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-citrus-pop .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-citrus-pop .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-citrus-pop .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-citrus-pop .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
 /* @adapter-end light/buttons#1 */
 
 /* pill-control: friendly actions use full capsules; hot actions carry the citrus signal. */
@@ -596,6 +636,15 @@ html.app-theme-citrus-pop {
     --a-menu-accel-text-color: var(--app-text-primary);
     --a-menu-default-accel-text-color: var(--app-text-primary);
     --a-menu-focused-accel-text-color: var(--app-text-emphasized);
+}
+
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-citrus-pop .apex-theme-iris .a-Menu,
+.app-theme-citrus-pop .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-citrus-pop .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
 }
 /* @adapter-end light/dialogs#1 */
 /* identity: playful pills, teal structure, and tangerine action states */

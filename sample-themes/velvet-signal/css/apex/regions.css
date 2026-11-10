@@ -1,6 +1,6 @@
 /* identity: sculpted layered surface and nested aubergine cards */
 .app-theme-velvet-signal .apex-theme-iris .t-Region,
-.app-theme-velvet-signal .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); box-shadow: var(--app-shadow-md); }
+.app-theme-velvet-signal .apex-theme-iris .t-CardsRegion { border-radius: var(--app-radius-lg); box-shadow: var(--app-shadow-md); overflow: hidden; }
 /* Regions, cards, card regions, wizards, metric cards, content blocks, breadcrumb title.
    Surfaces and text come from the --ut-component-* / palette tokens in tokens.css (Core paints .t-Wizard,
    .t-MetricCard, .t-MediaList, .t-ContentRow, .t-Timeline, .t-Comments from them); this file only sets
@@ -146,6 +146,14 @@
     --ut-breadcrumb-item-text-color: var(--app-text-secondary);
     --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
 }
+.app-theme-velvet-signal .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-velvet-signal .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-velvet-signal .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
 /* @adapter-end dark/regions#1 */
 
 /* layered-surface: aubergine cards drift above the canvas instead of sharing a flat plane. */
@@ -155,9 +163,29 @@
     box-shadow: var(--app-shadow-md);
 }
 
-/* signal-glow: fuchsia top signal with a violet-focus halo on interaction. */
+/* signal-glow: fuchsia top signal cleanly inset, preventing corner miter distortion */
 .app-theme-velvet-signal .apex-theme-iris .t-Region {
-    border-block-start: 2px solid var(--vs-magenta);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-theme-velvet-signal .apex-theme-iris .t-Region::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--vs-magenta);
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.app-theme-velvet-signal .apex-theme-iris .t-Region-header {
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
 }
 
 .app-theme-velvet-signal .apex-theme-iris .t-Cards .t-Card-wrap:hover,

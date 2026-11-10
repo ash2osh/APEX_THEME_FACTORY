@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.3 (2026-11-10)
+
+### Themes
+
+- Fixed side navigation tree menu flickering on unselected parent items when hovering underlying items across all themes (`:has(ul:hover)` neutralization and direct child combinators).
+- Fixed Velvet Signal collapsible region top accent line and rounded corner geometry: replaced asymmetric `border-block-start` with an inset pseudo-accent bar and `overflow: hidden;` to eliminate miter distortion and corner clipping artifacts.
+- Exempted header and navigation buttons (`#t_Button_navControl`, `.t-Button--header`, `.t-Button--navBar`) from hover lift transforms to prevent edge-hover jitter.
+- Fixed popup menu corners across all themes by assigning `--a-menu-border-radius` and `overflow: hidden` to `.a-Menu` and `.a-Menu-content`.
+- Preserved square inner joints on button groups (`.t-ButtonGroup`, `.apex-button-group`) when individual buttons use pill radius.
+- Resolved top navigation active item text contrast failures in `citrus-pop`, `cobalt-press`, and `estate-slate` on dark header bars, and fixed RDS tab container background and breadcrumb contrast in dark themes.
+- Re-released all 8 themes with patch version bumps (Carbon Volt 1.2.2, Citrus Pop 1.2.1, Cobalt Press 1.2.1, Estate Slate Dark 1.2.2, Estate Slate 1.2.1, Linen 1.2.1, Solarized Dark 1.3.2, Velvet Signal 1.2.2).
+
 ## 1.0.2 (2026-11-09)
 
 ### Reliability

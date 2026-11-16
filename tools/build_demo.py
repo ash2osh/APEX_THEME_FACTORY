@@ -108,10 +108,13 @@ def demo_gallery(text: str) -> str:
         "the gallery text")
 
 
-def demo_deployment(text: str) -> str:
+def demo_deployment(text: str, app_id: int | None = None) -> str:
     """Without a fixed ID, an import can't replace whatever app already uses it (102 is the source's own ID)."""
     settings = json.loads(text)
-    settings["app"].pop("id", None)
+    if app_id is not None:
+        settings["app"]["id"] = app_id
+    else:
+        settings["app"].pop("id", None)
     return json.dumps(settings, indent=2) + "\n"
 
 
@@ -131,7 +134,7 @@ def demo_global_page(text: str) -> str:
     return text[:close].rstrip() + "\n" + NOTICE_REGION + ")\n"
 
 
-def prepare(source: Path, destination: Path, salt: str) -> None:
+def prepare(source: Path, destination: Path, salt: str, app_id: int | None = None) -> None:
     shutil.copytree(source, destination)
     application = destination / "application.apx"
     application.write_text(demo_application(application.read_text(encoding="utf-8"), salt),
@@ -145,7 +148,7 @@ def prepare(source: Path, destination: Path, salt: str) -> None:
     airports = destination / "supporting-objects/install-scripts/create-airports-table.sql"
     airports.write_text(demo_airports(airports.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     deployment = destination / "deployments/default.json"
-    deployment.write_text(demo_deployment(deployment.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
+    deployment.write_text(demo_deployment(deployment.read_text(encoding="utf-8"), app_id=app_id), encoding="utf-8", newline="\n")
     # Not an application file: the Theme Factory build reads it, and no import needs it.
     (destination / "theme-factory.json").unlink()
 
@@ -162,13 +165,13 @@ def write_zip(root: Path, zip_path: Path) -> None:
                 archive.writestr(info, path.read_bytes())
 
 
-def build(output_dir: Path, repo_root: Path = ROOT, salt: str | None = None) -> Path:
+def build(output_dir: Path, repo_root: Path = ROOT, salt: str | None = None, app_id: int | None = None) -> Path:
     if sync(repo_root, check=True).drift:
         raise PackageError("applications/ut is out of date: run scripts/sync-static.sh first")
     zip_path = output_dir / "theme-factory-demo.zip"
     with tempfile.TemporaryDirectory(prefix="theme-factory-demo-") as temporary:
         staged = Path(temporary) / "app"
-        prepare(repo_root / "applications/ut", staged, salt or secrets.token_hex(32).upper())
+        prepare(repo_root / "applications/ut", staged, salt or secrets.token_hex(32).upper(), app_id=app_id)
         write_zip(staged, zip_path)
     digest = hashlib.sha256(zip_path.read_bytes()).hexdigest()
     zip_path.with_name(zip_path.name + ".sha256").write_text(f"{digest}  {zip_path.name}\n", encoding="utf-8",
@@ -179,9 +182,10 @@ def build(output_dir: Path, repo_root: Path = ROOT, salt: str | None = None) -> 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist/demo")
+    parser.add_argument("--app-id", type=int, default=94659, help="Application ID to embed in deployment settings")
     args = parser.parse_args(argv)
     try:
-        path = build(args.output_dir)
+        path = build(args.output_dir, app_id=args.app_id)
     except PackageError as exc:
         print(f"DEMO status=FAIL {exc}", file=sys.stderr)
         return 2

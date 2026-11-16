@@ -1,6 +1,6 @@
 /* identity: segmented rail navigation and hard module chrome */
 .app-theme-carbon-volt .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-inline-start: 3px solid var(--app-color-primary); background: var(--app-surface-selected); }
-.app-theme-carbon-volt .apex-theme-iris .t-Body-nav { border-inline-end: 2px solid var(--app-color-info); }
+.app-theme-carbon-volt .apex-theme-iris .t-Body-nav { border-inline-end: none; --ut-body-nav-border-width: 2px; --ut-body-nav-border-color: var(--app-color-info); }
 /* Page shell — header, side navigation, title bar, footer.
    Carbon Volt chrome: segmented rail, hard title bar, and telemetry canvas.
    Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on

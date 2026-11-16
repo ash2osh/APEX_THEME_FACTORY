@@ -1,6 +1,7 @@
 /* identity: pill navigation and generous rounded shell */
 .app-theme-velvet-signal .apex-theme-iris .t-TreeNav .a-TreeView-row.is-current--top { border-radius: var(--app-radius-lg); background: var(--app-surface-selected); }
-.app-theme-velvet-signal .apex-theme-iris .t-Body-nav { padding: var(--app-space-unit); }
+.app-theme-velvet-signal .apex-theme-iris .t-Body-nav { padding: 0; }
+.app-theme-velvet-signal .apex-theme-iris.js-navExpanded .t-Body-nav .t-TreeNav { padding: var(--app-space-unit) 0.5rem; }
 /* Page shell — header, side navigation, title bar, footer.
    Velvet Signal chrome: pill navigation, sculpted title bar, and spacious signal canvas.
    Technique: override the Universal Theme --ut-* / --a-* tokens *scoped on the component root* (never on

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1 (2026-11-16)
+
+### Themes & Navigation
+
+- Fixed side navigation collapse clipping defect in `citrus-pop` and `velvet-signal`: removed `padding: var(--app-space-unit)` from `.t-Body-nav` which prevented the element from collapsing to 0 width and caused an opaque strip to cover page content. Moved tree row breathing-room padding to `.apex-theme-iris.js-navExpanded .t-Body-nav .t-TreeNav`.
+- Fixed `carbon-volt` side navigation collapse: replaced physical `border-inline-end: 2px` on `.t-Body-nav` with native Universal Theme inset box-shadow tokens (`--ut-body-nav-border-width: 2px; --ut-body-nav-border-color: var(--app-color-info); border-inline-end: none;`) to eliminate 2px border bleeding into main content when collapsed.
+- Audited all 9 themes in live Firefox DevTools: confirmed 0px collapsed nav width, 0 overlap, and clean text visibility across standard and component pages.
+- Updated demo reference application ID in `deployments/default.json` and demo builder to `94659` for direct deployment to oracleapex.com workspaces.
+- Exported complete `f94659.sql` and `theme-factory-demo.zip` packages.
+
 ## 1.1.0 (2026-11-16)
 
 ### Themes

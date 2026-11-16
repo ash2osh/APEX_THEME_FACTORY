@@ -480,3 +480,17 @@ file "js/theme-factory-runtime.js" (
     mimeType: application/javascript
     charSet: utf-8
 )
+
+file "css/themes/coin-cavern/theme.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/themes/coin-cavern/theme.json" (
+    mimeType: application/json
+    charSet: utf-8
+)
+
+file "css/themes/coin-cavern/cover.jpg" (
+    mimeType: image/jpeg
+)

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "coin-cavern",
+  "title": "Coin Cavern",
+  "version": "1.0.0",
+  "tagline": "Subterranean 8-bit stone blocks, iconic warp pipes, and shining coin gold directives.",
+  "direction": "Dark retro arcade underground with subterranean brick surfaces, pipe green controls, and coin gold signals.",
+  "class": "app-theme-coin-cavern",
+  "compatibility": {
+    "apex": ">=26.1.0 <26.3.0",
+    "themeNumber": 42,
+    "baseTheme": "ut-26.1",
+    "themeStyle": "Iris"
+  },
+  "templateOptions": {
+    "navigationMenuStyle": "t-TreeNav--styleB"
+  },
+  "assets": {
+    "stylesheet": "theme.css",
+    "runtime": "theme-factory-runtime.js",
+    "cover": "preview/cover.jpg"
+  }
+}

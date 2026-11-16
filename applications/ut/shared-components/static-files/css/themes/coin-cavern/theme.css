@@ -1,0 +1,1714 @@
+/* @theme-factory-generated */
+/* generated-from: theme-templates/neutral */
+/* Entry point for html.app-theme-coin-cavern. */
+/* Coin Cavern — dark 8-bit subterranean arcade theme for Universal Theme / Iris.
+   Scoped to html.app-theme-coin-cavern. All colors derived from recipe anchors. */
+html.app-theme-coin-cavern {
+  color-scheme: dark;
+
+  /* Theme-private 8-bit arcade palette */
+  --coin-page:           #080C12;  /* Deep abyss / pitch cavern canvas */
+  --coin-card:           #131B26;  /* Subterranean stone brick blocks */
+  --coin-chrome:         #0D141E;  /* Cavern ceiling / structural chrome */
+  --coin-subtle:         #172230;  /* Subterranean surface highlight */
+  --coin-input:          #0B1017;  /* Sunken block recess */
+  --coin-hover:          #1C2838;  /* Block hover lift */
+  --coin-selected:       #163324;  /* Pipe-tinted selected block */
+
+  --coin-hud-white:      #F5F9FC;  /* 8-bit arcade HUD white */
+  --coin-stone-muted:    #98B8D4;  /* Chiseled stone secondary glyphs */
+  --coin-ink-dark:       #080C12;  /* High-contrast ink on vibrant fills */
+
+  --coin-pipe-green:     #00D659;  /* Warp pipe green */
+  --coin-pipe-shadow:    #008F3B;  /* Pipe shaded rim */
+  --coin-pipe-highlight: #4DFF90;  /* Pipe highlight sheen */
+  --coin-green:          #00D659;
+  --coin-green-text:     #00D659;
+
+  --coin-coin-gold:      #FFC400;  /* Question block / spinning coin gold */
+  --coin-yellow:         #FFC400;
+  --coin-fire-red:       #FF6E67;  /* Fire flower / lava spark red */
+  --coin-red:            #FF6E67;
+  --coin-red-text:       #FF6E67;
+  --coin-ice-cyan:       #38D8FF;  /* Subterranean water / sky pipe cyan */
+  --coin-cyan:           #38D8FF;
+  --coin-cyan-bright:    #70E4FF;
+  --coin-cyan-text:      #38D8FF;
+  --coin-blue:           #38D8FF;
+  --coin-blue-bright:    #70E4FF;
+  --coin-blue-text:      #38D8FF;
+  --coin-orange:         #FFAC4D;
+  --coin-orange-text:    #FFAC4D;
+  --coin-magenta-text:   #FF70D4;
+
+  --coin-base03:         var(--coin-page);
+  --coin-base02:         var(--coin-card);
+  --coin-base01:         #2A3B4F;
+  --coin-base0:          var(--coin-stone-muted);
+  --coin-base1:          #B8D4EA;
+  --coin-base2:          #E2EEF8;
+  --coin-base3:          var(--coin-hud-white);
+
+  --coin-brick-border:   #2A3B4F;  /* 8-bit brick mortar seam */
+  --coin-brick-bevel:    #3D5570;  /* Chiseled brick edge highlight */
+  --coin-shadow-color:   #000000;  /* Hard pixel drop shadow */
+
+  /* Standard Theme Factory surface roles */
+  --app-surface-page:     var(--coin-page);
+  --app-surface-card:     var(--coin-card);
+  --app-surface-chrome:   var(--coin-chrome);
+  --app-surface-subtle:   var(--coin-subtle);
+  --app-surface-input:    var(--coin-input);
+  --app-surface-hover:    var(--coin-hover);
+  --app-surface-selected: var(--coin-selected);
+
+  /* Typography roles */
+  --app-text-emphasized:  var(--coin-hud-white);
+  --app-text-primary:     var(--coin-hud-white);
+  --app-text-secondary:   var(--coin-stone-muted);
+  --app-text-on-accent:   var(--coin-ink-dark);
+
+  /* Semantic palette roles */
+  --app-accent:           var(--coin-pipe-green);
+  --app-accent-alt:       var(--coin-coin-gold);
+  --app-accent-shade:     var(--coin-selected);
+  --app-on-accent:        var(--coin-ink-dark);
+  --app-danger:           var(--coin-fire-red);
+  --app-color-primary:    var(--coin-pipe-green);
+  --app-color-info:       var(--coin-ice-cyan);
+  --app-color-danger:     var(--coin-fire-red);
+  --app-color-success:    var(--coin-pipe-green);
+  --app-color-warning:    var(--coin-coin-gold);
+
+  /* Borders: strict 2px pixel block edges */
+  --app-border-color:     var(--coin-brick-border);
+  --app-border-strong:    var(--coin-pipe-green);
+  --app-border-width:     2px;
+  --app-border-hairline:  1px solid var(--app-border-color);
+
+  /* Radii: true square 8-bit pixels */
+  --app-radius-sm:        0px;
+  --app-radius-md:        0px;
+  --app-radius-lg:        0px;
+
+  /* Control geometry & rhythm */
+  --app-control-h:        2.25rem;
+  --app-density-scale:    0.875;
+  --app-space-unit:       0.375rem;
+  --app-heading-scale:    1.125;
+  --app-hover-transform:  translateX(2px);
+  --app-hover-shadow:     none;
+  --app-motion-duration:  90ms;
+
+  /* 8-bit hard offset shadows (no blur) */
+  --app-shadow-sm:        2px 2px 0 var(--coin-shadow-color);
+  --app-shadow-md:        3px 3px 0 var(--coin-shadow-color);
+  --app-shadow-card:      4px 4px 0 var(--coin-shadow-color);
+  --app-shadow-dialog:    6px 6px 0 var(--coin-shadow-color);
+  --app-overlay-background: rgba(8, 12, 18, 0.85);
+  --app-card-media-overlay: rgba(8, 12, 18, 0.86);
+  --app-badge-danger-text: var(--coin-hud-white);
+
+  /* Focus indicator: coin gold pixel ring */
+  --app-focus-color:      var(--coin-coin-gold);
+  --app-focus-width:      2px;
+  --app-focus-offset:     2px;
+  --app-focus-ring:       0 0 0 2px var(--coin-page), 0 0 0 4px var(--coin-coin-gold);
+  --app-focus-halo-color: rgba(255, 196, 0, 0.3);
+
+  /* Fonts */
+  --app-font-family-body:    "ThemeFactory-coin-cavern-body", ui-monospace, "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+  --app-font-family-heading: "ThemeFactory-coin-cavern-body", ui-monospace, "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+  --app-font-family-mono:    ui-monospace, SFMono-Regular, monospace;
+  --app-font-weight-medium:   500;
+  --app-font-weight-semibold: 600;
+
+  /* JET reads these once from html and paints them into chart SVG attributes. */
+/* @adapter dark/tokens#1 prefix=coin - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    --oj-core-text-color-primary: var(--app-text-primary);
+    --oj-core-text-color-secondary: var(--app-text-secondary);
+    --oj-heading-text-color: var(--app-text-emphasized);
+    --oj-core-text-color-brand: var(--app-color-primary);
+    --oj-link-text-color: var(--app-color-primary);
+    --oj-core-divider-color: var(--app-border-color);
+    --oj-core-focus-border-color: var(--coin-cyan);
+}
+/* @adapter-end dark/tokens#1 */
+
+/* Universal Theme / Iris tokens, overridden on the theme-style scope (body.apex-theme-iris, never :root) */
+.app-theme-coin-cavern .apex-theme-iris {
+  --ut-color-scheme: dark;
+  --ut-body-background-color: var(--app-surface-page);
+  --ut-body-text-color: var(--app-text-primary);
+  --ut-component-background-color: var(--app-surface-card);
+  --ut-component-text-default-color: var(--app-text-primary);
+  --ut-component-text-title-color: var(--app-text-emphasized);
+  --ut-component-text-subtitle-color: var(--app-text-primary);
+  --ut-component-text-muted-color: var(--app-text-secondary);
+  --ut-component-border-color: var(--app-border-color);
+  --ut-component-inner-border-color: rgba(42, 59, 79, 0.5);
+  --ut-component-highlight-background-color: var(--app-surface-hover);
+
+  --ut-focus-outline-color: var(--app-focus-color);
+  --ut-link-text-color: var(--app-color-primary);
+
+  /* palette mapping */
+  --ut-palette-primary: var(--app-color-primary);
+  --ut-palette-primary-contrast: var(--app-text-on-accent);
+  --ut-palette-primary-shade: var(--app-accent-shade);
+  --ut-palette-primary-alt: var(--app-accent-alt);
+  --ut-palette-primary-text: var(--app-color-primary);
+  --ut-palette-success: var(--coin-pipe-green);
+  --ut-palette-success-contrast: var(--app-text-on-accent);
+  --ut-palette-success-shade: rgba(0, 214, 89, 0.16);
+  --ut-palette-warning: var(--coin-coin-gold);
+  --ut-palette-warning-contrast: var(--app-text-on-accent);
+  --ut-palette-warning-shade: rgba(255, 196, 0, 0.16);
+  --ut-palette-danger: var(--coin-fire-red);
+  --ut-palette-danger-contrast: var(--app-text-on-accent);
+  --ut-palette-danger-shade: rgba(255, 110, 103, 0.16);
+  --ut-palette-info: var(--coin-ice-cyan);
+  --ut-palette-info-contrast: var(--app-text-on-accent);
+  --ut-palette-info-shade: rgba(56, 216, 255, 0.16);
+  --ut-palette-generic: var(--app-surface-chrome);
+  --ut-palette-generic-contrast: var(--app-text-primary);
+  --ut-palette-generic-shade: var(--app-surface-subtle);
+  --ut-palette-generic-text: var(--app-text-primary);
+  --ut-palette-primary-alt-contrast: var(--app-text-on-accent);
+  --ut-palette-primary-alt-text: var(--coin-yellow);
+
+/* @adapter dark/tokens#2 prefix=coin - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    --ut-palette-success-text: var(--coin-green-text);
+    --ut-palette-warning-text: var(--coin-yellow);
+    --ut-palette-danger-text: var(--coin-red-text);
+    --ut-palette-info-text: var(--coin-cyan);
+
+    /* Core.min.css declares the whole --a-palette-* atom family as var(--ut-palette-*) *on :root*, so it
+       freezes to Iris' light literals (#00688c / #e4f1f7 / #fff) before the overrides above reach it
+       (pitfalls.md §1.2). Every consumer is an element-scoped rule, so restating the chain here is enough.
+       Measured 2026-09-17 on p1410 (first dark package): selecting an Interactive Grid row painted its cells
+       #e4f1f7 under light body text — 1.06:1; with these fifteen lines the cells took the package's shade: 8.17:1.
+       Also feeds IRR/IG/Card View/Media List/Timeline/Comments selection, subtle badges, the date picker's
+       current day and the report-controls error state. */
+    --a-palette-primary: var(--ut-palette-primary);
+    --a-palette-primary-contrast: var(--ut-palette-primary-contrast);
+    --a-palette-primary-shade: var(--ut-palette-primary-shade);
+    --a-palette-danger: var(--ut-palette-danger);
+    --a-palette-danger-contrast: var(--ut-palette-danger-contrast);
+    --a-palette-danger-shade: var(--ut-palette-danger-shade);
+    --a-palette-warning: var(--ut-palette-warning);
+    --a-palette-warning-contrast: var(--ut-palette-warning-contrast);
+    --a-palette-warning-shade: var(--ut-palette-warning-shade);
+    --a-palette-success: var(--ut-palette-success);
+    --a-palette-success-contrast: var(--ut-palette-success-contrast);
+    --a-palette-success-shade: var(--ut-palette-success-shade);
+    --a-palette-info: var(--ut-palette-info);
+    --a-palette-info-contrast: var(--ut-palette-info-contrast);
+    --a-palette-info-shade: var(--ut-palette-info-shade);
+
+    /* Same mechanism: Core.min.css declares --a-base-link-text-color: var(--ut-link-text-color) on :root.
+       The faceted-search text buttons (.a-FS-toggleOverflow / .a-FS-clearAll / .a-FS-clearButton) set
+       --a-button-text-color from it *on the element*, so they kept Iris' #0e7295: 2.39:1 on the dark card
+       (first dark package, p1411, 2026-09-17); restated, they take the package's link colour (≥ 4.5:1). Hover/active fall back to this token in UT's own
+       declarations, so one line covers all three states. */
+    --a-base-link-text-color: var(--ut-link-text-color);
+
+    /* Iris declares these with literal colours on :root (they do not follow the component tokens) */
+    --ut-region-background-color: var(--app-surface-card);
+    --ut-region-header-background-color: var(--app-surface-card);
+    --ut-region-border-color: var(--app-border-color);
+    --ut-region-header-border-color: var(--app-border-color);
+    --ut-region-text-color: var(--app-text-primary);
+    --ut-region-header-text-color: var(--app-text-emphasized);
+    --ut-field-label-text-color: var(--app-text-secondary);
+    --ut-field-input-focus-icon-color: var(--coin-cyan);
+    --ut-field-fl-input-focus-icon-background-color: var(--coin-cyan);
+    --ut-field-fl-input-focus-icon-color: var(--app-text-on-accent);
+    --ut-component-badge-background-color: var(--app-surface-hover);
+    --ut-component-toolbar-background-color: var(--app-surface-chrome);
+    --ut-body-sidebar-background-color: var(--app-surface-page);
+    --ut-body-sidebar-text-color: var(--app-text-primary);
+    --ut-body-actions-background-color: var(--app-surface-chrome);
+    --ut-body-actions-text-color: var(--app-text-primary);
+    --ut-body-actionstoggle-background-color: var(--app-surface-chrome);
+    --ut-body-actionstoggle-hover-background-color: var(--app-surface-hover);
+    --ut-footer-background-color: transparent;
+    --ut-footer-border-color: var(--app-border-color);
+    --ut-linkslist-arrow-color: var(--app-text-secondary);
+    --ut-login-page-background-color: var(--app-surface-page);
+    --ut-login-region-background-color: var(--app-surface-card);
+    --ut-navbar-button-badge-background-color: var(--coin-cyan);
+    --ut-navtabs-background-color: var(--app-surface-chrome);
+    --ut-navtabs-text-color: var(--app-text-primary);
+    --ut-navtabs-item-active-background-color: var(--app-surface-selected);
+    --ut-navtabs-item-border-color: var(--app-border-color);
+    --ut-navtabs-item-highlight-color: var(--coin-cyan);
+    --ut-resultsregion-background-color: var(--app-surface-card);
+    --ut-resultsregion-search-background-color: var(--app-surface-input);
+    --ut-resultsregion-search-border-color: var(--app-border-strong);
+    --ut-report-cell-alt-background-color: var(--app-surface-subtle);
+    --ut-tabs-item-hint-highlight-color: var(--app-border-strong);
+    --ut-treeview-badge-background-color: var(--coin-cyan);
+    --ut-treeview-badge-text-color: var(--app-text-on-accent);
+/* @adapter-end dark/tokens#2 */
+
+  --a-checkbox-background-color: var(--app-surface-input);
+  --a-checkbox-border-color: var(--app-border-strong);
+  --a-checkbox-text-color: var(--app-text-on-accent);
+  --a-checkbox-checked-background-color: var(--app-accent);
+  --a-checkbox-checked-text-color: var(--app-text-on-accent);
+  --a-checkbox-hover-background-color: var(--app-surface-hover);
+  --a-chip-hover-background-color: var(--app-surface-hover);
+  --a-chip-active-background-color: var(--app-surface-selected);
+  --a-chip-applied-background-color: var(--app-surface-hover);
+  --a-chip-applied-hover-background-color: var(--app-surface-selected);
+  --a-chip-remove-hover-background-color: var(--app-surface-selected);
+  --a-chip-remove-active-background-color: var(--app-surface-selected);
+  --a-cr-checkbox-background-color: var(--app-surface-input);
+  --a-datepicker-header-background-color: var(--app-surface-chrome);
+  --a-datepicker-calendar-title-background-color: var(--app-surface-chrome);
+  --a-datepicker-calendar-header-background-color: var(--app-surface-chrome);
+  --a-datepicker-background-color: var(--app-surface-chrome);
+  --a-menu-background-color: var(--app-surface-chrome);
+  --a-datepicker-calendar-background-color: var(--app-surface-card);
+  --a-datepicker-calendar-week-background-color: var(--app-surface-chrome);
+  --a-datepicker-calendar-week-text-color: var(--app-text-secondary);
+  --a-datepicker-calendar-header-text-color: var(--app-text-secondary);
+  --a-datepicker-calendar-day-hover-background-color: var(--app-surface-hover);
+  --a-datepicker-calendar-day-current-text-color: var(--app-text-emphasized);
+
+/* @adapter dark/tokens#3 prefix=coin - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    --a-datepicker-footer-background-color: var(--app-surface-card);
+    --jui-datepicker-background-color: var(--app-surface-card);
+    --jui-datepicker-border-color: var(--app-border-color);
+    --a-gv-background-color: var(--app-surface-card);
+    --a-gv-deleted-background-color: var(--app-surface-subtle);
+    --a-gv-grandtotal-background-color: var(--app-surface-chrome);
+    --a-kb-shortcut-background-color: var(--app-surface-hover);
+    --a-kb-shortcut-border-color: var(--app-border-color);
+    --a-popuplov-chip-background-color: var(--app-surface-hover);
+    --a-report-controls-cell-label-text-color: var(--app-text-primary);
+    --a-report-controls-cell-label-background-color: var(--app-surface-card);
+    --a-resultsitem-background-color: var(--app-surface-card);
+    --a-resultsitem-badge-background-color: var(--app-surface-hover);
+    --a-starrating-stars-bg-color: var(--app-border-strong);
+    --a-chat-client-background-color: var(--app-surface-card);
+    --a-chat-user-primary-message-background-color: var(--app-surface-selected);
+    --a-chat-user-secondary-message-background-color: var(--app-surface-hover);
+    --a-chat-input-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-input-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-message-action-button-background-color: var(--app-surface-card);
+    --a-chat-message-action-button-state-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-border-color: var(--app-border-strong);
+    --a-chat-view-more-button-hover-background-color: var(--app-surface-hover);
+    --a-chat-view-more-button-focus-background-color: var(--app-surface-hover);
+    --a-chat-background: var(--app-surface-page);
+    --a-chat-body-background-color: var(--app-surface-page);
+    --a-chat-title-background: var(--app-surface-chrome);
+    --a-chat-title-color: var(--app-text-emphasized);
+    --a-chat-message-border-color: var(--app-border-color);
+    --a-chat-message-error-icon-color: var(--coin-red-text);
+    --a-chat-transcript-outline-color: var(--coin-cyan);
+    --a-chat-user-primary-text-color: var(--app-text-primary);
+    --a-chat-user-primary-icon-text-color: var(--app-text-on-accent);
+    --a-chat-user-primary-icon-background-color: var(--coin-cyan);   /* paired with the dark icon text above;
+                                                                        was still Iris' :root-resolved #00688c
+                                                                        (dark text on it failed AA) */
+    --a-chat-user-secondary-text-color: var(--app-text-primary);
+    --a-chat-user-secondary-icon-background-color: var(--coin-red);
+    --a-chat-user-secondary-icon-text-color: #ffffff;
+    --a-chat-view-more-button-background-color: var(--app-surface-page);
+    --ut-component-badge-text-color: var(--app-text-primary);
+    --ut-component-icon-background-color: var(--coin-cyan);         /* paired with the dark icon text below */
+    --ut-component-icon-color: var(--app-text-on-accent);
+    --ut-header-menubar-item-hover-background-color: var(--app-surface-hover);
+    --ut-header-menubar-item-hover-text-color: var(--app-text-emphasized);
+    --ut-navtabs-item-hover-background-color: var(--app-surface-hover);
+    --ut-navtabs-item-active-highlight-color: var(--coin-cyan);
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--coin-cyan);
+/* @adapter-end dark/tokens#3 */
+
+  --ut-wizard-header-background-color: var(--app-surface-chrome);
+  --ut-wp-track-color: rgba(42, 59, 79, 0.4);
+  --ut-wp-marker-color: var(--coin-brick-bevel);
+
+/* @adapter dark/tokens#4 prefix=coin - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    /* list components that Core paints from their own tokens */
+    --ut-comment-item-background-color: var(--app-surface-card);
+    --ut-comment-chat-background-color: var(--app-surface-input);
+    --ut-comment-chat-active-background-color: var(--app-surface-hover);
+    --ut-medialist-item-background-color: var(--app-surface-card);
+    --ut-cr-item-background-color: var(--app-surface-card);
+    --ut-cr-border-color: var(--app-border-color);
+    --ut-timeline-type-background-color: var(--app-surface-card);
+}
+/* @adapter-end dark/tokens#4 */
+
+/* @adapter dark/tokens#5 prefix=coin - generated from theme-templates/adapters/dark/tokens.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    /* Core and Iris declare these as var() chains on :root, so they freeze to Iris' light literals before the
+       package's own colours can reach them (pitfalls §1.2). Measured on the dark packages (26.2, p1207 and p1305):
+       the breadcrumb title was near-black on the dark title bar (1.05:1) and the menu bar kept a light background
+       under light text (1.1:1). Restate the chains on the theme scope. */
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+    /* Iris declares the trail text as a literal ink at 70 % on :root: dark trails stayed near-black (1.04:1). */
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --a-menubar-background-color: var(--app-surface-chrome);
+    --a-menubar-item-text-color: var(--app-text-emphasized);
+    --a-menubar-item-current-background-color: var(--app-surface-card);
+    --a-menubar-item-current-text-color: var(--app-text-emphasized);
+    /* The master-detail side panel and the region display selector (.apex-rds-container) read the body-info colour,
+       which falls back to Iris' light title-bar literal (#f1efed on :root). The title-bar restatement in shell.css
+       reaches only .t-Body-title, so the band under the title stayed light with light tab labels (1.07:1). */
+    --ut-body-info-background-color: var(--app-surface-page);
+    --ut-body-info-text-color: var(--app-text-emphasized);
+    /* Universal Theme palette (.u-color-N): Iris sets white ink on eleven of its 45 swatches, 2.9:1 to 4.5:1, and WCAG AA
+       needs 4.5:1. Black ink reaches at least 4.7:1 on each of them, the ink Iris already uses on its light swatches. */
+    --u-color-2-contrast: #000;
+    --u-color-6-contrast: #000;
+    --u-color-8-contrast: #000;
+    --u-color-11-contrast: #000;
+    --u-color-13-contrast: #000;
+    --u-color-15-contrast: #000;
+    --u-color-16-contrast: #000;
+    --u-color-27-contrast: #000;
+    --u-color-29-contrast: #000;
+    --u-color-35-contrast: #000;
+    --u-color-39-contrast: #000;
+    /* Form error text: Iris sets --a-form-error-text-color to var(--a-palette-danger) on :root, which freezes to its
+       light literal (#b3311f, 2.1-2.8:1 on the dark surfaces, p1402). Point it at this theme's danger text. */
+    --a-form-error-text-color: var(--ut-palette-danger-text);
+}
+
+/* Print: browsers drop backgrounds by default, which leaves this theme's light text on white paper. */
+@media print {
+    html.app-theme-coin-cavern {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+/* @adapter-end dark/tokens#5 */
+/* Coin Cavern — cavern shell, header, and arcade rail navigation */
+
+html.app-theme-coin-cavern .t-Body {
+  background-color: var(--app-surface-page);
+  color: var(--app-text-primary);
+  font-family: var(--app-font-family-body);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Header {
+  --ut-header-strip-size: 0px;
+/* @adapter dark/shell#1 prefix=coin - generated from theme-templates/adapters/dark/shell.css.tmpl; edit there, then run scripts/theme.sh adapters */
+    --ut-header-background-color: var(--app-surface-subtle);
+    --ut-header-text-color: var(--app-text-emphasized);
+    --ut-header-border-color: var(--app-border-color);
+    --ut-header-menubar-background-color: var(--app-surface-subtle);
+    --ut-header-menubar-item-text-color: var(--app-text-primary);
+    --ut-header-menubar-item-border-color: var(--app-border-color);
+    --ut-header-menubar-item-current-background-color: var(--app-accent-shade);
+    --ut-header-menubar-item-current-text-color: var(--app-text-emphasized);
+    --ut-header-menubar-item-split-border-color: var(--app-border-color);
+    --ut-header-menubar-item-split-icon-color: var(--app-text-secondary);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Header-logo-link {
+    font-weight: var(--app-font-weight-semibold);
+    color: var(--app-text-emphasized);
+}
+/* Nav-bar / menu-toggle buttons: readable at rest, emphasized on hover */
+.app-theme-coin-cavern .apex-theme-iris .t-Header .t-Button--header {
+    --a-button-text-color: var(--app-text-emphasized);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-border-radius: var(--app-radius-sm);
+}
+
+/* ---- Side navigation: side-bar surface, selection pill with light text ----------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Body-nav {
+    --ut-body-nav-background-color: var(--app-surface-chrome);
+    --ut-body-nav-text-color: var(--app-text-secondary);            /* ≥ 4.5:1 on the side bar */
+    --ut-body-nav-border-color: var(--app-border-color);
+    --ut-body-nav-scrollbar-thumb-background-color: var(--app-border-strong);
+    --ut-body-nav-scrollbar-track-background-color: var(--app-surface-chrome);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Body-nav .t-TreeNav {
+    --a-treeview-node-selected-background-color: var(--app-surface-selected);
+    --a-treeview-node-selected-text-color: var(--app-text-emphasized);   /* ≥ 4.5:1 on the pill */
+    --a-treeview-node-focused-background-color: var(--app-surface-selected);
+    --a-treeview-node-focused-text-color: var(--app-text-emphasized);
+    --a-treeview-node-focused-shadow: inset 0 0 0 1px var(--coin-cyan);
+    --a-treeview-node-font-weight: var(--app-font-weight-medium);
+}
+/* Iris paints current/expanded top-level rows white-on-translucent for its dark nav; neutralise. */
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel ul,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-collapsible > .a-TreeView-row {
+    background-color: transparent;
+    color: inherit;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel .a-TreeView-row.is-selected {
+    background-color: var(--app-surface-selected);
+}
+/* Iris declares the hover tint with !important (Iris.min.css: `.a-TreeView-row.is-hover{…!important}`), so the
+   override has to be !important too. */
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover {
+    background-color: var(--app-surface-hover) !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: var(--app-text-emphasized);
+}
+/* Neutralize top-level row hover when pointer moves into child list */
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover {
+    background-color: transparent !important; /* Iris: `.a-TreeView-row.is-hover{…!important}` */
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-content,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel:has(ul:hover) > .a-TreeView-row.is-hover + .a-TreeView-toggle + .a-TreeView-content {
+    color: inherit;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel.is-selected:has(ul:hover) > .a-TreeView-row {
+    background-color: var(--app-surface-selected) !important; /* Iris: `#006c91!important` */
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav .a-TreeView-row {
+    transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Header-nav .a-MenuBar-item.a-Menu--current .a-MenuBar-label {
+    color: var(--ut-header-menubar-item-current-text-color, var(--app-text-emphasized));
+}
+/* Style B (template option on the Side Navigation Menu list) gives the pill geometry; Iris fills the current
+   pill teal + white — keep the pill, use the selection surface and light text. */
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row {
+    border-radius: var(--app-radius-sm);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected {
+    background-color: var(--app-surface-selected);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top,
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-selected + .a-TreeView-toggle {
+    color: var(--app-text-emphasized);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-content.is-current--top.is-hover {
+    color: var(--app-text-emphasized) !important;      /* Iris: `color:#fff!important` */
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleB .a-TreeView-node--topLevel .a-TreeView-row.is-current--top.is-hover {
+    background-color: var(--app-surface-selected) !important;   /* Iris: `#006c91!important` */
+}
+/* Style A fallback */
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel {
+    border-bottom-color: var(--ut-component-inner-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-TreeNav--styleA .a-TreeView-node--topLevel.is-collapsible {
+    color: inherit;
+}
+
+/* ---- Title bar: canvas surface, hairline, light title ------------------------------------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Body-title {
+    --ut-body-title-background-color: var(--app-surface-page);
+    --ut-body-title-box-shadow: none;
+    --ut-body-title-border-width: 1px;
+    --ut-body-title-border-color: var(--app-border-color);
+    --ut-body-title-text-color: var(--app-text-emphasized);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-HeroRegion-title {
+    color: var(--app-text-emphasized);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-HeroRegion-icon {
+    color: var(--coin-cyan);                             /* graphic: ≥ 3:1 on cards */
+}
+
+/* ---- Footer: hairline separator, muted text ------------------------------------------------ */
+.app-theme-coin-cavern .apex-theme-iris .t-Footer {
+    border-top-color: var(--app-border-color);
+    color: var(--app-text-secondary);
+}
+/* @adapter-end dark/shell#1 */
+
+html.app-theme-coin-cavern .t-Header-logo-link {
+  font-family: var(--app-font-family-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-accent-alt);
+}
+
+/* Minimalist retro navigation tree */
+html.app-theme-coin-cavern .t-TreeNav .a-TreeView-node--topLevel > .a-TreeView-content {
+  border-radius: var(--app-radius-sm);
+  transition: background-color var(--app-motion-duration) ease, color var(--app-motion-duration) ease;
+}
+
+html.app-theme-coin-cavern .t-TreeNav .a-TreeView-content:hover {
+  color: var(--app-accent);
+  background-color: var(--app-surface-hover);
+}
+
+html.app-theme-coin-cavern .t-TreeNav .a-TreeView-node--topLevel.is-selected > .a-TreeView-content,
+html.app-theme-coin-cavern .t-TreeNav .a-TreeView-node--topLevel.is-current--top > .a-TreeView-content {
+  background-color: var(--app-surface-selected);
+  color: var(--app-accent-alt);
+  border-inline-start: var(--app-border-width) solid var(--app-accent-alt);
+}
+
+/* ---- Title bar & Breadcrumb container: cavern chrome surface, 8-bit border ---------------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Body-title {
+  --ut-body-title-background-color: var(--app-surface-chrome);
+  --ut-body-title-box-shadow: none;
+  --ut-body-title-border-width: var(--app-border-width);
+  --ut-body-title-border-color: var(--app-border-color);
+  border-block-end: var(--app-border-width) solid var(--app-border-color);
+}
+/* Coin Cavern — 8-bit subterranean block regions and cards */
+
+/* @adapter dark/regions#1 prefix=coin - generated from theme-templates/adapters/dark/regions.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* ---- Standard region: card surface, 6px radius, hairline border, no shadow ------------------ */
+.app-theme-coin-cavern .apex-theme-iris .t-Region {
+    --ut-region-border-radius: var(--app-radius-md);
+    --ut-region-box-shadow: none;
+    --ut-region-header-padding-y: .75rem;
+    --ut-region-header-padding-x: 1rem;
+    --ut-region-body-padding-x: 1rem;
+    --ut-region-body-padding-y: 1rem;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Region-header {
+    font-size: var(--app-text-md);
+    font-weight: var(--app-font-weight-semibold);
+    line-height: 1.25rem;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Region-headerIcon {
+    color: var(--coin-cyan);                             /* graphic: ≥ 3:1 */
+}
+
+/* ---- Cards region (.a-CardView): atoms are declared on :root by Core → override on body ---- */
+.app-theme-coin-cavern .apex-theme-iris {
+    --a-cv-background-color: var(--app-surface-card);
+    --a-cv-hover-background-color: var(--app-surface-hover);
+    --a-cv-hover-border-color: var(--coin-cyan);
+    --a-cv-hover-text-color: var(--app-text-emphasized);
+    --a-cv-active-background-color: var(--app-surface-selected);
+    --a-cv-focus-border-color: var(--coin-cyan);
+    --a-cv-border-color: var(--app-border-color);
+    --a-cv-border-radius: var(--app-radius-md);
+    --a-cv-shadow: none;
+    --a-cv-hover-shadow: none;
+    --a-cv-active-shadow: none;
+    --a-cv-text-color: var(--app-text-primary);
+    --a-cv-title-text-color: var(--app-text-emphasized);
+    --a-cv-title-font-weight: var(--app-font-weight-semibold);
+    --a-cv-subtitle-text-color: var(--app-text-secondary);
+    --a-cv-maincontent-text-color: var(--app-text-primary);
+    --a-cv-subcontent-text-color: var(--app-text-secondary);
+    --a-cv-header-border-color: var(--app-border-color);
+    --a-cv-actions-border-color: var(--app-border-color);
+    --a-cv-badge-background-color: var(--coin-cyan);
+    --a-cv-badge-text-color: var(--app-text-on-accent);    /* the accent-on-tint badge failed AA */
+    --a-cv-media-background-color: var(--app-surface-page);
+    --a-cv-media-overlay-color: var(--app-card-media-overlay);
+    --a-cv-active-border-color: var(--coin-cyan);
+    --a-cv-icon-background-color: var(--coin-cyan);           /* Iris hard-codes its own teal #00688c here */
+    --a-cv-icon-text-color: var(--app-text-on-accent);
+    --a-cv-initials-background-color: var(--coin-cyan);
+    --a-cv-initials-text-color: var(--app-text-on-accent);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-CardsRegion {
+    background-color: transparent;
+    border-color: var(--app-border-color);
+}
+
+/* ---- Wizard region: chrome header/footer, cyan active step, green completed step ----------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard {
+    --ut-wizard-box-shadow: none;
+    --ut-wizard-border-color: var(--app-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-header,
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-footer {
+    background-color: var(--app-surface-chrome);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-header {
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-footer {
+    border-top: 1px solid var(--app-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-title {
+    font-weight: var(--app-font-weight-semibold);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-WizardSteps {
+    --ut-wp-label-color: var(--app-text-secondary);
+    --ut-wp-active-background-color: var(--coin-cyan);
+    --ut-wp-active-text-color: var(--app-text-on-accent);
+    --ut-wp-complete-background-color: var(--coin-green);
+    --ut-wp-checkmark-color: var(--app-text-on-accent);   /* dark check on the green fill */
+    --ut-wp-label-active-font-weight: var(--app-font-weight-semibold);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-WizardSteps-step.is-active .t-WizardSteps-label {
+    color: var(--app-text-emphasized);                 /* the accent label fell under 4.5:1 */
+}
+.app-theme-coin-cavern .apex-theme-iris .t-WizardSteps-step.is-complete .t-WizardSteps-label {
+    color: var(--app-text-primary);
+}
+
+/* ---- Cards (list template "Cards") -------------------------------------------------------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Cards {
+    --ut-cardlist-border-radius: var(--app-radius-md);
+    --ut-cardlist-box-shadow: none;
+    --ut-cardlist-title-text-color: var(--app-text-emphasized);
+    --ut-cardlist-title-font-weight: var(--app-font-weight-semibold);
+    --ut-cardlist-subtitle-text-color: var(--app-text-secondary);
+    --ut-cardlist-desc-color: var(--app-text-primary);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Cards .t-Card-wrap:hover,
+.app-theme-coin-cavern .apex-theme-iris .t-Cards .t-Card-wrap:focus-visible {
+    border-color: var(--coin-cyan);
+    background-color: var(--app-surface-hover);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Card-title {
+    font-size: var(--app-text-md);
+}
+
+/* ---- Metric cards: cyan value, 16 px text, so it needs 4.5:1: the text tint, not the accent ------- */
+.app-theme-coin-cavern .apex-theme-iris .t-MetricCard {
+    --ut-metric-card-shadow: none;
+    --ut-metric-card-metric-text-color: var(--coin-cyan-text);
+    --ut-metric-card-meta-text-color: var(--app-text-secondary);
+}
+
+/* ---- Content blocks: heading scale 24 / 20 / 17, weight 600 ------------------------------- */
+.app-theme-coin-cavern .apex-theme-iris .t-ContentBlock {
+    --ut-content-block-header-font-weight: var(--app-font-weight-semibold);
+    --ut-content-block-header-line-height: 1.3;
+    --ut-content-block-border-radius: var(--app-radius-md);
+    --ut-content-block-box-shadow: none;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-ContentBlock--h1 { --ut-content-block-header-font-size: var(--app-text-2xl); }
+.app-theme-coin-cavern .apex-theme-iris .t-ContentBlock--h2 { --ut-content-block-header-font-size: var(--app-text-xl); }
+.app-theme-coin-cavern .apex-theme-iris .t-ContentBlock--h3 { --ut-content-block-header-font-size: var(--app-text-lg); }
+
+/* Headings: light colour, avoid single-word last lines */
+.app-theme-coin-cavern .apex-theme-iris .t-ContentBlock-title,
+.app-theme-coin-cavern .apex-theme-iris .t-HeroRegion-title,
+.app-theme-coin-cavern .apex-theme-iris .t-Region-title {
+    text-wrap: balance;
+    color: var(--app-text-emphasized);
+}
+
+/* ---- Breadcrumb-as-title in the title bar --------------------------------------------------- */
+.app-theme-coin-cavern .apex-theme-iris .t-Body-title {
+    --ut-breadcrumb-title-font-size: var(--app-text-2xl);
+    --ut-breadcrumb-title-line-height: 2rem;
+    --ut-breadcrumb-title-font-weight: var(--app-font-weight-semibold);
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-BreadcrumbRegion,
+.app-theme-coin-cavern .apex-theme-iris .t-Breadcrumb {
+    --ut-breadcrumb-item-text-color: var(--app-text-secondary);
+    --ut-breadcrumb-item-active-text-color: var(--app-text-emphasized);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-BreadcrumbRegion-titleText {
+    color: var(--app-text-emphasized);
+}
+/* @adapter-end dark/regions#1 */
+
+html.app-theme-coin-cavern .t-Region,
+html.app-theme-coin-cavern .t-Card {
+  background-color: var(--app-surface-card);
+  color: var(--app-text-primary);
+  border: var(--app-border-width) solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  box-shadow: var(--app-shadow-card);
+}
+
+html.app-theme-coin-cavern .t-Region-header {
+  background-color: var(--app-surface-chrome);
+  border-block-end: var(--app-border-width) solid var(--app-border-color);
+}
+
+html.app-theme-coin-cavern .t-Region-title,
+html.app-theme-coin-cavern .t-Card-title {
+  font-family: var(--app-font-family-heading);
+  font-size: calc(0.875rem * var(--app-heading-scale));
+  font-weight: var(--app-font-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--app-text-emphasized);
+}
+
+/* Card offset profile with subterranean stone brick accents */
+html.app-theme-coin-cavern .t-Card {
+  border-inline-start: var(--app-border-width) solid var(--app-accent);
+  border-block-start: var(--app-border-width) solid var(--app-accent-alt);
+  transition: transform var(--app-motion-duration) ease, border-color var(--app-motion-duration) ease;
+}
+
+html.app-theme-coin-cavern .t-Card:hover {
+  transform: var(--app-hover-transform);
+  border-color: var(--app-accent-alt);
+}
+
+html.app-theme-coin-cavern .t-HeroRegion {
+  background-color: var(--app-surface-chrome);
+  border-block-end: var(--app-border-width) solid var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard {
+  --ut-wizard-box-shadow: none;
+  --ut-wizard-border-color: var(--app-border-color);
+  background-color: var(--app-surface-card);
+  color: var(--app-text-primary);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-header,
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-footer {
+  background-color: var(--app-surface-chrome);
+  border-color: var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-header {
+  border-bottom: var(--app-border-width) solid var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-footer {
+  border-top: var(--app-border-width) solid var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-Wizard-title {
+  color: var(--app-text-emphasized);
+  font-weight: var(--app-font-weight-semibold);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .t-WizardSteps {
+  --ut-wp-label-color: var(--app-text-secondary);
+  --ut-wp-active-background-color: var(--app-accent);
+  --ut-wp-active-text-color: var(--app-text-on-accent);
+  --ut-wp-complete-background-color: var(--app-accent-alt);
+  --ut-wp-checkmark-color: var(--app-text-on-accent);
+  --ut-wp-label-active-font-weight: var(--app-font-weight-semibold);
+}
+/* Coin Cavern — 8-bit arcade button styles */
+
+/* @adapter dark/buttons#1 prefix=coin - generated from theme-templates/adapters/dark/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: card surface; the border identifies it on a same-coloured region (WCAG 1.4.11) */
+    --a-button-background-color: var(--app-surface-card);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-strong);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-active-background-color: var(--app-surface-selected);
+    --a-button-focus-background-color: var(--app-surface-hover);
+    --a-button-focus-border-color: var(--coin-cyan);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot = the cyan action (card actions and checked button-group segments share it; Iris lists them together) */
+.app-theme-coin-cavern .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary),
+.app-theme-coin-cavern .apex-theme-iris .a-CardView-button--hot,
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-coin-cavern .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--coin-cyan);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--coin-cyan-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--coin-cyan);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--coin-cyan-bright);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Primary palette button: white text on the raw accent fails AA, so use the text-safe tint with dark text */
+.app-theme-coin-cavern .apex-theme-iris .t-Button--primary {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--coin-blue-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+}
+
+/* Visible keyboard focus on every button, consistent with fields */
+.app-theme-coin-cavern .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+/* @adapter-end dark/buttons#1 */
+
+html.app-theme-coin-cavern .t-Button {
+  min-height: calc(var(--app-control-h) * var(--app-density-scale));
+  border-radius: var(--app-radius-sm);
+  border-width: var(--app-border-width);
+  border-style: solid;
+  border-color: var(--app-border-color);
+  font-family: var(--app-font-family-body);
+  font-weight: var(--app-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--app-shadow-sm);
+  transition: transform var(--app-motion-duration) ease, background-color var(--app-motion-duration) ease;
+}
+
+html.app-theme-coin-cavern .t-Button:hover {
+  transform: var(--app-hover-transform);
+}
+
+/* Hot / Primary Buttons — Iconic Warp Pipe Green */
+html.app-theme-coin-cavern .t-Button--hot {
+  background-color: var(--app-accent);
+  color: var(--app-on-accent);
+  border-color: var(--coin-pipe-shadow);
+  box-shadow: var(--app-shadow-sm);
+}
+
+html.app-theme-coin-cavern .t-Button--hot:hover {
+  background-color: var(--coin-pipe-highlight);
+  color: var(--app-on-accent);
+  border-color: var(--app-accent);
+}
+
+/* Secondary / Simple Buttons */
+html.app-theme-coin-cavern .t-Button--simple {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--app-accent-alt);
+}
+
+html.app-theme-coin-cavern .t-Button--simple:hover {
+  background-color: var(--app-surface-hover);
+  border-color: var(--app-border-color);
+}
+/* Coin Cavern — 8-bit sunken block input controls and forms */
+
+/* @adapter dark/forms#1 prefix=coin - generated from theme-templates/adapters/dark/forms.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    --a-field-input-border-radius: var(--app-radius-sm);
+    --a-field-input-padding-y: .4375rem;                /* stacked/inline items → ~36px */
+    --a-field-input-padding-x: .625rem;
+    --a-field-input-background-color: var(--app-surface-input);
+    --a-field-input-hover-background-color: var(--app-surface-input);   /* Iris literal #fff otherwise */
+    --a-field-input-text-color: var(--app-text-emphasized);
+    --a-field-input-border-color: var(--app-border-strong);        /* ≥ 3:1 on cards (WCAG 1.4.11) */
+    --a-field-input-hover-border-color: var(--app-border-strong);
+    --a-field-input-focus-border-color: var(--coin-cyan);
+    --a-field-input-focus-background-color: var(--app-surface-input);
+    --a-field-placeholder-text-color: var(--app-text-secondary);   /* needs ≥ 4.5:1 on the input surface */
+    --a-field-placeholder-opacity: 1;
+    --a-chip-border-color: var(--app-border-strong);
+
+    /* File Drop (p1601, p423) */
+    --a-filedrop-border-color: var(--app-border-strong);
+    --a-filedrop-focus-border-color: var(--coin-cyan);
+    --a-filedrop-heading-text-color: var(--app-text-emphasized);
+    --a-filedrop-text-color: var(--app-text-secondary);
+    --a-filedrop-icon-action-background-color: var(--app-surface-hover);   /* not in Iris — widget CSS
+                                                                               fallback is #fff; the 16px
+                                                                               action glyph inherits
+                                                                               --a-filedrop-text-color, which
+                                                                               is unreadable on that fallback */
+    --a-filedrop-icon-action-border-color: var(--app-border-strong);
+
+    /* Markdown Editor (p1601) */
+    --a-mdeditor-background-color: var(--app-surface-input);
+    --a-mdeditor-border-color: var(--app-border-strong);
+    --a-mdeditor-focus-border-color: var(--coin-cyan);
+
+    /* Combo Box (p1601) */
+    --a-combo-select-item-selected-background-color: var(--app-surface-selected);
+}
+
+/* Stacked / inline labels: 13px, medium, secondary text (≥ 4.5:1) */
+.app-theme-coin-cavern .apex-theme-iris .t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel) .t-Form-label {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-font-weight-medium);
+    color: var(--app-text-secondary);
+}
+
+/* Floating labels are 11px on the highlight surface: body colour at rest, light while active (the cyan focus
+   border already marks focus; 11px accent-coloured text risks falling under 4.5:1 there) */
+.app-theme-coin-cavern .apex-theme-iris .t-Form-fieldContainer--floatingLabel .t-Form-label {
+    color: var(--app-text-primary);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Form-fieldContainer--floatingLabel.is-active .t-Form-label {
+    color: var(--app-text-emphasized);
+}
+
+/* Focus halo (soft cyan) on the native item types */
+.app-theme-coin-cavern .apex-theme-iris .apex-item-text:focus-visible,
+.app-theme-coin-cavern .apex-theme-iris .apex-item-textarea:focus-visible,
+.app-theme-coin-cavern .apex-theme-iris .apex-item-select:focus-visible,
+.app-theme-coin-cavern .apex-theme-iris .apex-item-group--rc input:focus-visible + label {
+    box-shadow: 0 0 0 3px var(--app-focus-halo-color);
+    border-color: var(--coin-cyan);
+    outline: none;
+}
+/* @adapter-end dark/forms#1 */
+
+html.app-theme-coin-cavern .apex-item-text,
+html.app-theme-coin-cavern .apex-item-select,
+html.app-theme-coin-cavern .apex-item-textarea {
+  min-height: calc(var(--app-control-h) * var(--app-density-scale));
+  background-color: var(--app-surface-input);
+  color: var(--app-text-primary);
+  border: var(--app-border-width) solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  font-family: var(--app-font-family-body);
+}
+
+html.app-theme-coin-cavern .apex-item-text:focus,
+html.app-theme-coin-cavern .apex-item-select:focus,
+html.app-theme-coin-cavern .apex-item-textarea:focus {
+  outline: var(--app-focus-width) solid var(--app-focus-color);
+  outline-offset: var(--app-focus-offset);
+  border-color: var(--app-focus-color);
+}
+
+html.app-theme-coin-cavern .t-Form-label {
+  color: var(--app-text-secondary);
+  font-family: var(--app-font-family-body);
+  font-weight: var(--app-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+html.app-theme-coin-cavern .apex-item-checkbox,
+html.app-theme-coin-cavern .apex-item-radio {
+  border-radius: var(--app-radius-sm);
+}
+/* Coin Cavern — ruled subterranean stone data grids (IRR & Interactive Grid) */
+
+/* @adapter dark/reports#1 prefix=coin - generated from theme-templates/adapters/dark/reports.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    /* header row: chrome surface, 13px/600, 40px */
+    --a-gv-header-background-color: var(--app-surface-chrome);
+    --a-gv-header-text-color: var(--app-text-emphasized);
+    --a-gv-header-cell-font-size: var(--app-text-sm);
+    --a-gv-header-cell-font-weight: var(--app-font-weight-semibold);
+    --a-gv-header-cell-height: 2.5rem;
+    --a-gv-header-cell-border-color: var(--app-border-color);
+    --a-gv-header-cell-padding-x: .75rem;
+
+    /* body: 13px, 40px rows, hairline row separators, solid hover surface (body text must stay ≥ 4.5:1 on it) */
+    --a-gv-font-size: var(--app-text-sm);
+    --a-gv-cell-height: 2.5rem;
+    --a-gv-cell-border-color: var(--app-border-color);
+    --a-gv-cell-padding-x: .75rem;
+    --a-gv-row-hover-background-color: var(--app-surface-hover);
+    --a-gv-footer-background-color: var(--app-surface-card);          /* widget fallback is #fff */
+    --a-gv-footer-border-color: var(--app-border-color);
+    --a-gv-pagination-button-border-color: var(--app-border-color);
+    --a-gv-pagination-button-text-color: var(--app-text-primary);    /* Iris resolves var(--a-button-text-color) at :root → #161513 */
+    --a-gv-pagination-button-hover-background-color: var(--app-surface-hover);
+    --a-gv-pagination-button-selected-background-color: var(--app-surface-selected);   /* Theme-Standard falls back to #e0e0e0 */
+    --a-gv-pagination-button-selected-text-color: var(--app-text-emphasized);
+    --a-gv-border-color: var(--app-border-color);                    /* .u-Report borders fall back to #e8e8e8 */
+
+    /* toolbar / search controls */
+    --a-toolbar-background-color: var(--app-surface-card);            /* Iris: var(--ut-region-header-background-color)
+                                                                           at :root — resolves before this package's
+                                                                           body-level override of that token reaches it
+                                                                           (pitfalls.md §1.2); consumed by .a-IG-header,
+                                                                           Markdown Editor toolbar, Popup LOV search bar,
+                                                                           CKEditor panels — anything without its own
+                                                                           direct rule like .a-IRR-toolbar below */
+    --a-toolbar-border-color: var(--app-border-color);
+    --a-toolbar-sep-border-color: var(--app-border-color);
+    --a-report-controls-input-border-radius: var(--app-radius-sm);
+    --a-report-controls-border-color: var(--app-border-color);
+    --a-report-controls-cell-border-radius: var(--app-radius-sm);
+    --a-report-controls-cell-label-border-color: var(--app-border-color);
+    --a-report-controls-input-border-color: var(--app-border-strong);
+    --a-report-controls-input-focus-border-color: var(--coin-cyan);
+    --a-gv-nodata-message-text-color: var(--app-text-secondary);
+    --a-resultsitem-border-color: var(--app-border-color);
+    --a-resultsitem-misc-text-color: var(--app-text-secondary);
+    --a-searchresults-pagination-color: var(--app-text-secondary);
+
+    /* classic report */
+    --ut-report-header-background-color: var(--app-surface-chrome);
+    --ut-report-header-text-color: var(--app-text-emphasized);
+    --ut-report-cell-border-color: var(--app-border-color);
+    --ut-report-cell-hover-background-color: var(--app-surface-hover);
+}
+
+/* Iris/app_ui-Core set --a-report-controls-cell-label-hover-background-color directly on each type-specific
+   .a-IG-controls-item--X / .a-IRR-controls-item--X modifier (pale literals), which outranks the body-level
+   --a-report-controls-cell-label-* mapping above; the label text (--app-text-primary, light-on-dark) then sits
+   on that pale hover background. Re-flatten every type group to one dark hover surface. */
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--savedReport,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--search,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--filter,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--aggregate,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--controlBreak,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--groupBy,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--highlight,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--flashback,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--chart,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--pivot,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--inactiveSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-controls-item--invalidSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--savedReport,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--search,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--filter,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--aggregate,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--controlBreak,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--groupBy,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--highlight,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--flashback,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--chart,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--pivot,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--inactiveSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IG-reportSummary-item--invalidSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--savedReport,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controlGroup--savedReports,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--search,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--filter,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--aggregate,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--controlBreak,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--groupBy,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--highlight,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--flashback,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--chart,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--pivot,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--inactiveSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-controls-item--invalidSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--savedReport,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--search,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--filter,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--aggregate,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--controlBreak,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--groupBy,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--highlight,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--flashback,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--chart,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--pivot,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--inactiveSettings,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-reportSummary-item--invalidSettings {
+    --a-report-controls-cell-label-hover-background-color: var(--app-surface-hover);
+}
+
+/* Region-level radius: .a-IRR sets --a-gv-border-radius on the element, so scope there */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR,
+.app-theme-coin-cavern .apex-theme-iris .a-IG {
+    --a-gv-border-radius: var(--app-radius-md);
+}
+
+/* Horizontal rules only (Core's border-width is one value for all four sides) */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-table td,
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-header,
+.app-theme-coin-cavern .apex-theme-iris .a-GV-cell,
+.app-theme-coin-cavern .apex-theme-iris .a-GV-header,
+.app-theme-coin-cavern .apex-theme-iris .t-Report-cell,
+.app-theme-coin-cavern .apex-theme-iris .t-Report-colHead {
+    border-inline-width: 0;
+}
+/* Iris hard-codes the IRR header surface (#fafafa / #f2f2f2); route it through the atom */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-header {
+    background-color: var(--a-gv-header-background-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-header:hover {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-headerLink {
+    color: var(--app-text-emphasized);
+}
+
+/* IRR toolbar and search field sit on the card surface */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-toolbar {
+    background-color: var(--app-surface-card);
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-search-field {
+    background-color: var(--app-surface-input);
+    color: var(--app-text-emphasized);
+    border: 1px solid var(--app-border-strong);
+}
+
+/* Utility tables (.u-Report — used by the reference pages' documentation tables): the widget CSS hard-codes
+   #fff / #fafafa cells (`.u-Report td`, `.u-Report--staticBG tr:nth-child(2n) td`) and #404040 text, so the
+   tokens never reach them. */
+.app-theme-coin-cavern .apex-theme-iris .u-Report td,
+.app-theme-coin-cavern .apex-theme-iris .u-Report th[scope="row"],
+.app-theme-coin-cavern .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) td,
+.app-theme-coin-cavern .apex-theme-iris .u-Report--staticBG tr:nth-child(2n) th[scope="row"] {
+    background-color: var(--app-surface-card);
+    color: var(--app-text-primary);
+}
+.app-theme-coin-cavern .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) td,
+.app-theme-coin-cavern .apex-theme-iris .u-Report:not(.u-Report--staticBG) tr:nth-child(2n) th[scope="row"],
+.app-theme-coin-cavern .apex-theme-iris .u-Report th[scope="rowgroup"] {
+    background-color: var(--app-surface-subtle);
+}
+.app-theme-coin-cavern .apex-theme-iris .u-Report td,
+.app-theme-coin-cavern .apex-theme-iris .u-Report th {
+    border-color: var(--app-border-color);
+}
+
+/* Numbers line up in columns */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-table td,
+.app-theme-coin-cavern .apex-theme-iris .a-GV-cell,
+.app-theme-coin-cavern .apex-theme-iris .t-Report-cell {
+    font-variant-numeric: tabular-nums;
+}
+/* @adapter-end dark/reports#1 */
+
+/* 8-bit arcade grid customizations */
+.app-theme-coin-cavern .apex-theme-iris .a-IRR,
+.app-theme-coin-cavern .apex-theme-iris .a-IG {
+  border-radius: var(--app-radius-sm);
+  border: var(--app-border-width) solid var(--app-border-color);
+  box-shadow: var(--app-shadow-card);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .a-IRR-header,
+.app-theme-coin-cavern .apex-theme-iris .a-GV-header {
+  font-family: var(--app-font-family-heading);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.app-theme-coin-cavern .apex-theme-iris .u-Report th.u-Report-header {
+  background-color: var(--app-surface-chrome);
+  color: var(--app-text-emphasized);
+  font-family: var(--app-font-family-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+/* Coin Cavern — 8-bit arcade dialogue box frames */
+
+/* @adapter dark/dialogs#1 prefix=coin - generated from theme-templates/adapters/dark/dialogs.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    --jui-dialog-border-radius: var(--app-radius-lg);
+    --jui-dialog-shadow: var(--app-shadow-dialog), 0 0 0 1px var(--app-border-color);
+    --jui-dialog-background-color: var(--app-surface-card);
+    --jui-dialog-text-color: var(--app-text-primary);
+    --jui-dialog-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-background-color: var(--app-surface-subtle);
+    --jui-dialog-titlebar-text-color: var(--app-text-emphasized);
+    --jui-dialog-titlebar-border-color: var(--app-border-color);
+    --jui-dialog-titlebar-padding-x: 1.25rem;
+    --jui-dialog-title-font-weight: var(--app-font-weight-semibold);
+    --jui-dialog-title-close-border-radius: var(--app-radius-sm);
+    --jui-dialog-title-close-border-color: transparent;
+    --jui-dialog-buttonpane-background-color: var(--app-surface-chrome);
+    --jui-dialog-buttonpane-border-color: var(--app-border-color);
+    --jui-overlay-background-color: var(--app-overlay-background);
+
+    /* popup menus: side-bar surface, hover surface for the focused item */
+    --a-menu-shadow: var(--app-shadow-dialog);
+    --a-menu-border-radius: var(--app-radius-md);
+    --a-menu-border-color: var(--app-border-color);
+    --a-menu-background-color: var(--app-surface-chrome);
+    --a-menu-callout-background-color: var(--app-surface-chrome);
+    --a-menu-text-color: var(--app-text-emphasized);
+    --a-menu-default-text-color: var(--app-text-emphasized);
+    --a-menu-focused-background-color: var(--app-surface-hover);
+    --a-menu-focused-text-color: var(--app-text-emphasized);
+    --a-menu-font-weight: var(--app-font-weight-medium);
+    --a-menu-sep-border-color: var(--app-border-color);
+    --a-menu-accel-text-color: var(--app-text-primary);             /* keyboard-accelerator hint text */
+    --a-menu-default-accel-text-color: var(--app-text-primary);
+    --a-menu-focused-accel-text-color: var(--app-text-emphasized);  /* secondary text can fall under 4.5:1 on
+                                                                         the focused hover surface */
+    --a-menu-callout-border-color: var(--app-border-color);
+}
+
+/* Popup menus: geometry, rounded corners and clipping */
+.app-theme-coin-cavern .apex-theme-iris .a-Menu,
+.app-theme-coin-cavern .apex-theme-iris .a-Menu-content {
+    border-radius: var(--a-menu-border-radius, var(--app-radius-md));
+}
+.app-theme-coin-cavern .apex-theme-iris .a-Menu-content {
+    overflow: hidden;
+}
+
+/* Wizard Modal Dialog pages (the page inside the iframe): canvas body, chrome header and footer */
+.app-theme-coin-cavern .t-Dialog-page--wizard .t-Dialog-header {
+    background-color: var(--app-surface-chrome);
+    border-bottom: 1px solid var(--app-border-color);
+}
+.app-theme-coin-cavern .t-Dialog-page--wizard .t-Dialog-body {
+    background-color: var(--app-surface-page);
+}
+.app-theme-coin-cavern .t-Dialog-page--wizard .t-Dialog-footer {
+    background-color: var(--app-surface-chrome);
+    border-top: 1px solid var(--app-border-color);
+}
+/* @adapter-end dark/dialogs#1 */
+
+html.app-theme-coin-cavern .ui-dialog,
+html.app-theme-coin-cavern .t-DialogRegion {
+  background-color: var(--app-surface-card);
+  color: var(--app-text-primary);
+  border: var(--app-border-width) solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  box-shadow: var(--app-shadow-dialog);
+}
+
+html.app-theme-coin-cavern .ui-dialog-titlebar {
+  background-color: var(--app-surface-chrome);
+  color: var(--app-text-emphasized);
+  border-block-end: var(--app-border-width) solid var(--app-border-color);
+  font-family: var(--app-font-family-heading);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+html.app-theme-coin-cavern .ui-dialog {
+  border-inline-start: var(--app-border-width) solid var(--app-accent);
+  border-block-start: var(--app-border-width) solid var(--app-accent-alt);
+}
+
+html.app-theme-coin-cavern .ui-dialog-buttonpane {
+  background-color: var(--app-surface-chrome);
+  border-block-start: var(--app-border-width) solid var(--app-border-color);
+}
+/* Coin Cavern — badges, alerts, status pills, and reduced motion guard */
+
+/* @adapter dark/misc#1 prefix=coin - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    --ut-alert-box-shadow: none;
+    --ut-badge-border-radius: var(--app-radius-sm);
+    --ut-component-badge-border-radius: var(--app-radius-sm);
+    --ut-component-box-shadow: none;            /* generic component shadow (menus, popups, cards) */
+    --ut-button-region-box-shadow: none;
+    --ut-cardlist-box-shadow: none;
+    --ut-irr-region-box-shadow: none;
+
+    /* badges: solid accent fills with dark text (≥ 4.5:1); red keeps white text. Subtle variants sit on
+       the translucent palette shades, so their text is the light body colour rather than the accent. */
+    --ut-badge-background-color: var(--coin-cyan);
+    --ut-badge-text-color: var(--app-text-on-accent);
+    --ut-badge-success-background-color: var(--coin-green);
+    --ut-badge-success-text-color: var(--app-text-on-accent);
+    --ut-badge-warning-background-color: var(--coin-yellow);
+    --ut-badge-warning-text-color: var(--app-text-on-accent);
+    --ut-badge-danger-background-color: var(--coin-red);
+    --ut-badge-danger-text-color: var(--app-badge-danger-text);
+    --ut-badge-info-background-color: var(--coin-cyan);
+    --ut-badge-info-text-color: var(--app-text-on-accent);
+    --ut-badge-subtle-background-color: var(--app-surface-hover);
+    --ut-badge-subtle-text-color: var(--app-text-primary);
+    --ut-badge-subtle-success-text-color: var(--app-text-primary);
+    --ut-badge-subtle-warning-text-color: var(--app-text-primary);
+    --ut-badge-subtle-danger-text-color: var(--app-text-primary);
+    --ut-badge-subtle-info-text-color: var(--app-text-primary);
+
+    /* tabs: muted items, light active label with a cyan highlight bar (graphic, ≥ 3:1) */
+    --ut-tabs-border-color: var(--app-border-color);
+    --ut-tabs-background-color: transparent;
+    --ut-tabs-item-background-color: transparent;
+    --ut-tabs-item-text-color: var(--app-text-secondary);
+    --ut-tabs-item-active-text-color: var(--app-text-emphasized);
+    --ut-tabs-item-active-highlight-color: var(--coin-cyan);
+    --ut-tabs-item-hover-background-color: var(--app-surface-hover);
+
+    /* Faceted Search (p1411) */
+    --a-fs-chart-background-color: var(--app-surface-card);
+    --a-fs-chart-border-color: var(--app-border-color);   /* Iris: var(--ut-region-border-color) at :root —
+                                                               near 1:1 on the same card surface otherwise */
+    --a-fs-control-seperator-border-color: var(--app-border-color);
+    --a-fs-filter-group-border-color: var(--app-border-color);
+    --a-fs-filter-group-label-text-color: var(--app-text-secondary);
+    --a-fs-toggle-background-color: var(--app-surface-input);
+    --a-fs-toggle-text-color: var(--app-text-primary);
+    --a-fs-toggle-border-color: var(--app-border-strong);   /* Iris resolves to --a-button-border-color
+                                                                 rgba(0,0,0,.075) at :root — near 1:1 on the
+                                                                 dark toggle surface, boundary invisible */
+
+    /* Percent Graph item type (p423, p1601) */
+    --a-percent-chart-background-color: var(--app-surface-subtle);
+    --a-percent-chart-border-color: var(--app-border-color);
+    --a-percent-chart-bar-background-color: var(--coin-cyan);   /* paired with the dark bar text below; was
+                                                                    still Iris' :root-resolved #00688c teal */
+    --a-percent-chart-bar-border-color: var(--app-border-color);
+    --a-percent-chart-bar-text-color: var(--app-text-on-accent);
+
+    /* Help Text dialog (p1903) */
+    --a-help-dialog-code-text-color: var(--app-text-secondary);
+
+    /* Map legend (p1906) */
+    --a-map-legend-title-text-color: var(--app-text-secondary);
+
+    /* Chart tooltips (p1902, JET) */
+    --ojet-tooltip-primary-text-color: var(--app-text-emphasized);
+    --ojet-tooltip-secondary-text-color: var(--app-text-secondary);
+    --ojet-tooltip-disabled-text-color: var(--app-text-secondary);
+    --jui-tooltip-background-color: var(--app-surface-chrome);   /* Theme-Standard literal #fff otherwise —
+                                                                      light text on white is unreadable */
+    --jui-tooltip-border-color: var(--app-border-color);
+    --jui-tooltip-shadow: var(--app-shadow-dialog);
+    --jui-tooltip-text-color: var(--app-text-emphasized);         /* .oj-dvt-datatip's base `color:` (outside
+                                                                       the --oj-core-text-color-* classified
+                                                                       spans the --ojet-tooltip-* atoms cover)
+                                                                       was still Theme-Standard's literal
+                                                                       #000 — black on the dark chrome now that the
+                                                                       background above is dark */
+}
+
+/* Alerts: card surface from the component tokens; a 4px accent on the leading edge names the type */
+.app-theme-coin-cavern .apex-theme-iris .t-Alert--horizontal:not(.t-Alert--colorBG) {
+    border-inline-start: 4px solid var(--ut-alert-icon-text-color, var(--coin-cyan));
+}
+/* @adapter-end dark/misc#1 */
+
+/* @adapter dark/misc#2 prefix=coin - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern pre[class*="language-"],
+.app-theme-coin-cavern code[class*="language-"] {
+    color: var(--coin-base1);
+    text-shadow: none;
+}
+.app-theme-coin-cavern pre[class*="language-"] {
+    background-color: var(--app-surface-page);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--app-radius-sm);
+}
+.app-theme-coin-cavern :not(pre) > code[class*="language-"] {
+    background-color: var(--app-surface-page);
+}
+.app-theme-coin-cavern .token.comment,
+.app-theme-coin-cavern .token.prolog,
+.app-theme-coin-cavern .token.doctype,
+.app-theme-coin-cavern .token.cdata { color: var(--coin-base0); font-style: italic; }
+.app-theme-coin-cavern .token.punctuation,
+.app-theme-coin-cavern .token.operator { color: var(--coin-base1); }
+.app-theme-coin-cavern .token.keyword,
+.app-theme-coin-cavern .token.atrule,
+.app-theme-coin-cavern .token.important { color: var(--coin-green); }
+.app-theme-coin-cavern .token.string,
+.app-theme-coin-cavern .token.char,
+.app-theme-coin-cavern .token.attr-value,
+.app-theme-coin-cavern .token.inserted { color: var(--coin-cyan); }
+.app-theme-coin-cavern .token.function,
+.app-theme-coin-cavern .token.class-name,
+.app-theme-coin-cavern .token.builtin { color: var(--coin-blue-text); }
+.app-theme-coin-cavern .token.property,
+.app-theme-coin-cavern .token.tag,
+.app-theme-coin-cavern .token.selector,
+.app-theme-coin-cavern .token.attr-name,
+.app-theme-coin-cavern .token.variable { color: var(--coin-yellow); }
+.app-theme-coin-cavern .token.number,
+.app-theme-coin-cavern .token.boolean,
+.app-theme-coin-cavern .token.constant,
+.app-theme-coin-cavern .token.symbol,
+.app-theme-coin-cavern .token.regex { color: var(--coin-magenta-text); }
+.app-theme-coin-cavern .token.entity,
+.app-theme-coin-cavern .token.url,
+.app-theme-coin-cavern .token.deleted { color: var(--coin-orange-text); }
+
+/* Reference-app demo surfaces. Some pages of app 102 style their own demo markup with literal light values in
+   page inline CSS (p4000 Icons: input#P4000_SEARCH, .dm-Search-*, .dm-IconDialog-*; p6303/p6304 modifiers:
+   .dm-Report--doc, .class*; p6100/p6200/p6201: .event-name, .icon-preview, .instructions). Under a dark
+   package they turn white-on-white, so the package restates them here — Oracle's Vita Dark did the same
+   inside the pages. Scoped to .app-theme-coin-cavern; higher specificity than the page rules. */
+.app-theme-coin-cavern input#P4000_SEARCH {
+    background: var(--app-surface-input);
+    border: 1px solid var(--app-border-strong);
+    box-shadow: none;
+}
+.app-theme-coin-cavern .dm-Search-category {
+    background: var(--app-surface-card);
+    border: 1px solid var(--app-border-color);
+    box-shadow: none;
+}
+.app-theme-coin-cavern .dm-Search-result:hover,
+.app-theme-coin-cavern .dm-Search-result:focus {
+    background-color: var(--app-surface-hover);
+}
+.app-theme-coin-cavern .dm-Search:empty:before {
+    color: var(--app-text-secondary);              /* page inline CSS hard-codes rgba(0,0,0,.5) */
+}
+.app-theme-coin-cavern .dm-IconDialog-preview {
+    background-image: none;                       /* light checkerboard */
+    background-color: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-coin-cavern .dm-IconDialog-code,
+.app-theme-coin-cavern .instructions {
+    color: var(--app-text-secondary);
+}
+.app-theme-coin-cavern .dm-IconDialog-infoBody code {
+    background-color: var(--app-surface-page);
+    color: var(--app-text-primary);
+}
+.app-theme-coin-cavern .icon-preview {
+    background: var(--app-surface-page);
+    box-shadow: 0 0 0 1px var(--app-border-color) inset;
+}
+.app-theme-coin-cavern .dm-Report--doc {
+    background: var(--app-surface-page);
+    border-color: var(--app-border-color);
+}
+.app-theme-coin-cavern .dm-Report--doc th,
+.app-theme-coin-cavern .dm-Report--doc td {
+    border-color: var(--app-border-color);
+}
+/* p6303/p6304 class-name tokens (.class, .class-value, .class-var, .class.tag) also appear outside the doc table */
+.app-theme-coin-cavern .apex-theme-iris .class {
+    color: var(--coin-magenta-text);               /* the page's #9C27B0 fails 4.5:1 on a dark card */
+}
+.app-theme-coin-cavern .apex-theme-iris .class.tag {
+    background-color: var(--app-surface-card);
+    box-shadow: inset 0 0 0 1px var(--app-border-color);
+}
+.app-theme-coin-cavern .apex-theme-iris .class-value,
+.app-theme-coin-cavern .apex-theme-iris .class-var {
+    color: var(--coin-cyan-text);                  /* the page's #008676 fails 4.5:1 on a dark card */
+}
+.app-theme-coin-cavern .apex-theme-iris .dm-Report--doc .class-desc {
+    color: var(--app-text-secondary);             /* rgba(0,0,0,.55) is near-invisible on a dark card */
+}
+.app-theme-coin-cavern .event-name,
+.app-theme-coin-cavern code.event-name {
+    text-shadow: none;
+}
+.app-theme-coin-cavern .event-name:hover,
+.app-theme-coin-cavern code.event-name:hover {
+    color: var(--app-text-emphasized);
+    background: var(--app-surface-hover);
+}
+
+/* Calendar (FullCalendar 5). UT gives default events a literal #2578cf background but colours their text
+   with --fc-event-text-color = --ut-palette-primary-contrast, which a dark package remaps to a dark colour
+   for its light primary: dark text on #2578cf failed AA (3.3:1 where first measured, 2026-09-16).
+   Put default events on the package primary so the primary / primary-contrast pair holds. */
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.fc-apex-events-default,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.fc-apex-events-default .fc-event-main {
+    background-color: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+}
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.fc-apex-events-default:hover {
+    background-color: var(--app-color-primary);
+    filter: brightness(1.08);
+}
+
+/* Map (p1906, p1601 map item). MapLibre's attribution bar paints its own translucent white plate and takes
+   its text colour by inheritance, so the package's light body text landed on it (2.57:1 where first measured,
+   p1906, 2026-09-17). Give the plate the package overlay so the inherited text has a dark ground (12.25:1
+   for the text and its links there, measured with this rule injected). The zoom control group keeps MapLibre's white
+   chrome on purpose (it is an opaque light patch, not a contrast failure) — its glyphs are
+   dark SVG images that are not themable from CSS. */
+.app-theme-coin-cavern .maplibregl-ctrl-attrib {
+    background-color: var(--app-overlay-background);
+}
+.app-theme-coin-cavern .maplibregl-ctrl-attrib,
+.app-theme-coin-cavern .maplibregl-ctrl-attrib a {
+    color: var(--app-text-primary);
+}
+
+/* Custom calendar events: bright status fills pair with the package's dark accent text. */
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-green,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-green > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-success);
+    border-color: var(--app-color-success);
+}
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-blue,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-blue > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-info);
+    border-color: var(--app-color-info);
+}
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-yellow,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-yellow > td {
+    --fc-event-text-color: var(--app-text-on-accent);
+    background-color: var(--app-color-warning);
+    border-color: var(--app-color-warning);
+}
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-green,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-green .fc-event-title,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-time,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-green .fc-list-event-title,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-blue,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-blue .fc-event-title,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-time,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-blue .fc-list-event-title,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-yellow,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-event.apex-cal-yellow .fc-event-title,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-time,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-list-event.apex-cal-yellow .fc-list-event-title {
+    color: var(--app-text-on-accent);
+}
+/* @adapter-end dark/misc#2 */
+
+/* @adapter dark/misc#3 prefix=coin - generated from theme-templates/adapters/dark/misc.css.tmpl; edit there, then run scripts/theme.sh adapters */
+/* Chart labels — JET paints axis ticks and series labels as SVG fill with the light-theme default (black at 65 %),
+   which is 1.06:1 on these dark surfaces (p406 and p1902 on 26.2). Reuse the package's secondary text token. */
+.app-theme-coin-cavern .apex-theme-iris svg text {
+    fill: var(--app-text-secondary);
+}
+
+/* Circular badge list on a palette colour: the label takes the swatch's own contrast ink (inherited from the
+   .u-color anchor), not the theme's title colour, which is 1.7-2.8:1 on the orange and teal swatches (p1304, 26.2). */
+.app-theme-coin-cavern .apex-theme-iris .t-BadgeList--circular .u-color .t-BadgeList-label {
+    color: inherit;
+}
+
+/* Demo markup: the template-directive sample colours its directive with a literal (#008676), which fails AA on these
+   surfaces (p6400). Use the package's primary text tint instead. */
+.app-theme-coin-cavern .apex-theme-iris .directive {
+    color: var(--ut-palette-primary-text);
+}
+
+/* Outline badges take their text from the palette's solid colour, which is 2.8-4.1:1 on these cards for success and
+   danger (p3007, p3002). Use the text tints. */
+.app-theme-coin-cavern .apex-theme-iris .t-Badge--outline.t-Badge--success {
+    color: var(--ut-palette-success-text);
+}
+.app-theme-coin-cavern .apex-theme-iris .t-Badge--outline.t-Badge--danger {
+    color: var(--ut-palette-danger-text);
+}
+/* Demo markup: the .item sample is coloured with a literal purple (#9c27b0), 2.1-2.8:1 on these surfaces (p6400). */
+.app-theme-coin-cavern .apex-theme-iris .item {
+    color: var(--app-text-emphasized);
+}
+
+/* Demo markup: the .red sample is pure CSS red (#ff0000), which fails AA on these surfaces (p6307). */
+.app-theme-coin-cavern .apex-theme-iris .red {
+    color: var(--ut-palette-danger-text);
+}
+/* @adapter-end dark/misc#3 */
+
+/* 8-bit arcade grid layout block specimens */
+.app-theme-coin-cavern .apex-theme-iris .region-grid {
+  background-color: var(--app-surface-subtle);
+  color: var(--app-text-primary);
+  border: 1px solid var(--app-border-color);
+  font-family: var(--app-font-family-body);
+}
+
+/* 8-bit arcade badges & alerts */
+html.app-theme-coin-cavern .t-Badge,
+html.app-theme-coin-cavern .a-Chip {
+  background-color: var(--app-surface-subtle);
+  color: var(--app-text-primary);
+  border: 1px solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  font-family: var(--app-font-family-body);
+  font-weight: var(--app-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+html.app-theme-coin-cavern .t-Alert {
+  background-color: var(--app-surface-card);
+  color: var(--app-text-primary);
+  border: var(--app-border-width) solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  box-shadow: var(--app-shadow-card);
+}
+
+html.app-theme-coin-cavern .t-Alert--danger {
+  border-color: var(--app-danger);
+  color: var(--app-danger);
+}
+
+/* FullCalendar 5 overrides for dark 8-bit palette */
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-button-primary {
+  background-color: var(--app-surface-subtle);
+  color: var(--app-text-primary);
+  border: var(--app-border-width) solid var(--app-border-color);
+  border-radius: var(--app-radius-sm);
+  font-family: var(--app-font-family-body);
+  font-weight: var(--app-font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-button-primary:hover,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-button-primary:focus {
+  background-color: var(--app-surface-hover);
+  color: var(--app-accent-alt);
+  border-color: var(--app-accent-alt);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-button-primary:disabled {
+  background-color: var(--app-surface-card);
+  color: var(--app-text-secondary);
+  border-color: var(--app-border-color);
+  opacity: 0.6;
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-col-header-cell-cushion,
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-daygrid-day-number {
+  color: var(--app-text-primary);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-theme-standard th {
+  background-color: var(--app-surface-chrome);
+  border-color: var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc .fc-theme-standard td {
+  border-color: var(--app-border-color);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc td.fc-day-today {
+  background-color: var(--app-surface-hover);
+}
+
+.app-theme-coin-cavern .apex-theme-iris .fc td.fc-day-today .fc-daygrid-day-number {
+  background-color: var(--app-accent-alt);
+  color: var(--app-text-on-accent);
+  font-weight: var(--app-font-weight-semibold);
+}
+
+/* Reduced motion guard — mandatory contract for all Theme Factory packages */
+@media (prefers-reduced-motion: reduce) {
+  html.app-theme-coin-cavern {
+    --app-motion-duration: 0ms;
+    --app-hover-transform: none;
+  }
+}
+/* @theme-factory-generated */
+/* generated-from: theme.recipe.json */
+/* Responsive rules for html.app-theme-coin-cavern: strategy compress, at 768px and below. */
+
+@media (max-width: 768px) {
+  /* compress: tighter controls and spacing */
+  html.app-theme-coin-cavern {
+    --app-control-h: calc(2.25rem * 0.875);
+    --app-space-unit: calc(0.375rem * 0.875);
+  }
+  html.app-theme-coin-cavern .apex-theme-iris {
+    --a-button-padding-y: .375rem;
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "identity": {
+    "name": "coin-cavern",
+    "title": "Coin Cavern",
+    "tagline": "Subterranean 8-bit stone blocks, iconic warp pipes, and shining coin gold directives.",
+    "direction": "Dark retro arcade underground with subterranean brick surfaces, pipe green controls, and coin gold signals.",
+    "mode": "dark",
+    "keywords": [
+      "pixel",
+      "arcade",
+      "retro",
+      "underground",
+      "subterranean"
+    ]
+  },
+  "palette": {
+    "page": "#080C12",
+    "card": "#131B26",
+    "chrome": "#0D141E",
+    "textPrimary": "#F5F9FC",
+    "textSecondary": "#98B8D4",
+    "accent": "#00D659",
+    "accentAlt": "#FFC400",
+    "onAccent": "#080C12",
+    "danger": "#FF6E67"
+  },
+  "typography": {
+    "bodyFamily": "system-ui",
+    "headingFamily": "body",
+    "fallback": [
+      "ui-monospace",
+      "SFMono-Regular",
+      "Menlo",
+      "Monaco",
+      "Consolas",
+      "monospace"
+    ],
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "geometry": {
+    "radiusSmall": "0px",
+    "radiusMedium": "0px",
+    "radiusLarge": "0px",
+    "controlHeight": "2.25rem",
+    "borderStyle": "strong",
+    "shadowStyle": "offset"
+  },
+  "focus": {
+    "color": "#FFC400",
+    "width": "2px",
+    "offset": "2px"
+  },
+  "components": {
+    "navigation": "minimal",
+    "cards": "offset",
+    "buttons": "square",
+    "forms": "outlined",
+    "reports": "ruled",
+    "dialogs": "offset"
+  },
+  "rhythm": {
+    "density": "compact",
+    "spacing": "technical",
+    "typeScale": "compact"
+  },
+  "interaction": {
+    "hover": "shift",
+    "selected": "outline",
+    "motion": "precise"
+  },
+  "responsive": {
+    "strategy": "compress",
+    "compactControlsAt": 768
+  }
+}
+

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 (2026-11-16)
+
+### Themes
+
+- Added new dark 8-bit subterranean arcade theme **Coin Cavern** (`coin-cavern` v1.0.0), inspired by classic retro gaming underground levels.
+- Distinctive 8-bit visual language: strict 0px border radii, hard offset drop shadows (`--app-shadow-*`), subterranean brick borders (`#2A3B4F`), deep abyss canvas (`#080C12`), and stone brick card surfaces (`#131B26`).
+- High-contrast arcade palette: iconic Warp Pipe Green (`#00D659`) for hot buttons and primary actions, Coin Gold (`#FFC400`) for markers, highlights, and focus rings, Fireball Red (`#FF6E67`) for danger states, Ice Cyan (`#38D8FF`) for info telemetry, and crisp HUD White (`#F5F9FC`) typography.
+- Fully wired into the standard dark family adapter templates (`theme-templates/adapters/dark/*.css.tmpl`) with zero specificity violations and full reduced-motion support.
+- Registered in Universal Theme reference app (App 102) with live theme switching support.
+
 ## 1.0.3 (2026-11-10)
 
 ### Themes

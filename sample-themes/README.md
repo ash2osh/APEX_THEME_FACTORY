@@ -44,6 +44,7 @@ package appears in both as soon as it is imported — nothing to register by han
 | [carbon-volt](carbon-volt/) | Square technical graphite with acid-lime actions and cyan telemetry. |
 | [citrus-pop](citrus-pop/) | Playful pale-aqua surfaces with teal structure, tangerine pills, and buoyant cards. |
 | [cobalt-press](cobalt-press/) | Warm editorial paper with cobalt rules, vermilion marks, and offset shadows. |
+| [coin-cavern](coin-cavern/) | Dark retro arcade underground with subterranean brick surfaces, pipe green controls, and coin gold signals. |
 | [estate-slate](estate-slate/) | Precision corporate slate, white cards, and restrained champagne-amber actions. |
 | [estate-slate-dark](estate-slate-dark/) | Monolithic dark corporate slate with luminous amber directives and emerald telemetry. |
 | [linen](linen/) | Quiet product surfaces with white chrome, hairline seams, and teal actions. |

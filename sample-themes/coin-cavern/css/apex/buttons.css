@@ -1,0 +1,123 @@
+/* Coin Cavern — 8-bit arcade button styles */
+
+/* @adapter dark/buttons#1 prefix=coin - generated from theme-templates/adapters/dark/buttons.css.tmpl; edit there, then run scripts/theme.sh adapters */
+.app-theme-coin-cavern .apex-theme-iris {
+    /* geometry: 36px control, 13px/500, 4px radius */
+    --a-button-font-size: var(--app-text-sm);
+    --a-button-line-height: 1.125rem;
+    --a-button-padding-y: .5625rem;
+    --a-button-padding-x: .875rem;
+    --a-button-font-weight: var(--app-font-weight-medium);
+    --a-button-border-radius: var(--app-radius-sm);
+    --a-button-icon-size: 1rem;
+
+    /* default button: card surface; the border identifies it on a same-coloured region (WCAG 1.4.11) */
+    --a-button-background-color: var(--app-surface-card);
+    --a-button-text-color: var(--app-text-primary);
+    --a-button-border-color: var(--app-border-strong);
+    --a-button-hover-background-color: var(--app-surface-hover);
+    --a-button-hover-border-color: var(--app-border-strong);
+    --a-button-hover-text-color: var(--app-text-emphasized);
+    --a-button-active-background-color: var(--app-surface-selected);
+    --a-button-focus-background-color: var(--app-surface-hover);
+    --a-button-focus-border-color: var(--coin-cyan);
+    --a-button-shadow: none;
+    --a-button-hover-shadow: none;
+    --a-button-active-shadow: none;
+}
+
+/* Hot = the cyan action (card actions and checked button-group segments share it; Iris lists them together) */
+.app-theme-coin-cavern .apex-theme-iris .t-Button--hot:not(.t-Button--simple):not(.t-Button--noUI):not(.t-Button--link):not(.t-Button--danger):not(.t-Button--success):not(.t-Button--warning):not(.t-Button--primary),
+.app-theme-coin-cavern .apex-theme-iris .a-CardView-button--hot,
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group input:checked + label,
+.app-theme-coin-cavern .apex-theme-iris .t-Form-fieldContainer--radioButtonGroup .apex-item-group--rc input:checked + label {
+    --a-button-background-color: var(--coin-cyan);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--coin-cyan-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+    --a-button-active-background-color: var(--coin-cyan);
+    --a-button-active-text-color: var(--app-text-on-accent);
+    --a-button-focus-background-color: var(--coin-cyan-bright);
+    --a-button-focus-text-color: var(--app-text-on-accent);
+    --a-button-font-weight: var(--app-font-weight-semibold);
+}
+
+/* Primary palette button: white text on the raw accent fails AA, so use the text-safe tint with dark text */
+.app-theme-coin-cavern .apex-theme-iris .t-Button--primary {
+    --a-button-background-color: var(--app-color-primary);
+    --a-button-text-color: var(--app-text-on-accent);
+    --a-button-border-color: transparent;
+    --a-button-hover-background-color: var(--coin-blue-bright);
+    --a-button-hover-border-color: transparent;
+    --a-button-hover-text-color: var(--app-text-on-accent);
+}
+
+/* Visible keyboard focus on every button, consistent with fields */
+.app-theme-coin-cavern .apex-theme-iris .t-Button:focus-visible {
+    box-shadow: var(--app-focus-ring);
+    outline: none;
+}
+
+/* Button groups and segmented controls: preserve square inner joints */
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:not(:first-child):not(:last-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:first-child:not(:only-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:first-of-type:not(:last-of-type) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.app-theme-coin-cavern .apex-theme-iris .t-ButtonGroup .t-Button:last-child:not(:only-child),
+.app-theme-coin-cavern .apex-theme-iris .apex-button-group label:last-of-type:not(:first-of-type) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+/* @adapter-end dark/buttons#1 */
+
+html.app-theme-coin-cavern .t-Button {
+  min-height: calc(var(--app-control-h) * var(--app-density-scale));
+  border-radius: var(--app-radius-sm);
+  border-width: var(--app-border-width);
+  border-style: solid;
+  border-color: var(--app-border-color);
+  font-family: var(--app-font-family-body);
+  font-weight: var(--app-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--app-shadow-sm);
+  transition: transform var(--app-motion-duration) ease, background-color var(--app-motion-duration) ease;
+}
+
+html.app-theme-coin-cavern .t-Button:hover {
+  transform: var(--app-hover-transform);
+}
+
+/* Hot / Primary Buttons — Iconic Warp Pipe Green */
+html.app-theme-coin-cavern .t-Button--hot {
+  background-color: var(--app-accent);
+  color: var(--app-on-accent);
+  border-color: var(--coin-pipe-shadow);
+  box-shadow: var(--app-shadow-sm);
+}
+
+html.app-theme-coin-cavern .t-Button--hot:hover {
+  background-color: var(--coin-pipe-highlight);
+  color: var(--app-on-accent);
+  border-color: var(--app-accent);
+}
+
+/* Secondary / Simple Buttons */
+html.app-theme-coin-cavern .t-Button--simple {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--app-accent-alt);
+}
+
+html.app-theme-coin-cavern .t-Button--simple:hover {
+  background-color: var(--app-surface-hover);
+  border-color: var(--app-border-color);
+}
